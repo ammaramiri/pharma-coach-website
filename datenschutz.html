@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Datenschutz — Pharma-Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:#2A2E35;background:#fff;-webkit-font-smoothing:antialiased;}
+a{color:#E8192B;text-decoration:none;}
+a:hover{text-decoration:underline;}
+.ltbtn{font-family:Montserrat,sans-serif;font-weight:800;font-size:13px;padding:6px 12px;border-radius:9px;border:none;cursor:pointer;}
+.ltbtn.active{background:#fff;color:#23272E;box-shadow:0 1px 4px rgba(0,0,0,.12);}
+.ltbtn.inactive{background:transparent;color:#8A8F98;}
+.de-content{display:block;}
+.en-content{display:none;}
+body.en .de-content{display:none;}
+body.en .en-content{display:block;}
+h2{font-family:Montserrat,sans-serif;font-weight:800;font-size:17px;color:#16B8A6;margin-bottom:10px;margin-top:40px;}
+h3{font-family:Montserrat,sans-serif;font-weight:700;font-size:14px;color:#23272E;margin-bottom:8px;margin-top:22px;}
+p{font-size:15.5px;line-height:1.8;color:#4A4F58;margin-bottom:10px;}
+ul{padding-left:20px;margin-bottom:10px;}
+li{font-size:15px;line-height:1.8;color:#4A4F58;}
+</style>
+</head>
+<body id="body">
+
+<!-- NAV -->
+<header style="position:sticky;top:0;z-index:80;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid #F0EAE8;">
+  <nav style="max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;">
+    <a href="index.html" style="display:flex;align-items:center;gap:11px;text-decoration:none;">
+      <svg viewBox="0 0 120 64" width="42" height="23"><rect x="6" y="14" width="64" height="36" rx="18" fill="#E8192B"/><rect x="50" y="14" width="64" height="36" rx="18" fill="#2DDDC4"/><rect x="33" y="7" width="54" height="50" rx="25" fill="#383D45"/><path d="M53 21 L74 32 L53 43 Z" fill="#fff"/></svg>
+      <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:19px;color:#2A2E35;white-space:nowrap;">PHARMA<span style="color:#E8192B;">-</span>COACH</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="display:flex;background:#F2EDEB;border-radius:11px;padding:3px;">
+        <button class="ltbtn active" id="btn-de" onclick="setLang('de')">DE</button>
+        <button class="ltbtn inactive" id="btn-en" onclick="setLang('en')">EN</button>
+      </div>
+      <a href="index.html" style="display:inline-flex;align-items:center;gap:7px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:13px;padding:10px 16px;border-radius:12px;box-shadow:0 3px 0 #B30F1E;text-decoration:none;white-space:nowrap;">
+        <span class="de-content">← Startseite</span><span class="en-content">← Home</span>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<!-- CONTENT -->
+<main style="max-width:760px;margin:0 auto;padding:56px 24px 96px;">
+
+  <!-- ===== DE ===== -->
+  <div class="de-content">
+    <h1 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(28px,5vw,42px);color:#23272E;margin-bottom:8px;">Datenschutzerklärung</h1>
+    <p style="color:#9AA0AA;font-size:14px;margin-bottom:48px;">Stand: Juli 2026</p>
+
+    <h2>1. Verantwortlicher</h2>
+    <p>
+      Ammar Amiri — Pharma-Coach<br>
+      Mittel Straße 34, 59609 Anröchte<br>
+      E-Mail: <a href="mailto:pharma.coach.ammar@gmail.com">pharma.coach.ammar@gmail.com</a>
+    </p>
+
+    <h2>2. Überblick</h2>
+    <p>Der Schutz Ihrer personenbezogenen Daten ist uns wichtig. Diese Datenschutzerklärung informiert Sie darüber, welche Daten beim Besuch unserer Website erfasst werden, wie wir sie verwenden und welche Rechte Sie haben.</p>
+
+    <h2>3. Datenerfassung beim Websitebesuch</h2>
+    <h3>Server-Log-Dateien</h3>
+    <p>Beim Aufruf unserer Website erfasst der Hosting-Anbieter (Netlify, Inc., 512 2nd Street, Suite 200, San Francisco, CA 94107, USA) automatisch technische Zugriffsdaten in sogenannten Server-Log-Dateien:</p>
+    <ul>
+      <li>Browsertyp und Browserversion</li>
+      <li>Verwendetes Betriebssystem</li>
+      <li>Referrer-URL</li>
+      <li>IP-Adresse (anonymisiert)</li>
+      <li>Datum und Uhrzeit des Zugriffs</li>
+    </ul>
+    <p>Diese Daten sind technisch notwendig für den Betrieb der Website und werden nicht zur Identifizierung einzelner Personen genutzt. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse).</p>
+
+    <h3>Google Fonts</h3>
+    <p>Unsere Website lädt Schriftarten über Google Fonts (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland). Dabei wird Ihre IP-Adresse an Google-Server übertragen. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Weitere Informationen: <a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a>.</p>
+
+    <h2>4. Keine Cookies, kein Tracking</h2>
+    <p>Diese Website verwendet derzeit <strong>keine Cookies</strong> und keine Analyse- oder Tracking-Tools (z. B. Google Analytics). Es werden keine Nutzerprofile erstellt und kein Surfverhalten statistisch ausgewertet.</p>
+
+    <h2>5. Kontaktaufnahme per E-Mail</h2>
+    <p>Wenn Sie uns per E-Mail kontaktieren, werden Ihre angegebenen Daten (Name, E-Mail-Adresse, Nachrichteninhalt) zur Bearbeitung Ihrer Anfrage gespeichert. Diese Daten werden nicht ohne Ihre Einwilligung an Dritte weitergegeben und nach Abschluss der Korrespondenz gelöscht, sofern keine gesetzlichen Aufbewahrungspflichten bestehen. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO.</p>
+
+    <h2>6. Lernplattform (Teachable)</h2>
+    <p>Die Kursbuchung und Nutzung der Lernplattform erfolgt über Teachable (Teachable, Inc., 470 Park Ave South, New York, NY 10016, USA). Bei Registrierung und Kauf werden Ihre Daten direkt an Teachable übermittelt und dort verarbeitet. Teachable ist für die Datenverarbeitung auf ihrer Plattform verantwortlich. Weitere Informationen entnehmen Sie der Datenschutzerklärung von Teachable: <a href="https://teachable.com/privacy-policy" target="_blank">teachable.com/privacy-policy</a>.</p>
+
+    <h2>7. Externe Links & Social Media</h2>
+    <p>Unsere Website enthält Links zu externen Plattformen (YouTube, LinkedIn, Instagram, TikTok). Beim Anklicken dieser Links gelten die Datenschutzbestimmungen des jeweiligen Anbieters. Wir haben keinen Einfluss auf die dort stattfindende Datenverarbeitung.</p>
+
+    <h2>8. Ihre Rechte</h2>
+    <p>Sie haben gemäß DSGVO folgende Rechte:</p>
+    <ul>
+      <li><strong>Auskunft</strong> über Ihre gespeicherten Daten (Art. 15 DSGVO)</li>
+      <li><strong>Berichtigung</strong> unrichtiger Daten (Art. 16 DSGVO)</li>
+      <li><strong>Löschung</strong> Ihrer Daten (Art. 17 DSGVO)</li>
+      <li><strong>Einschränkung</strong> der Verarbeitung (Art. 18 DSGVO)</li>
+      <li><strong>Datenübertragbarkeit</strong> (Art. 20 DSGVO)</li>
+      <li><strong>Widerspruch</strong> gegen die Verarbeitung (Art. 21 DSGVO)</li>
+    </ul>
+    <p>Zur Ausübung Ihrer Rechte wenden Sie sich an: <a href="mailto:pharma.coach.ammar@gmail.com">pharma.coach.ammar@gmail.com</a></p>
+
+    <h2>9. Beschwerderecht</h2>
+    <p>Sie haben das Recht, sich bei der zuständigen Datenschutzaufsichtsbehörde zu beschweren. Zuständig für NRW ist die Landesbeauftragte für Datenschutz und Informationsfreiheit NRW:<br>
+    <a href="https://www.ldi.nrw.de" target="_blank">www.ldi.nrw.de</a></p>
+
+    <h2>10. SSL-Verschlüsselung</h2>
+    <p>Diese Website verwendet aus Sicherheitsgründen eine SSL/TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie am „https://" in der Adresszeile und am Schloss-Symbol in Ihrem Browser.</p>
+
+    <h2>11. Aktualität</h2>
+    <p>Diese Datenschutzerklärung kann bei Änderungen der Website oder der Rechtslage angepasst werden. Die aktuelle Version ist stets auf dieser Seite abrufbar.</p>
+  </div>
+
+  <!-- ===== EN ===== -->
+  <div class="en-content">
+    <h1 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(28px,5vw,42px);color:#23272E;margin-bottom:8px;">Privacy Policy</h1>
+    <p style="color:#9AA0AA;font-size:14px;margin-bottom:48px;">Last updated: July 2026</p>
+
+    <h2>1. Controller</h2>
+    <p>
+      Ammar Amiri — Pharma-Coach<br>
+      Mittel Straße 34, 59609 Anröchte, Germany<br>
+      Email: <a href="mailto:pharma.coach.ammar@gmail.com">pharma.coach.ammar@gmail.com</a>
+    </p>
+
+    <h2>2. Overview</h2>
+    <p>Protecting your personal data is important to us. This privacy policy explains what data is collected when you visit our website, how we use it, and what rights you have.</p>
+
+    <h2>3. Data collected when visiting our website</h2>
+    <h3>Server log files</h3>
+    <p>When you access our website, our hosting provider (Netlify, Inc., 512 2nd Street, Suite 200, San Francisco, CA 94107, USA) automatically collects technical access data in server log files:</p>
+    <ul>
+      <li>Browser type and version</li>
+      <li>Operating system</li>
+      <li>Referrer URL</li>
+      <li>IP address (anonymised)</li>
+      <li>Date and time of access</li>
+    </ul>
+    <p>This data is technically necessary for operating the website and is not used to identify individuals. Legal basis: Art. 6(1)(f) GDPR (legitimate interest).</p>
+
+    <h3>Google Fonts</h3>
+    <p>Our website loads fonts via Google Fonts (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Ireland). Your IP address is transmitted to Google servers in the process. Legal basis: Art. 6(1)(f) GDPR. More information: <a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a>.</p>
+
+    <h2>4. No cookies, no tracking</h2>
+    <p>This website currently uses <strong>no cookies</strong> and no analytics or tracking tools (e.g. Google Analytics). No user profiles are created and no browsing behaviour is statistically evaluated.</p>
+
+    <h2>5. Contact by email</h2>
+    <p>If you contact us by email, the data you provide (name, email address, message content) will be stored to process your enquiry. This data will not be passed on to third parties without your consent and will be deleted after the correspondence is completed, unless statutory retention obligations apply. Legal basis: Art. 6(1)(b) GDPR.</p>
+
+    <h2>6. Learning platform (Teachable)</h2>
+    <p>Course booking and use of the learning platform is handled via Teachable (Teachable, Inc., 470 Park Ave South, New York, NY 10016, USA). When registering and purchasing, your data is transmitted directly to Teachable and processed there. Teachable is responsible for data processing on their platform. For more information, please refer to Teachable's privacy policy: <a href="https://teachable.com/privacy-policy" target="_blank">teachable.com/privacy-policy</a>.</p>
+
+    <h2>7. External links & social media</h2>
+    <p>Our website contains links to external platforms (YouTube, LinkedIn, Instagram, TikTok). When you click on these links, the privacy policies of the respective provider apply. We have no influence over the data processing that takes place there.</p>
+
+    <h2>8. Your rights</h2>
+    <p>Under the GDPR, you have the following rights:</p>
+    <ul>
+      <li><strong>Access</strong> to your stored data (Art. 15 GDPR)</li>
+      <li><strong>Rectification</strong> of inaccurate data (Art. 16 GDPR)</li>
+      <li><strong>Erasure</strong> of your data (Art. 17 GDPR)</li>
+      <li><strong>Restriction</strong> of processing (Art. 18 GDPR)</li>
+      <li><strong>Data portability</strong> (Art. 20 GDPR)</li>
+      <li><strong>Objection</strong> to processing (Art. 21 GDPR)</li>
+    </ul>
+    <p>To exercise your rights, contact: <a href="mailto:pharma.coach.ammar@gmail.com">pharma.coach.ammar@gmail.com</a></p>
+
+    <h2>9. Right to lodge a complaint</h2>
+    <p>You have the right to lodge a complaint with the competent data protection supervisory authority. The authority responsible for NRW is:<br>
+    <a href="https://www.ldi.nrw.de" target="_blank">www.ldi.nrw.de</a></p>
+
+    <h2>10. SSL encryption</h2>
+    <p>This website uses SSL/TLS encryption for security reasons. You can recognise an encrypted connection by the "https://" in the address bar and the padlock symbol in your browser.</p>
+
+    <h2>11. Updates</h2>
+    <p>This privacy policy may be updated when changes are made to the website or the legal situation. The current version is always available on this page.</p>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer style="background:#23272E;padding:28px 24px;">
+  <div style="max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+    <span style="font-size:13px;color:#71767F;">© 2026 Pharma-Coach · Ammar Amiri</span>
+    <div style="display:flex;gap:20px;">
+      <a href="impressum.html" style="font-size:13px;color:#71767F;font-weight:500;">Impressum</a>
+      <a href="datenschutz.html" style="font-size:13px;color:#71767F;font-weight:500;">Datenschutz</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function setLang(lang){
+  var b=document.getElementById('body');
+  if(lang==='en'){b.classList.add('en');document.documentElement.lang='en';}
+  else{b.classList.remove('en');document.documentElement.lang='de';}
+  document.getElementById('btn-de').className='ltbtn '+(lang==='de'?'active':'inactive');
+  document.getElementById('btn-en').className='ltbtn '+(lang==='en'?'active':'inactive');
+}
+</script>
+</body>
+</html>
