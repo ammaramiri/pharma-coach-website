@@ -68,6 +68,17 @@ p.sub{font-size:16px;color:#5A5F68;max-width:620px;margin:0 auto 44px;text-align
 .ind-chip{display:inline-flex;align-items:center;gap:7px;background:#FBF9F8;border:1px solid #EDE7E3;border-radius:999px;padding:7px 14px 7px 10px;font-size:13.5px;font-weight:600;color:#3B4250;}
 /* CTA */
 .btn-red{display:inline-flex;align-items:center;gap:9px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;padding:14px 26px;border-radius:13px;box-shadow:0 4px 0 #B30F1E;}
+.browser{border-radius:12px;overflow:hidden;box-shadow:0 30px 60px rgba(20,30,40,.22);border:1px solid #E8E2DD;background:#fff;}
+.browser-bar{display:flex;align-items:center;gap:8px;background:#F1ECE9;padding:9px 14px;}
+.b-dot{width:10px;height:10px;border-radius:50%;}
+.b-url{flex:1;background:#fff;border-radius:7px;font-size:11.5px;color:#8A8F98;padding:4px 12px;font-weight:500;}
+.browser img{width:100%;display:block;}
+.hero-grid2{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1fr 1.05fr;gap:52px;align-items:center;}
+.peek-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:1020px;margin:0 auto;}
+.peek .browser{box-shadow:0 14px 34px rgba(20,30,40,.14);}
+.peek-cap{font-size:13px;color:#5A5F68;margin-top:10px;text-align:center;}
+.peek-cap b{font-family:Montserrat,sans-serif;font-weight:800;color:#23272E;font-size:13.5px;}
+@media(max-width:860px){.hero-grid2{grid-template-columns:1fr;gap:34px;}.peek-grid{grid-template-columns:1fr;}}
 @media(max-width:860px){.why-grid,.cmp-grid,.step-grid{grid-template-columns:1fr;}.count-strip{gap:30px;}}
 </style>
 </head>
@@ -93,17 +104,26 @@ p.sub{font-size:16px;color:#5A5F68;max-width:620px;margin:0 auto 44px;text-align
 </header>
 
 <!-- HERO -->
-<section style="padding:72px 24px 56px;background:linear-gradient(180deg,#FFFCFB 0%,#fff 100%);">
-  <div style="max-width:780px;margin:0 auto;text-align:center;">
-    <div class="kicker"><span class="de-content">Der erste Baustein von Pharma-Coach</span><span class="en-content">The first building block of Pharma-Coach</span></div>
-    <h1 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(28px,4.5vw,48px);color:#23272E;margin-bottom:16px;">
-      <span class="de-content">Der OTC-Beratungskurs</span><span class="en-content">The OTC Counselling Course</span>
-    </h1>
-    <p style="font-size:17px;color:#5A5F68;line-height:1.75;max-width:640px;margin:0 auto 28px;">
-      <span class="de-content">Rund 50 Indikationen, 8 Themengebiete, ein System: jedes Thema in 6 klaren Schritten — vom ersten Kundensatz bis zur fundierten Empfehlung samt Zusatzverkauf.</span>
-      <span class="en-content">Around 50 indications, 8 topic areas, one system: every topic in 6 clear steps — from the customer's first sentence to a well-founded recommendation including add-on sales.</span>
-    </p>
-    <a href="https://pharma-coach-amiri.de" target="_blank" rel="noopener" class="btn-red"><span class="de-content">Gratis-Lektion ansehen →</span><span class="en-content">Watch a free lesson →</span></a>
+<section style="padding:64px 24px 64px;background:linear-gradient(180deg,#FFFCFB 0%,#fff 100%);overflow:hidden;">
+  <div class="hero-grid2">
+    <div>
+      <div class="kicker" style="text-align:left;"><span class="de-content">Der erste Baustein von Pharma-Coach</span><span class="en-content">The first building block of Pharma-Coach</span></div>
+      <h1 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(28px,4vw,44px);color:#23272E;margin-bottom:16px;">
+        <span class="de-content">Der OTC-Beratungskurs</span><span class="en-content">The OTC Counselling Course</span>
+      </h1>
+      <p style="font-size:16.5px;color:#5A5F68;line-height:1.75;margin-bottom:26px;">
+        <span class="de-content">Rund 50 Indikationen, 8 Themengebiete, ein System: jedes Thema in 6 klaren Schritten — vom ersten Kundensatz bis zur fundierten Empfehlung samt Zusatzverkauf.</span>
+        <span class="en-content">Around 50 indications, 8 topic areas, one system: every topic in 6 clear steps — from the customer's first sentence to a well-founded recommendation including add-on sales.</span>
+      </p>
+      <a href="https://pharma-coach-amiri.de" target="_blank" rel="noopener" class="btn-red"><span class="de-content">Gratis-Lektion ansehen →</span><span class="en-content">Watch a free lesson →</span></a>
+    </div>
+    <div style="transform:rotate(1.2deg);">
+      <div class="browser">
+        <div class="browser-bar"><span class="b-dot" style="background:#FF5F57;"></span><span class="b-dot" style="background:#FEBC2E;"></span><span class="b-dot" style="background:#28C840;"></span><span class="b-url">pharma-coach-amiri.de</span></div>
+        <img src="kurs-akne.jpg" alt="Pharma-Coach Video-Lektion: Beratungsfragen bei Akne" loading="eager">
+      </div>
+      <div class="peek-cap"><b>Akne</b> · <span class="de-content">Schritt 5: Beratungsfragen</span><span class="en-content">Step 5: Counselling questions</span></div>
+    </div>
   </div>
 </section>
 
@@ -172,6 +192,20 @@ p.sub{font-size:16px;color:#5A5F68;max-width:620px;margin:0 auto 44px;text-align
     <div class="step"><div class="step-num" style="background:#23272E;">4</div><h3><span class="de-content">Wann zum Arzt</span><span class="en-content">When to refer</span></h3><p><span class="de-content">Die roten Flaggen: Wo endet Selbstmedikation, wo beginnt der Arztbesuch.</span><span class="en-content">The red flags: where self-medication ends and the doctor begins.</span></p></div>
     <div class="step"><div class="step-num" style="background:#E8192B;">5</div><h3><span class="de-content">Beratungsfragen</span><span class="en-content">Counselling questions</span></h3><p><span class="de-content">Die Fragen, die das Bild klären — mit dem Warum hinter jeder Frage.</span><span class="en-content">The questions that clarify the picture — with the why behind each one.</span></p></div>
     <div class="step"><div class="step-num" style="background:#16B8A6;">6</div><h3><span class="de-content">Behandlung</span><span class="en-content">Treatment</span></h3><p><span class="de-content">Präparate, Dosierungen, Grenzen — plus sinnvolle Zusatzempfehlungen.</span><span class="en-content">Products, dosages, limits — plus sensible add-on recommendations.</span></p></div>
+  </div>
+</section>
+
+<!-- BLICK IN DEN KURS -->
+<section style="padding:80px 24px;background:#FBF9F8;">
+  <h2 class="sec"><span class="de-content">Ein Blick in den Kurs</span><span class="en-content">A look inside the course</span></h2>
+  <p class="sub"><span class="de-content">Echte Ausschnitte aus echten Lektionen — so sehen die Videos aus, mit denen Sie arbeiten werden.</span><span class="en-content">Real excerpts from real lessons — this is what the videos you will work with look like.</span></p>
+  <div class="peek-grid">
+    <div class="peek"><div class="browser"><div class="browser-bar"><span class="b-dot" style="background:#FF5F57;"></span><span class="b-dot" style="background:#FEBC2E;"></span><span class="b-dot" style="background:#28C840;"></span></div><img src="kurs-durchfall.jpg" alt="Lektion Durchfall: Ursachen" loading="lazy"></div>
+      <div class="peek-cap"><b>Durchfall</b> · <span class="de-content">Schritt 3: Ursachen</span><span class="en-content">Step 3: Causes</span></div></div>
+    <div class="peek"><div class="browser"><div class="browser-bar"><span class="b-dot" style="background:#FF5F57;"></span><span class="b-dot" style="background:#FEBC2E;"></span><span class="b-dot" style="background:#28C840;"></span></div><img src="kurs-husten.jpg" alt="Lektion Husten: Behandlung" loading="lazy"></div>
+      <div class="peek-cap"><b>Husten</b> · <span class="de-content">Schritt 6: Behandlung</span><span class="en-content">Step 6: Treatment</span></div></div>
+    <div class="peek"><div class="browser"><div class="browser-bar"><span class="b-dot" style="background:#FF5F57;"></span><span class="b-dot" style="background:#FEBC2E;"></span><span class="b-dot" style="background:#28C840;"></span></div><img src="kurs-verstopfung.jpg" alt="Lektion Verstopfung: nicht-medikamentöse Behandlung" loading="lazy"></div>
+      <div class="peek-cap"><b>Verstopfung</b> · <span class="de-content">Schritt 6: Behandlung</span><span class="en-content">Step 6: Treatment</span></div></div>
   </div>
 </section>
 
