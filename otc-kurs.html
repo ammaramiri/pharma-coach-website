@@ -119,7 +119,7 @@ p.sub{font-size:16px;color:#5A5F68;max-width:620px;margin:0 auto 44px;text-align
         <span class="de-content">Rund 50 Indikationen, 8 Themengebiete, ein System: jedes Thema in 6 klaren Schritten — vom ersten Kundensatz bis zur fundierten Empfehlung samt Zusatzverkauf.</span>
         <span class="en-content">Around 50 indications, 8 topic areas, one system: every topic in 6 clear steps — from the customer's first sentence to a well-founded recommendation including add-on sales.</span>
       </p>
-      <a href="https://pharma-coach-amiri.de" target="_blank" rel="noopener" class="btn-red"><span class="de-content">Gratis-Lektion ansehen →</span><span class="en-content">Watch a free lesson →</span></a>
+      <a href="#gratis" class="btn-red"><span class="de-content">Gratis-Lektion ansehen →</span><span class="en-content">Watch a free lesson →</span></a>
     </div>
     <div style="transform:rotate(1.2deg);">
       <div class="browser">
@@ -197,6 +197,21 @@ p.sub{font-size:16px;color:#5A5F68;max-width:620px;margin:0 auto 44px;text-align
     <div class="step"><div class="step-num" style="background:#E8192B;">5</div><h3><span class="de-content">Beratungsfragen</span><span class="en-content">Counselling questions</span></h3><p><span class="de-content">Die Fragen, die das Bild klären — mit dem Warum hinter jeder Frage.</span><span class="en-content">The questions that clarify the picture — with the why behind each one.</span></p></div>
     <div class="step"><div class="step-num" style="background:#16B8A6;">6</div><h3><span class="de-content">Behandlung</span><span class="en-content">Treatment</span></h3><p><span class="de-content">Präparate, Dosierungen, Grenzen — plus sinnvolle Zusatzempfehlungen.</span><span class="en-content">Products, dosages, limits — plus sensible add-on recommendations.</span></p></div>
   </div>
+</section>
+
+<!-- GRATIS-LEKTION -->
+<section id="gratis" style="padding:80px 24px;background:#23272E;">
+  <h2 class="sec" style="color:#fff;"><span class="de-content">Die Gratis-Lektion: Erkältung</span><span class="en-content">The free lesson: common cold</span></h2>
+  <p class="sub" style="color:rgba(255,255,255,.65);"><span class="de-content">Ein komplettes Thema in voller Länge — sehen Sie selbst, wie Pharma-Coach arbeitet. Ganz ohne Abo.</span><span class="en-content">One complete topic in full length — see for yourself how Pharma-Coach works. No subscription needed.</span></p>
+  <div id="gv-otc" onclick="playGratis('gv-otc')" role="button" aria-label="Gratis-Lektion abspielen" style="aspect-ratio:16/9;max-width:720px;margin:0 auto;border-radius:10px;overflow:hidden;background:#000;position:relative;cursor:pointer;box-shadow:0 18px 44px rgba(0,0,0,.35);">
+      <img src="gratis-thumbnail.jpg" alt="Gratis-Lektion: Erkältung — Beratung in der Apotheke" style="width:100%;height:100%;object-fit:cover;display:block;">
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.08);">
+        <div style="width:76px;height:76px;border-radius:50%;background:#E8192B;box-shadow:0 8px 26px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" width="30" height="30"><path d="M8 5.5 19 12 8 18.5 Z" fill="#fff"/></svg>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:11.5px;color:rgba(255,255,255,.4);margin:9px auto 22px;max-width:720px;text-align:center;">Beim Abspielen wird eine Verbindung zu YouTube (Google) hergestellt.</div>
 </section>
 
 <!-- BLICK IN DEN KURS -->
@@ -406,6 +421,8 @@ function setLang(lang){
   },{threshold:.4});
   var s=document.querySelector('.count-strip'); if(s)obs.observe(s);
 })();
+
+function playGratis(id){var d=document.getElementById(id);d.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/6HAqN36258E?autoplay=1&rel=0" style="width:100%;height:100%;border:0;position:absolute;inset:0;" title="Gratis-Lektion Erkältung" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';d.onclick=null;d.style.cursor='default';}
 </script>
 </body>
 </html>
