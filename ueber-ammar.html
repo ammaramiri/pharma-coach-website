@@ -7,8 +7,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-<title>Über Ammar — Pharma-Coach</title>
-<meta name="description" content="Ammar Amiri — Apotheker, Filialleiter und Gründer von Pharma-Coach. Werdegang, Engagement und Projekte.">
+<title>Über Ammar | Pharma-Coach</title>
+<meta name="description" content="Ammar Amiri: Apotheker, Filialleiter und Gründer von Pharma-Coach. Werdegang, Engagement und Projekte.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -45,6 +45,26 @@ p{font-size:16px;line-height:1.8;color:#4A4F58;margin-bottom:14px;}
   .hero-grid{grid-template-columns:1fr!important;}
   .hero-photo{max-width:300px;margin:0 auto 32px!important;}
 }
+
+/* ===== Micro-Interactions (Hover) ===== */
+a,button{transition:color .18s ease,background-color .18s ease,transform .18s ease,box-shadow .18s ease,border-color .18s ease;}
+a[style*="B30F1E"]:hover,.btn-red:hover{transform:translateY(-3px);box-shadow:0 8px 0 #B30F1E,0 14px 26px rgba(232,25,43,.3)!important;}
+a[style*="B30F1E"]:active,.btn-red:active{transform:translateY(1px);box-shadow:0 2px 0 #B30F1E!important;}
+.cat-block{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;}
+.cat-block:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(20,30,40,.10);border-color:#E4DCD8;}
+.ind-chip{transition:transform .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease;}
+.ind-chip:hover{transform:translateY(-2px);background:#fff;border-color:#2DDDC4;box-shadow:0 6px 14px rgba(20,30,40,.09);}
+.step{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;}
+.step:hover{transform:translateY(-5px);box-shadow:0 16px 32px rgba(20,30,40,.11);border-color:transparent;}
+.cmp{transition:transform .22s ease,box-shadow .22s ease;}
+.cmp:hover{transform:translateY(-5px);box-shadow:0 18px 36px rgba(20,30,40,.12);}
+.peek .browser{transition:transform .3s ease,box-shadow .3s ease;}
+.peek .browser:hover{transform:translateY(-5px);box-shadow:0 22px 46px rgba(20,30,40,.2)!important;}
+.card-link{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;}
+.card-link:hover{transform:translateY(-3px);border-color:#2DDDC4;}
+footer a{transition:color .18s ease,transform .18s ease;display:inline-block;}
+footer a:hover{color:#fff!important;transform:translateY(-1px);}
+.ltbtn:hover{opacity:.85;}
 </style>
 </head>
 <body id="body">
@@ -138,13 +158,13 @@ p{font-size:16px;line-height:1.8;color:#4A4F58;margin-bottom:14px;}
       <span class="tl-dot"></span>
       <div class="tl-year">2015</div>
       <div class="tl-title"><span class="de-content">Neustart in Deutschland</span><span class="en-content">A New Start in Germany</span></div>
-      <p class="de-content">Ankunft in Deutschland und Beginn des Anerkennungsverfahrens — seitdem vollständig in der Offizin tätig.</p>
-      <p class="en-content">Arrival in Germany and start of the recognition process — working exclusively in community pharmacy ever since.</p>
+      <p class="de-content">Ankunft in Deutschland und Beginn des Anerkennungsverfahrens, seitdem vollständig in der Offizin tätig.</p>
+      <p class="en-content">Arrival in Germany and start of the recognition process, working exclusively in community pharmacy ever since.</p>
     </div>
     <div class="tl-item">
       <span class="tl-dot"></span>
       <div class="tl-year"><span class="de-content">5 Jahre</span><span class="en-content">5 Years</span></div>
-      <div class="tl-title"><span class="de-content">Ehrenamt & Netzwerk — SyGAAD</span><span class="en-content">Volunteering & Community — SyGAAD</span></div>
+      <div class="tl-title"><span class="de-content">Ehrenamt & Netzwerk: SyGAAD</span><span class="en-content">Volunteering & Community: SyGAAD</span></div>
       <p class="de-content">Gründungs- und Vorstandsmitglied der Vereinigung syrischer Ärzte und Apotheker in Deutschland (SyGAAD). Organisation zahlreicher Bildungsveranstaltungen für Kolleg:innen mit Migrationshintergrund, darunter ein Workshop mit über 180 Teilnehmenden. Moderation mehrerer Webinare und Gast in verschiedenen pharmazeutischen Fachpodcasts.</p>
       <p class="en-content">Founding board member of SyGAAD, the association of Syrian doctors and pharmacists in Germany. Organised numerous professional events for pharmacists with a migration background, including a workshop attended by over 180 participants. Hosted professional webinars and appeared as a guest on specialist pharmacy podcasts.</p>
     </div>
@@ -152,8 +172,8 @@ p{font-size:16px;line-height:1.8;color:#4A4F58;margin-bottom:14px;}
       <span class="tl-dot"></span>
       <div class="tl-year"><span class="de-content">Heute</span><span class="en-content">Today</span></div>
       <div class="tl-title"><span class="de-content">Filialleiter & Gründer von Pharma-Coach</span><span class="en-content">Branch Manager & Founder of Pharma-Coach</span></div>
-      <p class="de-content">Leitung der Filiale der Engel-Apotheke in Harsewinkel — und Aufbau von Pharma-Coach: der digitalen Lernplattform für Beratungskompetenz in der Apotheke.</p>
-      <p class="en-content">Managing the Engel-Apotheke branch in Harsewinkel — and building Pharma-Coach: the digital learning platform for counselling excellence in pharmacy.</p>
+      <p class="de-content">Leitung der Filiale der Engel-Apotheke in Harsewinkel, und Aufbau von Pharma-Coach: der digitalen Lernplattform für Beratungskompetenz in der Apotheke.</p>
+      <p class="en-content">Managing the Engel-Apotheke branch in Harsewinkel, and building Pharma-Coach: the digital learning platform for counselling excellence in pharmacy.</p>
     </div>
   </div>
 
