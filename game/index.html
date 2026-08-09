@@ -5,15 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Kostenloses Beratungstraining für Apotheker und PTA: Trainiere echte HV-Situationen mit realistischen Kundentypen, Red Flags und Dosierungen. Direkt im Browser, ohne Anmeldung, in drei Sprachen.">
 <link rel="canonical" href="https://pharma-coach-amiri.de/game/">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Pharma-Coach">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Pharma-Coach">
 <meta property="og:title" content="Pharma-Coach: The Game – Kostenloses OTC-Beratungstraining">
 <meta property="og:description" content="Steh hinter dem HV-Tisch. Berate echte Kundentypen. Werde vom Praktikanten zur Apotheken-Legende. Kostenlos im Browser.">
 <meta property="og:url" content="https://pharma-coach-amiri.de/game/">
 <meta property="og:image" content="https://pharma-coach-amiri.de/game/assets/hero_cover.jpg">
-<meta property="og:locale" content="de_DE">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#1A1A1A">
+<meta property="og:locale" content="de_DE"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#12131A">
 <title>Pharma-Coach: The Game | Kostenloses OTC-Beratungstraining</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800;9..144,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -121,6 +119,52 @@ body.rtl .lc-stars{right:auto;left:10px}
 .lc-persona .dot{width:6px;height:6px;border-radius:50%;background:var(--red)}
 .lc-best{margin-top:9px;font-size:11px;font-weight:700;color:var(--teal-dark)}
 
+/* ============ WORLD ============ */
+#worldScreen{background:#12131A;min-height:100vh;display:none;flex-direction:column}
+#worldScreen.active{display:flex}
+.w-top{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#1A1B24;color:#fff;flex:0 0 auto}
+.w-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;
+  width:36px;height:34px;border-radius:10px;font-size:18px;cursor:pointer;font-family:inherit}
+.w-room{flex:1;font-family:'Fraunces',serif;font-weight:700;font-size:16px}
+.w-rank{display:flex;align-items:center;gap:8px;font-size:12px;opacity:.9}
+.w-rank b{font-family:'Fraunces',serif;font-size:16px;color:var(--teal)}
+.w-stage{position:relative;flex:1 1 auto;overflow:hidden;display:flex;align-items:center;
+  justify-content:center;background:#0D0E13;touch-action:manipulation}
+.w-map{width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none}
+.w-hot{position:absolute;inset:0;pointer-events:none}
+.w-spot{position:absolute;transform:translate(-50%,-100%);pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;gap:2px;transition:opacity .25s}
+.w-spot .ic{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.92);
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  box-shadow:0 3px 10px rgba(0,0,0,.45);animation:bobSpot 1.8s ease-in-out infinite}
+@keyframes bobSpot{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.w-spot .lb{font-size:9.5px;font-weight:700;color:#fff;background:rgba(0,0,0,.6);
+  padding:2px 6px;border-radius:6px;white-space:nowrap}
+.w-spot.near .ic{background:var(--teal);box-shadow:0 0 0 4px rgba(78,205,196,.35)}
+.w-char{position:absolute;transform-origin:50% 100%;pointer-events:none;z-index:6;
+  filter:drop-shadow(0 5px 5px rgba(0,0,0,.5));will-change:left,top,transform}
+.w-shadow{position:absolute;z-index:5;pointer-events:none;border-radius:50%;
+  background:radial-gradient(closest-side, rgba(0,0,0,.45), rgba(0,0,0,0));
+  transform:translate(-50%,-50%)}
+.w-tap{position:absolute;width:26px;height:26px;border:2px solid var(--teal);border-radius:50%;
+  transform:translate(-50%,-50%) scale(0);pointer-events:none;opacity:0}
+.w-tap.go{animation:tapRing .5s ease-out}
+@keyframes tapRing{0%{opacity:1;transform:translate(-50%,-50%) scale(.2)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.6)}}
+.w-panel{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;
+  border-radius:22px 22px 0 0;padding:18px 20px 22px;box-shadow:0 -12px 40px rgba(0,0,0,.4);
+  transform:translateY(110%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.w-panel.up{transform:translateY(0)}
+.w-p-title{font-family:'Fraunces',serif;font-weight:700;font-size:19px;margin-bottom:5px}
+.w-p-text{font-size:13.5px;line-height:1.55;color:var(--soft);margin-bottom:14px}
+.w-p-acts{display:flex;gap:10px;flex-wrap:wrap}
+.w-p-acts button{padding:12px 20px;border:none;border-radius:12px;font-family:inherit;
+  font-weight:700;font-size:13.5px;cursor:pointer;background:var(--ink);color:#fff}
+.w-p-acts button.main{background:var(--red)}
+.w-p-acts button.ghost{background:var(--bg);color:var(--soft)}
+.w-hint{position:absolute;left:0;right:0;bottom:14px;text-align:center;color:rgba(255,255,255,.75);
+  font-size:11.5px;pointer-events:none;transition:opacity .4s}
+.w-hint.hide{opacity:0}
+
 /* ============ GAME SCREEN (reuses prototype mechanics) ============ */
 #gameScreen{background:var(--bg);min-height:100vh}
 .wrap{max-width:1000px;margin:0 auto;padding:16px 20px 40px}
@@ -147,9 +191,31 @@ body.rtl .lc-stars{right:auto;left:10px}
 .stage-title{font-family:'Fraunces',serif;font-size:22px;font-weight:600;line-height:1.25;margin-bottom:12px}
 .stage-body{padding:0 24px 24px}
 .stage-body.comicbody{padding:0 12px 12px}
-.scene-strip{border-radius:14px;overflow:hidden;margin-bottom:14px;border:2px solid var(--ink);
-  aspect-ratio:16/9;max-height:340px;background:#EDE9E3}
-.scene-strip img{width:100%;height:100%;object-fit:cover;object-position:center 16%;display:block}
+.scene-strip{position:relative;border-radius:14px;overflow:hidden;margin-bottom:14px;
+  border:2px solid var(--ink);aspect-ratio:16/9;max-height:340px;background:#EDE9E3}
+/* legacy: صورة مشهد محروقة قديمة */
+.scene-strip img.sc-legacy{width:100%;height:100%;object-fit:cover;object-position:center 16%;display:block}
+/* --- طبقة التركيب v2 --- */
+.sc-bg{position:absolute;inset:0;background-size:cover;background-position:center 62%;
+  transform:scale(1.02);transition:filter .35s ease,transform .35s ease}
+.sc-bg.sc-blur{filter:blur(7px) saturate(.92) brightness(1.04);transform:scale(1.10)}
+.sc-vig{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 55%,transparent 45%,rgba(20,16,12,.20) 100%)}
+.sc-shadow{position:absolute;border-radius:50%;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(38,28,18,.42) 0%,rgba(38,28,18,.16) 45%,transparent 72%);
+  transform:translate(-50%,50%);transition:left .5s cubic-bezier(.33,.9,.35,1)}
+.sc-chr{position:absolute;width:auto;object-fit:contain;display:block;
+  transform:translateX(-50%);transform-origin:50% 100%;
+  filter:drop-shadow(0 4px 6px rgba(30,22,14,.18));
+  transition:left .5s cubic-bezier(.33,.9,.35,1),bottom .35s ease,height .35s ease}
+.sc-chr.sc-enter{animation:scWalkIn .95s cubic-bezier(.33,.9,.35,1) both}
+.sc-chr.sc-bob{animation:scBob 1.4s ease-in-out infinite}
+@keyframes scWalkIn{from{left:14%;opacity:0}60%{opacity:1}to{opacity:1}}
+@keyframes scBob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-1.4%)}}
+@media (prefers-reduced-motion:reduce){
+  .sc-chr,.sc-shadow{transition:none}
+  .sc-chr.sc-enter,.sc-chr.sc-bob{animation:none}
+}
 /* --- ask3 --- */
 .a3-hint{font-size:12.5px;color:var(--soft);margin-bottom:12px;font-weight:600}
 .a3-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
@@ -252,6 +318,9 @@ body.rtl .sq-fix{margin-left:0;margin-right:auto}
 .panel::before{content:'';grid-area:stack;width:100%;aspect-ratio:16/9}
 .panel img{grid-area:stack;width:100%;height:100%;object-fit:cover;object-position:center 22%;
   display:block;align-self:stretch}
+.panel .sc-bg,.panel .sc-vig{grid-area:stack;position:absolute;inset:0}
+.panel .sc-shadow,.panel img.sc-chr{grid-area:stack;position:absolute;width:auto;height:auto}
+.panel img.sc-chr{object-fit:contain}
 .bubble-stack{grid-area:stack;position:relative;z-index:2;display:flex;flex-direction:column;
   gap:12px;align-items:flex-end;justify-content:flex-start;
   padding:16px 16px 62px;align-self:start;width:100%;box-sizing:border-box}
@@ -415,7 +484,8 @@ body.rtl .consent-row{text-align:right}
     <button class="play-btn" id="playBtn">Beratung starten</button>
     <div class="start-links">
       <a class="slink" id="linkAbout" href="#" target="_blank" rel="noopener">Über Pharma-Coach</a>
-      <a class="slink" id="linkCourse" href="#" target="_blank" rel="noopener">Zum OTC-Kurs</a>
+      <a class="slink" id="linkCourse" href="#" target="_blank" rel="noopener">Zum OTC-Kurs (ab Anfang 2027)</a>
+      <a class="slink" id="linkCases" href="#">Fallliste</a>
     </div>
     <div class="legal-foot">
       <div id="legalDisclaimer"></div>
@@ -426,6 +496,28 @@ body.rtl .consent-row{text-align:right}
       </div>
     </div>
   </div>
+</div>
+
+<!-- ============ WORLD (free movement) ============ -->
+<div class="screen" id="worldScreen">
+  <div class="w-top">
+    <button class="w-btn" id="wBack">‹</button>
+    <div class="w-room" id="wRoomName"></div>
+    <div class="w-rank"><span id="wRankName"></span><b id="wPts">0</b></div>
+  </div>
+  <div class="w-stage" id="wStage">
+    <img class="w-map" id="wMap" src="" alt="">
+    <div class="w-hot" id="wHot"></div>
+    <div class="w-shadow" id="wShadow"></div>
+    <img class="w-char" id="wChar" src="" alt="">
+    <div class="w-tap" id="wTap"></div>
+  </div>
+  <div class="w-panel" id="wPanel">
+    <div class="w-p-title" id="wpTitle"></div>
+    <div class="w-p-text" id="wpText"></div>
+    <div class="w-p-acts" id="wpActs"></div>
+  </div>
+  <div class="w-hint" id="wHint"></div>
 </div>
 
 <!-- ============ MAP SCREEN ============ -->
@@ -608,10 +700,10 @@ var UNLOCKS = {
 /* ---------------- i18n (UI-Strings) ---------------- */
 var I18N = {
   de:{ play:"Beratung starten", sub:"Steh hinter dem HV-Tisch. Berate echte Kundentypen. Werde vom Praktikanten zur Apotheken-Legende.",
-    about:"Über Pharma-Coach", course:"Zum OTC-Kurs", chooseCase:"Wähle deinen Fall",
+    about:"Über Pharma-Coach", course:"Zum OTC-Kurs (ab Anfang 2027)", chooseCase:"Wähle deinen Fall",
     mapSub:"Jeder Kunde ist anders. Jede Beratung zählt.", pts:"Punkte", trust:"Vertrauen",
     back:"Fälle", locked:"Gesperrt", nextRank:"bis", weiter:"Weiter", result:"Beratung abgeschlossen",
-    playAgain:"Nochmal", toMap:"Weitere Fälle", deepen:"Dieses Thema vertiefen?", courseHint:"Im OTC-Kurs vertiefen →",
+    playAgain:"Nochmal", toMap:"Weitere Fälle", deepen:"Dieses Thema vertiefen?", courseHint:"Im OTC-Kurs vertiefen (ab Anfang 2027) →",
     emT:"Fortschritt sichern", emD:"Stark gemeistert! Sichere deinen Fortschritt und erhalte dein Zertifikat.",
     emName:"Dein Name", emMail:"Deine E-Mail", emSave:"Speichern", emSkip:"Später",
     emNote:"Wir nutzen deine E-Mail nur für Fortschritt & Zertifikat. Kein Spam.",
@@ -627,10 +719,10 @@ var I18N = {
     leftTitle:"Der Kunde hat die Apotheke verlassen", leftText:"Das Vertrauen ist auf 0 gefallen. Beratung ist mehr als Fachwissen – Ton und Vertrauen entscheiden mit.",
     trustHigh:"Der Kunde verlässt die Apotheke mit vollem Vertrauen – er kommt wieder.", trustMid:"Der Kunde geht – ganz überzeugt wirkte er nicht.", trustLow:"Das Vertrauen hat gelitten. Fast hätte er die Apotheke gewechselt." },
   en:{ play:"Start Consultation", sub:"Step behind the counter. Advise real customer types. Rise from Trainee to Pharmacy Legend.",
-    about:"About Pharma-Coach", course:"To the OTC Course", chooseCase:"Choose your case",
+    about:"About Pharma-Coach", course:"To the OTC Course (from early 2027)", chooseCase:"Choose your case",
     mapSub:"Every customer is different. Every consultation counts.", pts:"Points", trust:"Trust",
     back:"Cases", locked:"Locked", nextRank:"to", weiter:"Continue", result:"Consultation complete",
-    playAgain:"Replay", toMap:"More cases", deepen:"Want to go deeper?", courseHint:"Go deeper in the OTC course →",
+    playAgain:"Replay", toMap:"More cases", deepen:"Want to go deeper?", courseHint:"Go deeper in the OTC course (from early 2027) →",
     emT:"Save your progress", emD:"Well done! Save your progress and get your certificate.",
     emName:"Your name", emMail:"Your e-mail", emSave:"Save", emSkip:"Later",
     emNote:"We use your e-mail only for progress & certificate. No spam.",
@@ -646,10 +738,10 @@ var I18N = {
     leftTitle:"The customer has left the pharmacy", leftText:"Trust dropped to 0. Consultation is more than knowledge – tone and trust decide too.",
     trustHigh:"The customer leaves with full trust – he will come back.", trustMid:"The customer leaves – not fully convinced.", trustLow:"Trust was damaged. He almost switched pharmacies." },
   ar:{ play:"ابدأ الاستشارة", sub:"قف خلف طاولة الصيدلية. تعامل مع أنواع الزبائن الحقيقية. ارتقِ من متدرب إلى أسطورة.",
-    about:"عن Pharma-Coach", course:"إلى دورة OTC", chooseCase:"اختر حالتك",
+    about:"عن Pharma-Coach", course:"إلى دورة OTC (ابتداءً من مطلع ٢٠٢٧)", chooseCase:"اختر حالتك",
     mapSub:"كل زبون مختلف. كل استشارة مهمة.", pts:"نقاط", trust:"الثقة",
     back:"الحالات", locked:"مقفل", nextRank:"حتى", weiter:"متابعة", result:"انتهت الاستشارة",
-    playAgain:"إعادة", toMap:"حالات أخرى", deepen:"تريد التعمق أكثر؟", courseHint:"تعمق في دورة OTC ←",
+    playAgain:"إعادة", toMap:"حالات أخرى", deepen:"تريد التعمق أكثر؟", courseHint:"تعمق في دورة OTC (ابتداءً من مطلع ٢٠٢٧) ←",
     emT:"احفظ تقدمك", emD:"أحسنت! احفظ تقدمك واحصل على شهادتك.",
     emName:"اسمك", emMail:"بريدك الإلكتروني", emSave:"حفظ", emSkip:"لاحقاً",
     emNote:"نستخدم بريدك فقط للتقدم والشهادة. بلا إزعاج.",
@@ -799,12 +891,7 @@ var PERSONAS = {
   },
   chronik: {
     de:"Der Chroniker", en:"The Chronic Patient", ar:"المريض المزمن",
-    img:{ entrance:"assets/PCG_CHR_CUS007_S02_ENTRANCE_CAM-ENT-01_v001_FINAL.jpg",
-          neutral:"assets/PCG_CHR_CUS007_S03_NEUTRAL-CU_FRONT_v001_FINAL.jpg",
-          talking:"assets/PCG_CHR_CUS007_S04_TALK-CU_FRONT_v001_FINAL.jpg",
-          happy:"assets/PCG_CHR_CUS007_S05_HAPPY-CU_FRONT_v001_FINAL.jpg",
-          upset:"assets/PCG_CHR_CUS007_S06_DISAPPOINTED-CU_FRONT_v001_FINAL.jpg",
-          worried:"assets/PCG_CHR_CUS007_S03_NEUTRAL-CU_FRONT_v001_FINAL.jpg" },
+    cus:"CUS007",                       /* v2 - الصور تُشتق، لا تُكتب */
     trustStart:70, minLevelRank:0
   },
   sportler: {
@@ -862,7 +949,65 @@ function shuffled(arr){
   return a;
 }
 
-function sceneStrip(d){ return d.scene ? '<div class="scene-strip"><img src="'+d.scene+'" alt=""></div>' : ''; }
+/* ===================== طبقة تركيب المشهد v2 ===========================
+   القديم: scene:"assets/....jpg"           -> صورة محروقة، تُعرض كما هي
+   الجديد: scene:{cus:"CUS007",pose:"idle"} -> خلفية + شخصية شفافة + ظل
+   ===================================================================== */
+var BG = {
+  floor:   "assets/PCG_BG_01_OFFIZIN-FLOOR_v001.jpg",
+  counter: "assets/PCG_BG_02_COUNTER-OTS_v001.jpg",
+  consult: "assets/PCG_BG_03_CONSULT-CORNER_v001.jpg"
+};
+var POSE_FILE = {
+  idle:"P01_IDLE-FULL", walk:"P02_WALK-FULL", back:"P03_BACK-FULL",
+  cuNeutral:"P04_CU-NEUTRAL", cuTalk:"P05_CU-TALK",
+  cuHappy:"P06_CU-HAPPY",     cuUpset:"P07_CU-UPSET"
+};
+/* h = ارتفاع الشخصية % من الشريط | g = ارتفاع القدم من الأسفل % | x = الموضع الأفقي % */
+var POSE_LAYOUT = {
+  idle:     {h:66, g:7,  x:50, bg:"counter", blur:false, shadow:true},
+  walk:     {h:62, g:7,  x:50, bg:"floor",   blur:false, shadow:true},
+  back:     {h:84, g:-2, x:50, bg:"counter", blur:false, shadow:false},
+  /* اللقطات القريبة: تُموضَع من الأعلى كي لا يُقص الرأس */
+  cuNeutral:{h:128,t:-3,x:50, bg:"floor",   blur:true,  shadow:false},
+  cuTalk:   {h:128,t:-3,x:50, bg:"floor",   blur:true,  shadow:false},
+  cuHappy:  {h:128,t:-3,x:50, bg:"floor",   blur:true,  shadow:false},
+  cuUpset:  {h:128,t:-3,x:50, bg:"floor",   blur:true,  shadow:false}
+};
+var FOOT_GAP = 0.019;   /* الفراغ الشفاف تحت القدم = 1.9% من ارتفاع الصورة */
+
+function chrSrc(cus, pose){
+  return "assets/PCG_CHR_"+cus+"_"+POSE_FILE[pose]+"_v002.webp";
+}
+/* يبني الطبقات الداخلية لأي حاوية 16:9 */
+function sceneLayers(sc){
+  var L  = POSE_LAYOUT[sc.pose] || POSE_LAYOUT.idle;
+  var h  = (sc.h!=null? sc.h : L.h);
+  var g  = (sc.g!=null? sc.g : L.g);
+  var x  = (sc.x!=null? sc.x : L.x);
+  var bg = BG[sc.bg || L.bg] || BG.floor;
+  var blur   = (sc.blur   !=null? sc.blur   : L.blur);
+  var shadow = (sc.shadow !=null? sc.shadow : L.shadow);
+  var t  = (sc.t!=null? sc.t : L.t);        /* إن وُجد: يُموضَع من الأعلى */
+  var vpos = (t!=null) ? ('top:'+t+'%')
+                       : ('bottom:'+(g - h*FOOT_GAP)+'%');   /* تعويض الفراغ تحت القدم */
+  var cls = "sc-chr" + (sc.enter?" sc-enter":"") + (sc.bob?" sc-bob":"");
+  var out = '<div class="sc-bg'+(blur?' sc-blur':'')+'" style="background-image:url('+bg+')"></div>';
+  if(shadow){
+    var sw = h*0.30;
+    out += '<div class="sc-shadow" style="left:'+x+'%;bottom:'+g+'%;width:'+sw+'%;height:'+(sw*0.20)+'%"></div>';
+  }
+  out += '<img class="'+cls+'" src="'+chrSrc(sc.cus,sc.pose)+'" alt="" '
+       + 'style="left:'+x+'%;'+vpos+';height:'+h+'%">';
+  out += '<div class="sc-vig"></div>';
+  return out;
+}
+function sceneStrip(d){
+  if(!d.scene) return '';
+  if(typeof d.scene === 'string')
+    return '<div class="scene-strip"><img class="sc-legacy" src="'+d.scene+'" alt=""></div>';
+  return '<div class="scene-strip">'+sceneLayers(d.scene)+'</div>';
+}
 /* comic panel */
 Mech.comic = function(host, d, done){
   var bubbles = '<div class="bubble-stack">' + d.bubbles.map(function(b,i){
@@ -871,7 +1016,7 @@ Mech.comic = function(host, d, done){
   }).join('') + '</div>';
   host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
     '<div class="stage-title">'+d.title+'</div></div><div class="stage-body comicbody"><div class="panel" id="cpanel">'+
-    '<img src="'+d.img+'" alt="">'+bubbles+
+    (typeof d.img==='string' ? '<img src="'+d.img+'" alt="">' : sceneLayers(d.img))+bubbles+
     '<button class="panel-next hidden" id="pnext">'+d.cta+'</button></div></div></div>';
   var idx=0, CH=34; window._typeInt=null;
   function showNext(){ var n=document.getElementById('pnext'); if(n)n.classList.remove('hidden'); }
@@ -1521,29 +1666,29 @@ TOPICS.schlafstoerung_vielred = {
 TOPICS.erkaeltung_chronik = {
   de:"Erkältung bei Bluthochdruck", en:"Cold with hypertension", ar:"زكام مع ارتفاع الضغط",
   persona:"chronik",
-  banner:"assets/PCG_CHR_CUS007_S02_ENTRANCE_CAM-ENT-01_v001_FINAL.jpg",
+  banner:{cus:"CUS007",pose:"walk",bg:"floor",enter:true,bob:true},
   steps:[
-   {mech:"comic",data:{kicker:"Szene 1 · Der Kunde kommt",title:"Ein Herr kommt herein – das Blutdruck-Heft in der Hand",img:"assets/PCG_CHR_CUS007_S02_ENTRANCE_CAM-ENT-01_v001_FINAL.jpg",cta:"Reagieren →",
+   {mech:"comic",data:{kicker:"Szene 1 · Der Kunde kommt",title:"Ein Herr kommt herein – das Blutdruck-Heft in der Hand",img:{cus:"CUS007",pose:"walk",bg:"floor",enter:true,bob:true},cta:"Reagieren →",
     bubbles:[{who:"Kunde",txt:"Guten Tag! Ich habe seit zwei Tagen eine <b>Erkältung</b> – die Nase komplett zu, ich bekomme nachts kaum Luft."},{who:"Kunde",txt:"Geben Sie mir bitte so eine <b>Erkältungs-Kombi zum Trinken</b>, die hat mein Kollege auch genommen. Und ein Nasenspray."}]}},
-   {mech:"mcq",data:{scene:"assets/PCG_CHR_CUS007_S07_COUNTER_FRONT_v001_FINAL.jpg",kicker:"Szene 2 · Der entscheidende Reflex",title:"Er verlangt eine Erkältungs-Kombi. Was tun Sie zuerst?",
+   {mech:"mcq",data:{scene:{cus:"CUS007",pose:"idle",bg:"counter"},kicker:"Szene 2 · Der entscheidende Reflex",title:"Er verlangt eine Erkältungs-Kombi. Was tun Sie zuerst?",
     options:[
      {t:"Ich sehe Ihr Blutdruck-Heft – nehmen Sie regelmäßig Medikamente? Das entscheidet, welche Erkältungsmittel für Sie in Frage kommen.",p:25,tr:12,ok:true,h:"Der richtige Reflex",x:"Sie erkennen den Hinweis und fragen die Dauermedikation ab, BEVOR Sie ein Produkt nennen. Bei Erkältungskombinationen ist genau das die Schlüsselfrage: viele enthalten Sympathomimetika, die bei Hypertonie problematisch sind."},
      {t:"Kein Problem, hier ist die Kombi – dreimal täglich einen Beutel.",p:0,tr:-15,h:"Schwerer Beratungsfehler",x:"Erkältungskombis enthalten häufig Phenylephrin oder Pseudoephedrin. Bei einem Hypertoniker können sie den Blutdruck relevant steigern und die Wirkung der Antihypertensiva untergraben. Das Blutdruck-Heft lag sichtbar auf dem Tisch."},
      {t:"Wie lange haben Sie die Beschwerden schon und haben Sie Fieber?",p:15,tr:4,h:"Gute Frage, falsche Reihenfolge",x:"Dauer und Fieber gehören zur Anamnese – aber der sichtbare Hinweis auf eine kardiovaskuläre Dauertherapie ist hier das dringendere Sicherheitsthema."},
      {t:"Nehmen Sie einfach nur das Nasenspray, das ist harmlos.",p:5,tr:-4,h:"Zu schnell beruhigt",x:"Abschwellende Nasensprays sind bei Hypertonie meist vertretbar – aber „harmlos“ ist falsch: Anwendungsdauer maximal 5–7 Tage wegen Rebound-Gefahr. Und Sie haben die Kombi-Frage einfach umgangen."}]}},
-   {mech:"ask3",data:{scene:"assets/PCG_CHR_CUS007_S08_LISTEN_OTS-CUSTOMER_v001_FINAL.jpg",kicker:"Szene 2b · Nur drei Fragen",title:"Sein Blutdruckheft liegt offen da. Drei Fragen – welche?",hint:"Noch {n} Fragen übrig. Bei einem Chroniker zählt jede.",pick:3,okH:"Die entscheidenden Fragen gestellt",badH:"Fragen verschenkt",expl:"Dauermedikation, aktuelle Blutdruckwerte und begleitende Schmerzmittel entscheiden hier alles: sie bestimmen, welche Erkältungsmittel überhaupt in Frage kommen, ob der Blutdruck gerade stabil ist und ob ein NSAR zusätzlich Schaden anrichten würde. Die Frage nach der Marke oder dem Kollegen bringt keine Sicherheit.",questions:[{q:"Welche Medikamente nehmen Sie täglich?",a:"Ramipril und Amlodipin, morgens. Und ASS 100.",val:25},{q:"Wie sind Ihre Blutdruckwerte in den letzten Tagen?",a:"Heute früh 145 zu 90. Sonst meist um 135.",val:25},{q:"Nehmen Sie zusätzlich Schmerzmittel, etwa gegen Kopf- oder Gliederschmerzen?",a:"Ab und zu Ibuprofen. Meine Frau sagt, das sei bei Erkältung gut.",val:25},{q:"Haben Sie Fieber gemessen?",a:"Nein, aber ich fühle mich nicht heiß.",val:15},{q:"Seit wann besteht die Erkältung?",a:"Seit vorgestern, es wurde über Nacht schlimmer.",val:15},{q:"Schlafen Sie durch, oder weckt Sie die Nase?",a:"Ich wache mehrmals auf, bekomme keine Luft durch die Nase.",val:15},{q:"Welche Marke nimmt Ihr Kollege?",a:"Weiß ich nicht genau, so ein Beutel eben.",val:0},{q:"Trinken Sie genug?",a:"Tee, ja. Reichlich.",val:5}]}},
- {mech:"sort",data:{scene:"assets/PCG_CHR_CUS007_S08_LISTEN_OTS-CUSTOMER_v001_FINAL.jpg",kicker:"Szene 3 · Anamnese",title:"Er blättert sein Heft auf und erzählt. Sortieren Sie:",
+   {mech:"ask3",data:{scene:{cus:"CUS007",pose:"back",bg:"counter"},kicker:"Szene 2b · Nur drei Fragen",title:"Sein Blutdruckheft liegt offen da. Drei Fragen – welche?",hint:"Noch {n} Fragen übrig. Bei einem Chroniker zählt jede.",pick:3,okH:"Die entscheidenden Fragen gestellt",badH:"Fragen verschenkt",expl:"Dauermedikation, aktuelle Blutdruckwerte und begleitende Schmerzmittel entscheiden hier alles: sie bestimmen, welche Erkältungsmittel überhaupt in Frage kommen, ob der Blutdruck gerade stabil ist und ob ein NSAR zusätzlich Schaden anrichten würde. Die Frage nach der Marke oder dem Kollegen bringt keine Sicherheit.",questions:[{q:"Welche Medikamente nehmen Sie täglich?",a:"Ramipril und Amlodipin, morgens. Und ASS 100.",val:25},{q:"Wie sind Ihre Blutdruckwerte in den letzten Tagen?",a:"Heute früh 145 zu 90. Sonst meist um 135.",val:25},{q:"Nehmen Sie zusätzlich Schmerzmittel, etwa gegen Kopf- oder Gliederschmerzen?",a:"Ab und zu Ibuprofen. Meine Frau sagt, das sei bei Erkältung gut.",val:25},{q:"Haben Sie Fieber gemessen?",a:"Nein, aber ich fühle mich nicht heiß.",val:15},{q:"Seit wann besteht die Erkältung?",a:"Seit vorgestern, es wurde über Nacht schlimmer.",val:15},{q:"Schlafen Sie durch, oder weckt Sie die Nase?",a:"Ich wache mehrmals auf, bekomme keine Luft durch die Nase.",val:15},{q:"Welche Marke nimmt Ihr Kollege?",a:"Weiß ich nicht genau, so ein Beutel eben.",val:0},{q:"Trinken Sie genug?",a:"Tee, ja. Reichlich.",val:5}]}},
+ {mech:"sort",data:{scene:{cus:"CUS007",pose:"back",bg:"counter"},kicker:"Szene 3 · Anamnese",title:"Er blättert sein Heft auf und erzählt. Sortieren Sie:",
     hint:"Antippen, dann Box wählen. Alle 6 zuordnen.",flagLabel:"Beratungsrelevant",safeLabel:"Nebengeräusch",
     okH:"Sauber erfasst",badH:"Wichtiges übersehen",
     expl:"Vier relevante Punkte: Ramipril und Amlodipin (Dauertherapie – Kombipräparate mit Sympathomimetika meiden), Blutdruck aktuell 145/90 (nicht optimal eingestellt), ASS 100 (Blutungsrisiko – bei zusätzlichen NSAR aufpassen) und der Wunsch nach der Kombi (den müssen Sie aktiv umlenken). Kollege und Wetter sind Gesprächsstoff, keine Information.",
     cards:[{t:"Nimmt Ramipril und Amlodipin täglich",flag:true},{t:"Blutdruck heute morgen 145/90",flag:true},{t:"Sein Kollege nimmt dieselbe Kombi",flag:false},{t:"Nimmt zusätzlich ASS 100",flag:true},{t:"Das Wetter war letzte Woche schlecht",flag:false},{t:"Möchte ausdrücklich eine Kombi zum Trinken",flag:true}]}},
-   {mech:"mcq",data:{scene:"assets/PCG_CHR_CUS007_S04_TALK-CU_FRONT_v001_FINAL.jpg",kicker:"Szene 4 · Die Aufklärung",title:"Wie erklären Sie ihm, warum die Kombi ausfällt?",
+   {mech:"mcq",data:{scene:{cus:"CUS007",pose:"cuTalk"},kicker:"Szene 4 · Die Aufklärung",title:"Wie erklären Sie ihm, warum die Kombi ausfällt?",
     options:[
      {t:"Diese Kombis enthalten meist einen abschwellenden Wirkstoff, der den Blutdruck steigern kann – bei Ihrer Therapie ungünstig. Wir bekommen dasselbe Ergebnis mit Einzelpräparaten, die zu Ihnen passen.",p:25,tr:12,ok:true,h:"Verständlich und lösungsorientiert",x:"Sie erklären den Grund in einem Satz, ohne Fachjargon, und liefern sofort einen gleichwertigen Ersatz. Der Chroniker akzeptiert Einschränkungen, wenn er den Mechanismus versteht und nicht mit leeren Händen dasteht."},
      {t:"Das dürfen Sie mit Ihrem Blutdruck nicht nehmen. Punkt.",p:5,tr:-8,h:"Richtig, aber verschenkt",x:"Fachlich korrekt, kommunikativ schwach. Ohne Begründung und ohne Alternative kauft er die Kombi in der nächsten Apotheke – wo er nicht gefragt wird."},
      {t:"Fragen Sie am besten Ihren Kardiologen, ob Sie das nehmen dürfen.",p:10,tr:-2,h:"Unnötige Delegation",x:"Das ist eine klassische OTC-Beratungsfrage, die Sie selbst beantworten können. Sie schicken ihn für etwas weg, das Ihre Kernkompetenz ist."},
      {t:"Nehmen Sie die Kombi einfach nur halb dosiert, dann geht das schon.",p:0,tr:-12,h:"Improvisation statt Beratung",x:"Eine Kontraindikation wird nicht durch Halbierung aufgehoben, und die Dosierung von Fertigkombinationen ist nicht beliebig anpassbar."}]}},
-   {mech:"sentence",data:{scene:"assets/PCG_CHR_CUS007_S04_TALK-CU_FRONT_v001_FINAL.jpg",kicker:"Szene 4b · Die Formulierung",title:"Formulieren Sie den entscheidenden Satz für den Kunden:",hint:"Tippen Sie die Bausteine in der richtigen Reihenfolge an. ↶ nimmt zurück.",cta:"Satz bestätigen",okH:"Sauber formuliert",badH:"Formulierung holprig",expl:"Der Satz erklärt in einem Zug den Wirkstoff, den Mechanismus und den Bezug zu SEINER Therapie – ohne Fachjargon und ohne Vorwurf. Genau diese Formulierung entscheidet, ob ein Chroniker die Einschränkung akzeptiert oder das Produkt in der nächsten Apotheke kauft.",chips:["Diese Kombination","enthält","einen abschwellenden Wirkstoff,","der den Blutdruck","steigern kann","–","das passt nicht","zu Ihren Blutdrucktabletten."],target:[0,1,2,3,4,5,6,7]}},
+   {mech:"sentence",data:{scene:{cus:"CUS007",pose:"cuTalk"},kicker:"Szene 4b · Die Formulierung",title:"Formulieren Sie den entscheidenden Satz für den Kunden:",hint:"Tippen Sie die Bausteine in der richtigen Reihenfolge an. ↶ nimmt zurück.",cta:"Satz bestätigen",okH:"Sauber formuliert",badH:"Formulierung holprig",expl:"Der Satz erklärt in einem Zug den Wirkstoff, den Mechanismus und den Bezug zu SEINER Therapie – ohne Fachjargon und ohne Vorwurf. Genau diese Formulierung entscheidet, ob ein Chroniker die Einschränkung akzeptiert oder das Produkt in der nächsten Apotheke kauft.",chips:["Diese Kombination","enthält","einen abschwellenden Wirkstoff,","der den Blutdruck","steigern kann","–","das passt nicht","zu Ihren Blutdrucktabletten."],target:[0,1,2,3,4,5,6,7]}},
  {mech:"shelf",data:{kicker:"Szene 5 · Die Empfehlung",title:"Hypertonie, Ramipril/Amlodipin/ASS, verstopfte Nase. Griff ins Regal:",
     boxes:[
      {n:"Xylometazolin",s:"Nasenspray, max. 7 Tage",col:"#1565C0",ok:true,p:20,tr:12,h:"Richtiger Griff",x:"Lokal abschwellend, systemische Wirkung gering – bei Hypertonie die pragmatische Wahl. Entscheidend ist der Hinweis: maximal 5–7 Tage, sonst Rebound-Schwellung."},
@@ -1552,8 +1697,8 @@ TOPICS.erkaeltung_chronik = {
      {n:"Ibuprofen 400",s:"Tabletten",col:"#6A1B9A",p:0,tr:-10,h:"Doppelt problematisch",x:"NSAR können den Blutdruck erhöhen und die Wirkung von ACE-Hemmern abschwächen – zusätzlich Blutungsrisiko mit ASS 100. Bei diesem Patienten die falsche Wahl."},
      {n:"Paracetamol 500",s:"Tabletten",col:"#2E7D32",p:12,tr:4,h:"Vertretbar bei Bedarf",x:"Bei Kopf- und Gliederschmerzen die blutdruckneutralere Option. Braucht er aktuell nicht zwingend, aber fachlich sauber."},
      {n:"Hochdosis-Vitamin C",s:"Brause",col:"#F9A825",p:0,tr:-4,h:"Kein Nutzen",x:"Keine belegte Wirkung auf den Verlauf. Bei Brausetabletten zusätzlich an den Natriumgehalt denken – bei Hypertonie kein triviales Detail."}]}},
-   {mech:"truefalse",data:{scene:"assets/PCG_CHR_CUS007_S04_TALK-CU_FRONT_v001_FINAL.jpg",kicker:"Szene 5b · Schnellrunde",title:"Er will es genau verstehen. Richtig oder falsch?",trueLabel:"Richtig",falseLabel:"Falsch",okH:"Schnellrunde gemeistert",badH:"Ein paar Irrtümer",expl:"Die relevanten Punkte bei Erkältung und Hypertonie: Sympathomimetika in Kombipräparaten steigern den Blutdruck, NSAR schwächen ACE-Hemmer ab, und Brausetabletten enthalten oft relevante Natriummengen. Richtig sind: abschwellende Nasensprays sind lokal meist vertretbar, aber nur maximal sieben Tage, und eine Erkältung selbst kann den Blutdruck vorübergehend erhöhen.",items:[{t:"Erkältungs-Kombipräparate enthalten oft blutdrucksteigernde Wirkstoffe.",ok:true,why:"Phenylephrin oder Pseudoephedrin – bei Hypertonie problematisch."},{t:"Ibuprofen ist bei Bluthochdruck unbedenklich.",ok:false,why:"NSAR können den Blutdruck erhöhen und ACE-Hemmer abschwächen."},{t:"Abschwellende Nasensprays darf man höchstens sieben Tage anwenden.",ok:true,why:"Sonst droht die Rebound-Schwellung."},{t:"Brausetabletten sind bei Hypertonie unproblematisch.",ok:false,why:"Sie enthalten oft relevante Natriummengen – ein häufig übersehenes Detail."},{t:"Eine Erkältung kann den Blutdruck vorübergehend erhöhen.",ok:true,why:"Deshalb in diesen Tagen weiter messen und die Werte einordnen."},{t:"Paracetamol ist bei Hypertonie die blutdruckneutralere Wahl.",ok:true,why:"Gegenüber NSAR die bessere Option bei Bedarf."}]}},
- {mech:"mcq",data:{scene:"assets/PCG_CHR_CUS007_S09_HANDOVER_FRONT_v001_FINAL.jpg",kicker:"Szene 6 · Abschluss",title:"„Und worauf soll ich achten?“",
+   {mech:"truefalse",data:{scene:{cus:"CUS007",pose:"cuTalk"},kicker:"Szene 5b · Schnellrunde",title:"Er will es genau verstehen. Richtig oder falsch?",trueLabel:"Richtig",falseLabel:"Falsch",okH:"Schnellrunde gemeistert",badH:"Ein paar Irrtümer",expl:"Die relevanten Punkte bei Erkältung und Hypertonie: Sympathomimetika in Kombipräparaten steigern den Blutdruck, NSAR schwächen ACE-Hemmer ab, und Brausetabletten enthalten oft relevante Natriummengen. Richtig sind: abschwellende Nasensprays sind lokal meist vertretbar, aber nur maximal sieben Tage, und eine Erkältung selbst kann den Blutdruck vorübergehend erhöhen.",items:[{t:"Erkältungs-Kombipräparate enthalten oft blutdrucksteigernde Wirkstoffe.",ok:true,why:"Phenylephrin oder Pseudoephedrin – bei Hypertonie problematisch."},{t:"Ibuprofen ist bei Bluthochdruck unbedenklich.",ok:false,why:"NSAR können den Blutdruck erhöhen und ACE-Hemmer abschwächen."},{t:"Abschwellende Nasensprays darf man höchstens sieben Tage anwenden.",ok:true,why:"Sonst droht die Rebound-Schwellung."},{t:"Brausetabletten sind bei Hypertonie unproblematisch.",ok:false,why:"Sie enthalten oft relevante Natriummengen – ein häufig übersehenes Detail."},{t:"Eine Erkältung kann den Blutdruck vorübergehend erhöhen.",ok:true,why:"Deshalb in diesen Tagen weiter messen und die Werte einordnen."},{t:"Paracetamol ist bei Hypertonie die blutdruckneutralere Wahl.",ok:true,why:"Gegenüber NSAR die bessere Option bei Bedarf."}]}},
+ {mech:"mcq",data:{scene:{cus:"CUS007",pose:"cuHappy",bg:"counter"},kicker:"Szene 6 · Abschluss",title:"„Und worauf soll ich achten?“",
     options:[
      {t:"Spray maximal 7 Tage, danach nur Meerwasser. Messen Sie Ihren Blutdruck in diesen Tagen weiter – Erkältung und schlechter Schlaf treiben ihn ohnehin hoch. Zum Arzt bei Fieber über 3 Tage, Atemnot oder Druck auf der Brust.",p:25,tr:12,ok:true,h:"Perfekter Abschluss",x:"Anwendungsdauer, Selbstkontrolle des Blutdrucks und klare Warnzeichen – inklusive der kardialen Symptome, die bei diesem Patienten nie fehlen dürfen. Genau die Sicherheit, die ein Chroniker braucht."},
      {t:"Einfach so lange nehmen, bis die Nase wieder frei ist.",p:0,tr:-10,h:"Rebound programmiert",x:"Ohne Zeitlimit entsteht die Privinismus-Falle: Dauergebrauch und chronische Schwellung. Der häufigste Fehler bei abschwellenden Sprays."},
@@ -2581,27 +2726,27 @@ TOPICS.schlafstoerung_vielred.steps_ar=[
 ];
 
 TOPICS.erkaeltung_chronik.steps_en=[
- {mech:"comic",data:{kicker:"Scene 1 · The customer arrives",title:"A gentleman walks in - blood-pressure logbook in hand",img:"assets/PCG_CHR_CUS007_S02_ENTRANCE_CAM-ENT-01_v001_FINAL.jpg",cta:"React →",
+ {mech:"comic",data:{kicker:"Scene 1 · The customer arrives",title:"A gentleman walks in - blood-pressure logbook in hand",img:{cus:"CUS007",pose:"walk",bg:"floor",enter:true,bob:true},cta:"React →",
   bubbles:[{who:"Customer",txt:"Good day! I've had a <b>cold</b> for two days - nose completely blocked, I can barely breathe at night."},{who:"Customer",txt:"Please give me one of those <b>cold-relief sachets</b> to drink, my colleague took them too. And a nasal spray."}]}},
- {mech:"mcq",data:{scene:"assets/PCG_CHR_CUS007_S07_COUNTER_FRONT_v001_FINAL.jpg",kicker:"Scene 2 · The decisive reflex",title:"He asks for a combination cold remedy. What do you do first?",
+ {mech:"mcq",data:{scene:{cus:"CUS007",pose:"idle",bg:"counter"},kicker:"Scene 2 · The decisive reflex",title:"He asks for a combination cold remedy. What do you do first?",
   options:[
    {t:"I see your blood-pressure logbook - do you take regular medication? That decides which cold remedies are an option for you.",p:25,tr:12,ok:true,h:"The right reflex",x:"You spot the cue and ask about chronic medication BEFORE naming a product. With combination cold remedies that is the key question: many contain sympathomimetics, which are problematic in hypertension."},
    {t:"No problem, here's the combination - one sachet three times a day.",p:0,tr:-15,h:"Serious counselling error",x:"Cold combinations frequently contain phenylephrine or pseudoephedrine. In a hypertensive patient they can raise blood pressure significantly and undermine his antihypertensives. The logbook was visible on the counter."},
    {t:"How long have you had this and do you have a fever?",p:15,tr:4,h:"Good question, wrong order",x:"Duration and fever belong in the history - but the visible sign of chronic cardiovascular therapy is the more urgent safety issue here."},
    {t:"Just take the nasal spray, that's harmless.",p:5,tr:-4,h:"Reassured too quickly",x:"Decongestant sprays are usually acceptable in hypertension - but 'harmless' is wrong: maximum 5-7 days because of rebound congestion. And you simply sidestepped the combination question."}]}},
- {mech:"ask3",data:{scene:"assets/PCG_CHR_CUS007_S08_LISTEN_OTS-CUSTOMER_v001_FINAL.jpg",kicker:"Scene 2b · Three questions only",title:"His blood-pressure logbook lies open. Three questions - which?",hint:"{n} questions left. With a chronic patient every one counts.",pick:3,okH:"The decisive questions asked",badH:"Questions wasted",expl:"Chronic medication, current blood-pressure readings and any concomitant analgesics decide everything here: they determine which cold remedies are an option at all, whether the pressure is currently stable, and whether an NSAID would do additional harm. Questions about the brand or the colleague provide no safety.",questions:[{q:"Which medicines do you take daily?",a:"Ramipril and amlodipine in the morning. And ASA 100.",val:25},{q:"What have your blood-pressure readings been recently?",a:"145 over 90 this morning. Usually around 135.",val:25},{q:"Do you take analgesics as well, for headache or aches?",a:"Ibuprofen now and then. My wife says it is good for a cold.",val:25},{q:"Have you measured your temperature?",a:"No, but I do not feel hot.",val:15},{q:"How long have you had the cold?",a:"Since the day before yesterday, it got worse overnight.",val:15},{q:"Do you sleep through, or does your nose wake you?",a:"I wake several times, I cannot breathe through my nose.",val:15},{q:"Which brand does your colleague take?",a:"Not sure, some sachet.",val:0},{q:"Are you drinking enough?",a:"Tea, yes. Plenty.",val:5}]}},
- {mech:"sort",data:{scene:"assets/PCG_CHR_CUS007_S08_LISTEN_OTS-CUSTOMER_v001_FINAL.jpg",kicker:"Scene 3 · History",title:"He opens his logbook and talks. Sort it:",
+ {mech:"ask3",data:{scene:{cus:"CUS007",pose:"back",bg:"counter"},kicker:"Scene 2b · Three questions only",title:"His blood-pressure logbook lies open. Three questions - which?",hint:"{n} questions left. With a chronic patient every one counts.",pick:3,okH:"The decisive questions asked",badH:"Questions wasted",expl:"Chronic medication, current blood-pressure readings and any concomitant analgesics decide everything here: they determine which cold remedies are an option at all, whether the pressure is currently stable, and whether an NSAID would do additional harm. Questions about the brand or the colleague provide no safety.",questions:[{q:"Which medicines do you take daily?",a:"Ramipril and amlodipine in the morning. And ASA 100.",val:25},{q:"What have your blood-pressure readings been recently?",a:"145 over 90 this morning. Usually around 135.",val:25},{q:"Do you take analgesics as well, for headache or aches?",a:"Ibuprofen now and then. My wife says it is good for a cold.",val:25},{q:"Have you measured your temperature?",a:"No, but I do not feel hot.",val:15},{q:"How long have you had the cold?",a:"Since the day before yesterday, it got worse overnight.",val:15},{q:"Do you sleep through, or does your nose wake you?",a:"I wake several times, I cannot breathe through my nose.",val:15},{q:"Which brand does your colleague take?",a:"Not sure, some sachet.",val:0},{q:"Are you drinking enough?",a:"Tea, yes. Plenty.",val:5}]}},
+ {mech:"sort",data:{scene:{cus:"CUS007",pose:"back",bg:"counter"},kicker:"Scene 3 · History",title:"He opens his logbook and talks. Sort it:",
   hint:"Tap a card, then the matching box. Sort all 6.",flagLabel:"Clinically relevant",safeLabel:"Background noise",
   okH:"Captured cleanly",badH:"Missed the essentials",
   expl:"Four relevant points: ramipril and amlodipine (chronic therapy - avoid combinations with sympathomimetics), blood pressure 145/90 today (not optimally controlled), ASA 100 (bleeding risk - careful with added NSAIDs) and his wish for the combination (which you must actively redirect). Colleague and weather are conversation, not information.",
   cards:[{t:"Takes ramipril and amlodipine daily",flag:true},{t:"Blood pressure 145/90 this morning",flag:true},{t:"His colleague takes the same combination",flag:false},{t:"Also takes ASA 100",flag:true},{t:"The weather was bad last week",flag:false},{t:"Explicitly wants a drinkable combination",flag:true}]}},
- {mech:"mcq",data:{scene:"assets/PCG_CHR_CUS007_S04_TALK-CU_FRONT_v001_FINAL.jpg",kicker:"Scene 4 · The explanation",title:"How do you explain why the combination is out?",
+ {mech:"mcq",data:{scene:{cus:"CUS007",pose:"cuTalk"},kicker:"Scene 4 · The explanation",title:"How do you explain why the combination is out?",
   options:[
    {t:"These combinations usually contain a decongestant that can raise blood pressure - unfavourable with your therapy. We can get the same result with single products that suit you.",p:25,tr:12,ok:true,h:"Clear and solution-oriented",x:"You give the reason in one sentence without jargon and immediately offer an equivalent replacement. The chronic patient accepts restrictions when he understands the mechanism and isn't left empty-handed."},
    {t:"With your blood pressure you must not take that. Full stop.",p:5,tr:-8,h:"Correct but wasted",x:"Professionally right, communicatively weak. Without a reason and without an alternative he buys it at the next pharmacy - where nobody asks."},
    {t:"Better ask your cardiologist whether you may take it.",p:10,tr:-2,h:"Unnecessary delegation",x:"This is a classic OTC counselling question you can answer yourself. You send him away for something that is your core competence."},
    {t:"Just take half the dose of the combination, that'll be fine.",p:0,tr:-12,h:"Improvisation instead of counselling",x:"A contraindication is not removed by halving, and fixed combinations are not freely dose-adjustable."}]}},
- {mech:"sentence",data:{scene:"assets/PCG_CHR_CUS007_S04_TALK-CU_FRONT_v001_FINAL.jpg",kicker:"Scene 4b · The wording",title:"Compose the decisive sentence for the customer:",hint:"Tap the building blocks in the right order. ↶ undoes.",cta:"Confirm sentence",okH:"Cleanly worded",badH:"Wording clumsy",expl:"The sentence explains in one go the substance, the mechanism and the link to HIS therapy - without jargon and without blame. This exact wording decides whether a chronic patient accepts the restriction or buys the product at the next pharmacy.",chips:["This combination","contains","a decongestant","that can raise","your blood pressure","–","which does not fit","with your blood-pressure tablets."],target:[0,1,2,3,4,5,6,7]}},
+ {mech:"sentence",data:{scene:{cus:"CUS007",pose:"cuTalk"},kicker:"Scene 4b · The wording",title:"Compose the decisive sentence for the customer:",hint:"Tap the building blocks in the right order. ↶ undoes.",cta:"Confirm sentence",okH:"Cleanly worded",badH:"Wording clumsy",expl:"The sentence explains in one go the substance, the mechanism and the link to HIS therapy - without jargon and without blame. This exact wording decides whether a chronic patient accepts the restriction or buys the product at the next pharmacy.",chips:["This combination","contains","a decongestant","that can raise","your blood pressure","–","which does not fit","with your blood-pressure tablets."],target:[0,1,2,3,4,5,6,7]}},
  {mech:"shelf",data:{kicker:"Scene 5 · The recommendation",title:"Hypertension, ramipril/amlodipine/ASA, blocked nose. Reach for the shelf:",
   boxes:[
    {n:"Xylometazoline",s:"nasal spray, max 7 days",col:"#1565C0",ok:true,p:20,tr:12,h:"Right pick",x:"Locally decongestant, minimal systemic effect - the pragmatic choice in hypertension. The key point is the warning: maximum 5-7 days, otherwise rebound swelling."},
@@ -2610,8 +2755,8 @@ TOPICS.erkaeltung_chronik.steps_en=[
    {n:"Ibuprofen 400",s:"tablets",col:"#6A1B9A",p:0,tr:-10,h:"Doubly problematic",x:"NSAIDs can raise blood pressure and weaken ACE inhibitors - plus bleeding risk with ASA 100. The wrong choice in this patient."},
    {n:"Paracetamol 500",s:"tablets",col:"#2E7D32",p:12,tr:4,h:"Acceptable if needed",x:"The more blood-pressure-neutral option for headache and body aches. Not strictly needed now, but professionally sound."},
    {n:"High-dose vitamin C",s:"effervescent",col:"#F9A825",p:0,tr:-4,h:"No benefit",x:"No proven effect on the course. With effervescent tablets also mind the sodium content - not a trivial detail in hypertension."}]}},
- {mech:"truefalse",data:{scene:"assets/PCG_CHR_CUS007_S04_TALK-CU_FRONT_v001_FINAL.jpg",kicker:"Scene 5b · Rapid round",title:"He wants to understand precisely. True or false?",trueLabel:"True",falseLabel:"False",okH:"Rapid round mastered",badH:"A few misconceptions",expl:"The relevant points in cold plus hypertension: sympathomimetics in combination products raise blood pressure, NSAIDs weaken ACE inhibitors, and effervescent tablets often contain relevant amounts of sodium. Correct: decongestant nasal sprays are usually acceptable locally but only for a maximum of seven days, and a cold itself can temporarily raise blood pressure.",items:[{t:"Combination cold remedies often contain blood-pressure-raising substances.",ok:true,why:"Phenylephrine or pseudoephedrine - problematic in hypertension."},{t:"Ibuprofen is harmless in high blood pressure.",ok:false,why:"NSAIDs can raise blood pressure and weaken ACE inhibitors."},{t:"Decongestant nasal sprays may be used for a maximum of seven days.",ok:true,why:"Otherwise rebound congestion looms."},{t:"Effervescent tablets are unproblematic in hypertension.",ok:false,why:"They often contain relevant amounts of sodium - a frequently overlooked detail."},{t:"A cold can temporarily raise blood pressure.",ok:true,why:"Which is why he should keep measuring and interpret the values these days."},{t:"Paracetamol is the more blood-pressure-neutral choice in hypertension.",ok:true,why:"The better option compared with NSAIDs when needed."}]}},
- {mech:"mcq",data:{scene:"assets/PCG_CHR_CUS007_S09_HANDOVER_FRONT_v001_FINAL.jpg",kicker:"Scene 6 · Closing",title:"\u201cAnd what should I watch out for?\u201d",
+ {mech:"truefalse",data:{scene:{cus:"CUS007",pose:"cuTalk"},kicker:"Scene 5b · Rapid round",title:"He wants to understand precisely. True or false?",trueLabel:"True",falseLabel:"False",okH:"Rapid round mastered",badH:"A few misconceptions",expl:"The relevant points in cold plus hypertension: sympathomimetics in combination products raise blood pressure, NSAIDs weaken ACE inhibitors, and effervescent tablets often contain relevant amounts of sodium. Correct: decongestant nasal sprays are usually acceptable locally but only for a maximum of seven days, and a cold itself can temporarily raise blood pressure.",items:[{t:"Combination cold remedies often contain blood-pressure-raising substances.",ok:true,why:"Phenylephrine or pseudoephedrine - problematic in hypertension."},{t:"Ibuprofen is harmless in high blood pressure.",ok:false,why:"NSAIDs can raise blood pressure and weaken ACE inhibitors."},{t:"Decongestant nasal sprays may be used for a maximum of seven days.",ok:true,why:"Otherwise rebound congestion looms."},{t:"Effervescent tablets are unproblematic in hypertension.",ok:false,why:"They often contain relevant amounts of sodium - a frequently overlooked detail."},{t:"A cold can temporarily raise blood pressure.",ok:true,why:"Which is why he should keep measuring and interpret the values these days."},{t:"Paracetamol is the more blood-pressure-neutral choice in hypertension.",ok:true,why:"The better option compared with NSAIDs when needed."}]}},
+ {mech:"mcq",data:{scene:{cus:"CUS007",pose:"cuHappy",bg:"counter"},kicker:"Scene 6 · Closing",title:"\u201cAnd what should I watch out for?\u201d",
   options:[
    {t:"Spray maximum 7 days, then sea-water only. Keep measuring your blood pressure these days - a cold and poor sleep push it up anyway. See a doctor for fever beyond 3 days, breathlessness or chest pressure.",p:25,tr:12,ok:true,h:"Perfect closing",x:"Duration of use, blood-pressure self-monitoring and clear warning signs - including the cardiac symptoms that must never be omitted in this patient. Exactly the safety a chronic patient needs."},
    {t:"Just use it until your nose is clear again.",p:0,tr:-10,h:"Rebound programmed",x:"Without a time limit you create the classic dependence on decongestant sprays and chronic swelling."},
@@ -2655,27 +2800,27 @@ TOPICS.fusspilz_sportler.steps_en=[
    {t:"Disinfect your feet daily with alcohol.",p:0,tr:-8,h:"Harmful",x:"Alcohol damages the skin barrier and promotes new infections. Keep them dry, yes; disinfect, no."}]}}
 ];
 TOPICS.erkaeltung_chronik.steps_ar=[
- {mech:"comic",data:{kicker:"المشهد 1 · وصول الزبون",title:"رجل يدخل وبيده دفتر قياس الضغط",img:"assets/PCG_CHR_CUS007_S02_ENTRANCE_CAM-ENT-01_v001_FINAL.jpg",cta:"تصرّف ←",
+ {mech:"comic",data:{kicker:"المشهد 1 · وصول الزبون",title:"رجل يدخل وبيده دفتر قياس الضغط",img:{cus:"CUS007",pose:"walk",bg:"floor",enter:true,bob:true},cta:"تصرّف ←",
   bubbles:[{who:"الزبون",txt:"مرحباً! عندي <b>زكام</b> منذ يومين - الأنف مسدود تماماً ولا أكاد أتنفس ليلاً."},{who:"الزبون",txt:"أعطني من فضلك <b>أكياس الزكام المركّبة</b> التي تُشرب، زميلي أخذها أيضاً. وبخاخ أنف."}]}},
- {mech:"mcq",data:{scene:"assets/PCG_CHR_CUS007_S07_COUNTER_FRONT_v001_FINAL.jpg",kicker:"المشهد 2 · الانعكاس الحاسم",title:"يطلب مستحضراً مركّباً للزكام. ما أول ما تفعله؟",
+ {mech:"mcq",data:{scene:{cus:"CUS007",pose:"idle",bg:"counter"},kicker:"المشهد 2 · الانعكاس الحاسم",title:"يطلب مستحضراً مركّباً للزكام. ما أول ما تفعله؟",
   options:[
    {t:"أرى دفتر الضغط معك - هل تتناول أدوية بانتظام؟ هذا يحدد أي مستحضرات زكام تناسبك.",p:25,tr:12,ok:true,h:"الانعكاس الصحيح",x:"التقطت الإشارة وسألت عن الدواء المزمن قبل أن تذكر أي منتج. مع مركّبات الزكام هذا هو السؤال المفتاح: كثير منها يحوي مقلّدات ودّية إشكالية في ارتفاع الضغط."},
    {t:"لا مشكلة، تفضل المركّب - كيس ثلاث مرات يومياً.",p:0,tr:-15,h:"خطأ استشاري جسيم",x:"مركّبات الزكام تحوي غالباً فينيليفرين أو سودوإيفيدرين. عند مريض ارتفاع الضغط قد ترفع الضغط بوضوح وتُضعف أدويته الخافضة. ودفتر الضغط كان ظاهراً على الطاولة."},
    {t:"منذ متى تعاني وهل عندك حمى؟",p:15,tr:4,h:"سؤال جيد بترتيب خاطئ",x:"المدة والحمى جزء من الأنامنيزه - لكن الإشارة المرئية لعلاج قلبي وعائي مزمن هي القضية الأمنية الأعجل هنا."},
    {t:"خذ بخاخ الأنف فقط، فهو غير ضار.",p:5,tr:-4,h:"طمأنة متسرعة",x:"البخاخات المزيلة للاحتقان مقبولة غالباً مع ارتفاع الضغط - لكن «غير ضار» خطأ: 5-7 أيام كحد أقصى بسبب احتقان الارتداد. وقد تجاوزت سؤال المركّب."}]}},
- {mech:"ask3",data:{scene:"assets/PCG_CHR_CUS007_S08_LISTEN_OTS-CUSTOMER_v001_FINAL.jpg",kicker:"المشهد 2ب · ثلاثة أسئلة فقط",title:"دفتر ضغطه مفتوح أمامك. ثلاثة أسئلة – أيها؟",hint:"بقي {n} من الأسئلة. ومع مريض مزمن كل سؤال يُحسب.",pick:3,okH:"طرحت الأسئلة الحاسمة",badH:"أهدرت أسئلتك",expl:"الأدوية المزمنة وقراءات الضغط الحالية والمسكنات المرافقة تحسم كل شيء هنا: فهي تحدد أي مستحضرات زكام تصلح أصلاً، وهل الضغط مضبوط الآن، وهل سيضيف مضاد الالتهاب ضرراً. أما السؤال عن الماركة أو الزميل فلا يقدّم أماناً.",questions:[{q:"ما الأدوية التي تتناولها يومياً؟",a:"راميبريل وأملوديبين صباحاً. وأسبرين 100.",val:25},{q:"كيف كانت قراءات ضغطك في الأيام الأخيرة؟",a:"هذا الصباح 145 على 90. وعادةً نحو 135.",val:25},{q:"هل تتناول مسكنات أيضاً للصداع أو آلام الجسم؟",a:"إيبوبروفين أحياناً. زوجتي تقول إنه جيد مع الزكام.",val:25},{q:"هل قست حرارتك؟",a:"لا، لكني لا أشعر بسخونة.",val:15},{q:"منذ متى بدأ الزكام؟",a:"منذ أول أمس، وساء خلال الليل.",val:15},{q:"هل تنام متواصلاً أم يوقظك أنفك؟",a:"أستيقظ مرات، ولا أستطيع التنفس من أنفي.",val:15},{q:"ما الماركة التي يأخذها زميلك؟",a:"لا أعرف بالضبط، كيس ما.",val:0},{q:"هل تشرب كفايتك؟",a:"شاي، نعم. بوفرة.",val:5}]}},
- {mech:"sort",data:{scene:"assets/PCG_CHR_CUS007_S08_LISTEN_OTS-CUSTOMER_v001_FINAL.jpg",kicker:"المشهد 3 · الأنامنيزه",title:"يفتح دفتره ويتكلم. صنّف:",
+ {mech:"ask3",data:{scene:{cus:"CUS007",pose:"back",bg:"counter"},kicker:"المشهد 2ب · ثلاثة أسئلة فقط",title:"دفتر ضغطه مفتوح أمامك. ثلاثة أسئلة – أيها؟",hint:"بقي {n} من الأسئلة. ومع مريض مزمن كل سؤال يُحسب.",pick:3,okH:"طرحت الأسئلة الحاسمة",badH:"أهدرت أسئلتك",expl:"الأدوية المزمنة وقراءات الضغط الحالية والمسكنات المرافقة تحسم كل شيء هنا: فهي تحدد أي مستحضرات زكام تصلح أصلاً، وهل الضغط مضبوط الآن، وهل سيضيف مضاد الالتهاب ضرراً. أما السؤال عن الماركة أو الزميل فلا يقدّم أماناً.",questions:[{q:"ما الأدوية التي تتناولها يومياً؟",a:"راميبريل وأملوديبين صباحاً. وأسبرين 100.",val:25},{q:"كيف كانت قراءات ضغطك في الأيام الأخيرة؟",a:"هذا الصباح 145 على 90. وعادةً نحو 135.",val:25},{q:"هل تتناول مسكنات أيضاً للصداع أو آلام الجسم؟",a:"إيبوبروفين أحياناً. زوجتي تقول إنه جيد مع الزكام.",val:25},{q:"هل قست حرارتك؟",a:"لا، لكني لا أشعر بسخونة.",val:15},{q:"منذ متى بدأ الزكام؟",a:"منذ أول أمس، وساء خلال الليل.",val:15},{q:"هل تنام متواصلاً أم يوقظك أنفك؟",a:"أستيقظ مرات، ولا أستطيع التنفس من أنفي.",val:15},{q:"ما الماركة التي يأخذها زميلك؟",a:"لا أعرف بالضبط، كيس ما.",val:0},{q:"هل تشرب كفايتك؟",a:"شاي، نعم. بوفرة.",val:5}]}},
+ {mech:"sort",data:{scene:{cus:"CUS007",pose:"back",bg:"counter"},kicker:"المشهد 3 · الأنامنيزه",title:"يفتح دفتره ويتكلم. صنّف:",
   hint:"انقر البطاقة ثم الصندوق المناسب. صنّف الست جميعاً.",flagLabel:"مهم للاستشارة",safeLabel:"كلام جانبي",
   okH:"رصد دقيق",badH:"فوّتك المهم",
   expl:"أربع نقاط مهمة: راميبريل وأملوديبين (علاج مزمن - تجنّب المركّبات ذات المقلّدات الودية)، الضغط اليوم 145/90 (ضبط غير مثالي)، أسبرين 100 (خطر نزف - انتبه عند إضافة مضادات الالتهاب)، ورغبته في المركّب (يجب توجيهها بنشاط). الزميل والطقس حديث لا معلومة.",
   cards:[{t:"يتناول راميبريل وأملوديبين يومياً",flag:true},{t:"الضغط هذا الصباح 145/90",flag:true},{t:"زميله يأخذ المركّب نفسه",flag:false},{t:"يتناول أيضاً أسبرين 100",flag:true},{t:"الطقس كان سيئاً الأسبوع الماضي",flag:false},{t:"يريد تحديداً مركّباً يُشرب",flag:true}]}},
- {mech:"mcq",data:{scene:"assets/PCG_CHR_CUS007_S04_TALK-CU_FRONT_v001_FINAL.jpg",kicker:"المشهد 4 · التوضيح",title:"كيف تشرح له سبب استبعاد المركّب؟",
+ {mech:"mcq",data:{scene:{cus:"CUS007",pose:"cuTalk"},kicker:"المشهد 4 · التوضيح",title:"كيف تشرح له سبب استبعاد المركّب؟",
   options:[
    {t:"هذه المركّبات تحوي غالباً مادة مزيلة للاحتقان قد ترفع الضغط - وهذا غير مناسب مع علاجك. سنحصل على النتيجة نفسها بمستحضرات مفردة تناسبك.",p:25,tr:12,ok:true,h:"واضح وموجّه للحل",x:"شرحت السبب في جملة بلا مصطلحات، وقدّمت بديلاً مكافئاً فوراً. المريض المزمن يتقبل القيود حين يفهم الآلية ولا يخرج خالي اليدين."},
    {t:"ممنوع عليك هذا مع ضغطك. انتهى.",p:5,tr:-8,h:"صحيح لكنه مُهدَر",x:"صحيح علمياً وضعيف تواصلياً. بلا تعليل وبلا بديل سيشتريه من الصيدلية المجاورة - حيث لا يسأله أحد."},
    {t:"اسأل طبيب القلب إن كان مسموحاً لك.",p:10,tr:-2,h:"تفويض بلا داعٍ",x:"هذا سؤال استشارة OTC كلاسيكي تجيب عنه بنفسك. ترسله بعيداً في صميم اختصاصك."},
    {t:"خذ نصف الجرعة من المركّب وسيكون الأمر بخير.",p:0,tr:-12,h:"ارتجال بدل استشارة",x:"مانع الاستعمال لا يزول بالتنصيف، وجرعات المركّبات الجاهزة ليست قابلة للتعديل اعتباطاً."}]}},
- {mech:"sentence",data:{scene:"assets/PCG_CHR_CUS007_S04_TALK-CU_FRONT_v001_FINAL.jpg",kicker:"المشهد 4ب · الصياغة",title:"صُغ الجملة الحاسمة للزبون:",hint:"انقر اللبنات بالترتيب الصحيح. و↶ للتراجع.",cta:"تأكيد الجملة",okH:"صياغة سليمة",badH:"صياغة متعثرة",expl:"الجملة تشرح دفعة واحدة المادة والآلية وعلاقتها بعلاجه هو - بلا مصطلحات وبلا لوم. وهذه الصياغة بالذات تحسم إن كان المريض المزمن سيتقبّل القيد أم سيشتري المنتج من الصيدلية المجاورة.",chips:["هذا المستحضر المركّب","يحتوي","مادة مزيلة للاحتقان","قد ترفع","ضغط دمك","–","وهذا لا يناسب","أقراص الضغط التي تتناولها."],target:[0,1,2,3,4,5,6,7]}},
+ {mech:"sentence",data:{scene:{cus:"CUS007",pose:"cuTalk"},kicker:"المشهد 4ب · الصياغة",title:"صُغ الجملة الحاسمة للزبون:",hint:"انقر اللبنات بالترتيب الصحيح. و↶ للتراجع.",cta:"تأكيد الجملة",okH:"صياغة سليمة",badH:"صياغة متعثرة",expl:"الجملة تشرح دفعة واحدة المادة والآلية وعلاقتها بعلاجه هو - بلا مصطلحات وبلا لوم. وهذه الصياغة بالذات تحسم إن كان المريض المزمن سيتقبّل القيد أم سيشتري المنتج من الصيدلية المجاورة.",chips:["هذا المستحضر المركّب","يحتوي","مادة مزيلة للاحتقان","قد ترفع","ضغط دمك","–","وهذا لا يناسب","أقراص الضغط التي تتناولها."],target:[0,1,2,3,4,5,6,7]}},
  {mech:"shelf",data:{kicker:"المشهد 5 · التوصية",title:"ارتفاع ضغط، راميبريل/أملوديبين/أسبرين، أنف مسدود. مدّ يدك إلى الرف:",
   boxes:[
    {n:"زيلوميتازولين",s:"بخاخ أنف، 7 أيام كحد أقصى",col:"#1565C0",ok:true,p:20,tr:12,h:"الاختيار الصحيح",x:"مزيل احتقان موضعي بأثر جهازي ضئيل - الخيار العملي مع ارتفاع الضغط. والحاسم هو التنبيه: 5-7 أيام كحد أقصى وإلا حدث تورّم ارتدادي."},
@@ -2684,8 +2829,8 @@ TOPICS.erkaeltung_chronik.steps_ar=[
    {n:"إيبوبروفين 400",s:"أقراص",col:"#6A1B9A",p:0,tr:-10,h:"إشكالي مضاعف",x:"مضادات الالتهاب ترفع الضغط وتُضعف مثبطات ACE - مع خطر نزف إضافي بوجود الأسبرين 100. اختيار خاطئ لهذا المريض."},
    {n:"باراسيتامول 500",s:"أقراص",col:"#2E7D32",p:12,tr:4,h:"مقبول عند الحاجة",x:"الخيار الأكثر حيادية تجاه الضغط عند الصداع وآلام الجسم. لا يحتاجه حتماً الآن، لكنه سليم علمياً."},
    {n:"فيتامين C عالي العيار",s:"فوّار",col:"#F9A825",p:0,tr:-4,h:"بلا فائدة",x:"لا أثر مثبت على المسار. ومع الأقراص الفوّارة انتبه لمحتوى الصوديوم - تفصيل ليس تافهاً مع ارتفاع الضغط."}]}},
- {mech:"truefalse",data:{scene:"assets/PCG_CHR_CUS007_S04_TALK-CU_FRONT_v001_FINAL.jpg",kicker:"المشهد 5ب · جولة سريعة",title:"يريد أن يفهم بدقة. صح أم خطأ؟",trueLabel:"صح",falseLabel:"خطأ",okH:"أتقنت الجولة السريعة",badH:"بعض المفاهيم الخاطئة",expl:"النقاط المهمة في الزكام مع ارتفاع الضغط: المقلّدات الودية في المركّبات ترفع الضغط، ومضادات الالتهاب تُضعف مثبطات ACE، والأقراص الفوّارة تحوي غالباً كميات صوديوم معتبرة. أما الصحيح: بخاخات إزالة الاحتقان مقبولة موضعياً غالباً لكن لسبعة أيام كحد أقصى، والزكام نفسه قد يرفع الضغط مؤقتاً.",items:[{t:"مركّبات الزكام تحوي غالباً مواد ترفع ضغط الدم.",ok:true,why:"فينيليفرين أو سودوإيفيدرين – وهي إشكالية مع ارتفاع الضغط."},{t:"الإيبوبروفين غير ضار مع ارتفاع الضغط.",ok:false,why:"مضادات الالتهاب ترفع الضغط وتُضعف مثبطات ACE."},{t:"بخاخات إزالة الاحتقان تُستعمل سبعة أيام كحد أقصى.",ok:true,why:"وإلا حدث تورّم ارتدادي."},{t:"الأقراص الفوّارة لا إشكال فيها مع ارتفاع الضغط.",ok:false,why:"تحوي غالباً كميات صوديوم معتبرة – تفصيل يُغفل كثيراً."},{t:"الزكام نفسه قد يرفع ضغط الدم مؤقتاً.",ok:true,why:"ولذلك يواصل القياس هذه الأيام ويقرأ القيم في سياقها."},{t:"الباراسيتامول أكثر حيادية تجاه الضغط من مضادات الالتهاب.",ok:true,why:"وهو الخيار الأفضل عند الحاجة."}]}},
- {mech:"mcq",data:{scene:"assets/PCG_CHR_CUS007_S09_HANDOVER_FRONT_v001_FINAL.jpg",kicker:"المشهد 6 · الختام",title:"\u201cوعلى ماذا أنتبه؟\u201d",
+ {mech:"truefalse",data:{scene:{cus:"CUS007",pose:"cuTalk"},kicker:"المشهد 5ب · جولة سريعة",title:"يريد أن يفهم بدقة. صح أم خطأ؟",trueLabel:"صح",falseLabel:"خطأ",okH:"أتقنت الجولة السريعة",badH:"بعض المفاهيم الخاطئة",expl:"النقاط المهمة في الزكام مع ارتفاع الضغط: المقلّدات الودية في المركّبات ترفع الضغط، ومضادات الالتهاب تُضعف مثبطات ACE، والأقراص الفوّارة تحوي غالباً كميات صوديوم معتبرة. أما الصحيح: بخاخات إزالة الاحتقان مقبولة موضعياً غالباً لكن لسبعة أيام كحد أقصى، والزكام نفسه قد يرفع الضغط مؤقتاً.",items:[{t:"مركّبات الزكام تحوي غالباً مواد ترفع ضغط الدم.",ok:true,why:"فينيليفرين أو سودوإيفيدرين – وهي إشكالية مع ارتفاع الضغط."},{t:"الإيبوبروفين غير ضار مع ارتفاع الضغط.",ok:false,why:"مضادات الالتهاب ترفع الضغط وتُضعف مثبطات ACE."},{t:"بخاخات إزالة الاحتقان تُستعمل سبعة أيام كحد أقصى.",ok:true,why:"وإلا حدث تورّم ارتدادي."},{t:"الأقراص الفوّارة لا إشكال فيها مع ارتفاع الضغط.",ok:false,why:"تحوي غالباً كميات صوديوم معتبرة – تفصيل يُغفل كثيراً."},{t:"الزكام نفسه قد يرفع ضغط الدم مؤقتاً.",ok:true,why:"ولذلك يواصل القياس هذه الأيام ويقرأ القيم في سياقها."},{t:"الباراسيتامول أكثر حيادية تجاه الضغط من مضادات الالتهاب.",ok:true,why:"وهو الخيار الأفضل عند الحاجة."}]}},
+ {mech:"mcq",data:{scene:{cus:"CUS007",pose:"cuHappy",bg:"counter"},kicker:"المشهد 6 · الختام",title:"\u201cوعلى ماذا أنتبه؟\u201d",
   options:[
    {t:"البخاخ 7 أيام كحد أقصى ثم ماء البحر فقط. وواصل قياس ضغطك هذه الأيام - الزكام وقلة النوم يرفعانه أصلاً. راجع الطبيب عند حمى تتجاوز 3 أيام أو ضيق نفس أو ضغط في الصدر.",p:25,tr:12,ok:true,h:"ختام مثالي",x:"مدة الاستعمال، والمراقبة الذاتية للضغط، وعلامات الإنذار الواضحة - بما فيها الأعراض القلبية التي لا يجوز إغفالها مع هذا المريض. هذا هو الأمان الذي يحتاجه المريض المزمن."},
    {t:"استعمله حتى ينفتح أنفك وحسب.",p:0,tr:-10,h:"ارتداد مبرمج",x:"بلا سقف زمني ينشأ الاعتماد على البخاخات والتورّم المزمن. أشيع خطأ مع مزيلات الاحتقان."},
@@ -3551,7 +3696,7 @@ var LEVELS = [
   { id:"L1", topic:"kopfschmerzen_kind", persona:"vater", reqRank:0 },
   { id:"L2", topic:"halsschmerzen_selbst", persona:"selbst", reqRank:0 },
   { id:"L3", topic:"sodbrennen_eilig", persona:"eilig", reqRank:0 },
-  { id:"L4", topic:"reisediarrhoe_misstrau", persona:"misstrau", reqRank:1 },
+  { id:"L4", topic:"reisediarrhoe_misstrau", persona:"misstrau", reqRank:0 },
   { id:"L5", topic:"schlafstoerung_vielred", persona:"vielred", reqRank:0 },
   { id:"L6", topic:"erkaeltung_chronik", persona:"chronik", reqRank:0 },
   { id:"L7", topic:"fusspilz_sportler", persona:"sportler", reqRank:0 },
@@ -3612,6 +3757,8 @@ function applyLang(){
   document.getElementById('playBtn').textContent=t('play');
   document.getElementById('linkAbout').textContent=t('about');
   document.getElementById('linkCourse').textContent=t('course');
+  document.getElementById('linkCases').textContent=
+    state.lang==='ar'?'قائمة الحالات':(state.lang==='en'?'Case list':'Fallliste');
   document.getElementById('linkAbout').href=LINKS.about;
   document.getElementById('linkCourse').href=LINKS.course;
   document.getElementById('legalDisclaimer').textContent=t('disclaimer');
@@ -3723,11 +3870,23 @@ function preloadLevel(steps, persona){
   var urls = [];
   steps.forEach(function(s){
     if(!s.data) return;
-    if(s.data.img)   urls.push(s.data.img);
-    if(s.data.scene) urls.push(s.data.scene);
+    if(s.data.img){
+      if(typeof s.data.img==='string') urls.push(s.data.img);
+      else { urls.push(chrSrc(s.data.img.cus,s.data.img.pose));
+             urls.push(BG[s.data.img.bg||(POSE_LAYOUT[s.data.img.pose]||POSE_LAYOUT.idle).bg]); }
+    }
+    if(s.data.scene){
+      if(typeof s.data.scene==='string') urls.push(s.data.scene);
+      else { urls.push(chrSrc(s.data.scene.cus,s.data.scene.pose));
+             urls.push(BG[s.data.scene.bg||(POSE_LAYOUT[s.data.scene.pose]||POSE_LAYOUT.idle).bg]); }
+    }
     if(s.data.boxes) s.data.boxes.forEach(function(b){ if(b.img) urls.push(b.img); });
   });
-  if(persona && persona.img)
+  if(persona && persona.cus)
+    ['cuNeutral','cuTalk','cuHappy','cuUpset','idle','walk','back'].forEach(function(k){
+      urls.push(chrSrc(persona.cus,k));
+    });
+  else if(persona && persona.img)
     ['entrance','neutral','talking','happy','upset','worried'].forEach(function(k){
       if(persona.img[k]) urls.push(persona.img[k]);
     });
@@ -3755,7 +3914,8 @@ function startLevel(lv){
   run = { lv:lv, topic:topic, persona:persona, steps:langSteps, stepIdx:0, score:0,
           trust:persona.trustStart||60, stepScores:{} };
   // trust image
-  var timg=persona.img&&(persona.img.neutral||persona.img.worried) ? (persona.img.neutral||persona.img.worried) : 'assets/vater_worried.jpg';
+  var timg = persona.cus ? chrSrc(persona.cus,'cuNeutral')
+          : (persona.img&&(persona.img.neutral||persona.img.worried) ? (persona.img.neutral||persona.img.worried) : 'assets/vater_worried.jpg');
   document.getElementById('trustImg').src=timg;
   document.getElementById('score').textContent='0';
   setTrust(run.trust,0);
@@ -3815,8 +3975,10 @@ function finishLevel(){
   }).join('');
   // persona end image (happy/upset) - fallback worried
   var pimg = run.persona.img||{};
-  var endImg = tr>=60 ? (pimg.happy||pimg.worried||'assets/vater_worried.jpg')
-                      : (pimg.upset||pimg.worried||'assets/vater_worried.jpg');
+  var endImg = run.persona.cus
+      ? chrSrc(run.persona.cus, tr>=60 ? 'cuHappy' : 'cuUpset')
+      : (tr>=60 ? (pimg.happy||pimg.worried||'assets/vater_worried.jpg')
+                : (pimg.upset||pimg.worried||'assets/vater_worried.jpg'));
   var trustLine = tr>=70 ? t('trustHigh') : tr>=40 ? t('trustMid') : t('trustLow');
 
   host.innerHTML='<div class="stage"><div class="result">'+
@@ -3861,6 +4023,313 @@ function afterLevel(s, stars){
 function maybeRankup(prevRank,newRank){
   if(newRank>prevRank){ state.rankIdx=newRank; save(); showRankup(newRank); }
   else { state.rankIdx=newRank; save(); renderMap(); show('mapScreen'); }
+}
+
+
+/* =====================================================================
+   WORLD: free movement across the pharmacy (grid 48x48, walk masks)
+===================================================================== */
+var WORLD_G = 48;
+var WORLD_MASKS = {"offizin": "00000000000000000000000000000000000000000000000000000000000003ffc00000e00000c00000e00000c00000e00000c00000e00000c00000e00000c00000e00000c000ffe00000ffffffe00000ffffffe003ffffffffe003ffffffffe003ffffffffe003ffffffffe003f800000fe003f800000fe003f800000fe003f800000fe003f800000fe003f800000fe003f800000fe003f800000fe003f800000fe003f800000fe003ffffffffe003ffffffffe003ffffffffe0000fffffc0e0000fffffc0e0000fffffc0e0000fffffc0e0000fffffc0e0000fffffc0e000001fc0000000001fc0000000001fc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "backroom": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffc000000000ffc000000000ffc000000000ffc000000000ffc0000001ffffc0000001ffffffe00001ffffffe00001ffffffe00001ffffffe00001ffffffe00001ffffffe00001ffffffe00001ffffffe00001ffffc0000001ffffc0000001ffffc0000001ffffc0000001ffffc0000001ffffc0000001ffffc0000001ffffc0000001ffffc000000000ff0000000000ff0000000000ff00000000000000000000000000000000000000000", "breakroom": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001ffe000000001ffe000000001ffe000000001ffe000000001ffe000000001ffe000000001ffe000000001ffffe0000000007fe0000000007fe0000000007fe00000000078000000000078000000000078000000000078000000000078000001fe0078000001fffff8000001fffff8000001ffffffe00001ffffffe00001ffffffe00001ffffffe00001ffffffe00000000ff0000000000ff0000000000ff0000000000ff0000000000000000000000000000000000000000"};
+
+var ROOMS = {
+  offizin:{ img:"assets/map_offizin.jpg", mask:"offizin",
+    de:"Offizin", en:"Sales floor", ar:"صالة الصيدلية",
+    start:[22,34],
+    spots:[
+      {id:"counter", c:[24,29], ic:"💊", de:"HV-Tisch", en:"Counter", ar:"طاولة البيع"},
+      {id:"sicht",   c:[24,13], ic:"🧴", de:"Sichtwahl", en:"Front shelf", ar:"رف العرض"},
+      {id:"corner",  c:[10,15], ic:"🤫", de:"Beratungsecke", en:"Consultation corner", ar:"ركن الاستشارة"},
+      {id:"door_back", c:[36,12], ic:"🚪", de:"Hinterzimmer", en:"Back rooms", ar:"الغرف الخلفية"},
+      {id:"entry",   c:[22,38], ic:"🔔", de:"Eingang", en:"Entrance", ar:"المدخل"}
+    ]},
+  backroom:{ img:"assets/map_backroom.jpg", mask:"backroom",
+    de:"Lager & Rezeptur", en:"Stock & compounding", ar:"المستودع والتحضير",
+    start:[24,40],
+    spots:[
+      {id:"kommi",  c:[17,25], ic:"📦", de:"Kommissionierer", en:"Commissioner", ar:"آلة التجهيز"},
+      {id:"fridge", c:[33,26], ic:"❄️", de:"Kühlschrank", en:"Fridge", ar:"الثلاجة"},
+      {id:"rezept", c:[33,31], ic:"⚗️", de:"Rezeptur", en:"Compounding", ar:"التحضير"},
+      {id:"door_out", c:[24,43], ic:"🚪", de:"Zurück zur Offizin", en:"Back to the floor", ar:"عودة إلى الصالة"}
+    ]},
+  breakroom:{ img:"assets/map_breakroom.jpg", mask:"breakroom",
+    de:"Pausenraum", en:"Break room", ar:"غرفة الاستراحة",
+    start:[27,40],
+    spots:[
+      {id:"coffee", c:[33,26], ic:"☕", de:"Kaffeemaschine", en:"Coffee machine", ar:"ماكينة القهوة"},
+      {id:"table",  c:[24,36], ic:"🗒️", de:"Tisch", en:"Table", ar:"الطاولة"},
+      {id:"door_out2", c:[27,42], ic:"🚪", de:"Zurück zur Offizin", en:"Back to the floor", ar:"عودة إلى الصالة"}
+    ]}
+};
+
+var PHAR = { down:"assets/phar_down.png", up:"assets/phar_up.png",
+             left:"assets/phar_left.png", right:"assets/phar_right.png" };
+(function(){ for(var k in PHAR){ var i=new Image(); i.src=PHAR[k]; } })();
+
+var W = { room:null, mask:null, pos:{x:22,y:34}, path:[], dir:"down",
+          moving:false, raf:null, last:0, near:null, cell:0, ox:0, oy:0 };
+
+function maskAt(m,x,y){
+  if(x<0||y<0||x>=WORLD_G||y>=WORLD_G) return false;
+  var perRow=WORLD_G/4, idx=y*perRow+((x/4)|0);
+  var nib=parseInt(m.charAt(idx),16);
+  return ((nib>>(3-(x%4)))&1)===1;
+}
+function walkable(x,y){ return maskAt(W.mask, Math.round(x), Math.round(y)); }
+
+/* BFS with diagonals */
+function findPath(sx,sy,tx,ty){
+  sx=Math.round(sx); sy=Math.round(sy); tx=Math.round(tx); ty=Math.round(ty);
+  if(!maskAt(W.mask,tx,ty)){
+    var best=null,bd=1e9;
+    for(var r=1;r<=4&&!best;r++)
+      for(var dx=-r;dx<=r;dx++) for(var dy=-r;dy<=r;dy++){
+        var nx=tx+dx, ny=ty+dy;
+        if(maskAt(W.mask,nx,ny)){ var d=dx*dx+dy*dy; if(d<bd){bd=d;best=[nx,ny];} }
+      }
+    if(!best) return null;
+    tx=best[0]; ty=best[1];
+  }
+  var key=function(x,y){return y*WORLD_G+x;};
+  var prev={}, seen={}, q=[[sx,sy]];
+  seen[key(sx,sy)]=1;
+  var dirs=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+  while(q.length){
+    var cur=q.shift();
+    if(cur[0]===tx&&cur[1]===ty){
+      var p=[], k=key(tx,ty), c=[tx,ty];
+      while(k!==key(sx,sy)){ p.unshift({x:c[0],y:c[1]}); c=prev[k]; if(!c) break; k=key(c[0],c[1]); }
+      return p;
+    }
+    for(var i=0;i<8;i++){
+      var nx=cur[0]+dirs[i][0], ny=cur[1]+dirs[i][1];
+      if(!maskAt(W.mask,nx,ny)) continue;
+      if(i>3 && !(maskAt(W.mask,cur[0]+dirs[i][0],cur[1]) && maskAt(W.mask,cur[0],cur[1]+dirs[i][1]))) continue;
+      var kk=key(nx,ny); if(seen[kk]) continue;
+      seen[kk]=1; prev[kk]=cur; q.push([nx,ny]);
+    }
+  }
+  return null;
+}
+
+function worldLayout(){
+  var img=document.getElementById('wMap'), st=document.getElementById('wStage');
+  if(!img.naturalWidth) return;
+  var r=img.getBoundingClientRect(), s=st.getBoundingClientRect();
+  W.ox=r.left-s.left; W.oy=r.top-s.top;
+  W.cell=r.width/WORLD_G; W.cellY=r.height/WORLD_G;
+  var ch=document.getElementById('wChar');
+  var h=W.cellY*6.2; ch.style.height=h+'px'; ch.style.width='auto';
+  drawSpots(); placeChar();
+}
+function placeChar(){
+  var ch=document.getElementById('wChar'), sh=document.getElementById('wShadow');
+  if(ch.getAttribute('src')!==PHAR[W.dir]) ch.setAttribute('src', PHAR[W.dir]);
+  var px=W.ox+(W.pos.x+0.5)*W.cell, py=W.oy+(W.pos.y+0.9)*W.cellY;
+  ch.style.left=px+'px'; ch.style.top=py+'px';
+  ch.style.transform='translate(-50%,-100%)'+(W.moving?' translateY('+(Math.sin(performance.now()/70)*2.2)+'px)':'');
+  var sw=W.cell*2.6;
+  sh.style.width=sw+'px'; sh.style.height=(sw*0.42)+'px';
+  sh.style.left=px+'px'; sh.style.top=py+'px';
+}
+function drawSpots(){
+  var host=document.getElementById('wHot'); host.innerHTML='';
+  ROOMS[W.room].spots.forEach(function(sp){
+    var el=document.createElement('div'); el.className='w-spot'; el.dataset.id=sp.id;
+    el.style.left=(W.ox+(sp.c[0]+0.5)*W.cell)+'px';
+    el.style.top =(W.oy+(sp.c[1]+0.2)*W.cellY)+'px';
+    el.innerHTML='<div class="ic">'+sp.ic+'</div><div class="lb">'+locName(sp)+'</div>';
+    host.appendChild(el);
+  });
+}
+function nearestSpot(){
+  var best=null,bd=9;
+  ROOMS[W.room].spots.forEach(function(sp){
+    var d=Math.hypot(sp.c[0]-W.pos.x, sp.c[1]-W.pos.y);
+    if(d<bd){bd=d;best=sp;}
+  });
+  return bd<=3.2 ? best : null;
+}
+function tick(t){
+  if(!W.last) W.last=t;
+  var dt=Math.min(0.05,(t-W.last)/1000); W.last=t;
+  if(W.path.length){
+    W.moving=true;
+    var n=W.path[0], dx=n.x-W.pos.x, dy=n.y-W.pos.y, d=Math.hypot(dx,dy);
+    var sp=9.5*dt;
+    if(d<=sp){ W.pos.x=n.x; W.pos.y=n.y; W.path.shift(); }
+    else { W.pos.x+=dx/d*sp; W.pos.y+=dy/d*sp;
+      W.dir = Math.abs(dx)>Math.abs(dy) ? (dx>0?'right':'left') : (dy>0?'down':'up'); }
+    placeChar();
+  } else if(W.moving){
+    W.moving=false; placeChar(); arrive();
+  }
+  var nr=nearestSpot();
+  if((nr&&nr.id)!==(W.near&&W.near.id)){
+    W.near=nr;
+    document.querySelectorAll('.w-spot').forEach(function(e){
+      e.classList.toggle('near', !!(nr&&e.dataset.id===nr.id)); });
+  }
+  W.raf=requestAnimationFrame(tick);
+}
+function arrive(){ var sp=nearestSpot(); if(sp) openSpot(sp); }
+
+function goTo(cx,cy){
+  var p=findPath(W.pos.x,W.pos.y,cx,cy);
+  if(!p||!p.length) return false;
+  /* smooth: drop collinear waypoints */
+  var s=[p[0]];
+  for(var i=1;i<p.length-1;i++){
+    var a=s[s.length-1], b=p[i], c=p[i+1];
+    if((b.x-a.x)*(c.y-a.y)!==(b.y-a.y)*(c.x-a.x)) s.push(b);
+  }
+  if(p.length>1) s.push(p[p.length-1]);
+  W.path=s; SND.click(); return true;
+}
+function enterRoom(id, at){
+  W.room=id; W.mask=WORLD_MASKS[ROOMS[id].mask];
+  var r=ROOMS[id];
+  W.pos={x:(at||r.start)[0], y:(at||r.start)[1]}; W.path=[]; W.dir='down'; W.near=null;
+  document.getElementById('wRoomName').textContent=locName(r);
+  var img=document.getElementById('wMap');
+  img.onload=function(){ worldLayout(); };
+  img.src=r.img;
+  if(img.complete) worldLayout();
+  closePanel();
+}
+
+/* ---------- panel ---------- */
+function openPanel(title, text, acts){
+  document.getElementById('wpTitle').textContent=title;
+  document.getElementById('wpText').textContent=text||'';
+  var host=document.getElementById('wpActs'); host.innerHTML='';
+  (acts||[]).forEach(function(a){
+    var b=document.createElement('button'); b.textContent=a.t;
+    if(a.cls) b.className=a.cls;
+    b.addEventListener('click',function(){ closePanel(); if(a.fn) a.fn(); });
+    host.appendChild(b);
+  });
+  document.getElementById('wPanel').classList.add('up');
+}
+function closePanel(){ document.getElementById('wPanel').classList.remove('up'); }
+
+function openSpot(sp){
+  var L=state.lang, T=WSPOT[sp.id]||{};
+  var title=locName(sp), text=(T['t_'+L]||T.t_de||'');
+  var acts=[];
+  if(sp.id==='counter')  acts.push({t:t('play'), cls:'main', fn:function(){ renderMap(); show('mapScreen'); }});
+  if(sp.id==='door_back') acts.push(
+    {t:(L==='ar'?'المستودع':(L==='en'?'Stock room':'Lager')), cls:'main', fn:function(){ enterRoom('backroom'); }},
+    {t:(L==='ar'?'غرفة الاستراحة':(L==='en'?'Break room':'Pausenraum')), fn:function(){ enterRoom('breakroom'); }});
+  if(sp.id==='door_out'||sp.id==='door_out2') acts.push({t:locName(sp), cls:'main', fn:function(){ enterRoom('offizin',[36,13]); }});
+  if(sp.id==='coffee') acts.push({t:(L==='ar'?'خذ استراحة':(L==='en'?'Take a break':'Pause machen')), cls:'main', fn:coffeeBreak});
+  acts.push({t:(L==='ar'?'إغلاق':(L==='en'?'Close':'Schließen')), cls:'ghost'});
+  openPanel(title, text, acts);
+}
+var WSPOT={
+  counter:{t_de:"Hier findet die Beratung statt. Wähle einen Fall und stell dich hinter den HV-Tisch.",
+    t_en:"This is where consultations happen. Pick a case and step behind the counter.",
+    t_ar:"هنا تجري الاستشارة. اختر حالة وقف خلف طاولة البيع."},
+  sicht:{t_de:"Die Sichtwahl. Später: freies Üben an den Präparaten.",
+    t_en:"The front shelf. Later: free practice with the products.",
+    t_ar:"رف العرض. لاحقاً: تدريب حر على المستحضرات."},
+  corner:{t_de:"Die Beratungsecke – für alles, was nicht an den Tresen gehört.",
+    t_en:"The consultation corner - for everything that does not belong at the counter.",
+    t_ar:"ركن الاستشارة – لكل ما لا يُقال عند الطاولة."},
+  door_back:{t_de:"Hinter der Tür liegen Lager, Rezeptur und der Pausenraum.",
+    t_en:"Behind the door: stock room, compounding and the break room.",
+    t_ar:"خلف الباب: المستودع والتحضير وغرفة الاستراحة."},
+  entry:{t_de:"Hier kommen die Kunden herein.",
+    t_en:"This is where customers come in.", t_ar:"من هنا يدخل الزبائن."},
+  kommi:{t_de:"Der Kommissionierer. Später: Einsortier-Minispiel gegen die Zeit.",
+    t_en:"The commissioner. Later: a timed sorting mini-game.",
+    t_ar:"آلة التجهيز. لاحقاً: لعبة فرز سريعة ضد الوقت."},
+  fridge:{t_de:"Kühlkette. Später: Temperatur-Minispiel.",
+    t_en:"Cold chain. Later: a temperature mini-game.",
+    t_ar:"سلسلة التبريد. لاحقاً: لعبة درجة الحرارة."},
+  rezept:{t_de:"Die Rezeptur. Später: Herstellung Schritt für Schritt.",
+    t_en:"Compounding. Later: step-by-step preparation.",
+    t_ar:"التحضير. لاحقاً: التحضير خطوة بخطوة."},
+  coffee:{t_de:"Kurz durchatmen – und einen Tipp mitnehmen.",
+    t_en:"Take a breath - and pick up a tip.", t_ar:"خذ نفساً – واحصل على نصيحة."},
+  table:{t_de:"Hier sitzt das Team in der Pause.",
+    t_en:"Where the team sits during breaks.", t_ar:"هنا يجلس الفريق في الاستراحة."}
+};
+var COFFEE_TIPS={
+  de:["Bei Kindern wird immer nach Körpergewicht dosiert, nie nach Alter.",
+      "Rotes Auge plus Kontaktlinse heißt Augenarzt, bis das Gegenteil bewiesen ist.",
+      "Opioide machen Verstopfung ohne Toleranzentwicklung – das Laxans gehört von Anfang an dazu.",
+      "Pfefferminzöl senkt den Ösophagussphinkter-Tonus und verschlimmert Reflux.",
+      "Bei ASS unter 12 Jahren droht das Reye-Syndrom.",
+      "Antihistaminika wirken vorbeugend deutlich besser als bei Bedarf."],
+  en:["In children the dose always follows body weight, never age.",
+      "Red eye plus contact lens means ophthalmologist until proven otherwise.",
+      "Opioids cause constipation without tolerance - the laxative belongs there from day one.",
+      "Peppermint oil lowers oesophageal sphincter tone and worsens reflux.",
+      "ASA under 12 years carries the risk of Reye's syndrome.",
+      "Antihistamines work considerably better preventively than on demand."],
+  ar:["عند الأطفال تُحسب الجرعة بالوزن دائماً لا بالعمر.",
+      "عين حمراء مع عدسة لاصقة تعني طبيب عيون حتى يثبت العكس.",
+      "الأفيونات تسبب إمساكاً بلا تطوّر تحمّل – والمليّن يرافقها من اليوم الأول.",
+      "زيت النعناع يخفض توتر المصرة المريئية ويزيد الارتجاع.",
+      "الأسبرين دون 12 سنة يحمل خطر متلازمة راي.",
+      "مضادات الهيستامين أنجع وقائياً منها عند الحاجة."]
+};
+function coffeeBreak(){
+  var L=state.lang, arr=COFFEE_TIPS[L]||COFFEE_TIPS.de;
+  var tip=arr[Math.floor(Math.random()*arr.length)];
+  SND.good();
+  openPanel(L==='ar'?'☕ نصيحة الاستراحة':(L==='en'?'☕ Break-room tip':'☕ Tipp aus der Pause'), tip,
+    [{t:(L==='ar'?'شكراً':(L==='en'?'Thanks':'Danke')), cls:'main'}]);
+}
+
+/* ---------- input ---------- */
+(function(){
+  var st=document.getElementById('wStage');
+  st.addEventListener('click',function(e){
+    if(document.getElementById('wPanel').classList.contains('up')) { closePanel(); return; }
+    var img=document.getElementById('wMap');
+    var r=img.getBoundingClientRect();
+    var cx=(e.clientX-r.left)/r.width*WORLD_G, cy=(e.clientY-r.top)/r.height*WORLD_G;
+    if(cx<0||cy<0||cx>WORLD_G||cy>WORLD_G) return;
+    var hit=null;
+    ROOMS[W.room].spots.forEach(function(sp){
+      if(Math.hypot(sp.c[0]-cx, sp.c[1]-cy)<2.2) hit=sp; });
+    var tgt = hit ? {x:hit.c[0], y:hit.c[1]+(hit.id.indexOf('door')===0?0:2)} : {x:cx,y:cy};
+    if(goTo(tgt.x,tgt.y)){
+      var tp=document.getElementById('wTap');
+      var s=document.getElementById('wStage').getBoundingClientRect();
+      tp.style.left=(e.clientX-s.left)+'px'; tp.style.top=(e.clientY-s.top)+'px';
+      tp.classList.remove('go'); void tp.offsetWidth; tp.classList.add('go');
+      document.getElementById('wHint').classList.add('hide');
+    }
+  });
+  document.addEventListener('keydown',function(e){
+    if(!document.getElementById('worldScreen').classList.contains('active')) return;
+    var d={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],
+           w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]}[e.key];
+    if(!d) return;
+    e.preventDefault();
+    var nx=Math.round(W.pos.x)+d[0]*2, ny=Math.round(W.pos.y)+d[1]*2;
+    goTo(nx,ny);
+  });
+  window.addEventListener('resize',function(){ if(W.room) worldLayout(); });
+})();
+document.getElementById('wBack').addEventListener('click',function(){
+  if(W.room!=='offizin'){ enterRoom('offizin',[36,13]); return; }
+  cancelAnimationFrame(W.raf); W.raf=null; show('startScreen');
+});
+function openWorld(){
+  show('worldScreen');
+  document.getElementById('wRankName').textContent=locName(RANKS[state.rankIdx]);
+  document.getElementById('wPts').textContent=state.totalPts;
+  document.getElementById('wHint').textContent =
+    state.lang==='ar' ? 'انقر على الأرض للمشي · اقترب من علامة للتفاعل'
+    : state.lang==='en' ? 'Tap the floor to walk · step onto a marker to interact'
+    : 'Auf den Boden tippen zum Gehen · an einen Marker treten zum Interagieren';
+  document.getElementById('wHint').classList.remove('hide');
+  if(!W.room) enterRoom('offizin'); else worldLayout();
+  if(!W.raf){ W.last=0; W.raf=requestAnimationFrame(tick); }
 }
 
 /* ---------- Rank-up overlay ---------- */
@@ -3945,7 +4414,9 @@ document.getElementById('emSkip').addEventListener('click',closeEmail);
 /* ===================================================================== */
 /* WIRING                                                                */
 /* ===================================================================== */
-document.getElementById('playBtn').addEventListener('click',function(){ renderMap(); show('mapScreen'); });
+document.getElementById('playBtn').addEventListener('click',function(){ openWorld(); });
+document.getElementById('linkCases').addEventListener('click',function(e){
+  e.preventDefault(); renderMap(); show('mapScreen'); });
 document.getElementById('gameBack').addEventListener('click',function(){
   uiConfirm(t('quitConfirm'), function(){
     if(window._mechTimer){clearTimeout(window._mechTimer);window._mechTimer=null;}
