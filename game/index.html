@@ -197,8 +197,8 @@ body.rtl .lc-stars{right:auto;left:10px}
 .scene-strip img.sc-legacy{width:100%;height:100%;object-fit:cover;object-position:center 16%;display:block}
 /* --- طبقة التركيب v2 --- */
 .sc-bg{position:absolute;inset:0;background-size:cover;background-position:center 62%;
-  transform:scale(1.02);transition:filter .35s ease,transform .35s ease}
-.sc-bg.sc-blur{filter:blur(7px) saturate(.92) brightness(1.04);transform:scale(1.10)}
+  transform-origin:center 70%;transition:filter .35s ease,transform .35s ease}
+.sc-bg.sc-blur{filter:blur(7px) saturate(.94) brightness(1.03)}
 .sc-vig{position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(ellipse at 50% 55%,transparent 45%,rgba(20,16,12,.20) 100%)}
 .sc-shadow{position:absolute;border-radius:50%;pointer-events:none;
@@ -208,6 +208,10 @@ body.rtl .lc-stars{right:auto;left:10px}
   transform:translateX(-50%);transform-origin:50% 100%;
   filter:drop-shadow(0 4px 6px rgba(30,22,14,.18));
   transition:left .5s cubic-bezier(.33,.9,.35,1),bottom .35s ease,height .35s ease}
+/* الصيدلاني خلف الكاونتر — حاوية تقصّ ما تحت خط الكاونتر */
+.sc-pharwrap{position:absolute;overflow:hidden;pointer-events:none}
+.sc-phar{position:absolute;width:auto;object-fit:contain;transform:translateX(-50%);
+  filter:drop-shadow(0 3px 5px rgba(30,22,14,.16))}
 .sc-chr.sc-enter{animation:scWalkIn .95s cubic-bezier(.33,.9,.35,1) both}
 .sc-chr.sc-bob{animation:scBob 1.4s ease-in-out infinite}
 @keyframes scWalkIn{from{left:14%;opacity:0}60%{opacity:1}to{opacity:1}}
@@ -954,9 +958,11 @@ function shuffled(arr){
    الجديد: scene:{cus:"CUS007",pose:"idle"} -> خلفية + شخصية شفافة + ظل
    ===================================================================== */
 var BG = {
-  floor:   "assets/PCG_BG_01_OFFIZIN-FLOOR_v001.jpg",
-  counter: "assets/PCG_BG_02_COUNTER-OTS_v001.jpg",
-  consult: "assets/PCG_BG_03_CONSULT-CORNER_v001.jpg"
+  counter:  "assets/PCG_BG_01_COUNTER_v002.jpg",   /* كاونتر قطري + الباب يساراً */
+  entrance: "assets/PCG_BG_02_ENTRANCE_v002.jpg",  /* الصالة نحو الباب */
+  ots:      "assets/PCG_BG_03_OTS_v002.jpg",       /* الكاونتر قريباً */
+  consult:  "assets/PCG_BG_03_CONSULT-CORNER_v001.jpg",
+  floor:    "assets/PCG_BG_02_ENTRANCE_v002.jpg"   /* اسم قديم — يبقى للتوافق */
 };
 var POSE_FILE = {
   idle:"P01_IDLE-FULL", walk:"P02_WALK-FULL", back:"P03_BACK-FULL",
@@ -965,16 +971,34 @@ var POSE_FILE = {
 };
 /* h = ارتفاع الشخصية % من الشريط | g = ارتفاع القدم من الأسفل % | x = الموضع الأفقي % */
 var POSE_LAYOUT = {
-  idle:     {h:66, g:7,  x:50, bg:"counter", blur:false, shadow:true},
-  walk:     {h:62, g:7,  x:50, bg:"floor",   blur:false, shadow:true},
-  back:     {h:84, g:-2, x:50, bg:"counter", blur:false, shadow:false},
+  /* منظور المراقب: الزبون والصيدلاني معاً — كما في النسخة الأولى من اللعبة */
+  idle:     {h:82, g:2,  x:30, bg:"counter",  z:1.45, by:72, blur:false, shadow:true,  phar:"counter"},
+  walk:     {h:64, g:6,  x:26, bg:"counter",  z:1.20, by:70, blur:false, shadow:true,  phar:"wide"},
+  back:     {h:88, g:-8, x:26, bg:"ots",      z:1.06, by:64, blur:false, shadow:false, phar:"ots"},
   /* اللقطات القريبة: تُموضَع من الأعلى كي لا يُقص الرأس */
-  cuNeutral:{h:128,t:-3,x:50, bg:"floor",   blur:true,  shadow:false},
-  cuTalk:   {h:128,t:-3,x:50, bg:"floor",   blur:true,  shadow:false},
-  cuHappy:  {h:128,t:-3,x:50, bg:"floor",   blur:true,  shadow:false},
-  cuUpset:  {h:128,t:-3,x:50, bg:"floor",   blur:true,  shadow:false}
+  cuNeutral:{h:128,t:-3,x:50, bg:"ots", z:1.14, by:60, blur:true, shadow:false},
+  cuTalk:   {h:128,t:-3,x:50, bg:"ots", z:1.14, by:60, blur:true, shadow:false},
+  cuHappy:  {h:128,t:-3,x:50, bg:"ots", z:1.14, by:60, blur:true, shadow:false},
+  cuUpset:  {h:128,t:-3,x:50, bg:"ots", z:1.14, by:60, blur:true, shadow:false}
 };
 var FOOT_GAP = 0.019;   /* الفراغ الشفاف تحت القدم = 1.9% من ارتفاع الصورة */
+/* الصيدلاني خلف الكاونتر — معايرة مختلفة لكل خلفية
+   clipY : خط سطح الكاونتر (% من الأسفل) — يُقصّ عنده
+   top   : بُعد رأسه عن أعلى الشريط %   |   h : طوله % من ارتفاع الشريط */
+/* وضعيات الصيدلاني v2 — أربع، بخط أرض موحّد */
+var PHAR_POSE = {
+  idle:     "assets/PCG_PHR_A01_IDLE_v002.webp",
+  lean:     "assets/PCG_PHR_A02_LEAN_v002.webp",
+  explain:  "assets/PCG_PHR_A03_EXPLAIN_v002.webp",
+  handover: "assets/PCG_PHR_A04_HANDOVER_v002.webp"
+};
+var PHAR_SRC = PHAR_POSE.idle;             /* احتياطي */
+var PHAR_ON  = {
+  wide:     { clipY:42, top:14, h:66, x:66, pose:"idle"     },  /* الدخول */
+  counter:  { clipY:42, top:14, h:66, x:66, pose:"lean"     },  /* يستمع، مستنداً */
+  ots:      { clipY:32, top:2,  h:84, x:66, pose:"explain"  },  /* يشرح */
+  handover: { clipY:42, top:14, h:66, x:66, pose:"handover" }   /* يسلّم العلبة */
+};
 
 function chrSrc(cus, pose){
   return "assets/PCG_CHR_"+cus+"_"+POSE_FILE[pose]+"_v002.webp";
@@ -992,10 +1016,25 @@ function sceneLayers(sc){
   var vpos = (t!=null) ? ('top:'+t+'%')
                        : ('bottom:'+(g - h*FOOT_GAP)+'%');   /* تعويض الفراغ تحت القدم */
   var cls = "sc-chr" + (sc.enter?" sc-enter":"") + (sc.bob?" sc-bob":"");
-  var out = '<div class="sc-bg'+(blur?' sc-blur':'')+'" style="background-image:url('+bg+')"></div>';
+  var z  = (sc.z !=null? sc.z  : (L.z  || 1.02));
+  var by = (sc.by!=null? sc.by : (L.by || 62));
+  var out = '<div class="sc-bg'+(blur?' sc-blur':'')+'" style="background-image:url('+bg+');'
+          + 'background-position:center '+by+'%;transform:scale('+z+')"></div>';
   if(shadow){
     var sw = h*0.30;
     out += '<div class="sc-shadow" style="left:'+x+'%;bottom:'+g+'%;width:'+sw+'%;height:'+(sw*0.20)+'%"></div>';
+  }
+  /* الصيدلاني خلف الكاونتر — يُرسم قبل الزبون ليكون خلفه */
+  var wantPhar = (sc.phar!=null? sc.phar : L.phar);
+  var P = (typeof wantPhar === 'string') ? PHAR_ON[wantPhar] : null;
+  if(P){
+    var wrapH = 100 - P.clipY;                 /* من أعلى الشريط حتى خط الكاونتر */
+    var inTop = P.top / wrapH * 100;           /* موضع رأسه نسبةً إلى الحاوية */
+    var inH   = P.h  / wrapH * 100;            /* طوله نسبةً إلى الحاوية */
+    out += '<div class="sc-pharwrap" style="left:0;right:0;top:0;height:'+wrapH+'%">'
+         + '<img class="sc-phar" src="'+(PHAR_POSE[sc.pharPose||P.pose]||PHAR_SRC)+'" alt="" '
+         + 'style="left:'+(sc.pharX!=null?sc.pharX:P.x)+'%;top:'+inTop+'%;height:'+inH+'%">'
+         + '</div>';
   }
   out += '<img class="'+cls+'" src="'+chrSrc(sc.cus,sc.pose)+'" alt="" '
        + 'style="left:'+x+'%;'+vpos+';height:'+h+'%">';
@@ -1698,7 +1737,7 @@ TOPICS.erkaeltung_chronik = {
      {n:"Paracetamol 500",s:"Tabletten",col:"#2E7D32",p:12,tr:4,h:"Vertretbar bei Bedarf",x:"Bei Kopf- und Gliederschmerzen die blutdruckneutralere Option. Braucht er aktuell nicht zwingend, aber fachlich sauber."},
      {n:"Hochdosis-Vitamin C",s:"Brause",col:"#F9A825",p:0,tr:-4,h:"Kein Nutzen",x:"Keine belegte Wirkung auf den Verlauf. Bei Brausetabletten zusätzlich an den Natriumgehalt denken – bei Hypertonie kein triviales Detail."}]}},
    {mech:"truefalse",data:{scene:{cus:"CUS007",pose:"cuTalk"},kicker:"Szene 5b · Schnellrunde",title:"Er will es genau verstehen. Richtig oder falsch?",trueLabel:"Richtig",falseLabel:"Falsch",okH:"Schnellrunde gemeistert",badH:"Ein paar Irrtümer",expl:"Die relevanten Punkte bei Erkältung und Hypertonie: Sympathomimetika in Kombipräparaten steigern den Blutdruck, NSAR schwächen ACE-Hemmer ab, und Brausetabletten enthalten oft relevante Natriummengen. Richtig sind: abschwellende Nasensprays sind lokal meist vertretbar, aber nur maximal sieben Tage, und eine Erkältung selbst kann den Blutdruck vorübergehend erhöhen.",items:[{t:"Erkältungs-Kombipräparate enthalten oft blutdrucksteigernde Wirkstoffe.",ok:true,why:"Phenylephrin oder Pseudoephedrin – bei Hypertonie problematisch."},{t:"Ibuprofen ist bei Bluthochdruck unbedenklich.",ok:false,why:"NSAR können den Blutdruck erhöhen und ACE-Hemmer abschwächen."},{t:"Abschwellende Nasensprays darf man höchstens sieben Tage anwenden.",ok:true,why:"Sonst droht die Rebound-Schwellung."},{t:"Brausetabletten sind bei Hypertonie unproblematisch.",ok:false,why:"Sie enthalten oft relevante Natriummengen – ein häufig übersehenes Detail."},{t:"Eine Erkältung kann den Blutdruck vorübergehend erhöhen.",ok:true,why:"Deshalb in diesen Tagen weiter messen und die Werte einordnen."},{t:"Paracetamol ist bei Hypertonie die blutdruckneutralere Wahl.",ok:true,why:"Gegenüber NSAR die bessere Option bei Bedarf."}]}},
- {mech:"mcq",data:{scene:{cus:"CUS007",pose:"cuHappy",bg:"counter"},kicker:"Szene 6 · Abschluss",title:"„Und worauf soll ich achten?“",
+ {mech:"mcq",data:{scene:{cus:"CUS007",pose:"idle",phar:"handover"},kicker:"Szene 6 · Abschluss",title:"„Und worauf soll ich achten?“",
     options:[
      {t:"Spray maximal 7 Tage, danach nur Meerwasser. Messen Sie Ihren Blutdruck in diesen Tagen weiter – Erkältung und schlechter Schlaf treiben ihn ohnehin hoch. Zum Arzt bei Fieber über 3 Tage, Atemnot oder Druck auf der Brust.",p:25,tr:12,ok:true,h:"Perfekter Abschluss",x:"Anwendungsdauer, Selbstkontrolle des Blutdrucks und klare Warnzeichen – inklusive der kardialen Symptome, die bei diesem Patienten nie fehlen dürfen. Genau die Sicherheit, die ein Chroniker braucht."},
      {t:"Einfach so lange nehmen, bis die Nase wieder frei ist.",p:0,tr:-10,h:"Rebound programmiert",x:"Ohne Zeitlimit entsteht die Privinismus-Falle: Dauergebrauch und chronische Schwellung. Der häufigste Fehler bei abschwellenden Sprays."},
@@ -2756,7 +2795,7 @@ TOPICS.erkaeltung_chronik.steps_en=[
    {n:"Paracetamol 500",s:"tablets",col:"#2E7D32",p:12,tr:4,h:"Acceptable if needed",x:"The more blood-pressure-neutral option for headache and body aches. Not strictly needed now, but professionally sound."},
    {n:"High-dose vitamin C",s:"effervescent",col:"#F9A825",p:0,tr:-4,h:"No benefit",x:"No proven effect on the course. With effervescent tablets also mind the sodium content - not a trivial detail in hypertension."}]}},
  {mech:"truefalse",data:{scene:{cus:"CUS007",pose:"cuTalk"},kicker:"Scene 5b · Rapid round",title:"He wants to understand precisely. True or false?",trueLabel:"True",falseLabel:"False",okH:"Rapid round mastered",badH:"A few misconceptions",expl:"The relevant points in cold plus hypertension: sympathomimetics in combination products raise blood pressure, NSAIDs weaken ACE inhibitors, and effervescent tablets often contain relevant amounts of sodium. Correct: decongestant nasal sprays are usually acceptable locally but only for a maximum of seven days, and a cold itself can temporarily raise blood pressure.",items:[{t:"Combination cold remedies often contain blood-pressure-raising substances.",ok:true,why:"Phenylephrine or pseudoephedrine - problematic in hypertension."},{t:"Ibuprofen is harmless in high blood pressure.",ok:false,why:"NSAIDs can raise blood pressure and weaken ACE inhibitors."},{t:"Decongestant nasal sprays may be used for a maximum of seven days.",ok:true,why:"Otherwise rebound congestion looms."},{t:"Effervescent tablets are unproblematic in hypertension.",ok:false,why:"They often contain relevant amounts of sodium - a frequently overlooked detail."},{t:"A cold can temporarily raise blood pressure.",ok:true,why:"Which is why he should keep measuring and interpret the values these days."},{t:"Paracetamol is the more blood-pressure-neutral choice in hypertension.",ok:true,why:"The better option compared with NSAIDs when needed."}]}},
- {mech:"mcq",data:{scene:{cus:"CUS007",pose:"cuHappy",bg:"counter"},kicker:"Scene 6 · Closing",title:"\u201cAnd what should I watch out for?\u201d",
+ {mech:"mcq",data:{scene:{cus:"CUS007",pose:"idle",phar:"handover"},kicker:"Scene 6 · Closing",title:"\u201cAnd what should I watch out for?\u201d",
   options:[
    {t:"Spray maximum 7 days, then sea-water only. Keep measuring your blood pressure these days - a cold and poor sleep push it up anyway. See a doctor for fever beyond 3 days, breathlessness or chest pressure.",p:25,tr:12,ok:true,h:"Perfect closing",x:"Duration of use, blood-pressure self-monitoring and clear warning signs - including the cardiac symptoms that must never be omitted in this patient. Exactly the safety a chronic patient needs."},
    {t:"Just use it until your nose is clear again.",p:0,tr:-10,h:"Rebound programmed",x:"Without a time limit you create the classic dependence on decongestant sprays and chronic swelling."},
@@ -2830,7 +2869,7 @@ TOPICS.erkaeltung_chronik.steps_ar=[
    {n:"باراسيتامول 500",s:"أقراص",col:"#2E7D32",p:12,tr:4,h:"مقبول عند الحاجة",x:"الخيار الأكثر حيادية تجاه الضغط عند الصداع وآلام الجسم. لا يحتاجه حتماً الآن، لكنه سليم علمياً."},
    {n:"فيتامين C عالي العيار",s:"فوّار",col:"#F9A825",p:0,tr:-4,h:"بلا فائدة",x:"لا أثر مثبت على المسار. ومع الأقراص الفوّارة انتبه لمحتوى الصوديوم - تفصيل ليس تافهاً مع ارتفاع الضغط."}]}},
  {mech:"truefalse",data:{scene:{cus:"CUS007",pose:"cuTalk"},kicker:"المشهد 5ب · جولة سريعة",title:"يريد أن يفهم بدقة. صح أم خطأ؟",trueLabel:"صح",falseLabel:"خطأ",okH:"أتقنت الجولة السريعة",badH:"بعض المفاهيم الخاطئة",expl:"النقاط المهمة في الزكام مع ارتفاع الضغط: المقلّدات الودية في المركّبات ترفع الضغط، ومضادات الالتهاب تُضعف مثبطات ACE، والأقراص الفوّارة تحوي غالباً كميات صوديوم معتبرة. أما الصحيح: بخاخات إزالة الاحتقان مقبولة موضعياً غالباً لكن لسبعة أيام كحد أقصى، والزكام نفسه قد يرفع الضغط مؤقتاً.",items:[{t:"مركّبات الزكام تحوي غالباً مواد ترفع ضغط الدم.",ok:true,why:"فينيليفرين أو سودوإيفيدرين – وهي إشكالية مع ارتفاع الضغط."},{t:"الإيبوبروفين غير ضار مع ارتفاع الضغط.",ok:false,why:"مضادات الالتهاب ترفع الضغط وتُضعف مثبطات ACE."},{t:"بخاخات إزالة الاحتقان تُستعمل سبعة أيام كحد أقصى.",ok:true,why:"وإلا حدث تورّم ارتدادي."},{t:"الأقراص الفوّارة لا إشكال فيها مع ارتفاع الضغط.",ok:false,why:"تحوي غالباً كميات صوديوم معتبرة – تفصيل يُغفل كثيراً."},{t:"الزكام نفسه قد يرفع ضغط الدم مؤقتاً.",ok:true,why:"ولذلك يواصل القياس هذه الأيام ويقرأ القيم في سياقها."},{t:"الباراسيتامول أكثر حيادية تجاه الضغط من مضادات الالتهاب.",ok:true,why:"وهو الخيار الأفضل عند الحاجة."}]}},
- {mech:"mcq",data:{scene:{cus:"CUS007",pose:"cuHappy",bg:"counter"},kicker:"المشهد 6 · الختام",title:"\u201cوعلى ماذا أنتبه؟\u201d",
+ {mech:"mcq",data:{scene:{cus:"CUS007",pose:"idle",phar:"handover"},kicker:"المشهد 6 · الختام",title:"\u201cوعلى ماذا أنتبه؟\u201d",
   options:[
    {t:"البخاخ 7 أيام كحد أقصى ثم ماء البحر فقط. وواصل قياس ضغطك هذه الأيام - الزكام وقلة النوم يرفعانه أصلاً. راجع الطبيب عند حمى تتجاوز 3 أيام أو ضيق نفس أو ضغط في الصدر.",p:25,tr:12,ok:true,h:"ختام مثالي",x:"مدة الاستعمال، والمراقبة الذاتية للضغط، وعلامات الإنذار الواضحة - بما فيها الأعراض القلبية التي لا يجوز إغفالها مع هذا المريض. هذا هو الأمان الذي يحتاجه المريض المزمن."},
    {t:"استعمله حتى ينفتح أنفك وحسب.",p:0,tr:-10,h:"ارتداد مبرمج",x:"بلا سقف زمني ينشأ الاعتماد على البخاخات والتورّم المزمن. أشيع خطأ مع مزيلات الاحتقان."},
@@ -3882,6 +3921,7 @@ function preloadLevel(steps, persona){
     }
     if(s.data.boxes) s.data.boxes.forEach(function(b){ if(b.img) urls.push(b.img); });
   });
+  for(var pk in PHAR_POSE) urls.push(PHAR_POSE[pk]);
   if(persona && persona.cus)
     ['cuNeutral','cuTalk','cuHappy','cuUpset','idle','walk','back'].forEach(function(k){
       urls.push(chrSrc(persona.cus,k));
