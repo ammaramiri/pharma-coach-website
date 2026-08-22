@@ -471,6 +471,144 @@ body.rtl .consent-row{text-align:right}
 .m-status{font-size:12px;font-weight:600;margin-top:10px;min-height:16px}
 .m-status.ok{color:var(--teal-dark)} .m-status.err{color:var(--red)}
 
+/* ===== Büro-Engine: Dokumente, Timer, Euro, Akte ===== */
+.doc{background:#FCFAF6;border:1.5px solid #D8D2C6;border-radius:12px;padding:12px 12px 10px;
+  margin:10px 0;font-family:'Inter',system-ui,sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+body.rtl .doc{direction:ltr;text-align:left}
+.doc-head{font-weight:800;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--teal-dark);border-bottom:1.5px solid #E3DDD0;padding-bottom:7px;margin-bottom:9px}
+.doc-sub{font-size:11.5px;color:var(--soft);margin:-5px 0 9px;font-variant-numeric:tabular-nums}
+.doc-row{display:flex;gap:8px;margin-bottom:7px;flex-wrap:wrap}
+.doc-f{flex:1 1 45%;min-width:0;display:flex;flex-direction:column;gap:2px;text-align:left;
+  background:#fff;border:1.5px solid #DCD6C9;border-radius:9px;padding:7px 9px;
+  font-family:inherit;cursor:pointer;transition:border-color .15s,background .15s,transform .12s}
+.doc-f:hover:not(:disabled){border-color:var(--teal-dark);transform:translateY(-1px)}
+.doc-f:disabled{cursor:default}
+.doc-f.doc-static{background:#F4F1EA;border-style:dashed;cursor:default}
+.doc-l{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:#8A8375;font-weight:700}
+.doc-v{font-size:13px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;
+  overflow-wrap:anywhere}
+.doc-f.hit{border-color:var(--teal-dark);background:#E8F2EF;box-shadow:0 0 0 2px rgba(0,109,91,.18)}
+.doc-f.miss{border-color:var(--red);background:#FBEBEC}
+.doc-foot{font-size:10.5px;color:var(--soft);border-top:1px dashed #E3DDD0;padding-top:7px;margin-top:3px}
+
+/* Positionsliste */
+.doc-pos .pos-row{display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:center;
+  padding:6px 4px;border-bottom:1px dashed #E6E0D3;font-size:12px}
+.doc-pos .pos-row:last-child{border-bottom:none}
+.doc-pos .pz{font-size:10.5px;color:#8A8375;font-variant-numeric:tabular-nums}
+.doc-pos .nm{font-weight:600;color:var(--ink);line-height:1.3}
+.doc-pos .cd{font-weight:800;font-size:11px;padding:2px 7px;border-radius:20px;color:#fff}
+.doc-pos .cd.c63{background:#8A8375}
+.doc-pos .cd.c421{background:var(--red)}
+.doc-pos .am{font-weight:800;font-variant-numeric:tabular-nums;color:var(--red)}
+
+/* Aufdeckung */
+.doc-reveal{margin-bottom:12px;animation:pop .45s ease-out}
+.dr-k{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--teal-dark);margin-bottom:4px}
+body.rtl .dr-k{text-align:right}
+
+/* Akte (mitlaufende Dokumente) */
+.docs-strip{border:1.5px dashed #D8D2C6;border-radius:12px;background:#FBF8F2;margin:0 0 12px;padding:0 10px}
+.docs-strip>summary{list-style:none;cursor:pointer;padding:9px 2px;font-size:11.5px;font-weight:800;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--teal-dark)}
+.docs-strip>summary::-webkit-details-marker{display:none}
+.docs-strip>summary::after{content:'▾';float:right;opacity:.6}
+body.rtl .docs-strip>summary::after{float:left}
+.docs-strip[open]>summary::after{content:'▴'}
+.docs-strip .doc{margin-top:0}
+
+/* Mechanik-Timer */
+.mtimer{display:flex;align-items:center;gap:9px;margin:2px 0 10px}
+.mt-bar{flex:1;height:7px;background:var(--line);border-radius:20px;overflow:hidden}
+.mt-fill{height:100%;width:100%;background:var(--teal-dark);border-radius:20px;transition:width .95s linear}
+.mt-fill.warn{background:var(--red)}
+.mt-num{font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--soft);min-width:34px;text-align:right}
+body.rtl .mt-num{text-align:left}
+
+/* Euro-Mechanik */
+.euro-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:8px 0}
+.euro-opt{padding:16px 10px;background:#fff;border:2px solid var(--line);border-radius:14px;
+  font-family:'Fraunces',serif;font-weight:800;font-size:19px;color:var(--ink);cursor:pointer;
+  font-variant-numeric:tabular-nums;transition:transform .12s,border-color .15s}
+.euro-opt:hover:not(:disabled){transform:translateY(-2px);border-color:var(--teal-dark)}
+.euro-opt.correct{border-color:var(--teal-dark);background:#E8F2EF}
+.euro-opt.wrong{border-color:var(--red);background:#FBEBEC}
+.eu-ledger{border:1.5px solid #D8D2C6;border-radius:12px;background:#FCFAF6;padding:10px 12px;margin:10px 0;
+  animation:pop .4s ease-out}
+.eu-line{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:6px 0;
+  border-bottom:1px dashed #E6E0D3;font-size:13px}
+.eu-line:last-child{border-bottom:none}
+.eu-line span{color:var(--soft)}
+.eu-line b{font-variant-numeric:tabular-nums;font-weight:800;color:var(--ink)}
+.eu-line.plus b{color:var(--teal-dark)}
+.eu-line.minus b{color:var(--red)}
+.eu-line.big{padding-top:10px;border-top:1.5px solid #D8D2C6;margin-top:4px;font-size:15px}
+.eu-line.big b{font-family:'Fraunces',serif;font-size:26px}
+
+/* Comic-Panel ohne Bild */
+.panel.panel-plain{background:linear-gradient(160deg,#EFEAE0,#E2DBCC);min-height:0;padding:14px 12px 8px}
+.panel-doc{max-width:520px;margin:0 auto}
+.panel.panel-plain .bubble-stack{position:static;padding:6px 0 44px}
+.result-doc{width:76px;height:76px;margin:0 auto 10px;border-radius:20px;display:flex;
+  align-items:center;justify-content:center;background:linear-gradient(140deg,#0B4F45,#1E9A85);color:#fff}
+.result-doc svg{width:38px;height:38px}
+
+/* Büro-Level: keine Vertrauensleiste */
+#gameScreen.no-trust .trust{display:none}
+
+/* Kartenraster: Abschnitte und Ersatzbanner */
+.grid-sec{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin:6px 0 0;
+  font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
+.grid-sec::after{content:'';flex:1;height:1px;background:var(--line)}
+body.rtl .grid-sec::after{order:-1}
+.lc-gen{width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(140deg,#0B4F45,#127A69 55%,#1E9A85)}
+.lc-gen svg{width:42px;height:42px;stroke:#fff;opacity:.92}
+.lc-tag{position:absolute;bottom:8px;left:10px;background:rgba(0,0,0,.5);color:#fff;
+  font-size:9.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;padding:3px 7px;border-radius:20px}
+body.rtl .lc-tag{left:auto;right:10px}
+
+/* Spielanleitung */
+.modal.modal-lg{max-width:560px;text-align:left;padding:26px 24px}
+body.rtl .modal.modal-lg{text-align:right}
+.gd-body{max-height:60vh;overflow:auto;-webkit-overflow-scrolling:touch;
+  text-align:left;font-size:13.5px;line-height:1.65;color:var(--ink);padding-right:4px}
+body.rtl .gd-body{text-align:right;padding-right:0;padding-left:4px}
+.gd-body h4{font-family:'Fraunces',serif;font-size:15.5px;margin:16px 0 4px;color:var(--teal-dark)}
+.gd-body h4:first-child{margin-top:0}
+.gd-body p{font-size:13.5px;color:var(--soft);line-height:1.65;margin:0}
+
+/* Durchsehen (nur Ansicht) */
+.rv-overlay{position:fixed;inset:0;z-index:95;background:var(--bg,#FAF7F2);display:none;
+  flex-direction:column;animation:fade .25s}
+.rv-overlay.show{display:flex}
+.rv-top{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#fff;
+  border-bottom:1px solid var(--line);flex-shrink:0}
+.rv-title{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.rv-title span{font-weight:800;font-size:13.5px}
+.rv-title em{font-style:normal;font-size:11px;color:var(--soft)}
+.rv-pts{font-weight:800;font-size:14px;color:var(--soft)}
+.rv-pts.up{color:var(--teal-dark)} .rv-pts.down{color:var(--red)}
+.rv-btn{width:38px;height:38px;border-radius:12px;border:1.5px solid var(--line);background:#fff;
+  font-size:18px;font-family:inherit;cursor:pointer;flex-shrink:0;color:var(--ink)}
+.rv-btn:disabled{opacity:.35;cursor:not-allowed}
+.rv-body{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 0 16px}
+.rv-frozen{pointer-events:none;user-select:none}
+.rv-frozen .next-btn,.rv-frozen .panel-next,.rv-frozen .cta-next,.rv-frozen .btn-next{display:none!important}
+.rv-frozen .timer,.rv-frozen .timer-bar{opacity:.35}
+.rv-nav{display:flex;align-items:center;gap:12px;justify-content:center;padding:10px 14px;
+  background:#fff;border-top:1px solid var(--line);flex-shrink:0}
+body.rtl .rv-nav{flex-direction:row-reverse}
+.rv-dots{display:flex;gap:6px}
+.rv-dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.rv-dots i.on{background:var(--teal-dark);transform:scale(1.25)}
+
+.lc-lock{flex-direction:column;gap:6px;text-align:center;padding:0 10px}
+.lc-lock em{font-style:normal;font-size:10.5px;font-weight:700;color:#fff;line-height:1.35;
+  text-shadow:0 1px 3px rgba(0,0,0,.5)}
+
 .hidden{display:none!important}
 @media(max-width:640px){
   #startScreen{padding-top:104px}
@@ -569,6 +707,12 @@ body.rtl .consent-row{text-align:right}
         <button class="map-nav-btn map-nav-cta" id="navCourse" title="OTC-Kurs">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v16H6.5A2.5 2.5 0 0 0 4 21.5V5.5Z"/><path d="M9 8h6"/></svg>
           <span id="navCourseTxt">OTC-Kurs</span></button>
+        <button class="map-nav-btn" id="navGuide" title="Spielanleitung">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.2a2.5 2.5 0 1 1 3.4 2.3c-.8.3-1 .9-1 1.6v.4"/><path d="M12 17h.01"/></svg>
+          <span id="navGuideTxt">Anleitung</span></button>
+        <button class="map-nav-btn" id="navAbout" title="Pharma-Coach">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+          <span id="navAboutTxt">Projekt</span></button>
         <button class="map-nav-btn" id="resetBtn" title="Zurücksetzen">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 5v6h-6"/></svg>
         </button>
@@ -625,6 +769,32 @@ body.rtl .consent-row{text-align:right}
   <input type="text" name="lang">
   <input type="text" name="consent">
 </form>
+
+<!-- Durchsehen: nur Ansicht -->
+<div class="rv-overlay" id="reviewOverlay">
+  <div class="rv-top">
+    <button class="rv-btn" id="rvClose">✕</button>
+    <div class="rv-title"><span id="rvStep"></span><em id="rvNote"></em></div>
+    <div class="rv-pts" id="rvPts"></div>
+  </div>
+  <div class="rv-body" id="rvBody"></div>
+  <div class="rv-nav">
+    <button class="rv-btn" id="rvPrev">‹</button>
+    <div class="rv-dots" id="rvDots"></div>
+    <button class="rv-btn" id="rvNext">›</button>
+  </div>
+</div>
+
+<!-- Spielanleitung -->
+<div class="modal-bg" id="guideModal">
+  <div class="modal modal-lg">
+    <h3 id="gdTitle">Spielanleitung</h3>
+    <div class="gd-body" id="gdBody"></div>
+    <div class="m-actions" style="margin-top:18px">
+      <button class="m-save" id="gdClose">Weiter</button>
+    </div>
+  </div>
+</div>
 
 <!-- Confirm overlay (WebView-safe, replaces native confirm) -->
 <div class="modal-bg" id="confirmModal">
@@ -750,6 +920,11 @@ var I18N = {
     emPrivacy:"Datenschutzerklärung", emSending:"Wird gesendet …", emOk:"Gespeichert. Danke!",
     emErrMail:"Bitte gültige E-Mail-Adresse eingeben.", emErr:"Senden fehlgeschlagen – dein Fortschritt bleibt lokal gespeichert.",
     ruKick:"Beförderung", welcomeBack:"Willkommen zurück",
+    guide:"Spielanleitung", guideBtn:"Anleitung", projectBtn:"Projekt",
+    secCounter:"HV-Tisch \u00b7 Beratung", secOffice:"B\u00fcro \u00b7 Retax und Rezeptpr\u00fcfung",
+    fileLabel:"Akte", officeDone:"Der Vorgang ist bearbeitet. Der Bescheid liegt entschieden auf dem Tisch.",
+    review:"Beratung durchsehen", reviewNote:"Nur Ansicht · Antworten lassen sich hier nicht ändern.",
+    step:"Schritt", closeBtn:"Schließen", lockedPrev:"Erst den vorherigen Fall abschließen",
     quitConfirm:"Beratung wirklich abbrechen? Der Fortschritt dieser Beratung geht verloren.",
     disclaimer:"Alle Inhalte dienen ausschließlich der pharmazeutischen Fortbildung und ersetzen keine ärztliche oder pharmazeutische Beratung im Einzelfall.",
     correctIs:"Richtig wäre:",
@@ -769,6 +944,11 @@ var I18N = {
     emPrivacy:"Privacy policy", emSending:"Sending …", emOk:"Saved. Thank you!",
     emErrMail:"Please enter a valid e-mail address.", emErr:"Sending failed – your progress stays saved locally.",
     ruKick:"Promotion", welcomeBack:"Welcome back",
+    guide:"How to play", guideBtn:"Guide", projectBtn:"Project",
+    secCounter:"Counter \u00b7 Consultation", secOffice:"Office \u00b7 Claw-backs and prescription checks",
+    fileLabel:"File", officeDone:"The case is processed. The notice lies decided on the desk.",
+    review:"Review consultation", reviewNote:"View only · answers cannot be changed here.",
+    step:"Step", closeBtn:"Close", lockedPrev:"Finish the previous case first",
     quitConfirm:"Really quit this consultation? Progress in this case will be lost.",
     disclaimer:"All content is intended solely for pharmaceutical training and does not replace medical or pharmaceutical advice in individual cases.",
     correctIs:"The correct value would be:",
@@ -788,6 +968,11 @@ var I18N = {
     emPrivacy:"سياسة الخصوصية", emSending:"جارٍ الإرسال …", emOk:"تم الحفظ. شكراً!",
     emErrMail:"الرجاء إدخال بريد إلكتروني صحيح.", emErr:"فشل الإرسال – تقدمك محفوظ محلياً.",
     ruKick:"ترقية", welcomeBack:"أهلاً بعودتك",
+    guide:"\u062f\u0644\u064a\u0644 \u0627\u0644\u0644\u0639\u0628\u0629", guideBtn:"\u0627\u0644\u062f\u0644\u064a\u0644", projectBtn:"\u0627\u0644\u0645\u0634\u0631\u0648\u0639",
+    secCounter:"\u0637\u0627\u0648\u0644\u0629 \u0627\u0644\u0628\u064a\u0639 \u00b7 \u0627\u0644\u0627\u0633\u062a\u0634\u0627\u0631\u0629", secOffice:"\u0627\u0644\u0645\u0643\u062a\u0628 \u00b7 \u0627\u0644\u0631\u064a\u062a\u0627\u0643\u0633 \u0648\u062a\u062f\u0642\u064a\u0642 \u0627\u0644\u0648\u0635\u0641\u0627\u062a",
+    fileLabel:"\u0627\u0644\u0645\u0644\u0641", officeDone:"\u0627\u0646\u062a\u0647\u062a \u0645\u0639\u0627\u0644\u062c\u0629 \u0627\u0644\u0645\u0639\u0627\u0645\u0644\u0629. \u0627\u0644\u0625\u0634\u0639\u0627\u0631 \u0635\u0627\u0631 \u0645\u062d\u0633\u0648\u0645\u0627\u064b \u0639\u0644\u0649 \u0627\u0644\u0637\u0627\u0648\u0644\u0629.",
+    review:"مراجعة الاستشارة", reviewNote:"مشاهدة فقط · لا يمكن تغيير الإجابات هنا.",
+    step:"خطوة", closeBtn:"إغلاق", lockedPrev:"أنهِ الحالة السابقة أولاً",
     quitConfirm:"هل تريد فعلاً إنهاء الاستشارة؟ سيضيع تقدمك في هذه الحالة.",
     disclaimer:"جميع المحتويات مخصصة للتدريب الصيدلاني فقط ولا تُغني عن الاستشارة الطبية أو الصيدلانية في الحالات الفردية.",
     correctIs:"الصحيح هو:",
@@ -795,6 +980,34 @@ var I18N = {
     yes:"نعم، إنهاء", cancel:"متابعة اللعب", resetConfirm:"هل تريد فعلاً تصفير كل التقدم؟",
     leftTitle:"غادر الزبون الصيدلية", leftText:"انهارت الثقة إلى الصفر. الاستشارة أكثر من مجرد معرفة – النبرة والثقة تحسمان أيضاً.",
     trustHigh:"يغادر الزبون بثقة كاملة – سيعود مجدداً.", trustMid:"يغادر الزبون – لكنه لم يبدُ مقتنعاً تماماً.", trustLow:"تضررت الثقة. كاد يغيّر الصيدلية." }
+};
+
+/* ---------------- SPIELANLEITUNG ---------------- */
+var GUIDE = {
+  de:'<h4>Ziel</h4><p>Du stehst hinter dem HV-Tisch. Jede Beratung ist ein Fall aus acht Schritten. Aus dem Praktikanten wird die Apotheken-Legende.</p>'+
+     '<h4>Bewegung</h4><p>Auf den Boden tippen, um zu gehen. An einen Marker treten, um ihn zu \u00f6ffnen. Der HV-Tisch f\u00fchrt zur Fallliste.</p>'+
+     '<h4>Punkte</h4><p>Jeder Schritt bringt Punkte. Fehler k\u00f6nnen Punkte kosten, der Stand darf negativ werden. Ein einmal erreichter Rang geht nie wieder verloren.</p>'+
+     '<h4>Vertrauen</h4><p>Der Balken oben zeigt das Vertrauen des Kunden. Ton und Reihenfolge z\u00e4hlen so viel wie Fachwissen. Bei null verl\u00e4sst der Kunde die Apotheke.</p>'+
+     '<h4>Reihenfolge</h4><p>Ein Fall \u00f6ffnet den n\u00e4chsten. Abgeschlossene F\u00e4lle lassen sich jederzeit wiederholen, die beste Punktzahl bleibt gespeichert.</p>'+
+     '<h4>Durchsehen</h4><p>Nach jeder Beratung lassen sich alle Schritte noch einmal ansehen: deine Antwort, die richtige L\u00f6sung und die Begr\u00fcndung. Nur Ansicht, ge\u00e4ndert wird dort nichts.</p>'+
+     '<h4>Fortschritt</h4><p>Alles bleibt lokal in deinem Browser. Kein Konto, keine Anmeldung.</p>'+
+     '<h4>Hinweis</h4><p>Alle Inhalte dienen ausschlie\u00dflich der pharmazeutischen Fortbildung.</p>',
+  en:'<h4>Goal</h4><p>You stand behind the counter. Every consultation is one case of eight steps. The trainee becomes the pharmacy legend.</p>'+
+     '<h4>Moving</h4><p>Tap the floor to walk. Step onto a marker to open it. The counter leads to the case list.</p>'+
+     '<h4>Points</h4><p>Every step earns points. Mistakes can cost points and the total may go negative. A rank you have reached is never lost again.</p>'+
+     '<h4>Trust</h4><p>The bar at the top shows the trust of the customer. Tone and order matter as much as knowledge. At zero the customer leaves the pharmacy.</p>'+
+     '<h4>Order of cases</h4><p>One case opens the next. Finished cases can be replayed at any time and the best score is kept.</p>'+
+     '<h4>Review</h4><p>After every consultation you can look through all steps again: your answer, the correct solution and the reasoning. View only, nothing can be changed there.</p>'+
+     '<h4>Progress</h4><p>Everything stays local in your browser. No account, no sign-up.</p>'+
+     '<h4>Note</h4><p>All content serves pharmaceutical training only.</p>',
+  ar:'<h4>\u0627\u0644\u0647\u062f\u0641</h4><p>\u0623\u0646\u062a \u062e\u0644\u0641 \u0637\u0627\u0648\u0644\u0629 \u0627\u0644\u0628\u064a\u0639. \u0643\u0644 \u0627\u0633\u062a\u0634\u0627\u0631\u0629 \u062d\u0627\u0644\u0629 \u0645\u0646 \u062b\u0645\u0627\u0646\u064a \u062e\u0637\u0648\u0627\u062a. \u0645\u0646 \u0645\u062a\u062f\u0631\u0651\u0628 \u0625\u0644\u0649 \u0623\u0633\u0637\u0648\u0631\u0629 \u0635\u064a\u062f\u0644\u064a\u0629.</p>'+
+     '<h4>\u0627\u0644\u062a\u0646\u0642\u0644</h4><p>\u0627\u0646\u0642\u0631 \u0639\u0644\u0649 \u0627\u0644\u0623\u0631\u0636 \u0644\u062a\u0645\u0634\u064a. \u0642\u0641 \u0639\u0644\u0649 \u0639\u0644\u0627\u0645\u0629 \u0644\u062a\u0641\u062a\u062d\u0647\u0627. \u0637\u0627\u0648\u0644\u0629 \u0627\u0644\u0628\u064a\u0639 \u062a\u0642\u0648\u062f \u0625\u0644\u0649 \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u062d\u0627\u0644\u0627\u062a.</p>'+
+     '<h4>\u0627\u0644\u0646\u0642\u0627\u0637</h4><p>\u0643\u0644 \u062e\u0637\u0648\u0629 \u062a\u0645\u0646\u062d \u0646\u0642\u0627\u0637\u0627\u064b. \u0627\u0644\u062e\u0637\u0623 \u0642\u062f \u064a\u0643\u0644\u0641 \u0646\u0642\u0627\u0637\u0627\u064b\u060c \u0648\u0627\u0644\u0631\u0635\u064a\u062f \u0642\u062f \u064a\u0635\u0628\u062d \u0633\u0627\u0644\u0628\u0627\u064b. \u0644\u0643\u0646 \u0627\u0644\u0631\u062a\u0628\u0629 \u0627\u0644\u062a\u064a \u0628\u0644\u063a\u062a\u0647\u0627 \u0644\u0627 \u062a\u062a\u0631\u0627\u062c\u0639 \u0623\u0628\u062f\u0627\u064b.</p>'+
+     '<h4>\u0627\u0644\u062b\u0642\u0629</h4><p>\u0627\u0644\u0634\u0631\u064a\u0637 \u0641\u064a \u0627\u0644\u0623\u0639\u0644\u0649 \u064a\u0642\u064a\u0633 \u062b\u0642\u0629 \u0627\u0644\u0632\u0628\u0648\u0646. \u0627\u0644\u0646\u0628\u0631\u0629 \u0648\u0627\u0644\u062a\u0631\u062a\u064a\u0628 \u0628\u0642\u062f\u0631 \u0627\u0644\u0645\u0639\u0631\u0641\u0629. \u0639\u0646\u062f \u0627\u0644\u0635\u0641\u0631 \u064a\u063a\u0627\u062f\u0631 \u0627\u0644\u0632\u0628\u0648\u0646 \u0627\u0644\u0635\u064a\u062f\u0644\u064a\u0629.</p>'+
+     '<h4>\u062a\u0631\u062a\u064a\u0628 \u0627\u0644\u062d\u0627\u0644\u0627\u062a</h4><p>\u0643\u0644 \u062d\u0627\u0644\u0629 \u062a\u0641\u062a\u062d \u0627\u0644\u062a\u064a \u0628\u0639\u062f\u0647\u0627. \u0648\u0627\u0644\u062d\u0627\u0644\u0627\u062a \u0627\u0644\u0645\u0646\u062a\u0647\u064a\u0629 \u062a\u064f\u0639\u0627\u062f \u0645\u062a\u0649 \u0634\u0626\u062a\u060c \u0648\u0623\u0641\u0636\u0644 \u0646\u062a\u064a\u062c\u0629 \u062a\u0628\u0642\u0649 \u0645\u062d\u0641\u0648\u0638\u0629.</p>'+
+     '<h4>\u0627\u0644\u0645\u0631\u0627\u062c\u0639\u0629</h4><p>\u0628\u0639\u062f \u0643\u0644 \u0627\u0633\u062a\u0634\u0627\u0631\u0629 \u064a\u0645\u0643\u0646\u0643 \u062a\u0635\u0641\u0651\u062d \u0643\u0644 \u0627\u0644\u062e\u0637\u0648\u0627\u062a \u0645\u0631\u0629 \u0623\u062e\u0631\u0649: \u0625\u062c\u0627\u0628\u062a\u0643 \u0648\u0627\u0644\u062d\u0644 \u0627\u0644\u0635\u062d\u064a\u062d \u0648\u0627\u0644\u0634\u0631\u062d. \u0645\u0634\u0627\u0647\u062f\u0629 \u0641\u0642\u0637\u060c \u0628\u0644\u0627 \u062a\u063a\u064a\u064a\u0631 \u0625\u062c\u0627\u0628\u0629.</p>'+
+     '<h4>\u0627\u0644\u062a\u0642\u062f\u0645</h4><p>\u0643\u0644 \u0634\u064a\u0621 \u064a\u064f\u062d\u0641\u0638 \u0645\u062d\u0644\u064a\u0627\u064b \u0641\u064a \u0645\u062a\u0635\u0641\u062d\u0643. \u0628\u0644\u0627 \u062d\u0633\u0627\u0628 \u0648\u0628\u0644\u0627 \u062a\u0633\u062c\u064a\u0644.</p>'+
+     '<h4>\u062a\u0646\u0628\u064a\u0647</h4><p>\u0643\u0644 \u0627\u0644\u0645\u062d\u062a\u0648\u0649 \u0644\u0644\u062a\u062f\u0631\u064a\u0628 \u0627\u0644\u0635\u064a\u062f\u0644\u0627\u0646\u064a \u062d\u0635\u0631\u0627\u064b.</p>'
 };
 
 /* ---------------- PERSONAS (Kundentypen) ---------------- */
@@ -1006,6 +1219,7 @@ function sceneStrip(d){
 (function(){
   var x0=null,y0=null,t0=0;
   function advance(){
+    if(document.body.classList.contains('rv-open')) return false;
     var sels=['#pnext:not(.hidden)','.panel-next:not(.hidden)','#nextBtn:not(.hidden)',
               '.btn-next:not(.hidden)','.cta-next:not(.hidden)'];
     for(var i=0;i<sels.length;i++){
@@ -1035,9 +1249,11 @@ Mech.comic = function(host, d, done){
     return '<div class="bubble tail-left" id="bb'+i+'">'+
       '<div class="who">'+b.who+'</div><span class="btext"></span></div>';
   }).join('') + '</div>';
+  var visual = d.img ? '<img src="'+d.img+'" alt="">'
+                     : '<div class="panel-doc">'+docHTML(d.doc)+'</div>';
   host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
-    '<div class="stage-title">'+d.title+'</div></div><div class="stage-body comicbody"><div class="panel" id="cpanel">'+
-    '<img src="'+d.img+'" alt="">'+bubbles+
+    '<div class="stage-title">'+d.title+'</div></div><div class="stage-body comicbody"><div class="panel'+(d.img?'':' panel-plain')+'" id="cpanel">'+
+    visual+bubbles+
     '<button class="panel-next hidden" id="pnext">'+d.cta+'</button></div></div></div>';
   var idx=0, CH=34; window._typeInt=null;
   function showNext(){ var n=document.getElementById('pnext'); if(n)n.classList.remove('hidden'); }
@@ -1104,12 +1320,15 @@ Mech.mcq = function(host, d, done){
 Mech.sort = function(host, d, done){
   host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
     '<div class="stage-title">'+d.title+'</div></div><div class="stage-body">'+sceneStrip(d)+
+    (d.seconds?'<div id="mtz"></div>':'')+
     '<div class="sort-hint">'+d.hint+'</div><div class="sort-pool" id="pool"></div>'+
     '<div class="bins"><div class="bin flag" id="bF"><h4>🚩 '+d.flagLabel+'</h4><div class="chips"></div></div>'+
     '<div class="bin safe" id="bS"><h4>✓ '+d.safeLabel+'</h4><div class="chips"></div></div></div>'+
     '<div id="fbz"></div></div></div>';
-  var pool=document.getElementById('pool'), sel=null, placed=0, mistakes=0, score=0;
+  var pool=document.getElementById('pool'), sel=null, placed=0, mistakes=0, score=0, closed=false;
   var CARDS=shuffled(d.cards.map(function(c,i){return {c:c,i:i};}));
+  var right=0;
+  if(d.seconds) mechTimer(document.getElementById('mtz'), d.seconds, function(){ if(!closed) settle(true); });
   CARDS.forEach(function(o){
     var c=o.c, i=o.i;
     var ch=document.createElement('div'); ch.className='chip'; ch.textContent=c.t; ch.dataset.i=i;
@@ -1124,13 +1343,22 @@ Mech.sort = function(host, d, done){
       this.querySelector('.chips').appendChild(sel); sel.style.pointerEvents='none'; sel=null; placed++;
       if(right){ score+=5; } else { mistakes++; }
       document.getElementById('bF').classList.remove('hot'); document.getElementById('bS').classList.remove('hot');
-      if(placed===d.cards.length){
-        var good=mistakes<=1;
-        fbBlock(document.getElementById('fbz'), good, good?d.okH:d.badH+' ('+mistakes+')', d.expl,
-          function(){ done(score, good?6:-4*mistakes); });
-      }
+      if(placed===d.cards.length) settle(false);
     });
   });
+  function settle(timedOut){
+    if(closed) return; closed=true;
+    stopMechTimer();
+    pool.querySelectorAll('.chip').forEach(function(x){ x.style.pointerEvents='none'; });
+    var total = d.cards.length;
+    var hits  = Math.round(score/5);
+    var pts   = d.pts ? Math.round(hits/total*d.pts) : score;
+    var good  = !timedOut && mistakes<=(d.maxWrong===undefined?1:d.maxWrong);
+    var head  = (good?d.okH:(timedOut&&d.timeoutH?d.timeoutH:d.badH+' ('+mistakes+')'))+' · +'+pts;
+    fbBlock(document.getElementById('fbz'), good, head,
+      (timedOut&&d.timeoutX?d.timeoutX+' ':'')+d.expl,
+      function(){ done(pts, good?6:-4*Math.max(1,mistakes)); });
+  }
 };
 
 /* shelf */
@@ -1334,7 +1562,7 @@ Mech.truefalse = function(host, d, done){
   }
   function answer(v){
     var it=ITEMS[i], ok=(v===it.ok);
-    if(ok){ score+=5; SND.good(); } else { wrong++; SND.bad(); }
+    if(ok){ score+=(it.p||5); SND.good(); } else { wrong++; SND.bad(); }
     var row=document.createElement('div'); row.className='tf-row '+(ok?'ok':'bad');
     row.innerHTML='<b>'+(ok?'✓':'✗')+'</b> '+it.t+'<span>'+it.why+'</span>';
     document.getElementById('tfl').appendChild(row);
@@ -1347,7 +1575,7 @@ Mech.truefalse = function(host, d, done){
   function finish(){
     document.getElementById('tfx').textContent='';
     document.getElementById('tfY').disabled=true; document.getElementById('tfN').disabled=true;
-    var good=wrong<=1;
+    var good=wrong<=(d.maxWrong===undefined?1:d.maxWrong);
     fbBlock(document.getElementById('fbz'), good,
       (good?d.okH:d.badH)+' ('+(ITEMS.length-wrong)+'/'+ITEMS.length+') · +'+score, d.expl,
       function(){ done(score, good?8:-5); });
@@ -1394,10 +1622,140 @@ Mech.sentence = function(host, d, done){
   });
 };
 
+/* =====================================================================
+   BÜRO-ENGINE · Dokumente mit HTML und CSS, Sekundenzähler, Euro-Folge
+===================================================================== */
+
+/* Dokument aus Daten bauen. Jedes Feld mit k ist ein eigenes Tippziel. */
+function docHTML(doc){
+  if(!doc) return '';
+  var rows=(doc.rows||[]).map(function(r){
+    return '<div class="doc-row">'+r.map(function(f){
+      var k=f.k||'';
+      return '<button class="doc-f'+(k?'':' doc-static')+'"'+(k?' data-k="'+k+'"':'')+
+             (k?'':' disabled')+'><span class="doc-l">'+f.l+'</span>'+
+             '<span class="doc-v">'+f.v+'</span></button>';
+    }).join('')+'</div>';
+  }).join('');
+  return '<div class="doc'+(doc.cls?' '+doc.cls:'')+'">'+
+    (doc.head?'<div class="doc-head">'+doc.head+'</div>':'')+
+    (doc.sub?'<div class="doc-sub">'+doc.sub+'</div>':'')+
+    (doc.body||'')+rows+
+    (doc.foot?'<div class="doc-foot">'+doc.foot+'</div>':'')+'</div>';
+}
+
+/* Sekundenzähler. setTimeout-Kette, damit das bestehende clearTimeout greift. */
+function stopMechTimer(){
+  if(window._mechTimer){ clearTimeout(window._mechTimer); window._mechTimer=null; }
+}
+function mechTimer(host, seconds, onEnd){
+  if(!host) return;
+  host.innerHTML='<div class="mtimer"><div class="mt-bar"><div class="mt-fill"></div></div>'+
+                 '<div class="mt-num"></div></div>';
+  var fill=host.querySelector('.mt-fill'), num=host.querySelector('.mt-num');
+  var left=seconds;
+  function paint(){
+    if(!fill) return;
+    fill.style.width=Math.max(0,Math.round(left/seconds*100))+'%';
+    if(left<=Math.max(5,Math.round(seconds*0.25))) fill.classList.add('warn');
+    num.textContent=left+'s';
+  }
+  paint();
+  stopMechTimer();
+  (function step(){
+    window._mechTimer=setTimeout(function(){
+      if(!document.body.contains(host)) { stopMechTimer(); return; }
+      left--; paint();
+      if(left<=0){ stopMechTimer(); onEnd(); }
+      else step();
+    },1000);
+  })();
+}
+
+/* Aufgedecktes Dokument in die Akte legen. */
+function revealDoc(r){
+  if(!r || typeof run==='undefined' || !run) return '';
+  if(!run.docs) run.docs=[];
+  for(var i=0;i<run.docs.length;i++) if(run.docs[i].id===r.id) return '';
+  run.docs.push({id:r.id, html:r.html});
+  return '<div class="doc-reveal">'+(r.kicker?'<div class="dr-k">'+r.kicker+'</div>':'')+r.html+'</div>';
+}
+
+/* rezept: Dokument mit HTML und CSS, das richtige Feld antippen. */
+Mech.rezept = function(host, d, done){
+  host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
+    '<div class="stage-title">'+d.title+'</div></div><div class="stage-body">'+
+    (d.hint?'<div class="a3-hint">'+d.hint+'</div>':'')+
+    docHTML(d.doc)+'<div id="fbz"></div></div></div>';
+  var fin=false, fields=host.querySelectorAll('.doc-f[data-k]');
+  fields.forEach(function(b){
+    b.addEventListener('click',function(){
+      if(fin) return; fin=true;
+      var k=b.dataset.k, ok=(k===d.answer), p=ok?(d.p||25):0;
+      fields.forEach(function(x){ x.disabled=true; if(x.dataset.k===d.answer) x.classList.add('hit'); });
+      if(!ok) b.classList.add('miss');
+      var head=(ok?d.okH:((d.wrong&&d.wrong[k])||d.badH))+' · +'+p;
+      fbBlock(document.getElementById('fbz'), ok, head, d.expl, function(){ done(p, ok?8:-6); });
+    });
+  });
+};
+
+/* hunt: Fehlersuche unter Zeitdruck im selben Dokument. */
+Mech.hunt = function(host, d, done){
+  host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
+    '<div class="stage-title">'+d.title+'</div></div><div class="stage-body">'+
+    '<div id="mtz"></div>'+(d.hint?'<div class="a3-hint">'+d.hint+'</div>':'')+
+    docHTML(d.doc)+'<div id="fbz"></div></div></div>';
+  var fin=false, fields=host.querySelectorAll('.doc-f[data-k]');
+  var secs=d.seconds||30;
+  function close(k){
+    if(fin) return; fin=true; stopMechTimer();
+    var ok=(k===d.answer), p=ok?(d.p||25):0;
+    fields.forEach(function(x){ x.disabled=true; if(x.dataset.k===d.answer) x.classList.add('hit'); });
+    if(k && !ok){ var b=host.querySelector('.doc-f[data-k="'+k+'"]'); if(b) b.classList.add('miss'); }
+    var head=(ok?d.okH:(k?((d.wrong&&d.wrong[k])||d.badH):(d.timeoutH||d.badH)))+' · +'+p;
+    fbBlock(document.getElementById('fbz'), ok, head,
+      (!k&&d.timeoutX?d.timeoutX+' ':'')+d.expl, function(){ done(p, ok?8:-6); });
+  }
+  mechTimer(document.getElementById('mtz'), secs, function(){ close(null); });
+  fields.forEach(function(b){ b.addEventListener('click',function(){ close(b.dataset.k); }); });
+};
+
+/* euro: die finanzielle Folge in echten Euro. */
+Mech.euro = function(host, d, done){
+  host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
+    '<div class="stage-title">'+d.title+'</div></div><div class="stage-body">'+
+    (d.hint?'<div class="a3-hint">'+d.hint+'</div>':'')+
+    docHTML(d.doc)+'<div class="euro-opts" id="eo"></div>'+
+    '<div id="eout"></div><div id="fbz"></div></div></div>';
+  var box=document.getElementById('eo'), OPTS=shuffled(d.options), fin=false;
+  OPTS.forEach(function(o){
+    var b=document.createElement('button'); b.className='euro-opt'; b.textContent=o.t;
+    b.addEventListener('click',function(){
+      if(fin) return; fin=true;
+      box.querySelectorAll('.euro-opt').forEach(function(x,i){ x.disabled=true; if(OPTS[i].ok) x.classList.add('correct'); });
+      if(!o.ok) b.classList.add('wrong');
+      if(d.ledger){
+        document.getElementById('eout').innerHTML='<div class="eu-ledger">'+
+          d.ledger.map(function(l){
+            return '<div class="eu-line'+(l.cls?' '+l.cls:'')+'"><span>'+l.l+'</span><b>'+l.v+'</b></div>';
+          }).join('')+'</div>';
+      }
+      fbBlock(document.getElementById('fbz'), !!o.ok, (o.ok?d.okH:d.badH)+' · +'+(o.p||0), d.expl,
+        function(){ done(o.p||0, o.ok?10:-8); });
+    });
+    box.appendChild(b);
+  });
+};
+
 /* shared feedback block */
 function fbBlock(zone, good, head, text, next){
   if(good)SND.good();else SND.bad();
-  zone.innerHTML='<div class="fb '+(good?'good':'bad')+'"><h5>'+head+'</h5><p>'+text+'</p></div>'+
+  var rv='';
+  if(good && typeof run!=='undefined' && run && run.pendingReveal){
+    rv=revealDoc(run.pendingReveal); run.pendingReveal=null;
+  }
+  zone.innerHTML=rv+'<div class="fb '+(good?'good':'bad')+'"><h5>'+head+'</h5><p>'+text+'</p></div>'+
     '<button class="next-btn" id="nx">'+t('weiter')+'</button>';
   document.getElementById('nx').addEventListener('click', next);
 }
@@ -3710,6 +4068,311 @@ TOPICS.sonnenschutz_urlaub.steps_ar=[
    {t:"دهنة واحدة جيدة صباحاً تكفي لليوم.",p:0,tr:-12,h:"خطأ علمي",x:"التعرّق والسباحة والتنشيف تزيل المرشّح. وبلا إعادة دهن تزول الحماية إلى حد بعيد خلال ساعات."},
    {t:"انتبه فقط ألا يحمرّ الأطفال كثيراً.",p:0,tr:-10,h:"معيار متأخر",x:"الاحمرار يظهر بعد ساعات من حدوث الضرر. ومن ينتظره يكون قد أصيب بالحرق فعلاً - وعند الأطفال هذا بالضبط ما يجب منعه."}]}}
 ];
+
+/* =====================================================================
+   BÜRO · RETAX · B1 · retax_rabatt_klein
+   Quelle: FALL_Retax_Level_01_retax_rabatt_klein_v3.md (02_Fallsammlungen)
+   Zeichen, PIC und IK sind konstruiert. Beträge, Codes und Zeitabstände echt.
+   Punkte: 0 + 25×6 + 50 = 200
+===================================================================== */
+TOPICS.retax_rabatt_klein = {
+  de:"Vier Positionen, ein Betrag", en:"Four Positions, One Amount", ar:"أربعة مواضع ومبلغ واحد",
+  tag:"Retax",
+  sub:{de:"Büro · Retax", en:"Office · Claw-back", ar:"المكتب · ريتاكس"},
+  badges:[],
+  steps:[
+ {mech:"comic",data:{kicker:"Szene 1 · Montagmorgen im Büro",
+  title:"Ein Bescheid der IKK classic liegt auf dem Schreibtisch", cta:"Bescheid prüfen →",
+  doc:{head:"IKK classic · Bescheid", sub:"Zeichen 700-318052 · Sammelbescheid",
+   rows:[[{l:"Rechnungsmonat",v:"August"},{l:"Bescheid vom",v:"Mai"}],
+         [{l:"Nettobetrag",v:"35,83 EUR"},{l:"Anlagen",v:"2 Imageausdrucke"}]],
+   foot:"Beanstandete Abgaben · Einzelheiten im Imageausdruck"},
+  bubbles:[
+   {who:"Büro",txt:"Montagmorgen. Die Post liegt geöffnet auf dem Schreibtisch. Ein Bescheid der IKK classic, Zeichen 700-318052."},
+   {who:"Büro",txt:"Eine einzige Zahl steht darauf: <b>35,83 EUR netto</b>. Dahinter geheftet zwei Imageausdrucke, die noch niemand gelesen hat."},
+   {who:"Büro",txt:"Die betroffenen Abgaben sind vom August. Es ist Mai."}]}},
+
+ {mech:"mcq",data:{kicker:"Entscheidung · Erster Arbeitsschritt", title:"Was ist der erste Arbeitsschritt?",
+  reveal:{id:"pos", kicker:"Imageausdruck · aufgedeckt", html:"<div class='doc doc-pos'><div class='doc-head'>Imageausdruck · 4 Positionen</div><div class='pos-row'><span class='pz'>10398914</span><span class='nm'>Macrogol AbZ Pulver 50 Beutel</span><span class='cd c63'>63</span><span class='am'>−1,86 €</span></div><div class='pos-row'><span class='pz'>09273219</span><span class='nm'>Candesartan 1A Pharma 32 mg N3</span><span class='cd c421'>421</span><span class='am'>−21,30 €</span></div><div class='pos-row'><span class='pz'>03820525</span><span class='nm'>Bisoprolol 5 1A Pharma 100 St. N3</span><span class='cd c421'>421</span><span class='am'>−10,52 €</span></div><div class='pos-row'><span class='pz'>05450802</span><span class='nm'>Isotonische Kochsalzlösung z. Inhalation</span><span class='cd c63'>63</span><span class='am'>−2,09 €</span></div></div>"},
+  options:[
+   {t:"Den Gesamtbetrag prüfen und entscheiden",p:0,tr:0,h:"Zu grob",
+    x:"Der Gesamtbetrag ist eine Summe aus verschiedenen Gründen. Er sagt nichts darüber, was angreifbar ist."},
+   {t:"Je Position einzeln entscheiden",p:25,tr:0,ok:true,h:"Richtig aufgeteilt",
+    x:"Jede Position trägt ihre eigene Begründung und ihre eigene Erfolgsaussicht."},
+   {t:"Pauschal gegen den ganzen Bescheid",p:0,tr:0,h:"Schwächt die guten Positionen",
+    x:"Die Kasse prüft den pauschalen Einspruch als Ganzes und weist ihn als Ganzes zurück."},
+   {t:"Akzeptieren, es sind unter fünfzig Euro",p:0,tr:0,h:"Der Betrag ist nicht der Maßstab",
+    x:"Kleinstbeträge sind oft der deutlichste Hinweis auf einen systematischen Fehler."}],
+  okH:"Position für Position",badH:"Nicht der erste Schritt",
+  expl:"Der Bescheid trägt eine einzige Nettosumme. Die eigentliche Information steht im Imageausdruck: je Position eine PIC-Nummer, ein Präparat, ein Beanstandungscode, ein Betrag. Hier sind es vier Positionen mit zwei verschiedenen Begründungen, und jede hat ihre eigene Erfolgsaussicht. Ein pauschaler Einspruch schwächt die begründeten Positionen, weil die Kasse ihn als Ganzes prüft. Wichtig: Die vier Positionen ergeben 35,77 €, der Bescheid nennt 35,83 €. Die Differenz stammt aus abhängigen Korrekturzeilen für Umsatzsteuer und Zuzahlung. Solche Cent-Differenzen sind normal und kein Einspruchsgrund."}},
+
+ {mech:"truefalse",data:{kicker:"Aussage · Beanstandungscodes", title:"Richtig oder falsch?",
+  trueLabel:"richtig", falseLabel:"falsch", maxWrong:0,
+  items:[{t:"Code 63 Rabattkorrektur wirft der Apotheke vor, das falsche Präparat abgegeben zu haben.",
+    ok:false, p:25, why:"Bei 63 war das Präparat richtig, der Apothekenabschlag fehlte im Datensatz."}],
+  okH:"Sauber unterschieden", badH:"Die Codes verwechselt",
+  expl:"Bei den beiden 63er-Positionen wurde das richtige Präparat abgegeben. Sichtbar wird es im Feld <b>RBT Apo</b>: Es stand auf 0,00 und wurde auf 1,86 bzw. 2,09 korrigiert. Der Apothekenabschlag war schlicht nicht im Datensatz. Ein Einspruch hat hier keine Aussicht, weil die Berechnung objektiv unvollständig war. Der Code <b>421 Nichtbeachtung Rabattverträge</b> ist demgegenüber der echte Vorwurf: dass das Präparat selbst falsch war. Die beiden Codes wirken verwandt und sind in ihrer Angreifbarkeit gegensätzlich. Entscheidend ist die andere Konsequenz: 63 ist ein Signal für eine Fehlkonfiguration im Warenwirtschaftssystem oder in der Übertragung ans Rechenzentrum, nicht für einen Fehler im HV. Es wiederholt sich still in jedem Monat, in dem die Ursache besteht."}},
+
+ {mech:"sort",data:{kicker:"Sortierung · 30 Sekunden", title:"Welche Positionen sind angreifbar?",
+  hint:"Maßstab ist die Begründung, nicht der Betrag.", seconds:30, pts:25,
+  flagLabel:"Angreifbar", safeLabel:"Nicht angreifbar",
+  cards:[
+   {t:"Macrogol AbZ Pulver 50 Beutel · Code 63 · −1,86 €",flag:false},
+   {t:"Candesartan 1A Pharma 32 mg N3 · Code 421 · −21,30 €",flag:true},
+   {t:"Bisoprolol 5 1A Pharma 100 St. N3 · Code 421 · −10,52 €",flag:true},
+   {t:"Isotonische Kochsalzlösung z. Inhalation · Code 63 · −2,09 €",flag:false}],
+  okH:"Nach dem Code sortiert", badH:"Nach dem Betrag sortiert",
+  timeoutH:"Zeit abgelaufen", timeoutX:"Im Büro entscheidet die Menge der Bescheide das Tempo.",
+  expl:"Sortiert wird nach dem Code, nicht nach dem Betrag. Die Positionen 2 und 3 tragen 421: Die Kasse behauptet, ein rabattiertes Präparat sei verfügbar gewesen. Das ist eine Tatsachenbehauptung, und die Kasse muss sie belegen. Die Positionen 1 und 4 tragen 63, dort ist die Berechnung objektiv unvollständig, und es gibt keinen Ansatzpunkt. Das ist erst die halbe Entscheidung: Die Sortierung sagt, welche Positionen angefochten werden können. Welche den Einspruch lohnen, ist die nächste Frage."}},
+
+ {mech:"mcq",data:{kicker:"Entscheidung · Wirtschaftlichkeit", title:"Wann lohnt ein Einspruch wirtschaftlich nicht mehr?",
+  options:[
+   {t:"Nie, jede Position gehört angefochten",p:0,tr:0,h:"Kostet mehr als sie holt",
+    x:"Eine Viertelstunde Arbeitszeit für 1,86 € ist ein Verlustgeschäft."},
+   {t:"Unter etwa fünf Euro je Position",p:25,tr:0,ok:true,h:"Die Schwelle sitzt richtig",
+    x:"Unter dieser Grenze kostet der Einspruch mehr Arbeitszeit, als er zurückholt."},
+   {t:"Unter fünfzig Euro je Bescheid",p:0,tr:0,h:"Falsche Bezugsgröße",
+    x:"Entschieden wird je Position, nicht je Bescheid."},
+   {t:"Nach einem halben Jahr Abstand",p:0,tr:0,h:"Der Abstand ist normal",
+    x:"Fünf bis neun Monate sind der Regelfall, kein Ausschlussgrund."}],
+  okH:"Wirtschaftlich gedacht", badH:"Rechnung geht nicht auf",
+  expl:"Ein Einspruch kostet mindestens eine Viertelstunde: Position heraussuchen, Nachweise ziehen, Begründung formulieren, versenden, Wiedervorlage setzen. Bei einem Positionsmedian von rund zehn Euro ist die Grenze schnell erreicht. Positionen unter fünf Euro kosten mehr Arbeitszeit, als sie zurückholen. Beide Filter zusammen auf diesen Bescheid angewandt: Die Positionen 2 und 3 sind angreifbar und liegen über der Schwelle, sie werden angefochten. Die Positionen 1 und 4 fallen an beiden Filtern durch. Das gilt für die Einzelentscheidung. Es gilt ausdrücklich nicht für die Ursache: Vier Kleinstpositionen von je ein bis zwei Euro sind wirtschaftlich belanglos und zugleich der deutlichste Hinweis auf ein systematisches Problem. Antwort D ist falsch: Ein halbes bis dreiviertel Jahr Abstand ist der Normalfall, kein Ausschlussgrund."}},
+
+ {mech:"rezept",data:{kicker:"Einspruch · Position 2", title:"Tippe das Feld an, ohne das die Kasse die Position nicht zuordnen kann",
+  hint:"Du schreibst den Einspruch gegen Position 2, Candesartan 1A Pharma 32 mg N3.",
+  doc:{head:"Imageausdruck · Position 2", sub:"IKK classic · Zeichen 700-318052",
+   rows:[[{l:"PIC",v:"4903180224600000",k:"pic"},{l:"PZN",v:"09273219",k:"pzn"}],
+         [{l:"Beanst.-Code",v:"421",k:"code"},{l:"RBT Apo",v:"0,00",k:"rbt"}],
+         [{l:"Betrag",v:"−21,30 EUR",k:"betrag"},{l:"IK",v:"109519005",k:"ik"}]],
+   foot:"Nichtbeachtung Rabattverträge"},
+  answer:"pic", p:25,
+  okH:"Die Vorgangsnummer",
+  badH:"Damit kann die Kasse nicht zuordnen",
+  wrong:{pzn:"Die PZN reicht nicht", code:"Der Code ist der Vorwurf, nicht die Adresse",
+   rbt:"Ein Folgefeld, keine Zuordnung", betrag:"Der Betrag ordnet nichts zu",
+   ik:"Das IK ist die Kasse, nicht die Zeile"},
+  expl:"Die IKK classic verlangt wörtlich <b>unter Angabe von Gründen und den jeweiligen PIC-Nummern</b>. Die PIC ist die Vorgangsnummer der einzelnen Verordnungszeile. Ohne sie kann die Kasse nicht zuordnen, worauf sich der Einspruch bezieht, und er wird ungeprüft zurückgelegt. Die PZN allein genügt nicht: Dasselbe Präparat kann in mehreren Bescheiden auftauchen. Nun zur Begründung, die neben die PIC gehört. Der Einspruch gegen 421 stützt sich nicht auf eine Rechtsnorm, sondern auf die Beweislast. Die Kasse behauptet eine Tatsache: dass am Abgabetag ein rabattiertes Präparat verfügbar war. Also ist sie aufzufordern, es zu benennen. Ein Teil dieser Retaxationen endet genau hier, weil die maschinelle Prüfung nur feststellt, ob zum Wirkstoff ein Rabattvertrag besteht, nicht ob das Präparat tatsächlich abgabefähig war. War Nichtverfügbarkeit der Grund, gehört zusätzlich das Nichtverfügbarkeitsprotokoll mit Abfragezeitstempel dazu. Und noch ein Blick auf das Feld <b>RBT Apo</b>: Es steht hier auf 0,00, wie bei den 63er-Positionen. Bei einer 421er-Position ist das kein zweiter Fehler, sondern eine Folge der Korrektur."}},
+
+ {mech:"mcq",data:{kicker:"Entscheidung · Der Zeitabstand", title:"Abgabe im August, Bescheid im Mai. Wichtigste Folge?",
+  options:[
+   {t:"Die Frist ist abgelaufen, Einspruch zwecklos",p:0,tr:0,h:"Die Frist läuft ab dem Bescheid",
+    x:"Nicht ab der Abgabe. Der Einspruch ist fristgerecht möglich."},
+   {t:"Ein Fehler läuft monatelang unbemerkt weiter",p:25,tr:0,ok:true,h:"Die eigentliche Folge",
+    x:"Acht Monate lang produziert die Ursache Positionen, bevor sie sichtbar wird."},
+   {t:"Die Kasse verliert ihr Recht nach sechs Monaten",p:0,tr:0,h:"So ist es nicht",
+    x:"Der Abstand von fünf bis neun Monaten ist der Regelfall."},
+   {t:"Keine Folge, entscheidend ist der Betrag",p:0,tr:0,h:"Der Betrag ist das Nebenthema",
+    x:"Der Zeitabstand entscheidet über Nachweise und über die Wiederholung."}],
+  okH:"Auf die Ursache geschaut", badH:"Die Folge verfehlt",
+  expl:"Ein Abstand von fünf bis neun Monaten ist der Normalfall, der Median liegt bei acht, und er ist über AOK, IKK, spectrumK und GFS hinweg stabil. Drei Folgen. Erstens kann die Person, die die Verordnung beliefert hat, das Team längst verlassen haben, und niemand erinnert den Vorgang. Zweitens produziert ein systematischer Fehler wie der, der den Code 63 erzeugt, acht Monate lang Positionen, bevor der erste Bescheid ihn sichtbar macht. Drittens werden Nachweise erst angefordert, wenn ihre Zeit vorbei ist: In einem dokumentierten Fall wurde die Nichtverfügbarkeit am 07.02.2024 um 09:38:07 abgefragt und das Protokoll am 29.01.2025 gedruckt, fast ein Jahr später, für einen späteren Einspruch. Gerettet hat die Akte allein die Archivierung im Moment der Abgabe. A und C sind falsch: Weder ist die Frist abgelaufen noch verliert die Kasse ihr Recht. Die Einspruchsfrist läuft ab dem Bescheid, nicht ab der Abgabe."}},
+
+ {mech:"euro",data:{kicker:"Bilanz · Was bleibt hängen", title:"Einspruch gegen Position 2 und 3. Was bleibt am Ende hängen?",
+  options:[{t:"0,00 €",p:0},{t:"3,95 €",p:50,ok:true},{t:"35,83 €",p:0},{t:"21,30 €",p:0}],
+  ledger:[
+   {l:"Bescheid gesamt",v:"−35,83 €",cls:"minus"},
+   {l:"Vier Positionen",v:"−35,77 €",cls:"minus"},
+   {l:"Abhängige Korrekturzeilen",v:"−0,06 €",cls:"minus"},
+   {l:"Einspruch Position 2 und 3",v:"+31,82 €",cls:"plus"},
+   {l:"Bleibt hängen",v:"−3,95 €",cls:"big minus"}],
+  okH:"Genau gerechnet", badH:"Die Rechnung geht anders",
+  expl:"1,86 + 2,09 = 3,95 €. Mehr ist nicht zu holen, weniger auch nicht. Drei Punkte, die über diesen Bescheid hinausgehen. Erstens: Ein Vergleichsfall bei einer BKK endete genau so. Von 36,41 € wurde nur die Rezepturposition über 24,97 € anerkannt, die Rabattposition über 11,44 € blieb. Teilerfolg ist der Normalfall, nicht die Ausnahme. Zweitens: Anerkennung schafft keinen Präzedenzfall. Wörtlich aus einem echten Bescheid: <b>Sollte dies im Rahmen einer Einzelfallentscheidung erfolgt sein, ist damit keine präjudizierende Wirkung für die Zukunft verbunden.</b> Dieselbe Begründung kommt im nächsten Prüflauf wieder. Drittens, und das ist der eigentliche Ertrag dieser Stunde: Die beiden aussichtslosen 63er-Positionen sind wertvoller als der gewonnene Einspruch. Sie zeigen, dass der Apothekenabschlag seit Monaten nicht sauber übertragen wird. Wer nur widerspricht und die Ursache nicht abstellt, arbeitet acht Monate blind weiter."}}
+],
+  steps_en:[
+ {mech:"comic",data:{kicker:"Scene 1 · Monday morning in the office",
+  title:"A notice from IKK classic is lying on the desk", cta:"Check the notice →",
+  doc:{head:"IKK classic · Notice", sub:"Reference 700-318052 · collective notice",
+   rows:[[{l:"Billing month",v:"August"},{l:"Notice dated",v:"May"}],
+         [{l:"Net amount",v:"35.83 EUR"},{l:"Attachments",v:"2 image printouts"}]],
+   foot:"Objected dispensings · details in the image printout"},
+  bubbles:[
+   {who:"Office",txt:"Monday morning. The post lies open on the desk. A notice from IKK classic, reference 700-318052."},
+   {who:"Office",txt:"A single figure on it: <b>35.83 EUR net</b>. Stapled behind it, two image printouts nobody has read yet."},
+   {who:"Office",txt:"The dispensings concerned are from August. It is May."}]}},
+
+ {mech:"mcq",data:{kicker:"Decision · First step", title:"What is the first step?",
+  reveal:{id:"pos", kicker:"Image printout · revealed", html:"<div class='doc doc-pos'><div class='doc-head'>Image printout · 4 positions</div><div class='pos-row'><span class='pz'>10398914</span><span class='nm'>Macrogol AbZ Pulver 50 Beutel</span><span class='cd c63'>63</span><span class='am'>−1,86 €</span></div><div class='pos-row'><span class='pz'>09273219</span><span class='nm'>Candesartan 1A Pharma 32 mg N3</span><span class='cd c421'>421</span><span class='am'>−21,30 €</span></div><div class='pos-row'><span class='pz'>03820525</span><span class='nm'>Bisoprolol 5 1A Pharma 100 St. N3</span><span class='cd c421'>421</span><span class='am'>−10,52 €</span></div><div class='pos-row'><span class='pz'>05450802</span><span class='nm'>Isotonische Kochsalzlösung z. Inhalation</span><span class='cd c63'>63</span><span class='am'>−2,09 €</span></div></div>"},
+  options:[
+   {t:"Check the total and decide",p:0,tr:0,h:"Too coarse",
+    x:"The total is a sum of different reasons. It says nothing about what is attackable."},
+   {t:"Decide on each position separately",p:25,tr:0,ok:true,h:"Split correctly",
+    x:"Every position carries its own reason and its own prospect of success."},
+   {t:"Appeal the whole notice as a block",p:0,tr:0,h:"Weakens the good positions",
+    x:"The insurer reviews a blanket appeal as a whole and rejects it as a whole."},
+   {t:"Accept it, under fifty euros",p:0,tr:0,h:"The amount is not the criterion",
+    x:"Tiny amounts are often the clearest sign of a systematic fault."}],
+  okH:"Position by position",badH:"Not the first step",
+  expl:"The notice carries a single net sum. The real information sits in the image printout: per position a PIC number, a product, an objection code, an amount. Here there are four positions under two different reasons, and each has its own prospect of success. A blanket appeal weakens the well-founded positions, because the insurer reviews it as a whole. Note: the four positions total 35.77 €, the notice states 35.83 €. The difference comes from dependent correction lines for VAT and co-payment. Such cent differences are normal and no ground for appeal."}},
+
+ {mech:"truefalse",data:{kicker:"Statement · objection codes", title:"True or false?",
+  trueLabel:"true", falseLabel:"false", maxWrong:0,
+  items:[{t:"Code 63 Rabattkorrektur alleges the pharmacy dispensed the wrong product.",
+    ok:false, p:25, why:"On 63 the product was right, the pharmacy discount was missing from the record."}],
+  okH:"Cleanly distinguished", badH:"The codes mixed up",
+  expl:"On both 63 positions the correct product was dispensed. You can see it in the <b>RBT Apo</b> field: it stood at 0.00 and was corrected to 1.86 and 2.09. The pharmacy discount was simply absent from the record. An appeal has no prospect here, because the calculation was objectively incomplete. Code <b>421 Nichtbeachtung Rabattverträge</b>, by contrast, is the real allegation: that the product itself was wrong. The two codes look related and are opposites in how attackable they are. The other consequence is what matters: 63 signals a misconfiguration in the stock system or in the transfer to the billing centre, not an error at the counter. It repeats silently every month the cause persists."}},
+
+ {mech:"sort",data:{kicker:"Sorting · 30 seconds", title:"Which positions are attackable?",
+  hint:"The criterion is the reason, not the amount.", seconds:30, pts:25,
+  flagLabel:"Attackable", safeLabel:"Not attackable",
+  cards:[
+   {t:"Macrogol AbZ Pulver 50 Beutel · code 63 · −1.86 €",flag:false},
+   {t:"Candesartan 1A Pharma 32 mg N3 · code 421 · −21.30 €",flag:true},
+   {t:"Bisoprolol 5 1A Pharma 100 St. N3 · code 421 · −10.52 €",flag:true},
+   {t:"Isotonische Kochsalzlösung z. Inhalation · code 63 · −2.09 €",flag:false}],
+  okH:"Sorted by the code", badH:"Sorted by the amount",
+  timeoutH:"Time is up", timeoutX:"In the office the number of notices sets the pace.",
+  expl:"Sorting follows the code, not the amount. Positions 2 and 3 carry 421: the insurer asserts a rebated product was available. That is a factual assertion, and the insurer must substantiate it. Positions 1 and 4 carry 63, where the calculation is objectively incomplete and there is no purchase. This is only half the decision: sorting tells you which positions can be challenged. Which ones are worth challenging is the next question."}},
+
+ {mech:"mcq",data:{kicker:"Decision · economics", title:"When does an appeal stop being worthwhile?",
+  options:[
+   {t:"Never, every position deserves it",p:0,tr:0,h:"Costs more than it recovers",
+    x:"A quarter of an hour of working time for 1.86 € is a loss."},
+   {t:"Below about five euros per position",p:25,tr:0,ok:true,h:"The threshold sits right",
+    x:"Below that line the appeal costs more working time than it brings back."},
+   {t:"Below fifty euros per notice",p:0,tr:0,h:"Wrong reference unit",
+    x:"The decision is taken per position, not per notice."},
+   {t:"After a six-month gap",p:0,tr:0,h:"The gap is normal",
+    x:"Five to nine months is the regular case, not a bar."}],
+  okH:"Thought through economically", badH:"The arithmetic does not work",
+  expl:"An appeal costs at least fifteen minutes: locate the position, pull the evidence, write the reasoning, send it, diarise it. With a position median around ten euros the threshold arrives quickly. Positions under five euros cost more working time than they recover. Applying both filters to this notice: positions 2 and 3 are attackable and clear the threshold, so they get challenged. Positions 1 and 4 fail both filters. That governs the individual decision. It expressly does not govern the cause: four tiny positions of one to two euros each are economically trivial and at the same time the clearest sign of a systematic problem. Answer D is wrong: six to nine months' distance is the normal case, not a bar."}},
+
+ {mech:"rezept",data:{kicker:"Appeal · position 2", title:"Tap the field without which the insurer cannot locate the position",
+  hint:"You are writing the appeal against position 2, Candesartan 1A Pharma 32 mg N3.",
+  doc:{head:"Image printout · position 2", sub:"IKK classic · reference 700-318052",
+   rows:[[{l:"PIC",v:"4903180224600000",k:"pic"},{l:"PZN",v:"09273219",k:"pzn"}],
+         [{l:"Objection code",v:"421",k:"code"},{l:"RBT Apo",v:"0.00",k:"rbt"}],
+         [{l:"Amount",v:"−21.30 EUR",k:"betrag"},{l:"IK",v:"109519005",k:"ik"}]],
+   foot:"Nichtbeachtung Rabattverträge"},
+  answer:"pic", p:25,
+  okH:"The transaction number",
+  badH:"The insurer cannot locate it with this",
+  wrong:{pzn:"The PZN is not enough", code:"The code is the allegation, not the address",
+   rbt:"A consequent field, not an address", betrag:"The amount locates nothing",
+   ik:"The IK is the insurer, not the line"},
+  expl:"IKK classic requires literally <b>unter Angabe von Gründen und den jeweiligen PIC-Nummern</b>. The PIC is the transaction number of the individual prescription line. Without it the insurer cannot locate what the appeal refers to, and it is set aside unexamined. The PZN alone does not suffice: the same product can appear in several notices. Now for the reasoning that belongs beside the PIC. An appeal against 421 rests not on a legal provision but on the burden of proof. The insurer asserts a fact: that a rebated product was available on the day of dispensing. So it must be asked to name it. A share of these claw-backs ends right here, because the automated check only establishes whether a rebate contract exists for the substance, not whether the product was actually dispensable. If unavailability was the reason, the unavailability protocol with its query timestamp belongs with it. And a glance at the <b>RBT Apo</b> field: it stands at 0.00 here, as on the 63 positions. On a 421 position that is not a second error but a consequence of the correction."}},
+
+ {mech:"mcq",data:{kicker:"Decision · the time gap", title:"Dispensed in August, notice in May. Main consequence?",
+  options:[
+   {t:"The deadline lapsed, an appeal is pointless",p:0,tr:0,h:"The period runs from the notice",
+    x:"Not from the dispensing. The appeal is possible in time."},
+   {t:"A fault runs on unnoticed for months",p:25,tr:0,ok:true,h:"The real consequence",
+    x:"For eight months the cause produces positions before it becomes visible."},
+   {t:"The insurer loses its right after six months",p:0,tr:0,h:"That is not so",
+    x:"A gap of five to nine months is the regular case."},
+   {t:"No consequence, the amount is what counts",p:0,tr:0,h:"The amount is the side issue",
+    x:"The time gap decides about evidence and about repetition."}],
+  okH:"Looked at the cause", badH:"Missed the consequence",
+  expl:"A gap of five to nine months is the normal case, with a median of eight, and it is stable across AOK, IKK, spectrumK and GFS. Three consequences. First, whoever dispensed the prescription may long since have left the team, and nobody remembers the transaction. Second, a systematic fault such as the one producing code 63 generates positions for eight months before the first notice makes it visible. Third, evidence is only requested once its time has passed: in a documented case unavailability was queried on 07.02.2024 at 09:38:07 and the protocol printed on 29.01.2025, nearly a year later, for a subsequent appeal. What saved the file was archiving at the moment of dispensing, nothing else. A and C are wrong: the deadline has not lapsed and the insurer loses nothing. The appeal period runs from the notice, not from the dispensing."}},
+
+ {mech:"euro",data:{kicker:"Balance · what is left", title:"Appeal on positions 2 and 3. What is left in the end?",
+  options:[{t:"0.00 €",p:0},{t:"3.95 €",p:50,ok:true},{t:"35.83 €",p:0},{t:"21.30 €",p:0}],
+  ledger:[
+   {l:"Notice in total",v:"−35.83 €",cls:"minus"},
+   {l:"Four positions",v:"−35.77 €",cls:"minus"},
+   {l:"Dependent correction lines",v:"−0.06 €",cls:"minus"},
+   {l:"Appeal on positions 2 and 3",v:"+31.82 €",cls:"plus"},
+   {l:"Left standing",v:"−3.95 €",cls:"big minus"}],
+  okH:"Calculated exactly", badH:"The arithmetic runs differently",
+  expl:"1.86 + 2.09 = 3.95 €. No more is recoverable, and no less. Three points beyond this notice. First: a comparable case at a BKK ended exactly this way. Of 36.41 € only the compounding position of 24.97 € was recognised; the rebate position of 11.44 € stood. Partial success is the normal case, not the exception. Second: recognition creates no precedent. Verbatim from a real notice: <b>Sollte dies im Rahmen einer Einzelfallentscheidung erfolgt sein, ist damit keine präjudizierende Wirkung für die Zukunft verbunden.</b> The same reason returns on the next review run. Third, and this is the real yield of the hour: the two hopeless 63 positions are worth more than the appeal you won. They show the pharmacy discount has not been transmitted cleanly for months. Anyone who only appeals and never fixes the cause keeps working blind for eight months."}}
+],
+  steps_ar:[
+ {mech:"comic",data:{kicker:"المشهد 1 · صباح اثنين في المكتب",
+  title:"إشعار من IKK classic على الطاولة", cta:"افحص الإشعار ←",
+  doc:{head:"IKK classic · Bescheid", sub:"Zeichen 700-318052 · Sammelbescheid",
+   rows:[[{l:"Rechnungsmonat",v:"August"},{l:"Bescheid vom",v:"Mai"}],
+         [{l:"Nettobetrag",v:"35,83 EUR"},{l:"Anlagen",v:"2 Imageausdrucke"}]],
+   foot:"Beanstandete Abgaben · Einzelheiten im Imageausdruck"},
+  bubbles:[
+   {who:"المكتب",txt:"صباح اثنين. البريد مفتوح على الطاولة. إشعار من IKK classic، الرمز 700-318052."},
+   {who:"المكتب",txt:"عليه رقم واحد: <b>35,83 يورو صافياً</b>. وخلفه مدبّستان ورقتا Imageausdruck لم يقرأهما أحد بعد."},
+   {who:"المكتب",txt:"والصرف المعني من آب. ونحن في أيار."}]}},
+
+ {mech:"mcq",data:{kicker:"قرار · أول خطوة", title:"ما أول خطوة عمل؟",
+  reveal:{id:"pos", kicker:"Imageausdruck · انكشف", html:"<div class='doc doc-pos'><div class='doc-head'>Imageausdruck · 4 Positionen</div><div class='pos-row'><span class='pz'>10398914</span><span class='nm'>Macrogol AbZ Pulver 50 Beutel</span><span class='cd c63'>63</span><span class='am'>−1,86 €</span></div><div class='pos-row'><span class='pz'>09273219</span><span class='nm'>Candesartan 1A Pharma 32 mg N3</span><span class='cd c421'>421</span><span class='am'>−21,30 €</span></div><div class='pos-row'><span class='pz'>03820525</span><span class='nm'>Bisoprolol 5 1A Pharma 100 St. N3</span><span class='cd c421'>421</span><span class='am'>−10,52 €</span></div><div class='pos-row'><span class='pz'>05450802</span><span class='nm'>Isotonische Kochsalzlösung z. Inhalation</span><span class='cd c63'>63</span><span class='am'>−2,09 €</span></div></div>"},
+  options:[
+   {t:"يُفحص المبلغ الإجمالي ويُقرّر",p:0,tr:0,h:"خشن أكثر مما يجب",
+    x:"المبلغ الإجمالي حاصل جمع لحجج مختلفة، ولا يقول شيئاً عمّا يقبل الطعن."},
+   {t:"يُقرّر في كل موضع على حدة",p:25,tr:0,ok:true,h:"تقسيم صحيح",
+    x:"لكل موضع حجته وحظّه المستقل من النجاح."},
+   {t:"يُعترض على الإشعار جملةً",p:0,tr:0,h:"يُضعف المواضع القوية",
+    x:"الكاسة تفحص الاعتراض الجملي ككتلة وتردّه ككتلة."},
+   {t:"يُقبل، فهو دون خمسين يورو",p:0,tr:0,h:"المبلغ ليس المعيار",
+    x:"المبالغ الصغرى غالباً أوضح دليل على خلل منهجي."}],
+  okH:"موضعاً موضعاً",badH:"ليست الخطوة الأولى",
+  expl:"الإشعار يحمل مبلغاً صافياً واحداً. أما المعلومة الحقيقية فهي في الـImageausdruck: لكل موضع رقم PIC ودواء وكود اعتراض ومبلغ. وهنا أربعة مواضع بحجتين مختلفتين، ولكل موضع حظه المستقل من النجاح. والاعتراض الجملي يُضعف المواضع المؤسّسة، لأن الكاسة تفحصه ككتلة واحدة. وانتبه: المواضع الأربعة مجموعها 35,77 €، والإشعار يذكر 35,83 €. الفرق من سطور تصحيح تابعة، ضريبة أو زيادة. وفروق السنتات هذه عادية ولا تصلح سبباً للاعتراض."}},
+
+ {mech:"truefalse",data:{kicker:"عبارة · أكواد الاعتراض", title:"صح أم خطأ؟",
+  trueLabel:"صح", falseLabel:"خطأ", maxWrong:0,
+  items:[{t:"الكود 63 Rabattkorrektur يتهم الصيدلية بصرف الدواء الخطأ.",
+    ok:false, p:25, why:"في الكود 63 كان الدواء صحيحاً، والناقص هو أبشلاغ الصيدلية في البيانات."}],
+  okH:"تمييز دقيق", badH:"خلط بين الكودين",
+  expl:"في موضعَي الكود 63 صُرف الدواء الصحيح. ويظهر ذلك في حقل <b>RBT Apo</b>: كان صفراً فصُحّح إلى 1,86 و2,09. أبشلاغ الصيدلية لم يكن في مجموعة البيانات ببساطة. فلا حظّ للاعتراض هنا، لأن الحساب كان ناقصاً موضوعياً. وفي المقابل، الكود <b>421 Nichtbeachtung Rabattverträge</b> هو الاتهام الحقيقي: أن الدواء نفسه خطأ. الكودان يبدوان متقاربين وهما متعاكسان في قابلية الطعن. والمهم هو النتيجة الأخرى: 63 إشارة إلى خلل في إعداد نظام إدارة البضاعة أو في النقل إلى مركز التحاسب، لا خطأ عند الكاونتر. وهو يتكرر صامتاً كل شهر يبقى فيه السبب."}},
+
+ {mech:"sort",data:{kicker:"فرز · 30 ثانية", title:"أي المواضع قابلة للطعن؟",
+  hint:"المعيار الحجة، لا المبلغ.", seconds:30, pts:25,
+  flagLabel:"قابلة للطعن", safeLabel:"غير قابلة للطعن",
+  cards:[
+   {t:"Macrogol AbZ Pulver 50 Beutel · كود 63 · −1,86 €",flag:false},
+   {t:"Candesartan 1A Pharma 32 mg N3 · كود 421 · −21,30 €",flag:true},
+   {t:"Bisoprolol 5 1A Pharma 100 St. N3 · كود 421 · −10,52 €",flag:true},
+   {t:"Isotonische Kochsalzlösung z. Inhalation · كود 63 · −2,09 €",flag:false}],
+  okH:"فُرز على الكود", badH:"فُرز على المبلغ",
+  timeoutH:"انتهى الوقت", timeoutX:"في المكتب عدد الإشعارات هو من يفرض الإيقاع.",
+  expl:"الفرز يجري على الكود لا على المبلغ. الموضعان 2 و3 يحملان 421: الكاسة تزعم أن دواءً مربَّطاً كان متوفراً، وهذا ادعاء واقعة وعلى الكاسة إثباته. والموضعان 1 و4 يحملان 63، والحساب فيهما ناقص موضوعياً فلا مدخل للطعن. وهذا نصف القرار فقط: الفرز يقول أيّ المواضع يمكن الاعتراض عليها، وأيّها يستحق سؤال تالٍ."}},
+
+ {mech:"mcq",data:{kicker:"قرار · الجدوى", title:"متى يكفّ الاعتراض عن كونه مجدياً؟",
+  options:[
+   {t:"أبداً، كل موضع يستحق الطعن",p:0,tr:0,h:"يكلف أكثر مما يسترد",
+    x:"ربع ساعة عمل مقابل 1,86 € خسارة صافية."},
+   {t:"دون خمسة يوروات لكل موضع",p:25,tr:0,ok:true,h:"العتبة في مكانها",
+    x:"دون هذا الحد يستهلك الاعتراض من الوقت أكثر مما يعيد."},
+   {t:"دون خمسين يورو لكل إشعار",p:0,tr:0,h:"مرجع خاطئ",
+    x:"القرار يُتخذ لكل موضع لا لكل إشعار."},
+   {t:"بعد فارق نصف سنة",p:0,tr:0,h:"الفارق عادي",
+    x:"خمسة إلى تسعة أشهر هي القاعدة لا المانع."}],
+  okH:"حساب اقتصادي سليم", badH:"الحساب لا يستقيم",
+  expl:"الاعتراض يكلّف ربع ساعة على الأقل: استخراج الموضع، وسحب الإثباتات، وصياغة الحجة، والإرسال، وضبط موعد المتابعة. ومع وسيط موضع يقارب عشرة يوروات، تُبلَغ العتبة بسرعة. والمواضع دون خمسة يوروات تستهلك من وقت العمل أكثر مما تسترد. وبتطبيق المرشِّحين معاً على هذا الإشعار: الموضعان 2 و3 قابلان للطعن ويتجاوزان العتبة فيُعترض عليهما، والموضعان 1 و4 يسقطان بالمرشِّحين كليهما. وهذا في القرار المفرد. ولا يسري إطلاقاً على السبب: أربعة مواضع صغرى بيورو أو اثنين لكل منها هي بلا وزن اقتصادي، وهي في الوقت نفسه أوضح دليل على خلل منهجي. والجواب D خاطئ: الفارق بين ستة وتسعة أشهر هو الحالة العادية لا مانعاً."}},
+
+ {mech:"rezept",data:{kicker:"اعتراض · الموضع 2", title:"اضغط الحقل الذي بدونه لا تستطيع الكاسة تحديد الموضع",
+  hint:"تكتب الاعتراض على الموضع 2، Candesartan 1A Pharma 32 mg N3.",
+  doc:{head:"Imageausdruck · Position 2", sub:"IKK classic · Zeichen 700-318052",
+   rows:[[{l:"PIC",v:"4903180224600000",k:"pic"},{l:"PZN",v:"09273219",k:"pzn"}],
+         [{l:"Beanst.-Code",v:"421",k:"code"},{l:"RBT Apo",v:"0,00",k:"rbt"}],
+         [{l:"Betrag",v:"−21,30 EUR",k:"betrag"},{l:"IK",v:"109519005",k:"ik"}]],
+   foot:"Nichtbeachtung Rabattverträge"},
+  answer:"pic", p:25,
+  okH:"رقم المعاملة",
+  badH:"بهذا لا تستطيع الكاسة التحديد",
+  wrong:{pzn:"الـPZN لا تكفي", code:"الكود هو الاتهام لا العنوان",
+   rbt:"حقل تابع لا عنوان", betrag:"المبلغ لا يحدد شيئاً",
+   ik:"الـIK هو الكاسة لا السطر"},
+  expl:"IKK classic تطلب حرفياً <b>unter Angabe von Gründen und den jeweiligen PIC-Nummern</b>. والـPIC رقم معاملة سطر الوصفة المفرد. وبدونه لا تستطيع الكاسة تحديد ما يشير إليه الاعتراض، فيُنحّى بلا فحص. والـPZN وحدها لا تكفي: الدواء نفسه قد يظهر في عدة إشعارات. وأما الحجة التي تُكتب بجانب الـPIC: الاعتراض على 421 لا يُبنى على نصّ قانوني بل على عبء الإثبات. الكاسة تزعم واقعة، أن دواءً مربَّطاً كان متوفراً يوم الصرف، فتُطالَب بتسميته. وجزء من هذه الريتاكسات ينتهي عند هذا الحد وحده، لأن الفحص الآلي يتحقق من وجود عقد رابات على المادة لا من صلاحية الدواء للصرف فعلاً. وإن كان السبب عدم التوفر، يُضاف بروتوكول عدم التوفر بختم وقت الاستعلام. ونظرة أخيرة على حقل <b>RBT Apo</b>: هو هنا صفر كما في موضعَي الكود 63، لكنه في موضع 421 ليس خطأً ثانياً بل أثراً تابعاً للتصحيح."}},
+
+ {mech:"mcq",data:{kicker:"قرار · الفارق الزمني", title:"الصرف في آب والإشعار في أيار. أهم أثر؟",
+  options:[
+   {t:"المهلة انقضت، فالاعتراض بلا فائدة",p:0,tr:0,h:"المهلة تبدأ من الإشعار",
+    x:"لا من الصرف. والاعتراض ممكن في وقته."},
+   {t:"الخلل يعمل شهوراً قبل أن يظهر",p:25,tr:0,ok:true,h:"الأثر الحقيقي",
+    x:"ثمانية أشهر ينتج فيها السبب مواضع قبل أن ينكشف."},
+   {t:"الكاسة تفقد حقها بعد ستة أشهر",p:0,tr:0,h:"ليس كذلك",
+    x:"الفارق بين خمسة وتسعة أشهر هو القاعدة."},
+   {t:"لا أثر، فالمهم هو المبلغ",p:0,tr:0,h:"المبلغ مسألة جانبية",
+    x:"الفارق الزمني يحسم مصير الإثباتات والتكرار."}],
+  okH:"نظرت إلى السبب", badH:"فاتك الأثر",
+  expl:"الفارق بين خمسة وتسعة أشهر هو الحالة العادية، ووسيطه ثمانية، وهو ثابت عبر AOK وIKK وspectrumK وGFS. وله ثلاثة آثار. أولاً، من صرف الوصفة قد يكون غادر الفريق فلا أحد يتذكر الواقعة. ثانياً، الخلل المنهجي كذاك الذي يولّد الكود 63 يُنتج ثمانية أشهر كاملة من المواضع قبل أن يصل أول إشعار يكشفه. ثالثاً، الإثباتات لا تُطلب إلا بعد فوات وقتها: في حالة موثّقة استُعلم عن عدم التوفر في 07.02.2024 الساعة 09:38:07، وطُبع البروتوكول في 29.01.2025 أي بعد قرابة عام، لخدمة اعتراض لاحق. والأرشفة لحظة الصرف وحدها هي التي أنقذت الملف. والجوابان A وC خاطئان: لا المهلة انقضت ولا الكاسة تفقد حقها. مهلة الاعتراض تبدأ من الإشعار لا من الصرف."}},
+
+ {mech:"euro",data:{kicker:"الحصيلة · ماذا يبقى", title:"اعتراض على الموضعين 2 و3. فماذا يبقى في النهاية؟",
+  options:[{t:"0,00 €",p:0},{t:"3,95 €",p:50,ok:true},{t:"35,83 €",p:0},{t:"21,30 €",p:0}],
+  ledger:[
+   {l:"الإشعار إجمالاً",v:"−35,83 €",cls:"minus"},
+   {l:"المواضع الأربعة",v:"−35,77 €",cls:"minus"},
+   {l:"سطور تصحيح تابعة",v:"−0,06 €",cls:"minus"},
+   {l:"اعتراض الموضعين 2 و3",v:"+31,82 €",cls:"plus"},
+   {l:"الباقي على الصيدلية",v:"−3,95 €",cls:"big minus"}],
+  okH:"حساب دقيق", badH:"الحساب يجري خلاف ذلك",
+  expl:"1,86 + 2,09 = 3,95 €. لا أكثر يُسترد ولا أقل. وثلاث نقاط تتجاوز هذا الإشعار. أولاً: حالة مماثلة لدى BKK انتهت هكذا بالضبط. من 36,41 € اعتُرف بموضع الرزبتور وحده البالغ 24,97 €، وبقي موضع الرابات البالغ 11,44 €. النجاح الجزئي هو القاعدة لا الاستثناء. ثانياً: القبول لا يبني سابقة. وبنص إشعار حقيقي: <b>Sollte dies im Rahmen einer Einzelfallentscheidung erfolgt sein, ist damit keine präjudizierende Wirkung für die Zukunft verbunden.</b> والحجة نفسها تعود في دورة الفحص التالية. ثالثاً، وهو الحصاد الحقيقي لهذه الساعة: الموضعان اليائسان بالكود 63 أثمن من الاعتراض الذي كسبته. فهما يكشفان أن أبشلاغ الصيدلية لم يُنقل نقلاً سليماً منذ أشهر. ومن يكتفي بالاعتراض ولا يعالج السبب يبقى ثمانية أشهر يعمل أعمى."}}
+]
+};
+
 /* ---------------- LEVELS (Reihenfolge im Spiel) ---------------- */
 /* Für v1: 1 echtes Level + Platzhalter, die dieselbe Engine nutzen.
    Später einfach weitere {topic, persona} Einträge -> keine neue Programmierung. */
@@ -3734,6 +4397,12 @@ var LEVELS = [
   { id:"L18", topic:"sonnenschutz_urlaub", persona:"urlaub", reqRank:0 }
   /* kommende Fälle werden hier ergänzt */
 ];
+/* Büro-Level. Eigene Sequenz, eigener Abschnitt auf der Karte.
+   Wandern in den Raum, sobald die fünf Karten angebunden sind. */
+var OFFICE_LEVELS = [
+  { id:"B1", topic:"retax_rabatt_klein", persona:null, office:true, reqRank:0 }
+];
+
 /* Fülle bis 20 mit "coming soon" Platzhaltern für die Karte */
 var COMING = [
   {de:"Wundversorgung beim Kind",persona:null},
@@ -3754,7 +4423,7 @@ bad:function(){tone(196,.22,'sawtooth',.09)},
 rank:function(){[523,659,784,1046].forEach(function(f,i){tone(f,.2,'sine',.12,i*.12)})}};})();
 
 var SAVE_KEY="pc_sim_v1";
-var state = load() || { lang:"de", totalPts:0, rankIdx:0, levelBest:{}, user:null, emailAsked:false };
+var state = load() || { lang:"de", totalPts:0, rankIdx:0, levelBest:{}, user:null, emailAsked:false, guideSeen:false };
 
 function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }catch(e){} }
 function load(){ try{ return JSON.parse(localStorage.getItem(SAVE_KEY)); }catch(e){ return null; } }
@@ -3840,24 +4509,36 @@ function renderRankBar(){
 }
 
 /* ---------- MAP ---------- */
+function levelBanner(topic){
+  return topic.banner
+    ? '<img src="'+topic.banner+'" alt="" loading="lazy" decoding="async">'
+    : '<div class="lc-gen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></div>';
+}
+function gridSection(grid, label){
+  var h=document.createElement('div'); h.className='grid-sec'; h.textContent=label;
+  grid.appendChild(h);
+}
 function renderMap(){
   renderRankBar();
   var grid=document.getElementById('levelsGrid'); grid.innerHTML='';
   var num=0;
+  gridSection(grid, t('secCounter'));
   // real levels
-  LEVELS.forEach(function(lv){
+  LEVELS.forEach(function(lv,li){
     num++;
     var topic=TOPICS[lv.topic], persona=PERSONAS[lv.persona];
-    var locked = state.rankIdx < lv.reqRank;
+    /* Sequenz: ein Fall öffnet den nächsten. Abgeschlossene bleiben frei wählbar. */
+    var prevDone = (li===0) || !!state.levelBest[LEVELS[li-1].id];
+    var locked = (state.rankIdx < lv.reqRank) || !prevDone;
     var best = state.levelBest[lv.id];
     var stars = best ? starStr(best.stars) : '';
     var card=document.createElement('div');
     card.className='level-card'+(locked?' locked':'');
     card.style.animationDelay=(num*0.04)+'s';
     card.innerHTML=
-      '<div class="lc-banner"><img src="'+topic.banner+'" alt="" loading="lazy" decoding="async">'+
+      '<div class="lc-banner">'+levelBanner(topic)+
       '<div class="lc-num">'+num+'</div>'+
-      (locked?'<div class="lc-lock">🔒</div>':'')+
+      (locked?'<div class="lc-lock"><span>🔒</span><em>'+t('lockedPrev')+'</em></div>':'')+
       (stars?'<div class="lc-stars">'+stars+'</div>':'')+'</div>'+
       '<div class="lc-body"><div class="lc-topic">'+locName(topic)+'</div>'+
       '<div class="lc-persona"><span class="dot"></span>'+locName(persona)+'</div>'+
@@ -3879,6 +4560,31 @@ function renderMap(){
       '<div class="lc-persona"><span class="dot"></span>'+(persona?locName(persona):'')+'</div></div>';
     grid.appendChild(card);
   });
+  // Büro: eigener Abschnitt, eigene Sequenz
+  if(typeof OFFICE_LEVELS!=='undefined' && OFFICE_LEVELS.length){
+    gridSection(grid, t('secOffice'));
+    OFFICE_LEVELS.forEach(function(lv,li){
+      var topic=TOPICS[lv.topic]; if(!topic) return;
+      var prevDone=(li===0)||!!state.levelBest[OFFICE_LEVELS[li-1].id];
+      var locked=(state.rankIdx<lv.reqRank)||!prevDone;
+      var best=state.levelBest[lv.id];
+      var stars=best?starStr(best.stars):'';
+      var card=document.createElement('div');
+      card.className='level-card'+(locked?' locked':'');
+      card.style.animationDelay=((li+1)*0.04)+'s';
+      card.innerHTML=
+        '<div class="lc-banner">'+levelBanner(topic)+
+        '<div class="lc-num">B'+(li+1)+'</div>'+
+        (topic.tag?'<div class="lc-tag">'+topic.tag+'</div>':'')+
+        (locked?'<div class="lc-lock"><span>🔒</span><em>'+t('lockedPrev')+'</em></div>':'')+
+        (stars?'<div class="lc-stars">'+stars+'</div>':'')+'</div>'+
+        '<div class="lc-body"><div class="lc-topic">'+locName(topic)+'</div>'+
+        '<div class="lc-persona"><span class="dot"></span>'+locName(topic.sub||{de:"Büro",en:"Office",ar:"المكتب"})+'</div>'+
+        (best?'<div class="lc-best">Best: '+best.score+' P</div>':'')+'</div>';
+      if(!locked) card.addEventListener('click',function(){ startLevel(lv); });
+      grid.appendChild(card);
+    });
+  }
 }
 function starStr(n){ return '★★★'.slice(0,n)+'☆☆☆'.slice(0,3-n); }
 
@@ -3910,7 +4616,10 @@ function preloadLevel(steps, persona){
 }
 var run = null;
 function startLevel(lv){
-  var topic=TOPICS[lv.topic], persona=PERSONAS[lv.persona];
+  var topic=TOPICS[lv.topic];
+  var office=!!lv.office;
+  var persona=office ? {de:"Büro",en:"Office",ar:"المكتب",trustStart:100,img:{}}
+                     : PERSONAS[lv.persona];
   var langSteps = topic['steps_'+state.lang] || topic.steps;
   /* packaging images for the shelf slots of this topic */
   var forms = SHELF_FORMS[lv.topic];
@@ -3922,12 +4631,16 @@ function startLevel(lv){
      while the player is still reading the opening comic panel. */
   preloadLevel(langSteps, persona);
   run = { lv:lv, topic:topic, persona:persona, steps:langSteps, stepIdx:0, score:0,
-          trust:persona.trustStart||60, stepScores:{} };
-  // trust image
-  var timg=persona.img&&(persona.img.neutral||persona.img.worried) ? (persona.img.neutral||persona.img.worried) : 'assets/vater_worried.jpg';
-  document.getElementById('trustImg').src=timg;
+          trust:persona.trustStart||60, stepScores:{}, review:[],
+          office:office, docs:[], pendingReveal:null };
+  stopMechTimer();
+  document.getElementById('gameScreen').classList.toggle('no-trust', office);
+  if(!office){
+    var timg=persona.img&&(persona.img.neutral||persona.img.worried) ? (persona.img.neutral||persona.img.worried) : 'assets/vater_worried.jpg';
+    document.getElementById('trustImg').src=timg;
+  }
   document.getElementById('score').textContent='0';
-  setTrust(run.trust,0);
+  if(!office) setTrust(run.trust,0);
   show('gameScreen');
   runStep();
 }
@@ -3947,15 +4660,31 @@ function runStep(){
   if(run.stepIdx>=run.steps.length){ return finishLevel(); }
   var step=run.steps[run.stepIdx];
   var idx=run.stepIdx;
+  run.pendingReveal = (step.data && step.data.reveal) || null;
   Mech[step.mech](host, step.data, function(scoreDelta, trustDelta){
+    stopMechTimer();
+    captureReview(host, idx, scoreDelta);
     run.score+=scoreDelta; run.stepScores['step'+idx]=scoreDelta;
     document.getElementById('score').textContent=run.score;
-    if(trustDelta) setTrust(run.trust+trustDelta, trustDelta);
+    if(trustDelta && !run.office) setTrust(run.trust+trustDelta, trustDelta);
     run.stepIdx++;
-    if(run.trust<=0){ return customerLeaves(); }
+    if(!run.office && run.trust<=0){ return customerLeaves(); }
     runStep();
     window.scrollTo({top:0,behavior:'smooth'});
   });
+  mountDocs(host);
+}
+
+/* Bereits aufgedeckte Dokumente laufen in jedem folgenden Schritt mit. */
+function mountDocs(host){
+  if(!run || !run.docs || !run.docs.length) return;
+  var body=host.querySelector('.stage-body');
+  if(!body || body.querySelector('.docs-strip')) return;
+  var d=document.createElement('details');
+  d.className='docs-strip'; d.open=true;
+  d.innerHTML='<summary>'+t('fileLabel')+'</summary>'+
+    run.docs.map(function(x){ return x.html; }).join('');
+  body.insertBefore(d, body.firstChild);
 }
 
 function customerLeaves(){
@@ -3966,7 +4695,10 @@ function customerLeaves(){
     '<p>'+t('leftText')+'</p>'+
     '<div class="result-actions">'+
     '<button class="confirm-btn" id="retry">'+t('playAgain')+'</button>'+
+    (run.review.length?'<button class="hud-back" id="reviewBtn2">🔎 '+t('review')+'</button>':'')+
     '<button class="hud-back" id="toMap2">'+t('toMap')+'</button></div></div></div>';
+  var _rvb2=document.getElementById('reviewBtn2');
+  if(_rvb2) _rvb2.addEventListener('click', openReview);
   document.getElementById('retry').addEventListener('click',function(){ startLevel(run.lv); });
   document.getElementById('toMap2').addEventListener('click',function(){ renderMap(); show('mapScreen'); });
 }
@@ -3986,10 +4718,14 @@ function finishLevel(){
   var pimg = run.persona.img||{};
   var endImg = tr>=60 ? (pimg.happy||pimg.worried||'assets/vater_worried.jpg')
                       : (pimg.upset||pimg.worried||'assets/vater_worried.jpg');
-  var trustLine = tr>=70 ? t('trustHigh') : tr>=40 ? t('trustMid') : t('trustLow');
+  var trustLine = run.office ? t('officeDone')
+                : tr>=70 ? t('trustHigh') : tr>=40 ? t('trustMid') : t('trustLow');
+  var headVis = run.office
+    ? '<div class="result-doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></div>'
+    : '<img class="result-persona" src="'+endImg+'" alt="">';
 
   host.innerHTML='<div class="stage"><div class="result">'+
-    '<img class="result-persona" src="'+endImg+'" alt="">'+
+    headVis+
     '<h2>'+t('result')+'</h2>'+
     '<div class="stars-earned">'+starStr(stars)+'</div>'+
     '<div class="big-score">'+s+' <small style="font-size:22px;color:var(--soft)">P</small></div>'+
@@ -4000,9 +4736,12 @@ function finishLevel(){
     '</div>'+
     '<div class="result-actions" style="margin-top:14px">'+
       '<button class="confirm-btn" id="replay">'+t('playAgain')+'</button>'+
+      (run.review.length?'<button class="hud-back" id="reviewBtn">🔎 '+t('review')+'</button>':'')+
       '<button class="hud-back" id="toMap">'+t('toMap')+'</button>'+
     '</div></div></div>';
 
+  var _rvb=document.getElementById('reviewBtn');
+  if(_rvb) _rvb.addEventListener('click', openReview);
   document.getElementById('replay').addEventListener('click',function(){ startLevel(run.lv); });
   document.getElementById('toMap').addEventListener('click',function(){ afterLevel(s,stars); });
 
@@ -4021,7 +4760,8 @@ function afterLevel(s, stars){
   state.totalPts += s;
   var best=state.levelBest[run.lv.id];
   if(!best || s>best.score) state.levelBest[run.lv.id]={score:s,stars:stars};
-  var newRank=rankForPts(state.totalPts);
+  /* Punkte dürfen negativ werden, der Rang fällt nie zurück. */
+  var newRank=Math.max(state.rankIdx, rankForPts(state.totalPts));
   save();
   // email prompt after first successful level
   if(!state.emailAsked && s>=45){ state.emailAsked=true; save(); openEmail(function(){ maybeRankup(prevRank,newRank); }); }
@@ -4047,11 +4787,10 @@ var ROOMS = {
       {id:"counter", c:[24,17], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5"/><path d="M12 8.5v7"/></svg>', de:"HV-Tisch", en:"Counter", ar:"طاولة البيع"},
       {id:"sicht",   c:[24,13], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M10 2h4v3h-4z"/><path d="M8.5 5h7l1.5 4v11a2 2 0 0 1-2 2h-6a2 2 0 0 1-2-2V9l1.5-4Z"/></svg>', de:"Sichtwahl", en:"Front shelf", ar:"رف العرض"},
       {id:"corner",  c:[10,15], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11a9 9 0 0 1 18 0"/><rect x="3" y="11" width="4.5" height="7" rx="2"/><rect x="16.5" y="11" width="4.5" height="7" rx="2"/></svg>', de:"Beratungsecke", en:"Consultation corner", ar:"ركن الاستشارة"},
-      {id:"door_back", c:[36,12], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3H6v18h9"/><path d="M11 12h9m0 0-3.5-3.5M20 12l-3.5 3.5"/></svg>', de:"Hinterzimmer", en:"Back rooms", ar:"الغرف الخلفية"},
-      {id:"entry",   c:[22,38], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M10.5 20a2 2 0 0 0 3 0"/></svg>', de:"Eingang", en:"Entrance", ar:"المدخل"}
+      {id:"door_back", c:[36,12], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3H6v18h9"/><path d="M11 12h9m0 0-3.5-3.5M20 12l-3.5 3.5"/></svg>', de:"Hinterzimmer", en:"Back rooms", ar:"الغرف الخلفية"}
     ]},
   backroom:{ img:"assets/map_backroom.jpg", mask:"backroom",
-    de:"Lager & Rezeptur", en:"Stock & compounding", ar:"المستودع والتحضير",
+    de:"Büro & Rezeptur", en:"Office & compounding", ar:"المكتب والتحضير",
     start:[24,40],
     spots:[
       {id:"kommi",  c:[17,25], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 8.5 12 4l9 4.5V16l-9 4.5L3 16V8.5Z"/><path d="m3 8.5 9 4.5 9-4.5M12 13v7.5"/></svg>', de:"Kommissionierer", en:"Commissioner", ar:"آلة التجهيز"},
@@ -4238,7 +4977,7 @@ function openSpot(sp){
   var acts=[];
   if(sp.id==='counter')  acts.push({t:t('play'), cls:'main', fn:function(){ renderMap(); show('mapScreen'); }});
   if(sp.id==='door_back') acts.push(
-    {t:(L==='ar'?'المستودع':(L==='en'?'Stock room':'Lager')), cls:'main', fn:function(){ enterRoom('backroom'); }},
+    {t:(L==='ar'?'المكتب':(L==='en'?'Office':'Büro')), cls:'main', fn:function(){ enterRoom('backroom'); }},
     {t:(L==='ar'?'غرفة الاستراحة':(L==='en'?'Break room':'Pausenraum')), fn:function(){ enterRoom('breakroom'); }});
   if(sp.id==='door_out'||sp.id==='door_out2') acts.push({t:locName(sp), cls:'main', fn:function(){ enterRoom('offizin',[36,13]); }});
   if(sp.id==='coffee') acts.push({t:(L==='ar'?'خذ استراحة':(L==='en'?'Take a break':'Pause machen')), cls:'main', fn:coffeeBreak});
@@ -4255,11 +4994,9 @@ var WSPOT={
   corner:{t_de:"Die Beratungsecke – für alles, was nicht an den Tresen gehört.",
     t_en:"The consultation corner - for everything that does not belong at the counter.",
     t_ar:"ركن الاستشارة – لكل ما لا يُقال عند الطاولة."},
-  door_back:{t_de:"Hinter der Tür liegen Lager, Rezeptur und der Pausenraum.",
-    t_en:"Behind the door: stock room, compounding and the break room.",
-    t_ar:"خلف الباب: المستودع والتحضير وغرفة الاستراحة."},
-  entry:{t_de:"Hier kommen die Kunden herein.",
-    t_en:"This is where customers come in.", t_ar:"من هنا يدخل الزبائن."},
+  door_back:{t_de:"Hinter der Tür liegen Büro, Rezeptur und der Pausenraum.",
+    t_en:"Behind the door: office, compounding and the break room.",
+    t_ar:"خلف الباب: المكتب والتحضير وغرفة الاستراحة."},
   kommi:{t_de:"Der Kommissionierer. Später: Einsortier-Minispiel gegen die Zeit.",
     t_en:"The commissioner. Later: a timed sorting mini-game.",
     t_ar:"آلة التجهيز. لاحقاً: لعبة فرز سريعة ضد الوقت."},
@@ -4368,6 +5105,70 @@ document.getElementById('ruBtn').addEventListener('click',function(){
   renderMap(); show('mapScreen');
 });
 
+/* =====================================================================
+   DURCHSEHEN (nur Ansicht) + SPIELANLEITUNG
+===================================================================== */
+function captureReview(host, idx, pts){
+  try{
+    if(!run || !run.review) return;
+    var tmp=document.createElement('div');
+    tmp.innerHTML=host.innerHTML;
+    /* IDs entfernen: keine Kollision mit der laufenden Runde */
+    tmp.querySelectorAll('[id]').forEach(function(el){ el.removeAttribute('id'); });
+    tmp.querySelectorAll('button,input,select,textarea').forEach(function(el){
+      el.setAttribute('disabled','disabled'); });
+    run.review.push({ i:idx, pts:pts||0, html:tmp.innerHTML });
+  }catch(e){}
+}
+var _rv={i:0};
+function openReview(){
+  if(!run || !run.review || !run.review.length) return;
+  _rv.i=0;
+  document.body.classList.add('rv-open');
+  document.getElementById('rvNote').textContent=t('reviewNote');
+  document.getElementById('reviewOverlay').classList.add('show');
+  renderReview();
+}
+function renderReview(){
+  var r=run.review[_rv.i]; if(!r) return;
+  document.getElementById('rvStep').textContent=t('step')+' '+(_rv.i+1)+' / '+run.review.length;
+  var p=r.pts||0, pe=document.getElementById('rvPts');
+  pe.textContent=(p>0?'+':'')+p+' P';
+  pe.className='rv-pts'+(p>0?' up':(p<0?' down':''));
+  var body=document.getElementById('rvBody');
+  body.innerHTML='<div class="rv-frozen">'+r.html+'</div>';
+  body.scrollTop=0;
+  document.getElementById('rvPrev').disabled=(_rv.i===0);
+  document.getElementById('rvNext').disabled=(_rv.i>=run.review.length-1);
+  var dots='';
+  for(var k=0;k<run.review.length;k++) dots+='<i class="'+(k===_rv.i?'on':'')+'"></i>';
+  document.getElementById('rvDots').innerHTML=dots;
+}
+function closeReview(){
+  document.body.classList.remove('rv-open');
+  document.getElementById('reviewOverlay').classList.remove('show');
+  document.getElementById('rvBody').innerHTML='';
+}
+document.getElementById('rvClose').addEventListener('click', closeReview);
+document.getElementById('rvPrev').addEventListener('click',function(){
+  if(_rv.i>0){ _rv.i--; renderReview(); } });
+document.getElementById('rvNext').addEventListener('click',function(){
+  if(_rv.i<run.review.length-1){ _rv.i++; renderReview(); } });
+
+var _gdThen=null;
+function openGuide(then){
+  _gdThen=then||null;
+  document.getElementById('gdTitle').textContent=t('guide');
+  document.getElementById('gdBody').innerHTML=GUIDE[state.lang]||GUIDE.de;
+  document.getElementById('gdClose').textContent=t('weiter');
+  document.getElementById('guideModal').classList.add('show');
+  state.guideSeen=true; save();
+}
+document.getElementById('gdClose').addEventListener('click',function(){
+  document.getElementById('guideModal').classList.remove('show');
+  if(_gdThen){ var f=_gdThen; _gdThen=null; f(); }
+});
+
 /* ---------- In-page confirm (works in every WebView) ---------- */
 var _cfYes=null;
 function uiConfirm(msg, onYes){
@@ -4433,7 +5234,10 @@ document.getElementById('emSkip').addEventListener('click',closeEmail);
 /* ===================================================================== */
 /* WIRING                                                                */
 /* ===================================================================== */
-document.getElementById('playBtn').addEventListener('click',function(){ openWorld(); });
+document.getElementById('playBtn').addEventListener('click',function(){
+  if(!state.guideSeen) openGuide(function(){ openWorld(); });
+  else openWorld();
+});
 document.getElementById('linkCases').addEventListener('click',function(e){
   e.preventDefault(); renderMap(); show('mapScreen'); });
 document.getElementById('gameBack').addEventListener('click',function(){
@@ -4451,20 +5255,28 @@ document.getElementById('navWorld').addEventListener('click', function(){
 document.getElementById('navCourse').addEventListener('click', function(){
   window.open(LINKS.course, '_blank', 'noopener');
 });
+document.getElementById('navAbout').addEventListener('click', function(){
+  window.open(LINKS.about, '_blank', 'noopener');
+});
+document.getElementById('navGuide').addEventListener('click', function(){ openGuide(); });
 document.getElementById('navLang').addEventListener('click', function(){
   var order = ['de','en','ar'];
   var i = order.indexOf(state.lang);
   state.lang = order[(i+1) % order.length];
   applyLang();
-  if(document.getElementById('mapScreen').classList.contains('active')) renderLevels();
+  if(document.getElementById('mapScreen').classList.contains('active')) renderMap();
 });
 function syncMapNav(){
   var L = state.lang;
   var W = document.getElementById('navWorldTxt'),
       C = document.getElementById('navCourseTxt'),
-      G = document.getElementById('navLangTxt');
+      G = document.getElementById('navLangTxt'),
+      GD = document.getElementById('navGuideTxt'),
+      AB = document.getElementById('navAboutTxt');
   if(W) W.textContent = L==='ar' ? 'الصيدلية' : (L==='en' ? 'Pharmacy' : 'Apotheke');
   if(C) C.textContent = L==='ar' ? 'دورة OTC' : (L==='en' ? 'OTC course' : 'OTC-Kurs');
+  if(GD){ GD.textContent = t('guideBtn'); GD.parentNode.title = t('guide'); }
+  if(AB){ AB.textContent = t('projectBtn'); AB.parentNode.title = t('about'); }
   if(G) G.textContent = L.toUpperCase();
   var order={de:'EN',en:'AR',ar:'DE'};
   var b=document.getElementById('navLang');
@@ -4472,7 +5284,7 @@ function syncMapNav(){
 }
 document.getElementById('resetBtn').addEventListener('click',function(){
   uiConfirm(t('resetConfirm'), function(){ localStorage.removeItem(SAVE_KEY);
-    state={ lang:state.lang, totalPts:0, rankIdx:0, levelBest:{}, user:null, emailAsked:false, muted:state.muted }; save();
+    state={ lang:state.lang, totalPts:0, rankIdx:0, levelBest:{}, user:null, emailAsked:false, guideSeen:false, muted:state.muted }; save();
     updateReturning(); renderMap(); });
 });
 
