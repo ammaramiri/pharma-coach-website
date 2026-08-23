@@ -547,6 +547,72 @@ body.rtl .mt-num{text-align:left}
 .eu-line.big{padding-top:10px;border-top:1.5px solid #D8D2C6;margin-top:4px;font-size:15px}
 .eu-line.big b{font-family:'Fraunces',serif;font-size:26px}
 
+.chip small{display:block;font-size:10.5px;font-weight:600;opacity:.72;margin-top:3px;
+  font-variant-numeric:tabular-nums}
+/* ===== Retax: Bildebenen, Sequenz, Zaehler, Hinweis, Imageausdruck ===== */
+.rx-visual{position:relative;border-radius:14px;overflow:hidden;margin:0 0 12px;
+  background:#EDE7DC;line-height:0}
+.rx-visual .rx-img{width:100%;display:block;transition:opacity .3s ease}
+.rx-visual.rx-fade .rx-img{opacity:0}
+.rx-region{position:absolute;display:none;line-height:1.25}
+.rx-l{position:absolute;font-family:'Inter',system-ui,sans-serif;color:#1A1A1A;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.15}
+.rx-l.rx-b{font-weight:800}
+.rx-l.rx-w{color:#fff}
+img.rx-li{object-fit:contain;object-position:left center}
+.rx-visual.rx-tilt .rx-img{transform:rotate(-2.5deg) translateY(5px);
+  transition:transform .7s cubic-bezier(.25,.85,.3,1)}
+@keyframes rxflip{0%{transform:perspective(700px) rotateX(0)}
+  45%{transform:perspective(700px) rotateX(-15deg)}100%{transform:perspective(700px) rotateX(0)}}
+.rx-visual.rx-flip .rx-img{animation:rxflip .8s ease-out 1}
+.rx-count{position:absolute;left:0;right:0;text-align:center;font-family:'Fraunces',serif;
+  font-weight:900;color:#fff;text-shadow:0 3px 14px rgba(0,0,0,.6);line-height:1;
+  pointer-events:none;font-variant-numeric:tabular-nums;animation:pop .3s ease-out}
+.rx-hint{position:fixed;right:14px;bottom:14px;width:22%;min-width:120px;max-width:200px;
+  z-index:70;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-strong);
+  animation:pop .3s ease-out;line-height:0}
+.rx-hint img{width:100%;display:block}
+body.rtl .rx-hint{right:auto;left:14px}
+.stage-body.rx-bgset{position:relative;isolation:isolate}
+.stage-body.rx-bgset::before{content:'';position:absolute;inset:-8px;background-image:var(--rxbg);
+  background-size:cover;background-position:center;opacity:.35;filter:blur(3px);
+  z-index:-1;border-radius:18px}
+.rx-visual.rx-bgmark{display:none}
+
+/* Imageausdruck (ganz im Code gebaut) */
+.ia-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 12px;padding-bottom:2px}
+.ia-doc{min-width:560px;background:#FDFCF9;border:1.5px solid #D5CFC2;border-radius:12px;
+  font-family:'Inter',system-ui,sans-serif;direction:ltr;text-align:left;
+  box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.ia-head{display:flex;align-items:center;gap:12px;padding:9px 12px;
+  border-bottom:1.5px solid #D5CFC2;background:#F3EFE6;border-radius:11px 11px 0 0}
+.ia-brand{display:flex;align-items:center;gap:7px}
+.ia-logo{width:26px;height:26px;object-fit:contain;flex-shrink:0}
+.ia-kasse{font-weight:800;font-size:13px;color:#1D4E89;white-space:nowrap}
+.ia-meta{flex:1;display:flex;flex-wrap:wrap;gap:1px 14px;font-size:10.5px;color:#6C6559}
+.ia-netto{font-weight:900;font-size:15px;color:var(--red);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ia-table{padding:4px 6px 6px}
+.ia-row{display:grid;grid-template-columns:1.5fr .95fr 2.3fr .55fr .8fr .95fr;gap:3px}
+.ia-h{font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:#8A8375;
+  font-weight:800;padding:6px 6px 3px}
+.ia-c{display:block;width:100%;text-align:left;background:#fff;border:1px solid #E3DDD0;
+  border-radius:6px;padding:7px 6px;font-family:inherit;font-size:11.5px;color:var(--ink);
+  cursor:pointer;font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;min-height:32px}
+.ia-c:hover:not(:disabled){border-color:var(--teal-dark);background:#F4FAF8}
+.ia-c:disabled,.ia-c.ia-st{cursor:default}
+.ia-c.ia-st:hover{border-color:#E3DDD0;background:#fff}
+.ia-c.hit{border-color:var(--teal-dark);background:#DCEFE9;box-shadow:0 0 0 2px rgba(0,109,91,.2)}
+.ia-c.miss{border-color:var(--red);background:#FBE9EA}
+.ia-c.ia-nam{white-space:normal;text-overflow:clip}
+.ia-c.ia-bet{font-weight:800;color:var(--red)}
+.ia-foot{display:flex;justify-content:space-between;gap:10px;padding:7px 12px;
+  border-top:1px dashed #E3DDD0;font-size:10px;color:#8A8375}
+@keyframes iapulse{0%,100%{background:#fff;border-color:#E3DDD0}
+  50%{background:#FFF4D8;border-color:#E2B33C}}
+.ia-c.ia-pulse{animation:iapulse 1.1s ease-in-out 2}
+.ia-h.ia-pulse{color:#B0812A}
+
 /* Comic-Panel ohne Bild */
 .panel.panel-plain{background:linear-gradient(160deg,#EFEAE0,#E2DBCC);min-height:0;padding:14px 12px 8px}
 .panel-doc{max-width:520px;margin:0 auto}
@@ -991,6 +1057,7 @@ var GUIDE = {
      '<h4>Reihenfolge</h4><p>Ein Fall \u00f6ffnet den n\u00e4chsten. Abgeschlossene F\u00e4lle lassen sich jederzeit wiederholen, die beste Punktzahl bleibt gespeichert.</p>'+
      '<h4>Durchsehen</h4><p>Nach jeder Beratung lassen sich alle Schritte noch einmal ansehen: deine Antwort, die richtige L\u00f6sung und die Begr\u00fcndung. Nur Ansicht, ge\u00e4ndert wird dort nichts.</p>'+
      '<h4>Fortschritt</h4><p>Alles bleibt lokal in deinem Browser. Kein Konto, keine Anmeldung.</p>'+
+     '<h4>Krankenkassen im Spiel</h4><p>Alle Kassennamen und Logos im Spiel sind erfunden. Echte Kassen werden nur in den Erkl\u00e4rungen nach einer Antwort genannt, als Marktinformation.</p>'+
      '<h4>Hinweis</h4><p>Alle Inhalte dienen ausschlie\u00dflich der pharmazeutischen Fortbildung.</p>',
   en:'<h4>Goal</h4><p>You stand behind the counter. Every consultation is one case of eight steps. The trainee becomes the pharmacy legend.</p>'+
      '<h4>Moving</h4><p>Tap the floor to walk. Step onto a marker to open it. The counter leads to the case list.</p>'+
@@ -999,6 +1066,7 @@ var GUIDE = {
      '<h4>Order of cases</h4><p>One case opens the next. Finished cases can be replayed at any time and the best score is kept.</p>'+
      '<h4>Review</h4><p>After every consultation you can look through all steps again: your answer, the correct solution and the reasoning. View only, nothing can be changed there.</p>'+
      '<h4>Progress</h4><p>Everything stays local in your browser. No account, no sign-up.</p>'+
+     '<h4>Insurers in the game</h4><p>All insurer names and logos in the game are invented. Real insurers appear only in the explanations after an answer, as market information.</p>'+
      '<h4>Note</h4><p>All content serves pharmaceutical training only.</p>',
   ar:'<h4>\u0627\u0644\u0647\u062f\u0641</h4><p>\u0623\u0646\u062a \u062e\u0644\u0641 \u0637\u0627\u0648\u0644\u0629 \u0627\u0644\u0628\u064a\u0639. \u0643\u0644 \u0627\u0633\u062a\u0634\u0627\u0631\u0629 \u062d\u0627\u0644\u0629 \u0645\u0646 \u062b\u0645\u0627\u0646\u064a \u062e\u0637\u0648\u0627\u062a. \u0645\u0646 \u0645\u062a\u062f\u0631\u0651\u0628 \u0625\u0644\u0649 \u0623\u0633\u0637\u0648\u0631\u0629 \u0635\u064a\u062f\u0644\u064a\u0629.</p>'+
      '<h4>\u0627\u0644\u062a\u0646\u0642\u0644</h4><p>\u0627\u0646\u0642\u0631 \u0639\u0644\u0649 \u0627\u0644\u0623\u0631\u0636 \u0644\u062a\u0645\u0634\u064a. \u0642\u0641 \u0639\u0644\u0649 \u0639\u0644\u0627\u0645\u0629 \u0644\u062a\u0641\u062a\u062d\u0647\u0627. \u0637\u0627\u0648\u0644\u0629 \u0627\u0644\u0628\u064a\u0639 \u062a\u0642\u0648\u062f \u0625\u0644\u0649 \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u062d\u0627\u0644\u0627\u062a.</p>'+
@@ -1007,6 +1075,7 @@ var GUIDE = {
      '<h4>\u062a\u0631\u062a\u064a\u0628 \u0627\u0644\u062d\u0627\u0644\u0627\u062a</h4><p>\u0643\u0644 \u062d\u0627\u0644\u0629 \u062a\u0641\u062a\u062d \u0627\u0644\u062a\u064a \u0628\u0639\u062f\u0647\u0627. \u0648\u0627\u0644\u062d\u0627\u0644\u0627\u062a \u0627\u0644\u0645\u0646\u062a\u0647\u064a\u0629 \u062a\u064f\u0639\u0627\u062f \u0645\u062a\u0649 \u0634\u0626\u062a\u060c \u0648\u0623\u0641\u0636\u0644 \u0646\u062a\u064a\u062c\u0629 \u062a\u0628\u0642\u0649 \u0645\u062d\u0641\u0648\u0638\u0629.</p>'+
      '<h4>\u0627\u0644\u0645\u0631\u0627\u062c\u0639\u0629</h4><p>\u0628\u0639\u062f \u0643\u0644 \u0627\u0633\u062a\u0634\u0627\u0631\u0629 \u064a\u0645\u0643\u0646\u0643 \u062a\u0635\u0641\u0651\u062d \u0643\u0644 \u0627\u0644\u062e\u0637\u0648\u0627\u062a \u0645\u0631\u0629 \u0623\u062e\u0631\u0649: \u0625\u062c\u0627\u0628\u062a\u0643 \u0648\u0627\u0644\u062d\u0644 \u0627\u0644\u0635\u062d\u064a\u062d \u0648\u0627\u0644\u0634\u0631\u062d. \u0645\u0634\u0627\u0647\u062f\u0629 \u0641\u0642\u0637\u060c \u0628\u0644\u0627 \u062a\u063a\u064a\u064a\u0631 \u0625\u062c\u0627\u0628\u0629.</p>'+
      '<h4>\u0627\u0644\u062a\u0642\u062f\u0645</h4><p>\u0643\u0644 \u0634\u064a\u0621 \u064a\u064f\u062d\u0641\u0638 \u0645\u062d\u0644\u064a\u0627\u064b \u0641\u064a \u0645\u062a\u0635\u0641\u062d\u0643. \u0628\u0644\u0627 \u062d\u0633\u0627\u0628 \u0648\u0628\u0644\u0627 \u062a\u0633\u062c\u064a\u0644.</p>'+
+     '<h4>\u0634\u0631\u0643\u0627\u062a \u0627\u0644\u062a\u0623\u0645\u064a\u0646 \u0641\u064a \u0627\u0644\u0644\u0639\u0628\u0629</h4><p>\u0643\u0644 \u0623\u0633\u0645\u0627\u0621 \u0627\u0644\u0643\u0627\u0633\u0627\u062a \u0648\u0639\u0644\u0627\u0645\u0627\u062a\u0647\u0627 \u0641\u064a \u0627\u0644\u0644\u0639\u0628\u0629 \u062e\u064a\u0627\u0644\u064a\u0629. \u0648\u0627\u0644\u0643\u0627\u0633\u0627\u062a \u0627\u0644\u062d\u0642\u064a\u0642\u064a\u0629 \u062a\u064f\u0630\u0643\u0631 \u0641\u064a \u0627\u0644\u0634\u0631\u062d \u0628\u0639\u062f \u0627\u0644\u0625\u062c\u0627\u0628\u0629 \u0641\u0642\u0637\u060c \u0628\u0648\u0635\u0641\u0647\u0627 \u0645\u0639\u0644\u0648\u0645\u0629 \u0639\u0646 \u0627\u0644\u0633\u0648\u0642.</p>'+
      '<h4>\u062a\u0646\u0628\u064a\u0647</h4><p>\u0643\u0644 \u0627\u0644\u0645\u062d\u062a\u0648\u0649 \u0644\u0644\u062a\u062f\u0631\u064a\u0628 \u0627\u0644\u0635\u064a\u062f\u0644\u0627\u0646\u064a \u062d\u0635\u0631\u0627\u064b.</p>'
 };
 
@@ -1208,6 +1277,7 @@ function shuffled(arr){
 
 /* اللقطة العامة تتقارب (zoom in)، القريبة تتباعد (zoom out) => إحساس انتقال الكاميرا */
 function sceneStrip(d){
+  if(d.visual) return visualHTML(d.visual);
   if(!d.scene) return '';
   var far = /_A_ENTRANCE|_B_COUNTER|S02_|S07_/.test(d.scene) ? '' : ' sc-far';
   var hint = d.hint ? '<div class="sc-hint">'+d.hint+'</div>' : '';
@@ -1250,7 +1320,8 @@ Mech.comic = function(host, d, done){
       '<div class="who">'+b.who+'</div><span class="btext"></span></div>';
   }).join('') + '</div>';
   var visual = d.img ? '<img src="'+d.img+'" alt="">'
-                     : '<div class="panel-doc">'+docHTML(d.doc)+'</div>';
+             : d.visual ? visualHTML(d.visual)
+                        : '<div class="panel-doc">'+docHTML(d.doc)+'</div>';
   host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
     '<div class="stage-title">'+d.title+'</div></div><div class="stage-body comicbody"><div class="panel'+(d.img?'':' panel-plain')+'" id="cpanel">'+
     visual+bubbles+
@@ -1331,7 +1402,7 @@ Mech.sort = function(host, d, done){
   if(d.seconds) mechTimer(document.getElementById('mtz'), d.seconds, function(){ if(!closed) settle(true); });
   CARDS.forEach(function(o){
     var c=o.c, i=o.i;
-    var ch=document.createElement('div'); ch.className='chip'; ch.textContent=c.t; ch.dataset.i=i;
+    var ch=document.createElement('div'); ch.className='chip'; ch.innerHTML=c.t; ch.dataset.i=i;
     ch.addEventListener('click',function(){ if(sel)sel.classList.remove('sel'); sel=ch; ch.classList.add('sel');
       document.getElementById('bF').classList.add('hot'); document.getElementById('bS').classList.add('hot'); });
     pool.appendChild(ch);
@@ -1629,6 +1700,7 @@ Mech.sentence = function(host, d, done){
 /* Dokument aus Daten bauen. Jedes Feld mit k ist ein eigenes Tippziel. */
 function docHTML(doc){
   if(!doc) return '';
+  if(doc.type==='ia') return IA.build(doc);
   var rows=(doc.rows||[]).map(function(r){
     return '<div class="doc-row">'+r.map(function(f){
       var k=f.k||'';
@@ -1687,15 +1759,30 @@ Mech.rezept = function(host, d, done){
     '<div class="stage-title">'+d.title+'</div></div><div class="stage-body">'+
     (d.hint?'<div class="a3-hint">'+d.hint+'</div>':'')+
     docHTML(d.doc)+'<div id="fbz"></div></div></div>';
-  var fin=false, fields=host.querySelectorAll('.doc-f[data-k]');
+  var fin=false, misses=0, fields=host.querySelectorAll('[data-k]');
   fields.forEach(function(b){
     b.addEventListener('click',function(){
-      if(fin) return; fin=true;
-      var k=b.dataset.k, ok=(k===d.answer), p=ok?(d.p||25):0;
-      fields.forEach(function(x){ x.disabled=true; if(x.dataset.k===d.answer) x.classList.add('hit'); });
-      if(!ok) b.classList.add('miss');
-      var head=(ok?d.okH:((d.wrong&&d.wrong[k])||d.badH))+' · +'+p;
-      fbBlock(document.getElementById('fbz'), ok, head, d.expl, function(){ done(p, ok?8:-6); });
+      if(fin) return;
+      var k=b.dataset.k, ok=(k===d.answer);
+      if(!ok){
+        /* Fehlversuch beendet den Schritt nicht. Erster Fehler bringt den Bildhinweis. */
+        misses++;
+        b.classList.add('miss'); b.disabled=true;
+        if(misses===1){
+          if(d.hintImg) rxHint(d.hintImg, 3000);
+          if(d.missNote) fbNote(host, d.missNote);
+        }
+        if(misses < (d.tries||3)) return;
+        fin=true;
+        fields.forEach(function(x){ x.disabled=true; if(x.dataset.k===d.answer) x.classList.add('hit'); });
+        var badHead=((d.wrong&&(d.wrong[k]||d.wrong[k.split(':')[0]]))||d.badH)+' · +0';
+        return fbBlock(document.getElementById('fbz'), false, badHead, d.expl, function(){ done(0,-6); });
+      }
+      fin=true;
+      var p = misses===0 ? (d.p||25) : (d.p2!=null?d.p2:10);
+      fields.forEach(function(x){ x.disabled=true; });
+      b.classList.add('hit');
+      fbBlock(document.getElementById('fbz'), true, d.okH+' · +'+p, d.expl, function(){ done(p, 8); });
     });
   });
 };
@@ -1725,7 +1812,7 @@ Mech.hunt = function(host, d, done){
 Mech.euro = function(host, d, done){
   host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
     '<div class="stage-title">'+d.title+'</div></div><div class="stage-body">'+
-    (d.hint?'<div class="a3-hint">'+d.hint+'</div>':'')+
+    sceneStrip(d)+(d.hint?'<div class="a3-hint">'+d.hint+'</div>':'')+
     docHTML(d.doc)+'<div class="euro-opts" id="eo"></div>'+
     '<div id="eout"></div><div id="fbz"></div></div></div>';
   var box=document.getElementById('eo'), OPTS=shuffled(d.options), fin=false;
@@ -1748,9 +1835,226 @@ Mech.euro = function(host, d, done){
   });
 };
 
+/* =====================================================================
+   RETAX-ENGINE
+   1 · Imageausdruck als Bauteil (kein eigenes File, siehe imageausdruck.html)
+   2 · Textebene in Prozent ueber einem Bild
+   3 · Aufnahmefolge innerhalb eines Schrittes
+   4 · laufender Zahlenzaehler
+   5 · zeitweiliger Bildhinweis
+===================================================================== */
+
+function objWith(base, o){
+  var c={}, k;
+  for(k in base) c[k]=base[k];
+  for(k in (o||{})) c[k]=o[k];
+  return c;
+}
+
+/* ---------- 1 · Imageausdruck ---------- */
+var IA = (function(){
+  var LBL={pic:"PIC-Nummer", pzn:"PZN", nam:"Pr\u00e4parat", cod:"Code", rbt:"RBT Apo", bet:"Betrag"};
+  var COLS=['pic','pzn','nam','cod','rbt','bet'];
+  var _cfg={};
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function build(o){
+    o=o||{};
+    var rows=o.rows||[], pulse=o.pulse||[];
+    var head='<div class="ia-head"><div class="ia-brand">'+
+      (o.logo?'<img class="ia-logo" src="'+o.logo+'" alt="" loading="lazy" decoding="async">':'')+
+      '<span class="ia-kasse">'+esc(o.kasse||'')+'</span></div>'+
+      '<div class="ia-meta"><span>'+esc(o.zeichen||'')+'</span><span>'+esc(o.lauf||'')+'</span>'+
+      '<span>'+esc(o.datum||'')+'</span></div>'+
+      '<div class="ia-netto">'+esc(o.netto||'')+'</div></div>';
+    var th='<div class="ia-row">'+COLS.map(function(c){
+      return '<div class="ia-h ia-'+c+(pulse.indexOf(c)>=0?' ia-pulse':'')+'">'+LBL[c]+'</div>';
+    }).join('')+'</div>';
+    var body=rows.map(function(r,i){
+      var n=i+1;
+      return '<div class="ia-row">'+COLS.map(function(c){
+        var cls='ia-c ia-'+c+(pulse.indexOf(c)>=0?' ia-pulse':'');
+      if(o.static) return '<div class="'+cls+' ia-st">'+esc(r[c])+'</div>';
+      return '<button class="'+cls+'" data-k="'+c+':'+n+'">'+esc(r[c])+'</button>';
+      }).join('')+'</div>';
+    }).join('');
+    return '<div class="ia-wrap"><div class="ia-doc">'+head+
+      '<div class="ia-table">'+th+body+'</div>'+
+      '<div class="ia-foot"><span>'+esc(o.fussl||'')+'</span><span>'+esc(o.fussr||'')+'</span></div>'+
+      '</div></div>';
+  }
+  return {
+    build: build,
+    set: function(o){ _cfg=objWith(_cfg,o); return _cfg; },
+    rows: function(r){ _cfg.rows=r; return _cfg; },
+    html: function(){ return build(_cfg); },
+    target: function(k){ _cfg.answer=k; return k; },
+    onTap: function(fn){ _cfg._tap=fn; return fn; },
+    reveal: function(root){
+      var t=(root||document).querySelector('[data-k="'+(_cfg.answer||'')+'"]');
+      if(t) t.classList.add('hit'); return t;
+    },
+    clear: function(root){
+      (root||document).querySelectorAll('.ia-c.hit,.ia-c.miss').forEach(function(x){
+        x.classList.remove('hit'); x.classList.remove('miss'); });
+    }
+  };
+})();
+
+/* ---------- 2 bis 5 · Bildebene, Folge, Zaehler, Hinweis ---------- */
+var _rxReg={}, _rxN=0, _rxTimer=null;
+
+function stopRx(){
+  if(_rxTimer){ clearTimeout(_rxTimer); _rxTimer=null; }
+  var h=document.getElementById('rxHint'); if(h) h.remove();
+  if(typeof run!=='undefined' && run){ run._rxEl=null; run._rxCfg=null; }
+}
+
+function visualHTML(v){
+  if(!v) return '';
+  if(v.doc) return '<div class="rx-visual rx-docv">'+docHTML(v.doc)+'</div>';
+  var id='rx'+(++_rxN); _rxReg[id]=v;
+  if(v.bg) return '<div class="rx-visual rx-bgmark" data-rxid="'+id+'"></div>';
+  var first=(v.seq&&v.seq.length)?v.seq[0]:v;
+  return '<div class="rx-visual" data-rxid="'+id+'">'+
+    '<img class="rx-img" src="'+first.img+'" alt="" loading="lazy" decoding="async">'+
+    '<div class="rx-region"></div></div>';
+}
+
+function rxLayers(el, v, shot){
+  var reg=el.querySelector('.rx-region'); if(!reg) return;
+  var layers=(shot&&shot.layers)||null;
+  if(!layers){ reg.innerHTML=''; reg.style.display='none'; return; }
+  var r=shot.region||v.region||{l:0,t:0,w:100,h:100};
+  reg.style.left=r.l+'%'; reg.style.top=r.t+'%';
+  reg.style.width=r.w+'%'; reg.style.height=r.h+'%';
+  reg.style.display='block';
+  reg.innerHTML=layers.map(function(L){
+    var st='left:'+L.l+'%;top:'+L.t+'%;';
+    if(L.w!=null) st+='width:'+L.w+'%;';
+    if(L.h!=null) st+='height:'+L.h+'%;';
+    if(L.bg) st+='background:'+L.bg+';';
+    var cls=(L.cls?' '+L.cls:'');
+    if(L.img) return '<img class="rx-l rx-li'+cls+'" style="'+st+'" src="'+L.img+
+                     '" alt="" loading="lazy" decoding="async">';
+    return '<div class="rx-l'+cls+'" style="'+st+'" data-fs="'+(L.fs||0)+'">'+(L.tx||'')+'</div>';
+  }).join('');
+  rxSizeText(reg);
+}
+
+/* Schriftgroesse in Prozent der Regionsbreite. In px gerechnet, damit es
+   in jedem WebView gleich sitzt. */
+function rxSizeText(reg){
+  var w=reg.getBoundingClientRect().width;
+  if(!w) return;
+  reg.querySelectorAll('.rx-l[data-fs]').forEach(function(el){
+    var fs=parseFloat(el.getAttribute('data-fs'));
+    if(fs>0) el.style.fontSize=(w*fs/100).toFixed(2)+'px';
+  });
+}
+window.addEventListener('resize', function(){
+  document.querySelectorAll('.rx-region').forEach(rxSizeText);
+});
+
+function rxPlay(el, v, shots, i, done){
+  if(!el || !document.body.contains(el)) return;
+  var shot=shots[i];
+  var img=el.querySelector('.rx-img');
+  el.classList.add('rx-fade');
+  _rxTimer=setTimeout(function(){
+    if(!document.body.contains(el)) return;
+    img.src=shot.img;
+    rxLayers(el, v, shot);
+    el.classList.remove('rx-fade');
+    if(i+1<shots.length){
+      _rxTimer=setTimeout(function(){ rxPlay(el, v, shots, i+1, done); }, shot.ms||900);
+    } else if(done){ done(); }
+  }, 160);
+}
+
+function mountVisual(host){
+  if(typeof run==='undefined' || !run) return;
+  run._rxEl=null; run._rxCfg=null;
+  var el=host.querySelector('.rx-visual[data-rxid]');
+  if(!el) return;
+  var v=_rxReg[el.getAttribute('data-rxid')];
+  if(!v) return;
+  run._rxEl=el; run._rxCfg=v;
+
+  if(v.bg){
+    var body=host.querySelector('.stage-body');
+    if(body){ body.classList.add('rx-bgset'); body.style.setProperty('--rxbg','url("'+v.img+'")'); }
+    return;
+  }
+  if(v.seq && v.seq.length){
+    rxLayers(el, v, v.seq[0]);
+    if(v.seq.length>1){
+      _rxTimer=setTimeout(function(){ rxPlay(el, v, v.seq, 1); }, v.seq[0].ms||900);
+    }
+  } else {
+    rxLayers(el, v, v);
+  }
+  if(v.enter==='flip') el.classList.add('rx-flip');
+}
+
+/* laufender Zaehler: von einem Betrag zum anderen, am Ende gebremst */
+function rxCount(el, c){
+  var img=el.querySelector('.rx-img'); if(!img) return;
+  var box=document.createElement('div'); box.className='rx-count';
+  el.appendChild(box);
+  function place(){
+    var r=img.getBoundingClientRect();
+    box.style.top=((c.top||62)/100*r.height)+'px';
+    box.style.fontSize=((c.size||7)/100*r.width)+'px';
+  }
+  place();
+  var from=c.from, to=c.to, ms=c.ms||1200, t0=null;
+  function fmt(x){
+    var s=x.toFixed(2);
+    if(c.dec===',') s=s.replace('.',',');
+    return s+(c.suffix||'');
+  }
+  box.textContent=fmt(from);
+  function frame(t){
+    if(t0===null) t0=t;
+    var p=Math.min(1,(t-t0)/ms);
+    var e=1-Math.pow(1-p,3);
+    box.textContent=fmt(from+(to-from)*e);
+    if(p<1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* Wirkung nach der Antwort: Folge, Neigung, Zaehler */
+function rxAfter(good){
+  if(typeof run==='undefined' || !run) return;
+  var v=run._rxCfg, el=run._rxEl;
+  if(!v || !el || !v.after || !document.body.contains(el)) return;
+  var a=v.after;
+  if(a.onlyGood && !good) return;
+  if(a.seq && a.seq.length) rxPlay(el, v, a.seq, 0);
+  if(a.tilt) el.classList.add('rx-tilt');
+  if(a.count) rxCount(el, a.count);
+}
+
+/* zeitweiliger Bildhinweis, drei Sekunden */
+function rxHint(src, ms){
+  var old=document.getElementById('rxHint'); if(old) old.remove();
+  var d=document.createElement('div'); d.className='rx-hint'; d.id='rxHint';
+  d.innerHTML='<img src="'+src+'" alt="" decoding="async">';
+  document.body.appendChild(d);
+  setTimeout(function(){ var x=document.getElementById('rxHint'); if(x) x.remove(); }, ms||3000);
+}
+
+/* kurze Notiz ohne Schrittende */
+function fbNote(host, text){
+  var z=host.querySelector('#fbz'); if(!z) return;
+  z.innerHTML='<div class="fb bad" style="animation:pop .3s ease-out"><p>'+text+'</p></div>';
+}
+
 /* shared feedback block */
 function fbBlock(zone, good, head, text, next){
   if(good)SND.good();else SND.bad();
+  try{ rxAfter(good); }catch(e){}
   var rv='';
   if(good && typeof run!=='undefined' && run && run.pendingReveal){
     rv=revealDoc(run.pendingReveal); run.pendingReveal=null;
@@ -4069,6 +4373,58 @@ TOPICS.sonnenschutz_urlaub.steps_ar=[
    {t:"انتبه فقط ألا يحمرّ الأطفال كثيراً.",p:0,tr:-10,h:"معيار متأخر",x:"الاحمرار يظهر بعد ساعات من حدوث الضرر. ومن ينتظره يكون قد أصيب بالحرق فعلاً - وعند الأطفال هذا بالضبط ما يجب منعه."}]}}
 ];
 
+/* ---------------- Retax · gemeinsame Bausteine der Stufe 1 ----------------
+   Imageausdruck, Papierbereich im Bild, Textebene, Aufnahmefolge.
+   Die Dokumente sind deutsch in allen drei Sprachen: das Papier wechselt
+   die Sprache nicht, nur die Erzaehlung tut es. */
+var RETAX_IA = { type:"ia",
+  kasse:"Bruncker Classic",
+  logo:"assets/Retax/retax_logo_bruncker_classic.webp",
+  zeichen:"Zeichen 700-318052 \u00b7 Pr\u00fcflauf RP-25/06",
+  lauf:"Abrechnungsmonat 08",
+  datum:"Bescheiddatum 08.05.2026",
+  netto:"\u2212 35,83 EUR",
+  fussl:"Beanstandungen gem\u00e4\u00df Arzneiversorgungsvertrag",
+  fussr:"Seite 1 von 2",
+  rows:[
+   {pic:"4903180224600001", pzn:"10398914", nam:"Macrogol AbZ Pulver 50 Beutel",            cod:"63",  rbt:"1,86", bet:"\u2212 1,86"},
+   {pic:"4903180224600002", pzn:"09273219", nam:"Candesartan 1A Pharma 32 mg N3",           cod:"421", rbt:"0,00", bet:"\u2212 21,30"},
+   {pic:"4903180224600003", pzn:"03820525", nam:"Bisoprolol 5 1A Pharma FTA 100 St. N3",    cod:"421", rbt:"0,00", bet:"\u2212 10,52"},
+   {pic:"4903180224600004", pzn:"05450802", nam:"Isotonische Kochsalzl\u00f6sung z. Inhalation", cod:"63",  rbt:"2,09", bet:"\u2212 2,09"}
+  ]};
+
+/* Der Papierbereich innerhalb von retax_scene_haende_bescheid */
+var RETAX_BLATT = {l:26, t:3, w:48, h:88};
+
+/* Textebene auf dem Papier. Prozente innerhalb des Papierbereichs. */
+var RETAX_LAYERS = [
+  {cls:"rx-band", l:0, t:0, w:100, h:9, bg:"#1D4E89"},
+  {img:"assets/Retax/retax_logo_bruncker_classic.webp", l:4, t:1.5, w:14, h:6},
+  {tx:"Bruncker Classic", l:21, t:2.5, w:56, fs:3.2, cls:"rx-w rx-b"},
+  {tx:"Zeichen 700-318052", l:6, t:16, w:70, fs:2.4},
+  {tx:"Pr\u00fcflauf RP-25/06", l:6, t:21, w:70, fs:2.4},
+  {tx:"35,83 EUR", l:6, t:42, w:70, fs:5.2, cls:"rx-b"}
+];
+
+/* Aufnahmefolge des ersten Schrittes: Umschlag, Oeffnen, Blatt in der Hand */
+var RETAX_SEQ1 = [
+  {img:"assets/Retax/retax_scene_umschlag_geschlossen.webp", ms:900,
+   region:{l:0,t:0,w:100,h:100},
+   layers:[{cls:"rx-band", l:0, t:8, w:100, h:14, bg:"#1D4E89"}]},
+  {img:"assets/Retax/retax_scene_umschlag_oeffnen.webp", ms:900},
+  {img:"assets/Retax/retax_scene_haende_bescheid.webp", region:RETAX_BLATT, layers:RETAX_LAYERS}
+];
+
+/* Der stehende Blick auf das Blatt, ab Schritt 2 */
+function retaxBlatt(after){
+  return {img:"assets/Retax/retax_scene_haende_bescheid.webp",
+          region:RETAX_BLATT, layers:RETAX_LAYERS, after:after||null};
+}
+var RETAX_SPLIT = {onlyGood:true, seq:[
+  {img:"assets/Retax/retax_scene_blatt_teilt_sich.webp", ms:600},
+  {img:"assets/Retax/retax_scene_vier_karten.webp", ms:600}
+]};
+
 /* =====================================================================
    BÜRO · RETAX · B1 · retax_rabatt_klein
    Quelle: FALL_Retax_Level_01_retax_rabatt_klein_v3.md (02_Fallsammlungen)
@@ -4082,18 +4438,16 @@ TOPICS.retax_rabatt_klein = {
   badges:[],
   steps:[
  {mech:"comic",data:{kicker:"Szene 1 · Montagmorgen im Büro",
-  title:"Ein Bescheid der IKK classic liegt auf dem Schreibtisch", cta:"Bescheid prüfen →",
-  doc:{head:"IKK classic · Bescheid", sub:"Zeichen 700-318052 · Sammelbescheid",
-   rows:[[{l:"Rechnungsmonat",v:"August"},{l:"Bescheid vom",v:"Mai"}],
-         [{l:"Nettobetrag",v:"35,83 EUR"},{l:"Anlagen",v:"2 Imageausdrucke"}]],
-   foot:"Beanstandete Abgaben · Einzelheiten im Imageausdruck"},
+  title:"Ein Bescheid der Bruncker Classic liegt auf dem Schreibtisch", cta:"Bescheid prüfen →",
+  visual:{seq:RETAX_SEQ1, region:RETAX_BLATT},
   bubbles:[
-   {who:"Büro",txt:"Montagmorgen. Die Post liegt geöffnet auf dem Schreibtisch. Ein Bescheid der IKK classic, Zeichen 700-318052."},
+   {who:"Büro",txt:"Montagmorgen im Büro. Die Post liegt geöffnet auf dem Schreibtisch. Ein Bescheid der Bruncker Classic, Zeichen 700-318052."},
    {who:"Büro",txt:"Eine einzige Zahl steht darauf: <b>35,83 EUR netto</b>. Dahinter geheftet zwei Imageausdrucke, die noch niemand gelesen hat."},
    {who:"Büro",txt:"Die betroffenen Abgaben sind vom August. Es ist Mai."}]}},
 
  {mech:"mcq",data:{kicker:"Entscheidung · Erster Arbeitsschritt", title:"Was ist der erste Arbeitsschritt?",
-  reveal:{id:"pos", kicker:"Imageausdruck · aufgedeckt", html:"<div class='doc doc-pos'><div class='doc-head'>Imageausdruck · 4 Positionen</div><div class='pos-row'><span class='pz'>10398914</span><span class='nm'>Macrogol AbZ Pulver 50 Beutel</span><span class='cd c63'>63</span><span class='am'>−1,86 €</span></div><div class='pos-row'><span class='pz'>09273219</span><span class='nm'>Candesartan 1A Pharma 32 mg N3</span><span class='cd c421'>421</span><span class='am'>−21,30 €</span></div><div class='pos-row'><span class='pz'>03820525</span><span class='nm'>Bisoprolol 5 1A Pharma 100 St. N3</span><span class='cd c421'>421</span><span class='am'>−10,52 €</span></div><div class='pos-row'><span class='pz'>05450802</span><span class='nm'>Isotonische Kochsalzlösung z. Inhalation</span><span class='cd c63'>63</span><span class='am'>−2,09 €</span></div></div>"},
+  visual:retaxBlatt(RETAX_SPLIT),
+  reveal:{id:"ia", kicker:"Imageausdruck · aufgedeckt", html:IA.build(objWith(RETAX_IA,{static:true}))},
   options:[
    {t:"Den Gesamtbetrag prüfen und entscheiden",p:0,tr:0,h:"Zu grob",
     x:"Der Gesamtbetrag ist eine Summe aus verschiedenen Gründen. Er sagt nichts darüber, was angreifbar ist."},
@@ -4107,6 +4461,7 @@ TOPICS.retax_rabatt_klein = {
   expl:"Der Bescheid trägt eine einzige Nettosumme. Die eigentliche Information steht im Imageausdruck: je Position eine PIC-Nummer, ein Präparat, ein Beanstandungscode, ein Betrag. Hier sind es vier Positionen mit zwei verschiedenen Begründungen, und jede hat ihre eigene Erfolgsaussicht. Ein pauschaler Einspruch schwächt die begründeten Positionen, weil die Kasse ihn als Ganzes prüft. Wichtig: Die vier Positionen ergeben 35,77 €, der Bescheid nennt 35,83 €. Die Differenz stammt aus abhängigen Korrekturzeilen für Umsatzsteuer und Zuzahlung. Solche Cent-Differenzen sind normal und kein Einspruchsgrund."}},
 
  {mech:"truefalse",data:{kicker:"Aussage · Beanstandungscodes", title:"Richtig oder falsch?",
+  visual:{doc:objWith(RETAX_IA,{pulse:["cod","rbt"],static:true})}, skipDocs:["ia"],
   trueLabel:"richtig", falseLabel:"falsch", maxWrong:0,
   items:[{t:"Code 63 Rabattkorrektur wirft der Apotheke vor, das falsche Präparat abgegeben zu haben.",
     ok:false, p:25, why:"Bei 63 war das Präparat richtig, der Apothekenabschlag fehlte im Datensatz."}],
@@ -4114,18 +4469,20 @@ TOPICS.retax_rabatt_klein = {
   expl:"Bei den beiden 63er-Positionen wurde das richtige Präparat abgegeben. Sichtbar wird es im Feld <b>RBT Apo</b>: Es stand auf 0,00 und wurde auf 1,86 bzw. 2,09 korrigiert. Der Apothekenabschlag war schlicht nicht im Datensatz. Ein Einspruch hat hier keine Aussicht, weil die Berechnung objektiv unvollständig war. Der Code <b>421 Nichtbeachtung Rabattverträge</b> ist demgegenüber der echte Vorwurf: dass das Präparat selbst falsch war. Die beiden Codes wirken verwandt und sind in ihrer Angreifbarkeit gegensätzlich. Entscheidend ist die andere Konsequenz: 63 ist ein Signal für eine Fehlkonfiguration im Warenwirtschaftssystem oder in der Übertragung ans Rechenzentrum, nicht für einen Fehler im HV. Es wiederholt sich still in jedem Monat, in dem die Ursache besteht."}},
 
  {mech:"sort",data:{kicker:"Sortierung · 30 Sekunden", title:"Welche Positionen sind angreifbar?",
+  visual:{img:"assets/Retax/retax_scene_karte_in_fach.webp", bg:true},
   hint:"Maßstab ist die Begründung, nicht der Betrag.", seconds:30, pts:25,
   flagLabel:"Angreifbar", safeLabel:"Nicht angreifbar",
   cards:[
-   {t:"Macrogol AbZ Pulver 50 Beutel · Code 63 · −1,86 €",flag:false},
-   {t:"Candesartan 1A Pharma 32 mg N3 · Code 421 · −21,30 €",flag:true},
-   {t:"Bisoprolol 5 1A Pharma 100 St. N3 · Code 421 · −10,52 €",flag:true},
-   {t:"Isotonische Kochsalzlösung z. Inhalation · Code 63 · −2,09 €",flag:false}],
+   {t:"Macrogol AbZ Pulver 50 Beutel<small>PZN 10398914 · Code 63 · −1,86 €</small>",flag:false},
+   {t:"Candesartan 1A Pharma 32 mg N3<small>PZN 09273219 · Code 421 · −21,30 €</small>",flag:true},
+   {t:"Bisoprolol 5 1A Pharma FTA 100 St. N3<small>PZN 03820525 · Code 421 · −10,52 €</small>",flag:true},
+   {t:"Isotonische Kochsalzlösung z. Inhalation<small>PZN 05450802 · Code 63 · −2,09 €</small>",flag:false}],
   okH:"Nach dem Code sortiert", badH:"Nach dem Betrag sortiert",
   timeoutH:"Zeit abgelaufen", timeoutX:"Im Büro entscheidet die Menge der Bescheide das Tempo.",
   expl:"Sortiert wird nach dem Code, nicht nach dem Betrag. Die Positionen 2 und 3 tragen 421: Die Kasse behauptet, ein rabattiertes Präparat sei verfügbar gewesen. Das ist eine Tatsachenbehauptung, und die Kasse muss sie belegen. Die Positionen 1 und 4 tragen 63, dort ist die Berechnung objektiv unvollständig, und es gibt keinen Ansatzpunkt. Das ist erst die halbe Entscheidung: Die Sortierung sagt, welche Positionen angefochten werden können. Welche den Einspruch lohnen, ist die nächste Frage."}},
 
  {mech:"mcq",data:{kicker:"Entscheidung · Wirtschaftlichkeit", title:"Wann lohnt ein Einspruch wirtschaftlich nicht mehr?",
+  visual:{img:"assets/Retax/retax_scene_waage_zeit_geld.webp", after:{tilt:true}},
   options:[
    {t:"Nie, jede Position gehört angefochten",p:0,tr:0,h:"Kostet mehr als sie holt",
     x:"Eine Viertelstunde Arbeitszeit für 1,86 € ist ein Verlustgeschäft."},
@@ -4140,20 +4497,19 @@ TOPICS.retax_rabatt_klein = {
 
  {mech:"rezept",data:{kicker:"Einspruch · Position 2", title:"Tippe das Feld an, ohne das die Kasse die Position nicht zuordnen kann",
   hint:"Du schreibst den Einspruch gegen Position 2, Candesartan 1A Pharma 32 mg N3.",
-  doc:{head:"Imageausdruck · Position 2", sub:"IKK classic · Zeichen 700-318052",
-   rows:[[{l:"PIC",v:"4903180224600000",k:"pic"},{l:"PZN",v:"09273219",k:"pzn"}],
-         [{l:"Beanst.-Code",v:"421",k:"code"},{l:"RBT Apo",v:"0,00",k:"rbt"}],
-         [{l:"Betrag",v:"−21,30 EUR",k:"betrag"},{l:"IK",v:"109519005",k:"ik"}]],
-   foot:"Nichtbeachtung Rabattverträge"},
-  answer:"pic", p:25,
+  doc:RETAX_IA, skipDocs:["ia"],
+  answer:"pic:2", p:25, p2:10, tries:3,
+  hintImg:"assets/Retax/retax_scene_lupe.webp",
+  missNote:"Nicht dieses Feld. Die Kasse muss die einzelne Verordnungszeile wiederfinden.",
   okH:"Die Vorgangsnummer",
   badH:"Damit kann die Kasse nicht zuordnen",
-  wrong:{pzn:"Die PZN reicht nicht", code:"Der Code ist der Vorwurf, nicht die Adresse",
-   rbt:"Ein Folgefeld, keine Zuordnung", betrag:"Der Betrag ordnet nichts zu",
-   ik:"Das IK ist die Kasse, nicht die Zeile"},
+  wrong:{pzn:"Die PZN reicht nicht", cod:"Der Code ist der Vorwurf, nicht die Adresse",
+   rbt:"Ein Folgefeld, keine Zuordnung", bet:"Der Betrag ordnet nichts zu",
+   nam:"Der Name steht in mehreren Bescheiden", pic:"Richtige Spalte, falsche Zeile"},
   expl:"Die IKK classic verlangt wörtlich <b>unter Angabe von Gründen und den jeweiligen PIC-Nummern</b>. Die PIC ist die Vorgangsnummer der einzelnen Verordnungszeile. Ohne sie kann die Kasse nicht zuordnen, worauf sich der Einspruch bezieht, und er wird ungeprüft zurückgelegt. Die PZN allein genügt nicht: Dasselbe Präparat kann in mehreren Bescheiden auftauchen. Nun zur Begründung, die neben die PIC gehört. Der Einspruch gegen 421 stützt sich nicht auf eine Rechtsnorm, sondern auf die Beweislast. Die Kasse behauptet eine Tatsache: dass am Abgabetag ein rabattiertes Präparat verfügbar war. Also ist sie aufzufordern, es zu benennen. Ein Teil dieser Retaxationen endet genau hier, weil die maschinelle Prüfung nur feststellt, ob zum Wirkstoff ein Rabattvertrag besteht, nicht ob das Präparat tatsächlich abgabefähig war. War Nichtverfügbarkeit der Grund, gehört zusätzlich das Nichtverfügbarkeitsprotokoll mit Abfragezeitstempel dazu. Und noch ein Blick auf das Feld <b>RBT Apo</b>: Es steht hier auf 0,00, wie bei den 63er-Positionen. Bei einer 421er-Position ist das kein zweiter Fehler, sondern eine Folge der Korrektur."}},
 
  {mech:"mcq",data:{kicker:"Entscheidung · Der Zeitabstand", title:"Abgabe im August, Bescheid im Mai. Wichtigste Folge?",
+  visual:{img:"assets/Retax/retax_scene_kalender_acht_monate.webp", enter:"flip"},
   options:[
    {t:"Die Frist ist abgelaufen, Einspruch zwecklos",p:0,tr:0,h:"Die Frist läuft ab dem Bescheid",
     x:"Nicht ab der Abgabe. Der Einspruch ist fristgerecht möglich."},
@@ -4167,6 +4523,8 @@ TOPICS.retax_rabatt_klein = {
   expl:"Ein Abstand von fünf bis neun Monaten ist der Normalfall, der Median liegt bei acht, und er ist über AOK, IKK, spectrumK und GFS hinweg stabil. Drei Folgen. Erstens kann die Person, die die Verordnung beliefert hat, das Team längst verlassen haben, und niemand erinnert den Vorgang. Zweitens produziert ein systematischer Fehler wie der, der den Code 63 erzeugt, acht Monate lang Positionen, bevor der erste Bescheid ihn sichtbar macht. Drittens werden Nachweise erst angefordert, wenn ihre Zeit vorbei ist: In einem dokumentierten Fall wurde die Nichtverfügbarkeit am 07.02.2024 um 09:38:07 abgefragt und das Protokoll am 29.01.2025 gedruckt, fast ein Jahr später, für einen späteren Einspruch. Gerettet hat die Akte allein die Archivierung im Moment der Abgabe. A und C sind falsch: Weder ist die Frist abgelaufen noch verliert die Kasse ihr Recht. Die Einspruchsfrist läuft ab dem Bescheid, nicht ab der Abgabe."}},
 
  {mech:"euro",data:{kicker:"Bilanz · Was bleibt hängen", title:"Einspruch gegen Position 2 und 3. Was bleibt am Ende hängen?",
+  visual:{img:"assets/Retax/retax_scene_undichte_kiste.webp",
+   after:{count:{from:35.83, to:3.95, ms:1200, dec:",", suffix:" €", top:62, size:7}}},
   options:[{t:"0,00 €",p:0},{t:"3,95 €",p:50,ok:true},{t:"35,83 €",p:0},{t:"21,30 €",p:0}],
   ledger:[
    {l:"Bescheid gesamt",v:"−35,83 €",cls:"minus"},
@@ -4179,18 +4537,16 @@ TOPICS.retax_rabatt_klein = {
 ],
   steps_en:[
  {mech:"comic",data:{kicker:"Scene 1 · Monday morning in the office",
-  title:"A notice from IKK classic is lying on the desk", cta:"Check the notice →",
-  doc:{head:"IKK classic · Notice", sub:"Reference 700-318052 · collective notice",
-   rows:[[{l:"Billing month",v:"August"},{l:"Notice dated",v:"May"}],
-         [{l:"Net amount",v:"35.83 EUR"},{l:"Attachments",v:"2 image printouts"}]],
-   foot:"Objected dispensings · details in the image printout"},
+  title:"A notice from Bruncker Classic is lying on the desk", cta:"Check the notice →",
+  visual:{seq:RETAX_SEQ1, region:RETAX_BLATT},
   bubbles:[
-   {who:"Office",txt:"Monday morning. The post lies open on the desk. A notice from IKK classic, reference 700-318052."},
+   {who:"Office",txt:"Monday morning in the office. The post lies open on the desk. A notice from Bruncker Classic, reference 700-318052."},
    {who:"Office",txt:"A single figure on it: <b>35.83 EUR net</b>. Stapled behind it, two image printouts nobody has read yet."},
    {who:"Office",txt:"The dispensings concerned are from August. It is May."}]}},
 
  {mech:"mcq",data:{kicker:"Decision · First step", title:"What is the first step?",
-  reveal:{id:"pos", kicker:"Image printout · revealed", html:"<div class='doc doc-pos'><div class='doc-head'>Image printout · 4 positions</div><div class='pos-row'><span class='pz'>10398914</span><span class='nm'>Macrogol AbZ Pulver 50 Beutel</span><span class='cd c63'>63</span><span class='am'>−1,86 €</span></div><div class='pos-row'><span class='pz'>09273219</span><span class='nm'>Candesartan 1A Pharma 32 mg N3</span><span class='cd c421'>421</span><span class='am'>−21,30 €</span></div><div class='pos-row'><span class='pz'>03820525</span><span class='nm'>Bisoprolol 5 1A Pharma 100 St. N3</span><span class='cd c421'>421</span><span class='am'>−10,52 €</span></div><div class='pos-row'><span class='pz'>05450802</span><span class='nm'>Isotonische Kochsalzlösung z. Inhalation</span><span class='cd c63'>63</span><span class='am'>−2,09 €</span></div></div>"},
+  visual:retaxBlatt(RETAX_SPLIT),
+  reveal:{id:"ia", kicker:"Image printout · revealed", html:IA.build(objWith(RETAX_IA,{static:true}))},
   options:[
    {t:"Check the total and decide",p:0,tr:0,h:"Too coarse",
     x:"The total is a sum of different reasons. It says nothing about what is attackable."},
@@ -4204,6 +4560,7 @@ TOPICS.retax_rabatt_klein = {
   expl:"The notice carries a single net sum. The real information sits in the image printout: per position a PIC number, a product, an objection code, an amount. Here there are four positions under two different reasons, and each has its own prospect of success. A blanket appeal weakens the well-founded positions, because the insurer reviews it as a whole. Note: the four positions total 35.77 €, the notice states 35.83 €. The difference comes from dependent correction lines for VAT and co-payment. Such cent differences are normal and no ground for appeal."}},
 
  {mech:"truefalse",data:{kicker:"Statement · objection codes", title:"True or false?",
+  visual:{doc:objWith(RETAX_IA,{pulse:["cod","rbt"],static:true})}, skipDocs:["ia"],
   trueLabel:"true", falseLabel:"false", maxWrong:0,
   items:[{t:"Code 63 Rabattkorrektur alleges the pharmacy dispensed the wrong product.",
     ok:false, p:25, why:"On 63 the product was right, the pharmacy discount was missing from the record."}],
@@ -4211,18 +4568,20 @@ TOPICS.retax_rabatt_klein = {
   expl:"On both 63 positions the correct product was dispensed. You can see it in the <b>RBT Apo</b> field: it stood at 0.00 and was corrected to 1.86 and 2.09. The pharmacy discount was simply absent from the record. An appeal has no prospect here, because the calculation was objectively incomplete. Code <b>421 Nichtbeachtung Rabattverträge</b>, by contrast, is the real allegation: that the product itself was wrong. The two codes look related and are opposites in how attackable they are. The other consequence is what matters: 63 signals a misconfiguration in the stock system or in the transfer to the billing centre, not an error at the counter. It repeats silently every month the cause persists."}},
 
  {mech:"sort",data:{kicker:"Sorting · 30 seconds", title:"Which positions are attackable?",
+  visual:{img:"assets/Retax/retax_scene_karte_in_fach.webp", bg:true},
   hint:"The criterion is the reason, not the amount.", seconds:30, pts:25,
   flagLabel:"Attackable", safeLabel:"Not attackable",
   cards:[
-   {t:"Macrogol AbZ Pulver 50 Beutel · code 63 · −1.86 €",flag:false},
-   {t:"Candesartan 1A Pharma 32 mg N3 · code 421 · −21.30 €",flag:true},
-   {t:"Bisoprolol 5 1A Pharma 100 St. N3 · code 421 · −10.52 €",flag:true},
-   {t:"Isotonische Kochsalzlösung z. Inhalation · code 63 · −2.09 €",flag:false}],
+   {t:"Macrogol AbZ Pulver 50 Beutel<small>PZN 10398914 · code 63 · −1.86 €</small>",flag:false},
+   {t:"Candesartan 1A Pharma 32 mg N3<small>PZN 09273219 · code 421 · −21.30 €</small>",flag:true},
+   {t:"Bisoprolol 5 1A Pharma FTA 100 St. N3<small>PZN 03820525 · code 421 · −10.52 €</small>",flag:true},
+   {t:"Isotonische Kochsalzlösung z. Inhalation<small>PZN 05450802 · code 63 · −2.09 €</small>",flag:false}],
   okH:"Sorted by the code", badH:"Sorted by the amount",
   timeoutH:"Time is up", timeoutX:"In the office the number of notices sets the pace.",
   expl:"Sorting follows the code, not the amount. Positions 2 and 3 carry 421: the insurer asserts a rebated product was available. That is a factual assertion, and the insurer must substantiate it. Positions 1 and 4 carry 63, where the calculation is objectively incomplete and there is no purchase. This is only half the decision: sorting tells you which positions can be challenged. Which ones are worth challenging is the next question."}},
 
  {mech:"mcq",data:{kicker:"Decision · economics", title:"When does an appeal stop being worthwhile?",
+  visual:{img:"assets/Retax/retax_scene_waage_zeit_geld.webp", after:{tilt:true}},
   options:[
    {t:"Never, every position deserves it",p:0,tr:0,h:"Costs more than it recovers",
     x:"A quarter of an hour of working time for 1.86 € is a loss."},
@@ -4237,20 +4596,19 @@ TOPICS.retax_rabatt_klein = {
 
  {mech:"rezept",data:{kicker:"Appeal · position 2", title:"Tap the field without which the insurer cannot locate the position",
   hint:"You are writing the appeal against position 2, Candesartan 1A Pharma 32 mg N3.",
-  doc:{head:"Image printout · position 2", sub:"IKK classic · reference 700-318052",
-   rows:[[{l:"PIC",v:"4903180224600000",k:"pic"},{l:"PZN",v:"09273219",k:"pzn"}],
-         [{l:"Objection code",v:"421",k:"code"},{l:"RBT Apo",v:"0.00",k:"rbt"}],
-         [{l:"Amount",v:"−21.30 EUR",k:"betrag"},{l:"IK",v:"109519005",k:"ik"}]],
-   foot:"Nichtbeachtung Rabattverträge"},
-  answer:"pic", p:25,
+  doc:RETAX_IA, skipDocs:["ia"],
+  answer:"pic:2", p:25, p2:10, tries:3,
+  hintImg:"assets/Retax/retax_scene_lupe.webp",
+  missNote:"Not this field. The insurer has to find the single prescription line again.",
   okH:"The transaction number",
   badH:"The insurer cannot locate it with this",
-  wrong:{pzn:"The PZN is not enough", code:"The code is the allegation, not the address",
-   rbt:"A consequent field, not an address", betrag:"The amount locates nothing",
-   ik:"The IK is the insurer, not the line"},
+  wrong:{pzn:"The PZN is not enough", cod:"The code is the allegation, not the address",
+   rbt:"A consequent field, not an address", bet:"The amount locates nothing",
+   nam:"The name appears in several notices", pic:"Right column, wrong row"},
   expl:"IKK classic requires literally <b>unter Angabe von Gründen und den jeweiligen PIC-Nummern</b>. The PIC is the transaction number of the individual prescription line. Without it the insurer cannot locate what the appeal refers to, and it is set aside unexamined. The PZN alone does not suffice: the same product can appear in several notices. Now for the reasoning that belongs beside the PIC. An appeal against 421 rests not on a legal provision but on the burden of proof. The insurer asserts a fact: that a rebated product was available on the day of dispensing. So it must be asked to name it. A share of these claw-backs ends right here, because the automated check only establishes whether a rebate contract exists for the substance, not whether the product was actually dispensable. If unavailability was the reason, the unavailability protocol with its query timestamp belongs with it. And a glance at the <b>RBT Apo</b> field: it stands at 0.00 here, as on the 63 positions. On a 421 position that is not a second error but a consequence of the correction."}},
 
  {mech:"mcq",data:{kicker:"Decision · the time gap", title:"Dispensed in August, notice in May. Main consequence?",
+  visual:{img:"assets/Retax/retax_scene_kalender_acht_monate.webp", enter:"flip"},
   options:[
    {t:"The deadline lapsed, an appeal is pointless",p:0,tr:0,h:"The period runs from the notice",
     x:"Not from the dispensing. The appeal is possible in time."},
@@ -4264,6 +4622,8 @@ TOPICS.retax_rabatt_klein = {
   expl:"A gap of five to nine months is the normal case, with a median of eight, and it is stable across AOK, IKK, spectrumK and GFS. Three consequences. First, whoever dispensed the prescription may long since have left the team, and nobody remembers the transaction. Second, a systematic fault such as the one producing code 63 generates positions for eight months before the first notice makes it visible. Third, evidence is only requested once its time has passed: in a documented case unavailability was queried on 07.02.2024 at 09:38:07 and the protocol printed on 29.01.2025, nearly a year later, for a subsequent appeal. What saved the file was archiving at the moment of dispensing, nothing else. A and C are wrong: the deadline has not lapsed and the insurer loses nothing. The appeal period runs from the notice, not from the dispensing."}},
 
  {mech:"euro",data:{kicker:"Balance · what is left", title:"Appeal on positions 2 and 3. What is left in the end?",
+  visual:{img:"assets/Retax/retax_scene_undichte_kiste.webp",
+   after:{count:{from:35.83, to:3.95, ms:1200, dec:".", suffix:" €", top:62, size:7}}},
   options:[{t:"0.00 €",p:0},{t:"3.95 €",p:50,ok:true},{t:"35.83 €",p:0},{t:"21.30 €",p:0}],
   ledger:[
    {l:"Notice in total",v:"−35.83 €",cls:"minus"},
@@ -4276,18 +4636,16 @@ TOPICS.retax_rabatt_klein = {
 ],
   steps_ar:[
  {mech:"comic",data:{kicker:"المشهد 1 · صباح اثنين في المكتب",
-  title:"إشعار من IKK classic على الطاولة", cta:"افحص الإشعار ←",
-  doc:{head:"IKK classic · Bescheid", sub:"Zeichen 700-318052 · Sammelbescheid",
-   rows:[[{l:"Rechnungsmonat",v:"August"},{l:"Bescheid vom",v:"Mai"}],
-         [{l:"Nettobetrag",v:"35,83 EUR"},{l:"Anlagen",v:"2 Imageausdrucke"}]],
-   foot:"Beanstandete Abgaben · Einzelheiten im Imageausdruck"},
+  title:"إشعار من Bruncker Classic على الطاولة", cta:"افحص الإشعار ←",
+  visual:{seq:RETAX_SEQ1, region:RETAX_BLATT},
   bubbles:[
-   {who:"المكتب",txt:"صباح اثنين. البريد مفتوح على الطاولة. إشعار من IKK classic، الرمز 700-318052."},
-   {who:"المكتب",txt:"عليه رقم واحد: <b>35,83 يورو صافياً</b>. وخلفه مدبّستان ورقتا Imageausdruck لم يقرأهما أحد بعد."},
-   {who:"المكتب",txt:"والصرف المعني من آب. ونحن في أيار."}]}},
+   {who:"المكتب",txt:"صباح اثنين في المكتب. البريد مفتوح أمامي على الطاولة. إشعار من Bruncker Classic، الرمز 700-318052."},
+   {who:"المكتب",txt:"عليه رقم واحد: <b>35,83 يورو صافياً</b>. وخلفه ورقتا Imageausdruck مدبّستان لم أقرأهما بعد."},
+   {who:"المكتب",txt:"الصرف المعني من آب. ونحن في أيار."}]}},
 
  {mech:"mcq",data:{kicker:"قرار · أول خطوة", title:"ما أول خطوة عمل؟",
-  reveal:{id:"pos", kicker:"Imageausdruck · انكشف", html:"<div class='doc doc-pos'><div class='doc-head'>Imageausdruck · 4 Positionen</div><div class='pos-row'><span class='pz'>10398914</span><span class='nm'>Macrogol AbZ Pulver 50 Beutel</span><span class='cd c63'>63</span><span class='am'>−1,86 €</span></div><div class='pos-row'><span class='pz'>09273219</span><span class='nm'>Candesartan 1A Pharma 32 mg N3</span><span class='cd c421'>421</span><span class='am'>−21,30 €</span></div><div class='pos-row'><span class='pz'>03820525</span><span class='nm'>Bisoprolol 5 1A Pharma 100 St. N3</span><span class='cd c421'>421</span><span class='am'>−10,52 €</span></div><div class='pos-row'><span class='pz'>05450802</span><span class='nm'>Isotonische Kochsalzlösung z. Inhalation</span><span class='cd c63'>63</span><span class='am'>−2,09 €</span></div></div>"},
+  visual:retaxBlatt(RETAX_SPLIT),
+  reveal:{id:"ia", kicker:"Imageausdruck · انكشف", html:IA.build(objWith(RETAX_IA,{static:true}))},
   options:[
    {t:"يُفحص المبلغ الإجمالي ويُقرّر",p:0,tr:0,h:"خشن أكثر مما يجب",
     x:"المبلغ الإجمالي حاصل جمع لحجج مختلفة، ولا يقول شيئاً عمّا يقبل الطعن."},
@@ -4301,6 +4659,7 @@ TOPICS.retax_rabatt_klein = {
   expl:"الإشعار يحمل مبلغاً صافياً واحداً. أما المعلومة الحقيقية فهي في الـImageausdruck: لكل موضع رقم PIC ودواء وكود اعتراض ومبلغ. وهنا أربعة مواضع بحجتين مختلفتين، ولكل موضع حظه المستقل من النجاح. والاعتراض الجملي يُضعف المواضع المؤسّسة، لأن الكاسة تفحصه ككتلة واحدة. وانتبه: المواضع الأربعة مجموعها 35,77 €، والإشعار يذكر 35,83 €. الفرق من سطور تصحيح تابعة، ضريبة أو زيادة. وفروق السنتات هذه عادية ولا تصلح سبباً للاعتراض."}},
 
  {mech:"truefalse",data:{kicker:"عبارة · أكواد الاعتراض", title:"صح أم خطأ؟",
+  visual:{doc:objWith(RETAX_IA,{pulse:["cod","rbt"],static:true})}, skipDocs:["ia"],
   trueLabel:"صح", falseLabel:"خطأ", maxWrong:0,
   items:[{t:"الكود 63 Rabattkorrektur يتهم الصيدلية بصرف الدواء الخطأ.",
     ok:false, p:25, why:"في الكود 63 كان الدواء صحيحاً، والناقص هو أبشلاغ الصيدلية في البيانات."}],
@@ -4308,18 +4667,20 @@ TOPICS.retax_rabatt_klein = {
   expl:"في موضعَي الكود 63 صُرف الدواء الصحيح. ويظهر ذلك في حقل <b>RBT Apo</b>: كان صفراً فصُحّح إلى 1,86 و2,09. أبشلاغ الصيدلية لم يكن في مجموعة البيانات ببساطة. فلا حظّ للاعتراض هنا، لأن الحساب كان ناقصاً موضوعياً. وفي المقابل، الكود <b>421 Nichtbeachtung Rabattverträge</b> هو الاتهام الحقيقي: أن الدواء نفسه خطأ. الكودان يبدوان متقاربين وهما متعاكسان في قابلية الطعن. والمهم هو النتيجة الأخرى: 63 إشارة إلى خلل في إعداد نظام إدارة البضاعة أو في النقل إلى مركز التحاسب، لا خطأ عند الكاونتر. وهو يتكرر صامتاً كل شهر يبقى فيه السبب."}},
 
  {mech:"sort",data:{kicker:"فرز · 30 ثانية", title:"أي المواضع قابلة للطعن؟",
+  visual:{img:"assets/Retax/retax_scene_karte_in_fach.webp", bg:true},
   hint:"المعيار الحجة، لا المبلغ.", seconds:30, pts:25,
-  flagLabel:"قابلة للطعن", safeLabel:"غير قابلة للطعن",
+  flagLabel:"أستطيع الطعن", safeLabel:"لا أستطيع الطعن",
   cards:[
-   {t:"Macrogol AbZ Pulver 50 Beutel · كود 63 · −1,86 €",flag:false},
-   {t:"Candesartan 1A Pharma 32 mg N3 · كود 421 · −21,30 €",flag:true},
-   {t:"Bisoprolol 5 1A Pharma 100 St. N3 · كود 421 · −10,52 €",flag:true},
-   {t:"Isotonische Kochsalzlösung z. Inhalation · كود 63 · −2,09 €",flag:false}],
+   {t:"Macrogol AbZ Pulver 50 Beutel<small>PZN 10398914 · كود 63 · −1,86 €</small>",flag:false},
+   {t:"Candesartan 1A Pharma 32 mg N3<small>PZN 09273219 · كود 421 · −21,30 €</small>",flag:true},
+   {t:"Bisoprolol 5 1A Pharma FTA 100 St. N3<small>PZN 03820525 · كود 421 · −10,52 €</small>",flag:true},
+   {t:"Isotonische Kochsalzlösung z. Inhalation<small>PZN 05450802 · كود 63 · −2,09 €</small>",flag:false}],
   okH:"فُرز على الكود", badH:"فُرز على المبلغ",
   timeoutH:"انتهى الوقت", timeoutX:"في المكتب عدد الإشعارات هو من يفرض الإيقاع.",
   expl:"الفرز يجري على الكود لا على المبلغ. الموضعان 2 و3 يحملان 421: الكاسة تزعم أن دواءً مربَّطاً كان متوفراً، وهذا ادعاء واقعة وعلى الكاسة إثباته. والموضعان 1 و4 يحملان 63، والحساب فيهما ناقص موضوعياً فلا مدخل للطعن. وهذا نصف القرار فقط: الفرز يقول أيّ المواضع يمكن الاعتراض عليها، وأيّها يستحق سؤال تالٍ."}},
 
  {mech:"mcq",data:{kicker:"قرار · الجدوى", title:"متى يكفّ الاعتراض عن كونه مجدياً؟",
+  visual:{img:"assets/Retax/retax_scene_waage_zeit_geld.webp", after:{tilt:true}},
   options:[
    {t:"أبداً، كل موضع يستحق الطعن",p:0,tr:0,h:"يكلف أكثر مما يسترد",
     x:"ربع ساعة عمل مقابل 1,86 € خسارة صافية."},
@@ -4333,21 +4694,20 @@ TOPICS.retax_rabatt_klein = {
   expl:"الاعتراض يكلّف ربع ساعة على الأقل: استخراج الموضع، وسحب الإثباتات، وصياغة الحجة، والإرسال، وضبط موعد المتابعة. ومع وسيط موضع يقارب عشرة يوروات، تُبلَغ العتبة بسرعة. والمواضع دون خمسة يوروات تستهلك من وقت العمل أكثر مما تسترد. وبتطبيق المرشِّحين معاً على هذا الإشعار: الموضعان 2 و3 قابلان للطعن ويتجاوزان العتبة فيُعترض عليهما، والموضعان 1 و4 يسقطان بالمرشِّحين كليهما. وهذا في القرار المفرد. ولا يسري إطلاقاً على السبب: أربعة مواضع صغرى بيورو أو اثنين لكل منها هي بلا وزن اقتصادي، وهي في الوقت نفسه أوضح دليل على خلل منهجي. والجواب D خاطئ: الفارق بين ستة وتسعة أشهر هو الحالة العادية لا مانعاً."}},
 
  {mech:"rezept",data:{kicker:"اعتراض · الموضع 2", title:"اضغط الحقل الذي بدونه لا تستطيع الكاسة تحديد الموضع",
-  hint:"تكتب الاعتراض على الموضع 2، Candesartan 1A Pharma 32 mg N3.",
-  doc:{head:"Imageausdruck · Position 2", sub:"IKK classic · Zeichen 700-318052",
-   rows:[[{l:"PIC",v:"4903180224600000",k:"pic"},{l:"PZN",v:"09273219",k:"pzn"}],
-         [{l:"Beanst.-Code",v:"421",k:"code"},{l:"RBT Apo",v:"0,00",k:"rbt"}],
-         [{l:"Betrag",v:"−21,30 EUR",k:"betrag"},{l:"IK",v:"109519005",k:"ik"}]],
-   foot:"Nichtbeachtung Rabattverträge"},
-  answer:"pic", p:25,
+  hint:"أكتب الاعتراض على الموضع 2، Candesartan 1A Pharma 32 mg N3.",
+  doc:RETAX_IA, skipDocs:["ia"],
+  answer:"pic:2", p:25, p2:10, tries:3,
+  hintImg:"assets/Retax/retax_scene_lupe.webp",
+  missNote:"ليس هذا الحقل. على الكاسة أن تجد سطر الوصفة المفرد مرة أخرى.",
   okH:"رقم المعاملة",
   badH:"بهذا لا تستطيع الكاسة التحديد",
-  wrong:{pzn:"الـPZN لا تكفي", code:"الكود هو الاتهام لا العنوان",
-   rbt:"حقل تابع لا عنوان", betrag:"المبلغ لا يحدد شيئاً",
-   ik:"الـIK هو الكاسة لا السطر"},
+  wrong:{pzn:"الـPZN لا تكفي", cod:"الكود هو الاتهام لا العنوان",
+   rbt:"حقل تابع لا عنوان", bet:"المبلغ لا يحدد شيئاً",
+   nam:"الاسم يظهر في عدة إشعارات", pic:"العمود صحيح والسطر خطأ"},
   expl:"IKK classic تطلب حرفياً <b>unter Angabe von Gründen und den jeweiligen PIC-Nummern</b>. والـPIC رقم معاملة سطر الوصفة المفرد. وبدونه لا تستطيع الكاسة تحديد ما يشير إليه الاعتراض، فيُنحّى بلا فحص. والـPZN وحدها لا تكفي: الدواء نفسه قد يظهر في عدة إشعارات. وأما الحجة التي تُكتب بجانب الـPIC: الاعتراض على 421 لا يُبنى على نصّ قانوني بل على عبء الإثبات. الكاسة تزعم واقعة، أن دواءً مربَّطاً كان متوفراً يوم الصرف، فتُطالَب بتسميته. وجزء من هذه الريتاكسات ينتهي عند هذا الحد وحده، لأن الفحص الآلي يتحقق من وجود عقد رابات على المادة لا من صلاحية الدواء للصرف فعلاً. وإن كان السبب عدم التوفر، يُضاف بروتوكول عدم التوفر بختم وقت الاستعلام. ونظرة أخيرة على حقل <b>RBT Apo</b>: هو هنا صفر كما في موضعَي الكود 63، لكنه في موضع 421 ليس خطأً ثانياً بل أثراً تابعاً للتصحيح."}},
 
  {mech:"mcq",data:{kicker:"قرار · الفارق الزمني", title:"الصرف في آب والإشعار في أيار. أهم أثر؟",
+  visual:{img:"assets/Retax/retax_scene_kalender_acht_monate.webp", enter:"flip"},
   options:[
    {t:"المهلة انقضت، فالاعتراض بلا فائدة",p:0,tr:0,h:"المهلة تبدأ من الإشعار",
     x:"لا من الصرف. والاعتراض ممكن في وقته."},
@@ -4361,6 +4721,8 @@ TOPICS.retax_rabatt_klein = {
   expl:"الفارق بين خمسة وتسعة أشهر هو الحالة العادية، ووسيطه ثمانية، وهو ثابت عبر AOK وIKK وspectrumK وGFS. وله ثلاثة آثار. أولاً، من صرف الوصفة قد يكون غادر الفريق فلا أحد يتذكر الواقعة. ثانياً، الخلل المنهجي كذاك الذي يولّد الكود 63 يُنتج ثمانية أشهر كاملة من المواضع قبل أن يصل أول إشعار يكشفه. ثالثاً، الإثباتات لا تُطلب إلا بعد فوات وقتها: في حالة موثّقة استُعلم عن عدم التوفر في 07.02.2024 الساعة 09:38:07، وطُبع البروتوكول في 29.01.2025 أي بعد قرابة عام، لخدمة اعتراض لاحق. والأرشفة لحظة الصرف وحدها هي التي أنقذت الملف. والجوابان A وC خاطئان: لا المهلة انقضت ولا الكاسة تفقد حقها. مهلة الاعتراض تبدأ من الإشعار لا من الصرف."}},
 
  {mech:"euro",data:{kicker:"الحصيلة · ماذا يبقى", title:"اعتراض على الموضعين 2 و3. فماذا يبقى في النهاية؟",
+  visual:{img:"assets/Retax/retax_scene_undichte_kiste.webp",
+   after:{count:{from:35.83, to:3.95, ms:1200, dec:",", suffix:" €", top:62, size:7}}},
   options:[{t:"0,00 €",p:0},{t:"3,95 €",p:50,ok:true},{t:"35,83 €",p:0},{t:"21,30 €",p:0}],
   ledger:[
    {l:"الإشعار إجمالاً",v:"−35,83 €",cls:"minus"},
@@ -4633,7 +4995,7 @@ function startLevel(lv){
   run = { lv:lv, topic:topic, persona:persona, steps:langSteps, stepIdx:0, score:0,
           trust:persona.trustStart||60, stepScores:{}, review:[],
           office:office, docs:[], pendingReveal:null };
-  stopMechTimer();
+  stopMechTimer(); stopRx();
   document.getElementById('gameScreen').classList.toggle('no-trust', office);
   if(!office){
     var timg=persona.img&&(persona.img.neutral||persona.img.worried) ? (persona.img.neutral||persona.img.worried) : 'assets/vater_worried.jpg';
@@ -4662,7 +5024,7 @@ function runStep(){
   var idx=run.stepIdx;
   run.pendingReveal = (step.data && step.data.reveal) || null;
   Mech[step.mech](host, step.data, function(scoreDelta, trustDelta){
-    stopMechTimer();
+    stopMechTimer(); stopRx();
     captureReview(host, idx, scoreDelta);
     run.score+=scoreDelta; run.stepScores['step'+idx]=scoreDelta;
     document.getElementById('score').textContent=run.score;
@@ -4672,18 +5034,22 @@ function runStep(){
     runStep();
     window.scrollTo({top:0,behavior:'smooth'});
   });
-  mountDocs(host);
+  mountDocs(host, step.data);
+  mountVisual(host);
 }
 
 /* Bereits aufgedeckte Dokumente laufen in jedem folgenden Schritt mit. */
-function mountDocs(host){
+function mountDocs(host, data){
   if(!run || !run.docs || !run.docs.length) return;
+  var skip=(data&&data.skipDocs)||[];
+  var list=run.docs.filter(function(x){ return skip.indexOf(x.id)<0; });
+  if(!list.length) return;
   var body=host.querySelector('.stage-body');
   if(!body || body.querySelector('.docs-strip')) return;
   var d=document.createElement('details');
   d.className='docs-strip'; d.open=true;
   d.innerHTML='<summary>'+t('fileLabel')+'</summary>'+
-    run.docs.map(function(x){ return x.html; }).join('');
+    list.map(function(x){ return x.html; }).join('');
   body.insertBefore(d, body.firstChild);
 }
 
