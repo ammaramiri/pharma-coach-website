@@ -575,9 +575,19 @@ img.rx-li{object-fit:contain;object-position:left center}
 body.rtl .rx-hint{right:auto;left:14px}
 .stage-body.rx-bgset{position:relative;isolation:isolate}
 .stage-body.rx-bgset::before{content:'';position:absolute;inset:-8px;background-image:var(--rxbg);
-  background-size:cover;background-position:center;opacity:.35;filter:blur(3px);
+  background-size:cover;background-position:center;opacity:.55;filter:blur(1.2px);
   z-index:-1;border-radius:18px}
 .rx-visual.rx-bgmark{display:none}
+
+/* Bild links, Aufgabe rechts. Auf dem Telefon bleibt es untereinander. */
+@media(min-width:900px){
+  .stage-body.rx-split{display:grid;gap:18px;align-items:start;
+    grid-template-columns:minmax(0,44%) minmax(0,1fr)}
+  .stage-body.rx-split>.rx-visual{grid-column:1;grid-row:1/-1;position:sticky;top:8px;margin:0}
+  .stage-body.rx-split>*:not(.rx-visual){grid-column:2}
+}
+.rx-visual{max-height:56vh}
+.rx-visual .rx-img{max-height:56vh;object-fit:cover;object-position:center}
 
 /* Imageausdruck (ganz im Code gebaut) */
 .ia-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 12px;padding-bottom:2px}
@@ -614,9 +624,19 @@ body.rtl .rx-hint{right:auto;left:14px}
 .ia-h.ia-pulse{color:#B0812A}
 
 /* Comic-Panel ohne Bild */
-.panel.panel-plain{background:linear-gradient(160deg,#EFEAE0,#E2DBCC);min-height:0;padding:14px 12px 8px}
+.panel.panel-plain{background:linear-gradient(160deg,#EFEAE0,#E2DBCC);min-height:0;
+  padding:14px;display:grid;gap:14px;align-items:start;
+  grid-template-areas:"vis stack";grid-template-columns:minmax(0,54%) minmax(0,1fr)}
+.panel.panel-plain::before{display:none}
+.panel.panel-plain .rx-visual{grid-area:vis;margin:0;align-self:start}
+@media(max-width:760px){
+  .panel.panel-plain{grid-template-areas:"vis" "stack";grid-template-columns:minmax(0,1fr);gap:10px}
+}
 .panel-doc{max-width:520px;margin:0 auto}
-.panel.panel-plain .bubble-stack{position:static;padding:6px 0 44px}
+.panel.panel-plain .bubble-stack{grid-area:stack;position:static;padding:2px 0 52px;
+  align-items:flex-start;align-self:start}
+body.rtl .panel.panel-plain .bubble-stack{align-items:flex-end}
+.panel.panel-plain .bubble{max-width:100%}
 .result-doc{width:76px;height:76px;margin:0 auto 10px;border-radius:20px;display:flex;
   align-items:center;justify-content:center;background:linear-gradient(140deg,#0B4F45,#1E9A85);color:#fff}
 .result-doc svg{width:38px;height:38px}
@@ -1920,13 +1940,65 @@ function visualHTML(v){
     '<div class="rx-region"></div></div>';
 }
 
+/* Vier Ecken des Blattes im Bild auf ein Rechteck abbilden.
+   So liegt die Schrift auf dem Papier und nicht waagerecht davor. */
+function rxMatrix(W, H, q){
+  var x0=q[0][0], y0=q[0][1], x1=q[1][0], y1=q[1][1],
+      x2=q[2][0], y2=q[2][1], x3=q[3][0], y3=q[3][1];
+  var dx1=x1-x2, dx2=x3-x2, dx3=x0-x1+x2-x3;
+  var dy1=y1-y2, dy2=y3-y2, dy3=y0-y1+y2-y3;
+  var a,b,c,d,e,f,g,h;
+  if(Math.abs(dx3)<1e-9 && Math.abs(dy3)<1e-9){
+    a=x1-x0; b=x3-x0; c=x0; d=y1-y0; e=y3-y0; f=y0; g=0; h=0;
+  } else {
+    var den=dx1*dy2-dy1*dx2;
+    if(!den) return '';
+    g=(dx3*dy2-dy3*dx2)/den;
+    h=(dx1*dy3-dy1*dx3)/den;
+    a=x1-x0+g*x1; b=x3-x0+h*x3; c=x0;
+    d=y1-y0+g*y1; e=y3-y0+h*y3; f=y0;
+  }
+  a/=W; d/=W; g/=W; b/=H; e/=H; h/=H;
+  return 'matrix3d('+[a,d,0,g, b,e,0,h, 0,0,1,0, c,f,0,1].join(',')+')';
+}
+
+/* Blattbereich neu vermessen: nach dem Laden des Bildes und bei jeder
+   Aenderung der Fenstergroesse. */
+function rxPlaceRegion(reg){
+  var el=reg.parentNode, img=el&&el.querySelector('.rx-img');
+  var qs=reg.getAttribute('data-quad');
+  if(img && qs){
+    var q=JSON.parse(qs);
+    var iw=img.clientWidth||img.offsetWidth, ih=img.clientHeight||img.offsetHeight;
+    if(iw && ih){
+      var W=parseFloat(reg.style.width), H=parseFloat(reg.style.height);
+      var px=q.map(function(p){ return [p[0]/100*iw, p[1]/100*ih]; });
+      var m=rxMatrix(W,H,px);
+      if(m) reg.style.transform=m;
+    }
+  }
+  rxSizeText(reg);
+}
+
 function rxLayers(el, v, shot){
   var reg=el.querySelector('.rx-region'); if(!reg) return;
   var layers=(shot&&shot.layers)||null;
+  reg.removeAttribute('data-quad');
+  reg.style.transform='none';
   if(!layers){ reg.innerHTML=''; reg.style.display='none'; return; }
-  var r=shot.region||v.region||{l:0,t:0,w:100,h:100};
-  reg.style.left=r.l+'%'; reg.style.top=r.t+'%';
-  reg.style.width=r.w+'%'; reg.style.height=r.h+'%';
+  var quad=shot.quad||v.quad;
+  if(quad){
+    /* eigenes Papierkoordinatensystem, danach perspektivisch aufs Blatt gelegt */
+    var base=1000, ratio=shot.ratio||v.ratio||1.28;
+    reg.style.left='0px'; reg.style.top='0px';
+    reg.style.width=base+'px'; reg.style.height=Math.round(base*ratio)+'px';
+    reg.style.transformOrigin='0 0';
+    reg.setAttribute('data-quad', JSON.stringify(quad));
+  } else {
+    var r=shot.region||v.region||{l:0,t:0,w:100,h:100};
+    reg.style.left=r.l+'%'; reg.style.top=r.t+'%';
+    reg.style.width=r.w+'%'; reg.style.height=r.h+'%';
+  }
   reg.style.display='block';
   reg.innerHTML=layers.map(function(L){
     var st='left:'+L.l+'%;top:'+L.t+'%;';
@@ -1938,7 +2010,10 @@ function rxLayers(el, v, shot){
                      '" alt="" loading="lazy" decoding="async">';
     return '<div class="rx-l'+cls+'" style="'+st+'" data-fs="'+(L.fs||0)+'">'+(L.tx||'')+'</div>';
   }).join('');
-  rxSizeText(reg);
+  rxPlaceRegion(reg);
+  var im=el.querySelector('.rx-img');
+  if(im && !im.complete) im.addEventListener('load', function(){ rxPlaceRegion(reg); }, {once:true});
+  setTimeout(function(){ if(document.body.contains(reg)) rxPlaceRegion(reg); }, 80);
 }
 
 /* Schriftgroesse in Prozent der Regionsbreite. In px gerechnet, damit es
@@ -1952,7 +2027,7 @@ function rxSizeText(reg){
   });
 }
 window.addEventListener('resize', function(){
-  document.querySelectorAll('.rx-region').forEach(rxSizeText);
+  document.querySelectorAll('.rx-region').forEach(rxPlaceRegion);
 });
 
 function rxPlay(el, v, shots, i, done){
@@ -1985,6 +2060,8 @@ function mountVisual(host){
     if(body){ body.classList.add('rx-bgset'); body.style.setProperty('--rxbg','url("'+v.img+'")'); }
     return;
   }
+  var body=host.querySelector('.stage-body');
+  if(body && !body.classList.contains('comicbody') && el.parentNode===body) body.classList.add('rx-split');
   if(v.seq && v.seq.length){
     rxLayers(el, v, v.seq[0]);
     if(v.seq.length>1){
@@ -4393,8 +4470,11 @@ var RETAX_IA = { type:"ia",
    {pic:"4903180224600004", pzn:"05450802", nam:"Isotonische Kochsalzl\u00f6sung z. Inhalation", cod:"63",  rbt:"2,09", bet:"\u2212 2,09"}
   ]};
 
-/* Der Papierbereich innerhalb von retax_scene_haende_bescheid */
-var RETAX_BLATT = {l:26, t:3, w:48, h:88};
+/* Die vier Ecken des Blattes in retax_scene_haende_bescheid, in Prozent
+   der Bildbreite und Bildhoehe. Am Bild selbst gemessen, nicht geschaetzt:
+   das Blatt liegt schraeg, ein Rechteck passt nicht darauf.
+   Reihenfolge: oben links, oben rechts, unten rechts, unten links. */
+var RETAX_BLATT = {quad:[[26.78,19.36],[62.06,5.24],[73.43,82.76],[38.83,98.64]], ratio:1.28};
 
 /* Textebene auf dem Papier. Prozente innerhalb des Papierbereichs. */
 var RETAX_LAYERS = [
@@ -4408,17 +4488,19 @@ var RETAX_LAYERS = [
 
 /* Aufnahmefolge des ersten Schrittes: Umschlag, Oeffnen, Blatt in der Hand */
 var RETAX_SEQ1 = [
-  {img:"assets/Retax/retax_scene_umschlag_geschlossen.webp", ms:900,
+  {img:"assets/Retax/retax_scene_umschlag_geschlossen.webp", ms:1100,
    region:{l:0,t:0,w:100,h:100},
    layers:[{cls:"rx-band", l:0, t:8, w:100, h:14, bg:"#1D4E89"}]},
   {img:"assets/Retax/retax_scene_umschlag_oeffnen.webp", ms:900},
-  {img:"assets/Retax/retax_scene_haende_bescheid.webp", region:RETAX_BLATT, layers:RETAX_LAYERS}
+  {img:"assets/Retax/retax_scene_haende_bescheid.webp", quad:RETAX_BLATT.quad,
+   ratio:RETAX_BLATT.ratio, layers:RETAX_LAYERS}
 ];
 
 /* Der stehende Blick auf das Blatt, ab Schritt 2 */
 function retaxBlatt(after){
   return {img:"assets/Retax/retax_scene_haende_bescheid.webp",
-          region:RETAX_BLATT, layers:RETAX_LAYERS, after:after||null};
+          quad:RETAX_BLATT.quad, ratio:RETAX_BLATT.ratio,
+          layers:RETAX_LAYERS, after:after||null};
 }
 var RETAX_SPLIT = {onlyGood:true, seq:[
   {img:"assets/Retax/retax_scene_blatt_teilt_sich.webp", ms:600},
@@ -4439,7 +4521,7 @@ TOPICS.retax_rabatt_klein = {
   steps:[
  {mech:"comic",data:{kicker:"Szene 1 · Montagmorgen im Büro",
   title:"Ein Bescheid der Bruncker Classic liegt auf dem Schreibtisch", cta:"Bescheid prüfen →",
-  visual:{seq:RETAX_SEQ1, region:RETAX_BLATT},
+  visual:{seq:RETAX_SEQ1},
   bubbles:[
    {who:"Büro",txt:"Montagmorgen im Büro. Die Post liegt geöffnet auf dem Schreibtisch. Ein Bescheid der Bruncker Classic, Zeichen 700-318052."},
    {who:"Büro",txt:"Eine einzige Zahl steht darauf: <b>35,83 EUR netto</b>. Dahinter geheftet zwei Imageausdrucke, die noch niemand gelesen hat."},
@@ -4468,9 +4550,9 @@ TOPICS.retax_rabatt_klein = {
   okH:"Sauber unterschieden", badH:"Die Codes verwechselt",
   expl:"Bei den beiden 63er-Positionen wurde das richtige Präparat abgegeben. Sichtbar wird es im Feld <b>RBT Apo</b>: Es stand auf 0,00 und wurde auf 1,86 bzw. 2,09 korrigiert. Der Apothekenabschlag war schlicht nicht im Datensatz. Ein Einspruch hat hier keine Aussicht, weil die Berechnung objektiv unvollständig war. Der Code <b>421 Nichtbeachtung Rabattverträge</b> ist demgegenüber der echte Vorwurf: dass das Präparat selbst falsch war. Die beiden Codes wirken verwandt und sind in ihrer Angreifbarkeit gegensätzlich. Entscheidend ist die andere Konsequenz: 63 ist ein Signal für eine Fehlkonfiguration im Warenwirtschaftssystem oder in der Übertragung ans Rechenzentrum, nicht für einen Fehler im HV. Es wiederholt sich still in jedem Monat, in dem die Ursache besteht."}},
 
- {mech:"sort",data:{kicker:"Sortierung · 30 Sekunden", title:"Welche Positionen sind angreifbar?",
+ {mech:"sort",data:{kicker:"Sortierung · 45 Sekunden", title:"Welche Positionen sind angreifbar?",
   visual:{img:"assets/Retax/retax_scene_karte_in_fach.webp", bg:true},
-  hint:"Maßstab ist die Begründung, nicht der Betrag.", seconds:30, pts:25,
+  hint:"Maßstab ist die Begründung, nicht der Betrag.", seconds:45, pts:25,
   flagLabel:"Angreifbar", safeLabel:"Nicht angreifbar",
   cards:[
    {t:"Macrogol AbZ Pulver 50 Beutel<small>PZN 10398914 · Code 63 · −1,86 €</small>",flag:false},
@@ -4538,7 +4620,7 @@ TOPICS.retax_rabatt_klein = {
   steps_en:[
  {mech:"comic",data:{kicker:"Scene 1 · Monday morning in the office",
   title:"A notice from Bruncker Classic is lying on the desk", cta:"Check the notice →",
-  visual:{seq:RETAX_SEQ1, region:RETAX_BLATT},
+  visual:{seq:RETAX_SEQ1},
   bubbles:[
    {who:"Office",txt:"Monday morning in the office. The post lies open on the desk. A notice from Bruncker Classic, reference 700-318052."},
    {who:"Office",txt:"A single figure on it: <b>35.83 EUR net</b>. Stapled behind it, two image printouts nobody has read yet."},
@@ -4567,9 +4649,9 @@ TOPICS.retax_rabatt_klein = {
   okH:"Cleanly distinguished", badH:"The codes mixed up",
   expl:"On both 63 positions the correct product was dispensed. You can see it in the <b>RBT Apo</b> field: it stood at 0.00 and was corrected to 1.86 and 2.09. The pharmacy discount was simply absent from the record. An appeal has no prospect here, because the calculation was objectively incomplete. Code <b>421 Nichtbeachtung Rabattverträge</b>, by contrast, is the real allegation: that the product itself was wrong. The two codes look related and are opposites in how attackable they are. The other consequence is what matters: 63 signals a misconfiguration in the stock system or in the transfer to the billing centre, not an error at the counter. It repeats silently every month the cause persists."}},
 
- {mech:"sort",data:{kicker:"Sorting · 30 seconds", title:"Which positions are attackable?",
+ {mech:"sort",data:{kicker:"Sorting · 45 seconds", title:"Which positions are attackable?",
   visual:{img:"assets/Retax/retax_scene_karte_in_fach.webp", bg:true},
-  hint:"The criterion is the reason, not the amount.", seconds:30, pts:25,
+  hint:"The criterion is the reason, not the amount.", seconds:45, pts:25,
   flagLabel:"Attackable", safeLabel:"Not attackable",
   cards:[
    {t:"Macrogol AbZ Pulver 50 Beutel<small>PZN 10398914 · code 63 · −1.86 €</small>",flag:false},
@@ -4637,7 +4719,7 @@ TOPICS.retax_rabatt_klein = {
   steps_ar:[
  {mech:"comic",data:{kicker:"المشهد 1 · صباح اثنين في المكتب",
   title:"إشعار من Bruncker Classic على الطاولة", cta:"افحص الإشعار ←",
-  visual:{seq:RETAX_SEQ1, region:RETAX_BLATT},
+  visual:{seq:RETAX_SEQ1},
   bubbles:[
    {who:"المكتب",txt:"صباح اثنين في المكتب. البريد مفتوح أمامي على الطاولة. إشعار من Bruncker Classic، الرمز 700-318052."},
    {who:"المكتب",txt:"عليه رقم واحد: <b>35,83 يورو صافياً</b>. وخلفه ورقتا Imageausdruck مدبّستان لم أقرأهما بعد."},
@@ -4666,9 +4748,9 @@ TOPICS.retax_rabatt_klein = {
   okH:"تمييز دقيق", badH:"خلط بين الكودين",
   expl:"في موضعَي الكود 63 صُرف الدواء الصحيح. ويظهر ذلك في حقل <b>RBT Apo</b>: كان صفراً فصُحّح إلى 1,86 و2,09. أبشلاغ الصيدلية لم يكن في مجموعة البيانات ببساطة. فلا حظّ للاعتراض هنا، لأن الحساب كان ناقصاً موضوعياً. وفي المقابل، الكود <b>421 Nichtbeachtung Rabattverträge</b> هو الاتهام الحقيقي: أن الدواء نفسه خطأ. الكودان يبدوان متقاربين وهما متعاكسان في قابلية الطعن. والمهم هو النتيجة الأخرى: 63 إشارة إلى خلل في إعداد نظام إدارة البضاعة أو في النقل إلى مركز التحاسب، لا خطأ عند الكاونتر. وهو يتكرر صامتاً كل شهر يبقى فيه السبب."}},
 
- {mech:"sort",data:{kicker:"فرز · 30 ثانية", title:"أي المواضع قابلة للطعن؟",
+ {mech:"sort",data:{kicker:"فرز · 45 ثانية", title:"أي المواضع قابلة للطعن؟",
   visual:{img:"assets/Retax/retax_scene_karte_in_fach.webp", bg:true},
-  hint:"المعيار الحجة، لا المبلغ.", seconds:30, pts:25,
+  hint:"المعيار الحجة، لا المبلغ.", seconds:45, pts:25,
   flagLabel:"أستطيع الطعن", safeLabel:"لا أستطيع الطعن",
   cards:[
    {t:"Macrogol AbZ Pulver 50 Beutel<small>PZN 10398914 · كود 63 · −1,86 €</small>",flag:false},
