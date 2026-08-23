@@ -552,13 +552,15 @@ body.rtl .mt-num{text-align:left}
 /* ===== Retax: Bildebenen, Sequenz, Zaehler, Hinweis, Imageausdruck ===== */
 .rx-visual{position:relative;border-radius:14px;overflow:hidden;margin:0 0 12px;
   background:#EDE7DC;line-height:0}
-.rx-visual .rx-img{width:100%;display:block;transition:opacity .3s ease}
+.rx-visual .rx-img{display:block;transition:opacity .3s ease}
 .rx-visual.rx-fade .rx-img{opacity:0}
 .rx-region{position:absolute;display:none;line-height:1.25}
 .rx-l{position:absolute;font-family:'Inter',system-ui,sans-serif;color:#1A1A1A;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.15}
 .rx-l.rx-b{font-weight:800}
 .rx-l.rx-w{color:#fff}
+.rx-l.rx-r{color:var(--red)}
+.rx-l.rx-track{letter-spacing:.04em}
 img.rx-li{object-fit:contain;object-position:left center}
 .rx-visual.rx-tilt .rx-img{transform:rotate(-2.5deg) translateY(5px);
   transition:transform .7s cubic-bezier(.25,.85,.3,1)}
@@ -586,8 +588,9 @@ body.rtl .rx-hint{right:auto;left:14px}
   .stage-body.rx-split>.rx-visual{grid-column:1;grid-row:1/-1;position:sticky;top:8px;margin:0}
   .stage-body.rx-split>*:not(.rx-visual){grid-column:2}
 }
-.rx-visual{max-height:56vh}
-.rx-visual .rx-img{max-height:56vh;object-fit:cover;object-position:center}
+.rx-visual{aspect-ratio:16/9;max-width:min(100%, calc(58vh * 16 / 9));margin-left:auto;margin-right:auto}
+.rx-zoom{position:absolute;left:0;top:0;width:100%;line-height:0}
+.rx-visual .rx-img{width:100%;height:auto;display:block}
 
 /* Imageausdruck (ganz im Code gebaut) */
 .ia-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 12px;padding-bottom:2px}
@@ -1935,9 +1938,9 @@ function visualHTML(v){
   var id='rx'+(++_rxN); _rxReg[id]=v;
   if(v.bg) return '<div class="rx-visual rx-bgmark" data-rxid="'+id+'"></div>';
   var first=(v.seq&&v.seq.length)?v.seq[0]:v;
-  return '<div class="rx-visual" data-rxid="'+id+'">'+
+  return '<div class="rx-visual" data-rxid="'+id+'"><div class="rx-zoom">'+
     '<img class="rx-img" src="'+first.img+'" alt="" loading="lazy" decoding="async">'+
-    '<div class="rx-region"></div></div>';
+    '<div class="rx-region"></div></div></div>';
 }
 
 /* Vier Ecken des Blattes im Bild auf ein Rechteck abbilden.
@@ -1980,8 +1983,21 @@ function rxPlaceRegion(reg){
   rxSizeText(reg);
 }
 
+/* Naeher heran. z.x und z.y sind der Punkt im Bild, der links oben im
+   Rahmen sitzen soll, z.k der Vergroesserungsfaktor. Bild und Textebene
+   werden zusammen bewegt, darum bleibt die Perspektive richtig. */
+function rxZoom(el, z){
+  var zo=el.querySelector('.rx-zoom'); if(!zo) return;
+  if(!z){ zo.style.width='100%'; zo.style.left='0'; zo.style.top='0'; return; }
+  var k=z.k||1;
+  zo.style.width=(k*100)+'%';
+  zo.style.left=(-(z.x||0)*k)+'%';
+  zo.style.top=(-(z.y||0)*k)+'%';
+}
+
 function rxLayers(el, v, shot){
   var reg=el.querySelector('.rx-region'); if(!reg) return;
+  rxZoom(el, (shot&&shot.zoom) || v.zoom || null);
   var layers=(shot&&shot.layers)||null;
   reg.removeAttribute('data-quad');
   reg.style.transform='none';
@@ -2075,11 +2091,10 @@ function mountVisual(host){
 
 /* laufender Zaehler: von einem Betrag zum anderen, am Ende gebremst */
 function rxCount(el, c){
-  var img=el.querySelector('.rx-img'); if(!img) return;
   var box=document.createElement('div'); box.className='rx-count';
   el.appendChild(box);
   function place(){
-    var r=img.getBoundingClientRect();
+    var r=el.getBoundingClientRect();
     box.style.top=((c.top||62)/100*r.height)+'px';
     box.style.fontSize=((c.size||7)/100*r.width)+'px';
   }
@@ -4476,14 +4491,23 @@ var RETAX_IA = { type:"ia",
    Reihenfolge: oben links, oben rechts, unten rechts, unten links. */
 var RETAX_BLATT = {quad:[[26.78,19.36],[62.06,5.24],[73.43,82.76],[38.83,98.64]], ratio:1.28};
 
+/* Kamerafahrt auf den Bescheid: der Ausschnitt beginnt bei 17 Prozent
+   von links und 3 Prozent von oben und ist 1,70 mal vergroessert.
+   So fuellt das Blatt den Rahmen statt darin zu schwimmen. */
+var RETAX_ZOOM = {k:1.70, x:17, y:3};
+
 /* Textebene auf dem Papier. Prozente innerhalb des Papierbereichs. */
+/* Sinnbild statt Abbild. Ein echter Bescheid ist eng bedruckt und auf
+   dem Telefon unlesbar. Hier stehen nur die vier Dinge, die der Schritt
+   braucht, dafuer gross genug zum Lesen. */
 var RETAX_LAYERS = [
-  {cls:"rx-band", l:0, t:0, w:100, h:9, bg:"#1D4E89"},
-  {img:"assets/Retax/retax_logo_bruncker_classic.webp", l:4, t:1.5, w:14, h:6},
-  {tx:"Bruncker Classic", l:21, t:2.5, w:56, fs:3.2, cls:"rx-w rx-b"},
-  {tx:"Zeichen 700-318052", l:6, t:16, w:70, fs:2.4},
-  {tx:"Pr\u00fcflauf RP-25/06", l:6, t:21, w:70, fs:2.4},
-  {tx:"35,83 EUR", l:6, t:42, w:70, fs:5.2, cls:"rx-b"}
+  {cls:"rx-band", l:0, t:0, w:100, h:13, bg:"#1D4E89"},
+  {img:"assets/Retax/retax_logo_bruncker_classic.webp", l:4, t:2.1, w:17, h:9},
+  {tx:"Bruncker Classic", l:25, t:3.6, w:72, fs:6.2, cls:"rx-w rx-b"},
+  {tx:"RETAX", l:7, t:19.5, w:80, fs:12, cls:"rx-b rx-track"},
+  {tx:"Zeichen 700-318052", l:7, t:34, w:86, fs:4.4},
+  {tx:"Pr\u00fcflauf RP-25/06", l:7, t:39.5, w:86, fs:4.4},
+  {tx:"\u2212 35,83 EUR", l:13, t:48, w:84, fs:10.5, cls:"rx-b rx-r"}
 ];
 
 /* Aufnahmefolge des ersten Schrittes: Umschlag, Oeffnen, Blatt in der Hand */
@@ -4493,13 +4517,13 @@ var RETAX_SEQ1 = [
    layers:[{cls:"rx-band", l:0, t:8, w:100, h:14, bg:"#1D4E89"}]},
   {img:"assets/Retax/retax_scene_umschlag_oeffnen.webp", ms:900},
   {img:"assets/Retax/retax_scene_haende_bescheid.webp", quad:RETAX_BLATT.quad,
-   ratio:RETAX_BLATT.ratio, layers:RETAX_LAYERS}
+   ratio:RETAX_BLATT.ratio, zoom:RETAX_ZOOM, layers:RETAX_LAYERS}
 ];
 
 /* Der stehende Blick auf das Blatt, ab Schritt 2 */
 function retaxBlatt(after){
   return {img:"assets/Retax/retax_scene_haende_bescheid.webp",
-          quad:RETAX_BLATT.quad, ratio:RETAX_BLATT.ratio,
+          quad:RETAX_BLATT.quad, ratio:RETAX_BLATT.ratio, zoom:RETAX_ZOOM,
           layers:RETAX_LAYERS, after:after||null};
 }
 var RETAX_SPLIT = {onlyGood:true, seq:[
@@ -4516,6 +4540,7 @@ var RETAX_SPLIT = {onlyGood:true, seq:[
 TOPICS.retax_rabatt_klein = {
   de:"Vier Positionen, ein Betrag", en:"Four Positions, One Amount", ar:"أربعة مواضع ومبلغ واحد",
   tag:"Retax",
+  banner:"assets/Retax/retax_card_b1.webp",
   sub:{de:"Büro · Retax", en:"Office · Claw-back", ar:"المكتب · ريتاكس"},
   badges:[],
   steps:[
@@ -4550,9 +4575,9 @@ TOPICS.retax_rabatt_klein = {
   okH:"Sauber unterschieden", badH:"Die Codes verwechselt",
   expl:"Bei den beiden 63er-Positionen wurde das richtige Präparat abgegeben. Sichtbar wird es im Feld <b>RBT Apo</b>: Es stand auf 0,00 und wurde auf 1,86 bzw. 2,09 korrigiert. Der Apothekenabschlag war schlicht nicht im Datensatz. Ein Einspruch hat hier keine Aussicht, weil die Berechnung objektiv unvollständig war. Der Code <b>421 Nichtbeachtung Rabattverträge</b> ist demgegenüber der echte Vorwurf: dass das Präparat selbst falsch war. Die beiden Codes wirken verwandt und sind in ihrer Angreifbarkeit gegensätzlich. Entscheidend ist die andere Konsequenz: 63 ist ein Signal für eine Fehlkonfiguration im Warenwirtschaftssystem oder in der Übertragung ans Rechenzentrum, nicht für einen Fehler im HV. Es wiederholt sich still in jedem Monat, in dem die Ursache besteht."}},
 
- {mech:"sort",data:{kicker:"Sortierung · 45 Sekunden", title:"Welche Positionen sind angreifbar?",
+ {mech:"sort",data:{kicker:"Sortierung · 60 Sekunden", title:"Welche Positionen sind angreifbar?",
   visual:{img:"assets/Retax/retax_scene_karte_in_fach.webp", bg:true},
-  hint:"Maßstab ist die Begründung, nicht der Betrag.", seconds:45, pts:25,
+  hint:"Maßstab ist die Begründung, nicht der Betrag.", seconds:60, pts:25,
   flagLabel:"Angreifbar", safeLabel:"Nicht angreifbar",
   cards:[
    {t:"Macrogol AbZ Pulver 50 Beutel<small>PZN 10398914 · Code 63 · −1,86 €</small>",flag:false},
@@ -4649,9 +4674,9 @@ TOPICS.retax_rabatt_klein = {
   okH:"Cleanly distinguished", badH:"The codes mixed up",
   expl:"On both 63 positions the correct product was dispensed. You can see it in the <b>RBT Apo</b> field: it stood at 0.00 and was corrected to 1.86 and 2.09. The pharmacy discount was simply absent from the record. An appeal has no prospect here, because the calculation was objectively incomplete. Code <b>421 Nichtbeachtung Rabattverträge</b>, by contrast, is the real allegation: that the product itself was wrong. The two codes look related and are opposites in how attackable they are. The other consequence is what matters: 63 signals a misconfiguration in the stock system or in the transfer to the billing centre, not an error at the counter. It repeats silently every month the cause persists."}},
 
- {mech:"sort",data:{kicker:"Sorting · 45 seconds", title:"Which positions are attackable?",
+ {mech:"sort",data:{kicker:"Sorting · 60 seconds", title:"Which positions are attackable?",
   visual:{img:"assets/Retax/retax_scene_karte_in_fach.webp", bg:true},
-  hint:"The criterion is the reason, not the amount.", seconds:45, pts:25,
+  hint:"The criterion is the reason, not the amount.", seconds:60, pts:25,
   flagLabel:"Attackable", safeLabel:"Not attackable",
   cards:[
    {t:"Macrogol AbZ Pulver 50 Beutel<small>PZN 10398914 · code 63 · −1.86 €</small>",flag:false},
@@ -4748,9 +4773,9 @@ TOPICS.retax_rabatt_klein = {
   okH:"تمييز دقيق", badH:"خلط بين الكودين",
   expl:"في موضعَي الكود 63 صُرف الدواء الصحيح. ويظهر ذلك في حقل <b>RBT Apo</b>: كان صفراً فصُحّح إلى 1,86 و2,09. أبشلاغ الصيدلية لم يكن في مجموعة البيانات ببساطة. فلا حظّ للاعتراض هنا، لأن الحساب كان ناقصاً موضوعياً. وفي المقابل، الكود <b>421 Nichtbeachtung Rabattverträge</b> هو الاتهام الحقيقي: أن الدواء نفسه خطأ. الكودان يبدوان متقاربين وهما متعاكسان في قابلية الطعن. والمهم هو النتيجة الأخرى: 63 إشارة إلى خلل في إعداد نظام إدارة البضاعة أو في النقل إلى مركز التحاسب، لا خطأ عند الكاونتر. وهو يتكرر صامتاً كل شهر يبقى فيه السبب."}},
 
- {mech:"sort",data:{kicker:"فرز · 45 ثانية", title:"أي المواضع قابلة للطعن؟",
+ {mech:"sort",data:{kicker:"فرز · 60 ثانية", title:"أي المواضع قابلة للطعن؟",
   visual:{img:"assets/Retax/retax_scene_karte_in_fach.webp", bg:true},
-  hint:"المعيار الحجة، لا المبلغ.", seconds:45, pts:25,
+  hint:"المعيار الحجة، لا المبلغ.", seconds:60, pts:25,
   flagLabel:"أستطيع الطعن", safeLabel:"لا أستطيع الطعن",
   cards:[
    {t:"Macrogol AbZ Pulver 50 Beutel<small>PZN 10398914 · كود 63 · −1,86 €</small>",flag:false},
@@ -4955,7 +4980,8 @@ function renderRankBar(){
 /* ---------- MAP ---------- */
 function levelBanner(topic){
   return topic.banner
-    ? '<img src="'+topic.banner+'" alt="" loading="lazy" decoding="async">'
+    ? '<img src="'+topic.banner+'" alt="" loading="lazy" decoding="async" '+
+      'onerror="this.remove()">'
     : '<div class="lc-gen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></div>';
 }
 function gridSection(grid, label){
