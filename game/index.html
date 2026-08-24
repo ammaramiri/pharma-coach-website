@@ -524,6 +524,19 @@ body.rtl .docs-strip>summary::after{float:left}
 .docs-strip[open]>summary::after{content:'▴'}
 .docs-strip .doc{margin-top:0}
 
+.ico{width:1.15em;height:1.15em;flex-shrink:0;vertical-align:-0.22em}
+.badge{display:inline-flex;align-items:center;gap:9px}
+.b-seal{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;
+  justify-content:center;border:1.5px solid currentColor;box-shadow:inset 0 0 0 2.5px #fff;
+  color:var(--teal-dark);flex-shrink:0}
+.b-seal .ico{width:16px;height:16px;stroke-width:1.8}
+.badge.locked .b-seal{color:var(--soft);border-style:dashed;box-shadow:none}
+.lc-lock .ico{width:22px;height:22px;stroke-width:2;color:#fff;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,.55))}
+.course-cta .ico{width:17px;height:17px;margin-inline-end:7px}
+.mute-btn .ico{width:18px;height:18px}
+.bin h4 .ico{width:15px;height:15px;margin-inline-end:5px}
+
 /* Lesen zuerst, dann laeuft die Uhr */
 .tg{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:2px 0 10px}
 .tg-btn{padding:9px 18px;border-radius:999px;border:none;background:var(--teal-dark);color:#fff;
@@ -735,7 +748,7 @@ body.rtl .rv-nav{flex-direction:row-reverse}
 <div class="screen active" id="startScreen">
   <div class="hero-bg"><img src="assets/hero_cover.jpg" alt="" fetchpriority="high" decoding="async"></div>
   <div class="lang-switch">
-    <button class="lang-btn mute-btn" title="Ton">🔊</button>
+    <button class="lang-btn mute-btn" title="Ton"></button>
     <button class="lang-btn on" data-lang="de">DE</button>
     <button class="lang-btn" data-lang="en">EN</button>
     <button class="lang-btn" data-lang="ar">AR</button>
@@ -837,7 +850,7 @@ body.rtl .rv-nav{flex-direction:row-reverse}
     <div class="hud">
       <button class="hud-back" id="gameBack">‹ <span id="backTxt">Fälle</span></button>
       <div class="hud-right">
-        <button class="hud-back mute-btn" title="Ton">🔊</button>
+        <button class="hud-back mute-btn" title="Ton"></button>
         <div class="trust">
           <img src="assets/PCG_CU_CUS001_P04_CU-NEUTRAL_v003.jpg" id="trustImg" alt="">
           <div class="trust-info">
@@ -1005,7 +1018,7 @@ var RANKS = [
 var UNLOCKS = {
   1:{de:"Freigeschaltet: schwierige Kundentypen (Der Skeptiker)",en:"Unlocked: difficult customer types (The Skeptic)",ar:"فُتح: زبائن أصعب (المتشكك)"},
   4:{de:"Freigeschaltet: Express-Modus (alles auf Zeit)",en:"Unlocked: Express mode",ar:"فُتح: وضع السرعة"},
-  5:{de:"Freigeschaltet: Notdienst-Modus 🌙",en:"Unlocked: Night-shift mode 🌙",ar:"فُتح: وضع المناوبة الليلية 🌙"},
+  5:{de:"Freigeschaltet: Notdienst-Modus",en:"Unlocked: Night-shift mode",ar:"فُتح: وضع المناوبة الليلية"},
   6:{de:"Freigeschaltet: komplexe Wechselwirkungs-Fälle",en:"Unlocked: complex interaction cases",ar:"فُتح: حالات تفاعلات معقدة"}
 };
 
@@ -1097,6 +1110,9 @@ var GUIDE = {
      '<h4>Reihenfolge</h4><p>Ein Fall \u00f6ffnet den n\u00e4chsten. Abgeschlossene F\u00e4lle lassen sich jederzeit wiederholen, die beste Punktzahl bleibt gespeichert.</p>'+
      '<h4>Durchsehen</h4><p>Nach jeder Beratung lassen sich alle Schritte noch einmal ansehen: deine Antwort, die richtige L\u00f6sung und die Begr\u00fcndung. Nur Ansicht, ge\u00e4ndert wird dort nichts.</p>'+
      '<h4>Fortschritt</h4><p>Alles bleibt lokal in deinem Browser. Kein Konto, keine Anmeldung.</p>'+
+     '<h4>Die Apotheke</h4><p>Das Haus hat f\u00fcnf R\u00e4ume. In der <b>Offizin</b> stehen HV-Tisch, Sichtwahl, Freiwahl, Kommissionierer und die Wartezone: hier laufen die Gespr\u00e4che am Kunden. Das <b>B\u00fcro</b> ist der Ort f\u00fcr Rezeptpr\u00fcfung, Retax, Dokumentation, BtM-Schrank und K\u00fchlschrank. In der <b>Rezeptur</b> stehen Waage, Salbenmischer, Kapselmaschine und der Rechner f\u00fcr die Plausibilit\u00e4t. Die <b>Teamk\u00fcche</b> ist die Pause. Der <b>Beratungsraum</b> ist das geschlossene Gespr\u00e4ch: Blutdruck, Pille danach, Medikationsanalyse.</p>'+
+     '<h4>Die F\u00e4lle</h4><p>Am HV-Tisch liegen achtzehn Beratungen aus dem Selbstmedikationsalltag: Schmerz, Erk\u00e4ltung, Magen, Haut, Auge, Allergie und mehr. Im B\u00fcro beginnt die Retax-Reihe: ein Bescheid der Kasse, vier Positionen, je Position eine eigene Entscheidung. Weitere Reihen kommen Raum f\u00fcr Raum dazu. Jede Kategorie hat ihren eigenen Abschnitt in der Fallliste.</p>'+
+     '<h4>R\u00e4nge</h4><p>Punkte f\u00fchren durch acht R\u00e4nge, vom Praktikanten \u00fcber PhiP, Jungapotheker, HV-Routinier, Beratungsprofi, Red-Flag-J\u00e4ger und Filialleiter bis zur Apotheken-Legende. Jeder Rang schaltet etwas frei.</p>'+
      '<h4>Krankenkassen im Spiel</h4><p>Alle Kassennamen und Logos im Spiel sind erfunden. Echte Kassen werden nur in den Erkl\u00e4rungen nach einer Antwort genannt, als Marktinformation.</p>'+
      '<h4>Hinweis</h4><p>Alle Inhalte dienen ausschlie\u00dflich der pharmazeutischen Fortbildung.</p>',
   en:'<h4>Goal</h4><p>You stand behind the counter. Every consultation is one case of eight steps. The trainee becomes the pharmacy legend.</p>'+
@@ -1106,6 +1122,9 @@ var GUIDE = {
      '<h4>Order of cases</h4><p>One case opens the next. Finished cases can be replayed at any time and the best score is kept.</p>'+
      '<h4>Review</h4><p>After every consultation you can look through all steps again: your answer, the correct solution and the reasoning. View only, nothing can be changed there.</p>'+
      '<h4>Progress</h4><p>Everything stays local in your browser. No account, no sign-up.</p>'+
+     '<h4>The pharmacy</h4><p>The house has five rooms. The <b>sales floor</b> holds the counter, the front shelf, the free-choice shelves, the commissioner and the waiting area: this is where the conversations with customers happen. The <b>office</b> is the place for prescription checks, claw-backs, documentation, the narcotics cabinet and the fridge. The <b>compounding room</b> holds the balance, the ointment mixer, the capsule machine and the plausibility computer. The <b>team kitchen</b> is the break. The <b>consultation room</b> is the closed conversation: blood pressure, emergency contraception, medication review.</p>'+
+     '<h4>The cases</h4><p>Eighteen consultations wait at the counter, drawn from everyday self medication: pain, colds, stomach, skin, eye, allergy and more. In the office the claw-back series begins: one notice from the insurer, four positions, one decision per position. More series follow room by room. Every category has its own section in the case list.</p>'+
+     '<h4>Ranks</h4><p>Points lead through eight ranks, from trainee through pre-reg pharmacist, junior pharmacist, counter pro, consultation pro, red-flag hunter and branch manager up to pharmacy legend. Every rank unlocks something.</p>'+
      '<h4>Insurers in the game</h4><p>All insurer names and logos in the game are invented. Real insurers appear only in the explanations after an answer, as market information.</p>'+
      '<h4>Note</h4><p>All content serves pharmaceutical training only.</p>',
   ar:'<h4>\u0627\u0644\u0647\u062f\u0641</h4><p>\u0623\u0646\u062a \u062e\u0644\u0641 \u0637\u0627\u0648\u0644\u0629 \u0627\u0644\u0628\u064a\u0639. \u0643\u0644 \u0627\u0633\u062a\u0634\u0627\u0631\u0629 \u062d\u0627\u0644\u0629 \u0645\u0646 \u062b\u0645\u0627\u0646\u064a \u062e\u0637\u0648\u0627\u062a. \u0645\u0646 \u0645\u062a\u062f\u0631\u0651\u0628 \u0625\u0644\u0649 \u0623\u0633\u0637\u0648\u0631\u0629 \u0635\u064a\u062f\u0644\u064a\u0629.</p>'+
@@ -1115,6 +1134,9 @@ var GUIDE = {
      '<h4>\u062a\u0631\u062a\u064a\u0628 \u0627\u0644\u062d\u0627\u0644\u0627\u062a</h4><p>\u0643\u0644 \u062d\u0627\u0644\u0629 \u062a\u0641\u062a\u062d \u0627\u0644\u062a\u064a \u0628\u0639\u062f\u0647\u0627. \u0648\u0627\u0644\u062d\u0627\u0644\u0627\u062a \u0627\u0644\u0645\u0646\u062a\u0647\u064a\u0629 \u062a\u064f\u0639\u0627\u062f \u0645\u062a\u0649 \u0634\u0626\u062a\u060c \u0648\u0623\u0641\u0636\u0644 \u0646\u062a\u064a\u062c\u0629 \u062a\u0628\u0642\u0649 \u0645\u062d\u0641\u0648\u0638\u0629.</p>'+
      '<h4>\u0627\u0644\u0645\u0631\u0627\u062c\u0639\u0629</h4><p>\u0628\u0639\u062f \u0643\u0644 \u0627\u0633\u062a\u0634\u0627\u0631\u0629 \u064a\u0645\u0643\u0646\u0643 \u062a\u0635\u0641\u0651\u062d \u0643\u0644 \u0627\u0644\u062e\u0637\u0648\u0627\u062a \u0645\u0631\u0629 \u0623\u062e\u0631\u0649: \u0625\u062c\u0627\u0628\u062a\u0643 \u0648\u0627\u0644\u062d\u0644 \u0627\u0644\u0635\u062d\u064a\u062d \u0648\u0627\u0644\u0634\u0631\u062d. \u0645\u0634\u0627\u0647\u062f\u0629 \u0641\u0642\u0637\u060c \u0628\u0644\u0627 \u062a\u063a\u064a\u064a\u0631 \u0625\u062c\u0627\u0628\u0629.</p>'+
      '<h4>\u0627\u0644\u062a\u0642\u062f\u0645</h4><p>\u0643\u0644 \u0634\u064a\u0621 \u064a\u064f\u062d\u0641\u0638 \u0645\u062d\u0644\u064a\u0627\u064b \u0641\u064a \u0645\u062a\u0635\u0641\u062d\u0643. \u0628\u0644\u0627 \u062d\u0633\u0627\u0628 \u0648\u0628\u0644\u0627 \u062a\u0633\u062c\u064a\u0644.</p>'+
+     '<h4>\u0627\u0644\u0635\u064a\u062f\u0644\u064a\u0629</h4><p>\u0644\u0644\u0645\u0643\u0627\u0646 \u062e\u0645\u0633 \u063a\u0631\u0641. \u0641\u064a <b>\u0627\u0644\u0635\u0627\u0644\u0629</b> \u0637\u0627\u0648\u0644\u0629 \u0627\u0644\u0628\u064a\u0639 \u0648\u0631\u0641 \u0627\u0644\u0639\u0631\u0636 \u0648\u0627\u0644\u0631\u0641\u0648\u0641 \u0627\u0644\u062d\u0631\u0629 \u0648\u0622\u0644\u0629 \u0627\u0644\u062a\u062c\u0647\u064a\u0632 \u0648\u0645\u0646\u0637\u0642\u0629 \u0627\u0644\u0627\u0646\u062a\u0638\u0627\u0631\u060c \u0648\u0641\u064a\u0647\u0627 \u062a\u062c\u0631\u064a \u0627\u0644\u0627\u0633\u062a\u0634\u0627\u0631\u0627\u062a. <b>\u0627\u0644\u0645\u0643\u062a\u0628</b> \u0645\u0643\u0627\u0646 \u062a\u062f\u0642\u064a\u0642 \u0627\u0644\u0648\u0635\u0641\u0627\u062a \u0648\u0627\u0644\u0631\u064a\u062a\u0627\u0643\u0633 \u0648\u0627\u0644\u062a\u0648\u062b\u064a\u0642 \u0648\u062e\u0632\u0627\u0646\u0629 \u0627\u0644\u0645\u062e\u062f\u0631\u0627\u062a \u0648\u0627\u0644\u0628\u0631\u0627\u062f. \u0648\u0641\u064a <b>\u063a\u0631\u0641\u0629 \u0627\u0644\u062a\u062d\u0636\u064a\u0631</b> \u0627\u0644\u0645\u064a\u0632\u0627\u0646 \u0648\u062e\u0644\u0627\u0637 \u0627\u0644\u0645\u0631\u0627\u0647\u0645 \u0648\u0622\u0644\u0629 \u0627\u0644\u0643\u0628\u0633\u0648\u0644\u0627\u062a \u0648\u062d\u0627\u0633\u0648\u0628 \u0627\u0644\u0645\u0639\u0642\u0648\u0644\u064a\u0629. <b>\u0627\u0644\u0645\u0637\u0628\u062e</b> \u0644\u0644\u0627\u0633\u062a\u0631\u0627\u062d\u0629. <b>\u063a\u0631\u0641\u0629 \u0627\u0644\u0627\u0633\u062a\u0634\u0627\u0631\u0629</b> \u0644\u0644\u062d\u062f\u064a\u062b \u0627\u0644\u0645\u063a\u0644\u0642: \u0627\u0644\u0636\u063a\u0637 \u0648\u062d\u0628\u0629 \u0627\u0644\u0637\u0648\u0627\u0631\u0626 \u0648\u062a\u062d\u0644\u064a\u0644 \u0627\u0644\u062e\u0637\u0629 \u0627\u0644\u0639\u0644\u0627\u062c\u064a\u0629.</p>'+
+     '<h4>\u0627\u0644\u062d\u0627\u0644\u0627\u062a</h4><p>\u0639\u0644\u0649 \u0637\u0627\u0648\u0644\u0629 \u0627\u0644\u0628\u064a\u0639 \u062b\u0645\u0627\u0646 \u0639\u0634\u0631\u0629 \u0627\u0633\u062a\u0634\u0627\u0631\u0629 \u0645\u0646 \u064a\u0648\u0645\u064a\u0627\u062a \u0627\u0644\u062f\u0648\u0627\u0621 \u0628\u0644\u0627 \u0648\u0635\u0641\u0629: \u0627\u0644\u0623\u0644\u0645 \u0648\u0627\u0644\u0632\u0643\u0627\u0645 \u0648\u0627\u0644\u0645\u0639\u062f\u0629 \u0648\u0627\u0644\u062c\u0644\u062f \u0648\u0627\u0644\u0639\u064a\u0646 \u0648\u0627\u0644\u062d\u0633\u0627\u0633\u064a\u0629 \u0648\u063a\u064a\u0631\u0647\u0627. \u0648\u0641\u064a \u0627\u0644\u0645\u0643\u062a\u0628 \u062a\u0628\u062f\u0623 \u0633\u0644\u0633\u0644\u0629 \u0627\u0644\u0631\u064a\u062a\u0627\u0643\u0633: \u0625\u0634\u0639\u0627\u0631 \u0645\u0646 \u0627\u0644\u0643\u0627\u0633\u0629\u060c \u0648\u0623\u0631\u0628\u0639\u0629 \u0645\u0648\u0627\u0636\u0639\u060c \u0648\u0644\u0643\u0644 \u0645\u0648\u0636\u0639 \u0642\u0631\u0627\u0631\u0647. \u0648\u0633\u062a\u0644\u062d\u0642 \u0633\u0644\u0627\u0633\u0644 \u0623\u062e\u0631\u0649 \u063a\u0631\u0641\u0629 \u0628\u0639\u062f \u063a\u0631\u0641\u0629\u060c \u0648\u0644\u0643\u0644 \u0641\u0626\u0629 \u0642\u0633\u0645\u0647\u0627 \u0641\u064a \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u062d\u0627\u0644\u0627\u062a.</p>'+
+     '<h4>\u0627\u0644\u0631\u062a\u0628</h4><p>\u0627\u0644\u0646\u0642\u0627\u0637 \u062a\u0642\u0648\u062f \u0639\u0628\u0631 \u062b\u0645\u0627\u0646\u064a \u0631\u062a\u0628\u060c \u0645\u0646 \u0645\u062a\u062f\u0631\u0651\u0628 \u0625\u0644\u0649 \u0635\u064a\u062f\u0644\u064a \u062a\u062d\u062a \u0627\u0644\u062a\u062f\u0631\u064a\u0628 \u0641\u0635\u064a\u062f\u0644\u064a \u0645\u0628\u062a\u062f\u0626 \u0641\u0645\u062d\u062a\u0631\u0641 \u0627\u0644\u0637\u0627\u0648\u0644\u0629 \u0641\u062e\u0628\u064a\u0631 \u0627\u0644\u0627\u0633\u062a\u0634\u0627\u0631\u0629 \u0641\u0635\u0627\u0626\u062f \u0627\u0644\u0639\u0644\u0627\u0645\u0627\u062a \u0641\u0645\u062f\u064a\u0631 \u0627\u0644\u0641\u0631\u0639\u060c \u062d\u062a\u0649 \u0623\u0633\u0637\u0648\u0631\u0629 \u0627\u0644\u0635\u064a\u062f\u0644\u064a\u0629. \u0648\u0643\u0644 \u0631\u062a\u0628\u0629 \u062a\u0641\u062a\u062d \u0634\u064a\u0626\u0627\u064b.</p>'+
      '<h4>\u0634\u0631\u0643\u0627\u062a \u0627\u0644\u062a\u0623\u0645\u064a\u0646 \u0641\u064a \u0627\u0644\u0644\u0639\u0628\u0629</h4><p>\u0643\u0644 \u0623\u0633\u0645\u0627\u0621 \u0627\u0644\u0643\u0627\u0633\u0627\u062a \u0648\u0639\u0644\u0627\u0645\u0627\u062a\u0647\u0627 \u0641\u064a \u0627\u0644\u0644\u0639\u0628\u0629 \u062e\u064a\u0627\u0644\u064a\u0629. \u0648\u0627\u0644\u0643\u0627\u0633\u0627\u062a \u0627\u0644\u062d\u0642\u064a\u0642\u064a\u0629 \u062a\u064f\u0630\u0643\u0631 \u0641\u064a \u0627\u0644\u0634\u0631\u062d \u0628\u0639\u062f \u0627\u0644\u0625\u062c\u0627\u0628\u0629 \u0641\u0642\u0637\u060c \u0628\u0648\u0635\u0641\u0647\u0627 \u0645\u0639\u0644\u0648\u0645\u0629 \u0639\u0646 \u0627\u0644\u0633\u0648\u0642.</p>'+
      '<h4>\u062a\u0646\u0628\u064a\u0647</h4><p>\u0643\u0644 \u0627\u0644\u0645\u062d\u062a\u0648\u0649 \u0644\u0644\u062a\u062f\u0631\u064a\u0628 \u0627\u0644\u0635\u064a\u062f\u0644\u0627\u0646\u064a \u062d\u0635\u0631\u0627\u064b.</p>'
 };
@@ -1433,8 +1455,8 @@ Mech.sort = function(host, d, done){
     '<div class="stage-title">'+d.title+'</div></div><div class="stage-body">'+sceneStrip(d)+
     (d.seconds?'<div id="mtz"></div>':'')+
     '<div class="sort-hint">'+d.hint+'</div><div class="sort-pool" id="pool"></div>'+
-    '<div class="bins"><div class="bin flag" id="bF"><h4>🚩 '+d.flagLabel+'</h4><div class="chips"></div></div>'+
-    '<div class="bin safe" id="bS"><h4>✓ '+d.safeLabel+'</h4><div class="chips"></div></div></div>'+
+    '<div class="bins"><div class="bin flag" id="bF"><h4>'+ICONS.draw('flag')+' '+d.flagLabel+'</h4><div class="chips"></div></div>'+
+    '<div class="bin safe" id="bS"><h4>'+ICONS.draw('check')+' '+d.safeLabel+'</h4><div class="chips"></div></div></div>'+
     '<div id="fbz"></div></div></div>';
   var pool=document.getElementById('pool'), sel=null, placed=0, mistakes=0, score=0, closed=false;
   var started=!d.seconds;
@@ -4994,9 +5016,84 @@ document.querySelectorAll('.lang-btn[data-lang]').forEach(function(b){
 function updateReturning(){
   var chip=document.getElementById('returningChip');
   if(state.user&&state.user.name){ chip.style.display='flex';
-    chip.textContent='👋 '+t('welcomeBack')+', '+state.user.name; }
+    chip.textContent=t('welcomeBack')+', '+state.user.name; }
   else chip.style.display='none';
 }
+
+/* =====================================================================
+   SYMBOLE
+   Keine Emoji im Spiel. Emoji sehen auf jedem Geraet anders aus, tragen
+   fremde Bildsprache herein und lassen ein Produkt billig wirken.
+   Stattdessen eine eigene Strichzeichnung, die sich der Textfarbe anpasst.
+===================================================================== */
+var ICONS = (function(){
+  var P = {
+    target:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
+    ear:'<path d="M8 20c-1.6-1.6-1.3-3.2-2.4-4.8C4.6 13.8 4 12.2 4 10a6.5 6.5 0 1 1 13 0c0 2.4-2 3.2-3.4 3.9-1 .5-1.6 1-1.6 2.1"/><path d="M8.5 9.5a3.2 3.2 0 0 1 5.2-2.2"/>',
+    speak:'<path d="M4 5.5h11a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-5 3.5V5.5Z"/><path d="M7.5 9h6M7.5 12h4"/>',
+    shield:'<path d="M12 3 5 6v5.5c0 4.2 2.9 7.6 7 9.5 4.1-1.9 7-5.3 7-9.5V6l-7-3Z"/><path d="m9 12 2.2 2.2L15.5 10"/>',
+    pill:'<rect x="2.8" y="8.6" width="18.4" height="6.8" rx="3.4" transform="rotate(-38 12 12)"/><path d="M9.1 15.4 15 9.2"/>',
+    calendar:'<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M8 14h3"/>',
+    repeat:'<path d="M4 11a8 8 0 0 1 13.6-5.6L20 8"/><path d="M20 4v4h-4"/><path d="M20 13a8 8 0 0 1-13.6 5.6L4 16"/><path d="M4 20v-4h4"/>',
+    door:'<path d="M15 3H7v18h8"/><path d="M15 3h3v18h-3"/><path d="M12.5 12h.01"/>',
+    compass:'<circle cx="12" cy="12" r="8.8"/><path d="m15.4 8.6-2.2 5.2-5.2 2.2 2.2-5.2 5.2-2.2Z"/>',
+    lungs:'<path d="M12 3v9"/><path d="M9.5 8.5C8 8.5 5 10 4.6 14.2c-.3 3 .1 5.6 1.6 6.2 1.6.7 3.6-.6 4.2-2.4.4-1.2.4-6.3 0-7.4-.2-.8-.5-2.1-.9-2.1Z"/><path d="M14.5 8.5c1.5 0 4.5 1.5 4.9 5.7.3 3-.1 5.6-1.6 6.2-1.6.7-3.6-.6-4.2-2.4-.4-1.2-.4-6.3 0-7.4.2-.8.5-2.1.9-2.1Z"/>',
+    heart:'<path d="M12 20s-7.4-4.4-8.9-9A4.9 4.9 0 0 1 12 7.4a4.9 4.9 0 0 1 8.9 3.6c-1.5 4.6-8.9 9-8.9 9Z"/>',
+    run:'<circle cx="14.5" cy="4.6" r="1.9"/><path d="m8 21 2.6-5 3-2.2-1-4.2-3.4 2L7 14"/><path d="m13.6 9.6 3.4 2 1.4 3.6"/>',
+    alert:'<path d="M12 4.2 2.9 19.4h18.2L12 4.2Z"/><path d="M12 10v4.2M12 17h.01"/>',
+    drop:'<path d="M12 3.5c3.6 4.2 6 7.1 6 9.9a6 6 0 0 1-12 0c0-2.8 2.4-5.7 6-9.9Z"/>',
+    eye:'<path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/>',
+    truck:'<path d="M2.5 6.5h11v9h-11z"/><path d="M13.5 9.5H18l3 3.2v2.8h-7.5z"/><circle cx="7" cy="17.6" r="1.9"/><circle cx="17" cy="17.6" r="1.9"/>',
+    digits:'<path d="M5 8.5 7.5 7v10"/><path d="M12.5 9.2c0-1.3 1-2.2 2.4-2.2s2.4.9 2.4 2.3c0 2.4-4.8 4.1-4.8 7.7H18"/>',
+    hands:'<path d="M8.5 12.5 6 10a2 2 0 0 0-2.8 2.8l4.6 4.6a4 4 0 0 0 2.8 1.2h4a3 3 0 0 0 3-3v-4"/><path d="M13 12V6.5a1.6 1.6 0 0 1 3.2 0V12"/><path d="M16.2 11V8.4a1.6 1.6 0 0 1 3.2 0V13"/>',
+    scissors:'<circle cx="6.2" cy="6.2" r="2.4"/><circle cx="6.2" cy="17.8" r="2.4"/><path d="M8 7.8 19 18M8 16.2 19 6"/>',
+    hush:'<circle cx="12" cy="12" r="8.8"/><path d="M8 13.5c1.4 1.4 6.6 1.4 8 0"/><path d="M12 6.5v4"/>',
+    sun:'<circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/>',
+    ruler:'<rect x="2.6" y="8.4" width="18.8" height="7.2" rx="1.6"/><path d="M7 8.4v3M11 8.4v4.4M15 8.4v3M19 8.4v4.4"/>',
+    shirt:'<path d="M8.5 3.5 4 6l1.6 3.6 2.2-.9V20h8.4V8.7l2.2.9L20 6l-4.5-2.5a3.6 3.6 0 0 1-7 0Z"/>',
+    bolt:'<path d="M13.4 2.5 4.6 13.4h6l-.9 8.1 8.8-10.9h-6l.9-8.1Z"/>',
+    euro:'<path d="M18 6.4a7.4 7.4 0 0 0-10.3 3M18 17.6a7.4 7.4 0 0 1-10.3-3"/><path d="M4.6 10.4h8M4.6 13.6h8"/>',
+    lens:'<circle cx="10.6" cy="10.6" r="6.6"/><path d="m15.6 15.6 4.4 4.4"/>',
+    book:'<path d="M4 4.6h5.2A2.8 2.8 0 0 1 12 7.4V20a2.4 2.4 0 0 0-2.4-2.2H4V4.6Z"/><path d="M20 4.6h-5.2A2.8 2.8 0 0 0 12 7.4V20a2.4 2.4 0 0 1 2.4-2.2H20V4.6Z"/>',
+    lock:'<rect x="4.6" y="10.4" width="14.8" height="9.6" rx="2.4"/><path d="M8 10.4V7.6a4 4 0 0 1 8 0v2.8"/>',
+    unlock:'<rect x="4.6" y="10.4" width="14.8" height="9.6" rx="2.4"/><path d="M8 10.4V7.6a4 4 0 0 1 7.6-1.8"/>',
+    clock:'<circle cx="12" cy="12" r="8.8"/><path d="M12 6.8V12l3.4 2"/>',
+    moon:'<path d="M20 14.4A8.6 8.6 0 0 1 9.6 4 8.8 8.8 0 1 0 20 14.4Z"/>',
+    coffee:'<path d="M4 8h13v6.4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8Z"/><path d="M17 9.6h1.6a2.6 2.6 0 0 1 0 5.2H17"/><path d="M8 2.6v2.6M12 2.6v2.6"/>',
+    sound:'<path d="M4.5 9.4h3.2L12 5.6v12.8l-4.3-3.8H4.5Z"/><path d="M15.4 9.6a3.4 3.4 0 0 1 0 4.8"/><path d="M17.8 7.2a6.8 6.8 0 0 1 0 9.6"/>',
+    mute:'<path d="M4.5 9.4h3.2L12 5.6v12.8l-4.3-3.8H4.5Z"/><path d="m16 9.6 4.4 4.8M20.4 9.6 16 14.4"/>',
+    flag:'<path d="M6 21V4"/><path d="M6 4.6h11.6l-2.4 4 2.4 4H6"/>',
+    check:'<path d="m4.8 12.6 4.6 4.6L19.2 7.4"/>',
+    doc:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/>',
+    stack:'<path d="M12 3.2 2.8 7.6 12 12l9.2-4.4L12 3.2Z"/><path d="m3.4 12 8.6 4.2 8.6-4.2"/><path d="m3.4 16.4 8.6 4.2 8.6-4.2"/>'
+  };
+  /* Emoji in den Datensaetzen bleiben als Schluessel stehen und werden
+     nie angezeigt. So muss keine der 18 Stufen angefasst werden. */
+  var MAP = {
+    '\uD83C\uDFAF':'target', '\uD83D\uDC42':'ear', '\uD83D\uDDE3':'speak', '\uD83C\uDF99':'speak',
+    '\uD83D\uDEE1':'shield', '\uD83D\uDD4A':'shield', '\uD83D\uDC8A':'pill', '\uD83D\uDCC5':'calendar',
+    '\uD83D\uDD01':'repeat', '\uD83D\uDEAA':'door', '\uD83E\uDDED':'compass', '\uD83E\uDEC1':'lungs',
+    '\uD83E\uDEC0':'heart', '\uD83C\uDFC3':'run', '\uD83D\uDEA8':'alert', '\u26A0':'alert',
+    '\uD83E\uDE78':'drop', '\uD83E\uDDCA':'drop', '\uD83D\uDC41':'eye', '\uD83D\uDE9B':'truck',
+    '\uD83D\uDD22':'digits', '\uD83E\uDD32':'hands', '\uD83E\uDD1D':'hands', '\u2702':'scissors',
+    '\uD83E\uDD2B':'hush', '\u2600':'sun', '\uD83D\uDCCF':'ruler', '\uD83D\uDC55':'shirt',
+    '\u26A1':'bolt', '\uD83D\uDCB6':'euro', '\uD83D\uDD0D':'lens', '\uD83D\uDD0E':'lens',
+    '\uD83D\uDD75':'lens', '\uD83D\uDD2C':'lens', '\uD83D\uDCDA':'book', '\uD83D\uDD12':'lock',
+    '\uD83D\uDD13':'unlock', '\uD83D\uDD1C':'clock', '\uD83C\uDF19':'moon', '\u2615':'coffee',
+    '\uD83D\uDD0A':'sound', '\uD83D\uDD07':'mute', '\uD83D\uDEA9':'flag', '\u2713':'check'
+  };
+  function draw(key, cls){
+    var p = P[key] || P.target;
+    return '<svg class="ico'+(cls?' '+cls:'')+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" '+
+      'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
+  }
+  function forEmoji(e, cls){
+    if(!e) return '';
+    var k = MAP[e] || MAP[e.charAt(0)+e.charAt(1)] || MAP[e.replace(/\uFE0F/g,'')];
+    return draw(k || 'target', cls);
+  }
+  return { draw:draw, forEmoji:forEmoji, has:function(k){ return !!P[k]; } };
+})();
 
 /* ---------- Rank helpers ---------- */
 function rankForPts(p){ var idx=0; for(var i=0;i<RANKS.length;i++){ if(p>=RANKS[i].pts) idx=i; } return idx; }
@@ -5048,7 +5145,7 @@ function renderMap(){
     card.innerHTML=
       '<div class="lc-banner">'+levelBanner(topic)+
       '<div class="lc-num">'+num+'</div>'+
-      (locked?'<div class="lc-lock"><span>🔒</span><em>'+t('lockedPrev')+'</em></div>':'')+
+      (locked?'<div class="lc-lock">'+ICONS.draw('lock')+'<em>'+t('lockedPrev')+'</em></div>':'')+
       (stars?'<div class="lc-stars">'+stars+'</div>':'')+'</div>'+
       '<div class="lc-body"><div class="lc-topic">'+locName(topic)+'</div>'+
       '<div class="lc-persona"><span class="dot"></span>'+locName(persona)+'</div>'+
@@ -5065,7 +5162,7 @@ function renderMap(){
     card.style.animationDelay=(num*0.04)+'s';
     card.innerHTML=
       '<div class="lc-banner" style="background:linear-gradient(135deg,#9a9a9a,#c5c5c5)">'+
-      '<div class="lc-num">'+num+'</div><div class="lc-lock">🔜</div></div>'+
+      '<div class="lc-num">'+num+'</div><div class="lc-lock">'+ICONS.draw('clock')+'</div></div>'+
       '<div class="lc-body"><div class="lc-topic">'+c.de+'</div>'+
       '<div class="lc-persona"><span class="dot"></span>'+(persona?locName(persona):'')+'</div></div>';
     grid.appendChild(card);
@@ -5086,7 +5183,7 @@ function renderMap(){
         '<div class="lc-banner">'+levelBanner(topic)+
         '<div class="lc-num">B'+(li+1)+'</div>'+
         (topic.tag?'<div class="lc-tag">'+topic.tag+'</div>':'')+
-        (locked?'<div class="lc-lock"><span>🔒</span><em>'+t('lockedPrev')+'</em></div>':'')+
+        (locked?'<div class="lc-lock">'+ICONS.draw('lock')+'<em>'+t('lockedPrev')+'</em></div>':'')+
         (stars?'<div class="lc-stars">'+stars+'</div>':'')+'</div>'+
         '<div class="lc-body"><div class="lc-topic">'+locName(topic)+'</div>'+
         '<div class="lc-persona"><span class="dot"></span>'+locName(topic.sub||{de:"Büro",en:"Office",ar:"المكتب"})+'</div>'+
@@ -5204,12 +5301,12 @@ function mountDocs(host, data){
 function customerLeaves(){
   var host=document.getElementById('stageHost');
   host.innerHTML='<div class="stage"><div class="result">'+
-    '<div style="font-size:60px">🚪</div>'+
+    '<div class="result-doc">'+ICONS.draw('door')+'</div>'+
     '<h2>'+t('leftTitle')+'</h2>'+
     '<p>'+t('leftText')+'</p>'+
     '<div class="result-actions">'+
     '<button class="confirm-btn" id="retry">'+t('playAgain')+'</button>'+
-    (run.review.length?'<button class="hud-back" id="reviewBtn2">🔎 '+t('review')+'</button>':'')+
+    (run.review.length?'<button class="hud-back" id="reviewBtn2">'+ICONS.draw('lens')+' '+t('review')+'</button>':'')+
     '<button class="hud-back" id="toMap2">'+t('toMap')+'</button></div></div></div>';
   var _rvb2=document.getElementById('reviewBtn2');
   if(_rvb2) _rvb2.addEventListener('click', openReview);
@@ -5226,7 +5323,8 @@ function finishLevel(){
   var meta={ total:s, trust:tr, step1:run.stepScores.step1||0, step2:run.stepScores.step2||0, step3:run.stepScores.step3||0, step4:run.stepScores.step4||0, step5:run.stepScores.step5||0, step6:run.stepScores.step6||0, step7:run.stepScores.step7||0 };
   var badgesHtml=(run.topic.badges||[]).map(function(b){
     var got=b.cond(meta);
-    return '<div class="badge'+(got?'':' locked')+'">'+b.icon+' '+locName(b)+'</div>';
+    return '<div class="badge'+(got?'':' locked')+'">'+
+      '<span class="b-seal">'+ICONS.forEmoji(b.icon)+'</span>'+locName(b)+'</div>';
   }).join('');
   // persona end image (happy/upset) - fallback worried
   var pimg = run.persona.img||{};
@@ -5246,11 +5344,11 @@ function finishLevel(){
     '<div class="badges">'+badgesHtml+'</div>'+
     '<p><b>'+trustLine+'</b></p>'+
     '<div class="result-actions">'+
-      '<a class="course-cta" href="'+LINKS.course+'" target="_blank" rel="noopener">📚 '+t('courseHint')+'</a>'+
+      '<a class="course-cta" href="'+LINKS.course+'" target="_blank" rel="noopener">'+ICONS.draw('book')+' '+t('courseHint')+'</a>'+
     '</div>'+
     '<div class="result-actions" style="margin-top:14px">'+
       '<button class="confirm-btn" id="replay">'+t('playAgain')+'</button>'+
-      (run.review.length?'<button class="hud-back" id="reviewBtn">🔎 '+t('review')+'</button>':'')+
+      (run.review.length?'<button class="hud-back" id="reviewBtn">'+ICONS.draw('lens')+' '+t('review')+'</button>':'')+
       '<button class="hud-back" id="toMap">'+t('toMap')+'</button>'+
     '</div></div></div>';
 
@@ -5495,7 +5593,7 @@ function enterRoom(id, at){
   };
   img.onerror=function(){
     document.getElementById('wStage').classList.add('w-err');
-    document.getElementById('wHint').textContent='⚠ '+r.img+' — الملف غير موجود في game/assets';
+    document.getElementById('wHint').textContent=r.img+' — الملف غير موجود في game/assets';
     document.getElementById('wHint').classList.remove('hide');
   };
   img.src=r.img;
@@ -5590,7 +5688,7 @@ function coffeeBreak(){
   var L=state.lang, arr=COFFEE_TIPS[L]||COFFEE_TIPS.de;
   var tip=arr[Math.floor(Math.random()*arr.length)];
   SND.good();
-  openPanel(L==='ar'?'☕ نصيحة الاستراحة':(L==='en'?'☕ Break-room tip':'☕ Tipp aus der Pause'), tip,
+  openPanel(L==='ar'?'نصيحة الاستراحة':(L==='en'?'Break-room tip':'Tipp aus der Pause'), tip,
     [{t:(L==='ar'?'شكراً':(L==='en'?'Thanks':'Danke')), cls:'main'}]);
 }
 
@@ -5651,7 +5749,7 @@ function showRankup(idx){
   document.getElementById('ruName').textContent=locName(r);
   var unlock=UNLOCKS[idx];
   var ru=document.getElementById('ruUnlock');
-  if(unlock){ ru.style.display='block'; ru.textContent='🔓 '+(unlock[state.lang]||unlock.de); }
+  if(unlock){ ru.style.display='block'; ru.innerHTML=ICONS.draw('unlock')+' '+(unlock[state.lang]||unlock.de); }
   else ru.style.display='none';
   document.getElementById('rankupOverlay').classList.add('show');
 }
@@ -5846,7 +5944,7 @@ document.getElementById('resetBtn').addEventListener('click',function(){
 document.addEventListener('click',function(e){
   if(e.target.closest('.opt,.chip,.box,.next-btn,.confirm-btn,.play-btn,.panel-next,.ru-btn,.bin')) SND.click();
 },true);
-function syncMute(){document.querySelectorAll('.mute-btn').forEach(function(b){b.textContent=state.muted?'🔇':'🔊';});}
+function syncMute(){document.querySelectorAll('.mute-btn').forEach(function(b){b.innerHTML=ICONS.draw(state.muted?'mute':'sound');});}
 document.querySelectorAll('.mute-btn').forEach(function(b){
   b.addEventListener('click',function(){state.muted=!state.muted;save();syncMute();});
 });
