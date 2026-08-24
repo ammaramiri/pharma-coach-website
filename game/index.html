@@ -5450,6 +5450,14 @@ function pharFrame(dir, phase){
   if(!f.length) return PHAR[dir];
   return f[phase % f.length];
 }
+/* Im Stehen das Standbild, im Gehen nur die beiden Schrittbilder im
+   Wechsel. Fehlen sie, bleibt es beim Standbild. */
+function pharWalk(dir, phase){
+  var f=(PHAR_FRAMES[dir]||[]).filter(Boolean);
+  if(f.length<2) return f[0]||PHAR[dir];
+  var w=f.slice(1);
+  return w[phase % w.length];
+}
 
 var W = { room:null, mask:null, pos:{x:22,y:34}, path:[], dir:"down",
           moving:false, raf:null, last:0, near:null, cell:0, ox:0, oy:0 };
@@ -5514,8 +5522,8 @@ function worldLayout(){
 }
 function placeChar(){
   var ch=document.getElementById('wChar'), sh=document.getElementById('wShadow');
-  var frame = W.moving ? (Math.floor(performance.now()/150)%3) : 0;
-  var src = pharFrame(W.dir, frame);
+  var src = W.moving ? pharWalk(W.dir, Math.floor(performance.now()/165))
+                     : pharFrame(W.dir, 0);
   if(ch.getAttribute('src')!==src) ch.setAttribute('src', src);
   var px=W.ox+(W.pos.x+0.5)*W.cell, py=W.oy+(W.pos.y+0.9)*W.cellY;
   ch.style.left=px+'px'; ch.style.top=py+'px';
