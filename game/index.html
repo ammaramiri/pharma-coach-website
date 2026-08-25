@@ -154,22 +154,39 @@ body.rtl .lc-stars{right:auto;left:10px}
   max-height:100%;background:transparent}
 .w-map{width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none}
 .w-hot{position:absolute;inset:0;pointer-events:none}
-.w-spot{position:absolute;transform:translate(-50%,-50%);pointer-events:none;
-  display:flex;flex-direction:column;align-items:center;gap:2px;transition:opacity .25s}
-.w-spot .ic{width:44px;height:19px;border-radius:50%;
-  border:2px solid rgba(78,205,196,.85);
-  background:radial-gradient(closest-side, rgba(78,205,196,.30), rgba(78,205,196,0));
-  animation:ringPulse 2.2s ease-in-out infinite}
-@keyframes ringPulse{0%,100%{transform:scale(.88);opacity:.55}50%{transform:scale(1.06);opacity:1}}
-.w-spot .sic{color:#fff;opacity:.9;line-height:0;
-  filter:drop-shadow(0 1px 3px rgba(0,0,0,.75))}
-.w-spot .sic .ico{width:21px;height:21px;stroke-width:1.9}
-.w-spot.near .sic{opacity:1;transform:scale(1.12)}
-.w-spot .lb{font-size:9.5px;font-weight:700;color:#fff;background:rgba(0,0,0,.6);
+.w-spot{position:absolute;transform:translate(-50%,-100%);pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;gap:3px;transition:opacity .25s;z-index:7}
+.w-spot .ic{display:none}
+/* Nebenpunkte: ein leises Zeichen, kein Ring auf dem Boden. */
+.w-spot .sic{width:17px;height:17px;color:#fff;opacity:.5;line-height:0;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.85));animation:spotBreath 3.4s ease-in-out infinite}
+.w-spot .sic .ico{width:17px;height:17px;stroke-width:2}
+@keyframes spotBreath{0%,100%{opacity:.38}50%{opacity:.72}}
+.w-spot.near .sic{opacity:1;animation:none}
+.w-spot .lb{font-size:9.5px;font-weight:700;color:#fff;background:rgba(0,0,0,.55);
   padding:2px 6px;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .2s}
 .w-spot.near .lb{opacity:1}
-.w-spot.near .ic{border-color:#fff;
-  background:radial-gradient(closest-side, rgba(255,255,255,.55), rgba(78,205,196,.08))}
+
+/* Wichtige Punkte: Türen und alles, was Fälle öffnet. Immer sichtbar. */
+.w-spot.key{gap:0}
+.w-spot.key .sic{width:auto;height:auto;opacity:1;animation:none;filter:none;
+  display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.96);
+  color:var(--teal-dark);border:2px solid var(--teal-dark);border-radius:999px;
+  padding:6px 12px 6px 9px;box-shadow:0 6px 16px rgba(0,0,0,.35);
+  font-family:'Inter',system-ui,sans-serif;font-weight:800;font-size:12.5px;line-height:1;
+  animation:keyFloat 2.6s ease-in-out infinite}
+.w-spot.key .sic .ico{width:17px;height:17px;stroke-width:2}
+.w-spot.key .lb{display:none}
+.w-spot.key::after{content:'';width:9px;height:9px;margin-top:-4px;background:var(--teal-dark);
+  transform:rotate(45deg);border-radius:2px}
+@keyframes keyFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.w-spot.key.near .sic{background:var(--teal-dark);color:#fff;border-color:#fff}
+@media(max-width:760px){
+  .w-spot .sic{width:14px;height:14px} .w-spot .sic .ico{width:14px;height:14px}
+  .w-spot.key .sic{font-size:11px;padding:5px 10px 5px 8px}
+  .w-spot.key .sic .ico{width:14px;height:14px}
+  .w-spot .lb{font-size:8.5px}
+}
 .w-char{position:absolute;transform-origin:50% 100%;pointer-events:none;z-index:6;
   filter:drop-shadow(0 5px 5px rgba(0,0,0,.5));will-change:left,top,transform}
 .w-shadow{position:absolute;z-index:5;pointer-events:none;border-radius:50%;
@@ -698,6 +715,8 @@ body.rtl .modal.modal-lg{text-align:right}
 body.rtl .gd-body{text-align:right;padding-right:0;padding-left:4px}
 .gd-body h4{font-family:'Fraunces',serif;font-size:15.5px;margin:16px 0 4px;color:var(--teal-dark)}
 .gd-body h4:first-child{margin-top:0}
+.gd-build{margin-top:18px;padding-top:10px;border-top:1px dashed var(--line);
+  font-size:10.5px;letter-spacing:.06em;color:var(--soft);text-align:center;direction:ltr}
 .modal.modal-lg{position:relative}
 .modal.modal-lg::after{content:'';position:absolute;left:24px;right:24px;bottom:66px;height:34px;
   background:linear-gradient(to top,#fff,rgba(255,255,255,0));pointer-events:none}
@@ -1109,6 +1128,11 @@ var I18N = {
 };
 
 /* ---------------- SPIELANLEITUNG ---------------- */
+/* Baukennung. Steht unten in der Spielanleitung und in der Konsole.
+   Damit ist mit einem Blick klar, welche Datei wirklich laeuft. */
+var PC_BUILD = "2026-08-25b · Marken + Avatar";
+try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
+
 var GUIDE = {
   de:'<h4>Ziel</h4><p>Du stehst hinter dem HV-Tisch. Jede Beratung ist ein Fall aus acht Schritten. Aus dem Praktikanten wird die Apotheken-Legende.</p>'+
      '<h4>Die Apotheke</h4><p>Das Haus hat f\u00fcnf R\u00e4ume. In der <b>Offizin</b> stehen HV-Tisch, Sichtwahl, Freiwahl, Kommissionierer und die Wartezone: hier laufen die Gespr\u00e4che am Kunden. Das <b>B\u00fcro</b> ist der Ort f\u00fcr Rezeptpr\u00fcfung, Retax, Dokumentation, BtM-Schrank und K\u00fchlschrank. In der <b>Rezeptur</b> stehen Waage, Salbenmischer, Kapselmaschine und der Rechner f\u00fcr die Plausibilit\u00e4t. Die <b>Teamk\u00fcche</b> ist die Pause. Der <b>Beratungsraum</b> ist das geschlossene Gespr\u00e4ch: Blutdruck, Pille danach, Medikationsanalyse.</p>'+
@@ -5401,7 +5425,7 @@ function maybeRankup(prevRank,newRank){
 ===================================================================== */
 var WORLD_G = 48;
 var WORLD_MASKS = {
-  offizin:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007f07e00000003f07e00060003f07e00078003fffe0007e003fffe0007f803fffe0007fe03fffe00000783fffe00000700fffc00000700ffc000000700fe0000000700e00000000700800000000700800000000700c0007ff80700c0007ff80700c0007ff80700c0007ff80700e0007ff80700e0007fffff00e0007fffff00e0007fffff00f0007ffffffff0007ffffffff0007ffffffff0007ffffffff8007ffffffff8007ffffffffffe000000000000",
+  offizin:"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000001e00000000001fc0000000001ff0000000000ffe0000000001ffc0000000007ff8000000000ffe0000000001ffff000000007ffffc0000000ffffc0000000ffffc0000000ffffc00000001fffc0000000000fc000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
   buero:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffc001fff001ffc001fff003fffe01fff807fffe01fff80ffffc0ffffc003fc01ffffc003c001ffffc0020001ffffe0020001ffffe0020001ffffe0020001ffffe0020001ffffe0020001e00060020001e00060020001e00060020001e00060020001e00060020001e00060020001e00060020001e00067ff0001e00067ffc001e00067ffe003e00067ffe01fe00067ffe03fe00067ffffffe0006000000000000",
   rezeptur:"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001ffe000007ffffff300007ffffe03fc007fffc003ff007ffe0001ffe07ffe0001ffe07ffe0001ffe07ffe0001ffe07ffe000180007ffe000180007ffe000180007ffe000180007fff000180007fff000180007fff000180007fff000180007fff000180007fff000780007fff07ff80007fffffff80007fffffff8000000000000000",
   kueche:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fe0000000000fff000000001ffff00000003fffff0007e07ffffff80fe07fffffff8fe0ffffffffffe0ffff0007ffe0ffff0007ffe0ffff0007ffe0ffff0007ffe0ffff0007e000ffff0007e000ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007fffffff80007fffffff80007fffffff80007fffffff80007fffffff80007fffffff8000000000000000",
@@ -5411,69 +5435,44 @@ var WORLD_MASKS = {
 var ROOMS = {
   offizin:{ img:"assets/maps/map_offizin_v004.jpg", mask:"offizin",
     de:"Offizin", en:"Sales floor", ar:"الصالة",
-    start:[24,44],
+    start:[20,15],
     spots:[
-      {id:"counter", c:[21,20], ico:"counter", de:"HV-Tisch", en:"Counter", ar:"طاولة البيع"},
-      {id:"sicht", c:[19,20], ico:"shelf", de:"Sichtwahl", en:"Front shelf", ar:"رف العرض"},
-      {id:"kommi", c:[29,18], ico:"box", de:"Kommissionierer", en:"Commissioner", ar:"آلة التجهيز"},
-      {id:"freiwahl", c:[22,30], ico:"shelf", de:"Freiwahl", en:"Free-choice shelf", ar:"الرف الحر"},
-      {id:"freiwahl2", c:[23,38], ico:"shelf", de:"Freiwahl II", en:"Free-choice shelf II", ar:"الرف الحر الثاني"},
-      {id:"warte", c:[6,35], ico:"sofa", de:"Wartezone", en:"Waiting area", ar:"منطقة الانتظار"},
-      {id:"ecke", c:[33,33], ico:"table", de:"Beratungsecke", en:"Consultation corner", ar:"ركن الاستشارة"},
-      {id:"rr", c:[34,22], ico:"heart", de:"Blutdruckkabine", en:"Blood pressure booth", ar:"كابينة الضغط"},
-      {id:"aushang", c:[14,44], ico:"board", de:"Aushang", en:"Notice board", ar:"لوحة الإعلانات"},
-      {id:"door_buero", c:[44,22], ico:"door", de:"Tür zum Flur", en:"Door to the corridor", ar:"الباب إلى الرواق"}
+      {id:"counter", c:[22,16], ico:"counter", key:true, de:"HV-Tisch", en:"Counter", ar:"طاولة البيع"},
+      {id:"sicht", c:[17,13], ico:"shelf", de:"Sichtwahl", en:"Front shelf", ar:"رف العرض"},
+      {id:"kommi", c:[24,13], ico:"box", de:"Kommissionierer", en:"Commissioner", ar:"آلة التجهيز"},
+      {id:"aushang", c:[36,22], ico:"board", de:"Aushang", en:"Notice board", ar:"لوحة الإعلانات"},
+      {id:"door_buero", c:[44,23], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
   buero:{ img:"assets/maps/map_buero_v004.jpg", mask:"buero",
     de:"Büro", en:"Office", ar:"المكتب",
     start:[29,46],
     spots:[
-      {id:"desk", c:[24,46], ico:"monitor", de:"Schreibtisch", en:"Desk", ar:"المكتب"},
-      {id:"akten", c:[13,22], ico:"files", de:"Aktenschrank", en:"File cabinet", ar:"خزانة الملفات"},
-      {id:"btm", c:[21,25], ico:"lock", de:"BtM-Schrank", en:"Narcotics cabinet", ar:"خزانة المخدرات"},
-      {id:"fridge", c:[28,26], ico:"fridge", de:"Kühlschrank", en:"Fridge", ar:"البراد"},
-      {id:"printer", c:[6,43], ico:"printer", de:"Drucker", en:"Printer", ar:"الطابعة"},
-      {id:"meet", c:[36,31], ico:"table", de:"Besprechungstisch", en:"Meeting table", ar:"طاولة الاجتماع"},
-      {id:"door_offizin", c:[35,25], ico:"door", de:"Tür zum Flur", en:"Door to the corridor", ar:"الباب إلى الرواق"}
+      {id:"desk", c:[24,46], ico:"monitor", key:true, de:"Schreibtisch", en:"Desk", ar:"المكتب"},
+      {id:"door_offizin", c:[35,25], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
   rezeptur:{ img:"assets/maps/map_rezeptur_v005.jpg", mask:"rezeptur",
     de:"Rezeptur", en:"Compounding room", ar:"غرفة التحضير",
     start:[8,40],
     spots:[
-      {id:"waage", c:[22,26], ico:"balance", de:"Waage", en:"Balance", ar:"الميزان"},
-      {id:"mischer", c:[25,26], ico:"mixer", de:"Salbenmischer", en:"Ointment mixer", ar:"خلاط المراهم"},
-      {id:"kapsel", c:[29,27], ico:"pill", de:"Kapselmaschine", en:"Capsule machine", ar:"آلة الكبسولات"},
-      {id:"spuele", c:[33,29], ico:"sink", de:"Spüle", en:"Sink", ar:"الحوض"},
-      {id:"etikett", c:[36,30], ico:"doc", de:"Etikettendrucker", en:"Label printer", ar:"طابعة الملصقات"},
-      {id:"abzug", c:[42,31], ico:"hood", de:"Abzug", en:"Fume hood", ar:"خزانة السحب"},
-      {id:"insel", c:[18,44], ico:"island", de:"Arbeitsinsel", en:"Work island", ar:"جزيرة العمل"},
+      {id:"insel", c:[18,44], ico:"island", de:"Rezepturtisch", en:"Compounding bench", ar:"طاولة التحضير"},
       {id:"plausi", c:[34,36], ico:"monitor", de:"Plausibilitätsprüfung", en:"Plausibility check", ar:"فحص المعقولية"},
-      {id:"ordner", c:[10,25], ico:"files", de:"Ordnerregal", en:"Folder shelf", ar:"رف المصنفات"},
-      {id:"door_buero", c:[17,27], ico:"door", de:"Tür zum Flur", en:"Door to the corridor", ar:"الباب إلى الرواق"}
+      {id:"door_buero", c:[17,27], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
   kueche:{ img:"assets/maps/map_kueche_v005.jpg", mask:"kueche",
     de:"Teamküche", en:"Team kitchen", ar:"مطبخ الفريق",
     start:[10,40],
     spots:[
       {id:"kaffee", c:[30,20], ico:"coffee", de:"Kaffeemaschine", en:"Coffee machine", ar:"ماكينة القهوة"},
-      {id:"kuehl", c:[16,18], ico:"fridge", de:"Kühlschrank", en:"Fridge", ar:"البراد"},
-      {id:"mikro", c:[35,21], ico:"microwave", de:"Mikrowelle", en:"Microwave", ar:"الميكروويف"},
-      {id:"spuele", c:[24,19], ico:"sink", de:"Spüle", en:"Sink", ar:"الحوض"},
       {id:"tisch", c:[26,42], ico:"table", de:"Esstisch", en:"Dining table", ar:"طاولة الطعام"},
       {id:"sofa", c:[40,27], ico:"sofa", de:"Sofa", en:"Sofa", ar:"الكنبة"},
       {id:"kalender", c:[9,17], ico:"calendar", de:"Dienstplan", en:"Duty roster", ar:"جدول المناوبات"},
-      {id:"door_buero", c:[42,22], ico:"door", de:"Tür zum Flur", en:"Door to the corridor", ar:"الباب إلى الرواق"}
+      {id:"door_buero", c:[42,22], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
   beratung:{ img:"assets/maps/map_beratung_v005.jpg", mask:"beratung",
     de:"Beratungsraum", en:"Consultation room", ar:"غرفة الاستشارة",
     start:[20,44],
     spots:[
-      {id:"tisch", c:[17,41], ico:"table", de:"Runder Tisch", en:"Round table", ar:"الطاولة المستديرة"},
-      {id:"rr", c:[23,21], ico:"heart", de:"Blutdruckgerät", en:"Blood pressure monitor", ar:"جهاز الضغط"},
-      {id:"spuele", c:[11,29], ico:"sink", de:"Waschbecken", en:"Wash basin", ar:"المغسلة"},
-      {id:"screen", c:[28,22], ico:"monitor", de:"Wandbildschirm", en:"Wall screen", ar:"شاشة الحائط"},
-      {id:"fenster", c:[36,27], ico:"window", de:"Milchglasfenster", en:"Frosted window", ar:"النافذة المعتمة"},
-      {id:"door_offizin", c:[13,22], ico:"door", de:"Tür zur Offizin", en:"Door to the sales floor", ar:"الباب إلى الصالة"}
+      {id:"door_offizin", c:[13,22], ico:"door", key:true, de:"Zurück in die Offizin", en:"Back to the floor", ar:"عودة إلى الصالة"}
     ]}
 };
 
@@ -5568,7 +5567,10 @@ function worldLayout(){
   W.ox=dx-s.left; W.oy=dy-s.top;
   W.cell=dw/WORLD_G; W.cellY=dh/WORLD_G;
   var ch=document.getElementById('wChar');
-  var h=W.cellY*6.2; ch.style.height=h+'px'; ch.style.width='auto';
+  /* Groesse am Mobiliar gemessen: eine Tuer ist rund fuenfzehn Zellen hoch,
+     also gehoert die Figur auf etwa elf. Dazu eine leichte Tiefenskala. */
+  var depth = 0.92 + 0.16*(W.pos.y/WORLD_G);
+  var h=W.cellY*11.2*depth; ch.style.height=h+'px'; ch.style.width='auto';
   drawSpots(); placeChar();
 }
 function placeChar(){
@@ -5591,8 +5593,10 @@ function drawSpots(){
     var el=document.createElement('div'); el.className='w-spot'; el.dataset.id=sp.id;
     el.style.left=(W.ox+(sp.c[0]+0.5)*W.cell)+'px';
     el.style.top =(W.oy+(sp.c[1]+0.5)*W.cellY)+'px';
-    el.innerHTML='<div class="sic">'+ICONS.draw(sp.ico||'target')+'</div>'+
-      '<div class="ic"></div><div class="lb">'+locName(sp)+'</div>';
+    if(sp.key) el.classList.add('key');
+    el.innerHTML='<div class="sic">'+ICONS.draw(sp.ico||'target')+
+      (sp.key?'<span>'+locName(sp)+'</span>':'')+'</div>'+
+      '<div class="lb">'+locName(sp)+'</div>';
     host.appendChild(el);
   });
 }
@@ -5689,7 +5693,6 @@ function openSpot(sp){
   function goTo(room){ return function(){ enterRoom(room); }; }
   if(sp.id==='counter') acts.push({t:t('play'), cls:'main', fn:function(){ renderMap('hv'); show('mapScreen'); }});
   if(sp.id==='desk')    acts.push({t:t('play'), cls:'main', fn:function(){ renderMap('buero'); show('mapScreen'); }});
-  if(sp.id==='ecke')    acts.push({t:locRoom('beratung'), cls:'main', fn:goTo('beratung')});
   if(sp.id==='door_offizin' || sp.id==='door_buero'){
     ['offizin','buero','rezeptur','kueche'].forEach(function(r,i){
       if(r===W.room) return;
@@ -5706,47 +5709,22 @@ function openSpot(sp){
   openPanel(title, text, acts);
 }
 var WSPOT = {
-  "offizin.counter":{t_de:"Hier warten die Beratungsfälle. Achtzehn Gespräche aus der Selbstmedikation.", t_en:"The consultation cases wait here. Eighteen conversations from self medication.", t_ar:"هنا تنتظر حالات الاستشارة. ثماني عشرة محادثة من الدواء بلا وصفة."},
-  "offizin.sicht":{t_de:"Hinter dem Tisch, in Griffweite und im Blick des Kunden.", t_en:"Behind the counter, within reach and in the customer view.", t_ar:"خلف الطاولة، في متناول اليد وأمام عين الزبون."},
-  "offizin.kommi":{t_de:"Die Packung kommt aus dem Lager, ohne dass jemand läuft.", t_en:"The pack arrives from the store without anyone walking.", t_ar:"العلبة تصل من المستودع بلا أن يمشي أحد."},
-  "offizin.freiwahl":{t_de:"Was der Kunde selbst nimmt. Und worüber er trotzdem fragt.", t_en:"What the customer picks alone. And still asks about.", t_ar:"ما يأخذه الزبون بنفسه. ويسأل عنه رغم ذلك."},
-  "offizin.freiwahl2":{t_de:"Die zweite Insel. Kosmetik, Nahrungsergänzung, Impulskäufe.", t_en:"The second island. Cosmetics, supplements, impulse buys.", t_ar:"الجزيرة الثانية. مستحضرات التجميل والمكملات ومشتريات اللحظة."},
-  "offizin.warte":{t_de:"Wer hier sitzt, hört mit. Das ist beim Beraten mitzudenken.", t_en:"Whoever sits here listens in. Keep that in mind while counselling.", t_ar:"من يجلس هنا يسمع. هذا يُحسب حسابه أثناء الاستشارة."},
-  "offizin.ecke":{t_de:"Von hier geht es in den geschlossenen Beratungsraum.", t_en:"From here into the closed consultation room.", t_ar:"من هنا إلى غرفة الاستشارة المغلقة."},
-  "offizin.rr":{t_de:"Messen, notieren, einordnen. Noch nicht freigeschaltet.", t_en:"Measure, record, interpret. Not unlocked yet.", t_ar:"قياس وتسجيل وتفسير. لم تُفتح بعد."},
-  "offizin.aushang":{t_de:"Am Aushang hängen der OTC-Kurs und die Seite des Projekts.", t_en:"The board carries the OTC course and the project page.", t_ar:"على اللوحة دورة OTC وصفحة المشروع."},
-  "offizin.door_buero":{t_de:"Hinter der Tür liegen Büro, Rezeptur und die Teamküche.", t_en:"Behind the door: office, compounding room and team kitchen.", t_ar:"خلف الباب: المكتب وغرفة التحضير ومطبخ الفريق."},
+  "offizin.counter":{t_de:"Hier warten die Beratungsfälle.", t_en:"The consultation cases wait here.", t_ar:"هنا تنتظر حالات الاستشارة."},
+  "offizin.sicht":{t_de:"In Griffweite und im Blick des Kunden.", t_en:"Within reach and in the customer view.", t_ar:"في متناول اليد وأمام عين الزبون."},
+  "offizin.kommi":{t_de:"Die Packung kommt aus dem Lager, ohne dass jemand läuft.", t_en:"The pack arrives without anyone walking.", t_ar:"العلبة تصل بلا أن يمشي أحد."},
+  "offizin.aushang":{t_de:"Der OTC-Kurs und die Seite des Projekts.", t_en:"The OTC course and the project page.", t_ar:"دورة OTC وصفحة المشروع."},
+  "offizin.door_buero":{t_de:"Büro, Rezeptur und Teamküche.", t_en:"Office, compounding room and team kitchen.", t_ar:"المكتب وغرفة التحضير ومطبخ الفريق."},
   "buero.desk":{t_de:"Zwei Bildschirme, ein Stapel Bescheide. Hier liegen die Retax-Fälle.", t_en:"Two screens, a stack of notices. The claw-back cases are here.", t_ar:"شاشتان وكومة إشعارات. هنا حالات الريتاكس."},
-  "buero.akten":{t_de:"Zehn Jahre Aufbewahrung. Wer schlecht ablegt, sucht später lange.", t_en:"Ten years of retention. Bad filing means long searching later.", t_ar:"حفظ عشر سنوات. من يرتّب سيئاً يبحث طويلاً لاحقاً."},
-  "buero.btm":{t_de:"Verschlossen, dokumentiert, jederzeit prüfbar.", t_en:"Locked, documented, auditable at any time.", t_ar:"مقفلة وموثّقة وقابلة للتدقيق في أي وقت."},
-  "buero.fridge":{t_de:"Zwei bis acht Grad. Die Temperaturliste ist Teil der Ware.", t_en:"Two to eight degrees. The temperature log is part of the goods.", t_ar:"من درجتين إلى ثماني. سجل الحرارة جزء من البضاعة."},
-  "buero.printer":{t_de:"Protokolle, Einsprüche, Nachweise. Papier ist hier Beweis.", t_en:"Protocols, appeals, evidence. Paper is proof here.", t_ar:"بروتوكولات واعتراضات وإثباتات. الورق هنا دليل."},
-  "buero.meet":{t_de:"Kurze Runde, klare Absprache. Teamthemen kommen später.", t_en:"Short round, clear agreement. Team topics come later.", t_ar:"جلسة قصيرة واتفاق واضح. مواضيع الفريق تأتي لاحقاً."},
-  "buero.door_offizin":{t_de:"Der Flur führt zurück in die Offizin und weiter zu Rezeptur und Küche.", t_en:"The corridor leads back to the sales floor and on to compounding and kitchen.", t_ar:"الرواق يعود إلى الصالة ويمضي إلى غرفة التحضير والمطبخ."},
-  "rezeptur.waage":{t_de:"Geeicht, zugfrei aufgestellt, vor jeder Rezeptur geprüft.", t_en:"Calibrated, placed away from draughts, checked before every batch.", t_ar:"معايَر وموضوع بعيداً عن التيار ويُفحص قبل كل تحضير."},
-  "rezeptur.mischer":{t_de:"Drehzahl und Zeit gehören ins Protokoll, nicht ins Gedächtnis.", t_en:"Speed and time belong in the record, not in memory.", t_ar:"السرعة والزمن مكانهما البروتوكول لا الذاكرة."},
-  "rezeptur.kapsel":{t_de:"Hundert Kapseln, eine Fehlmasse, und die ganze Charge steht still.", t_en:"A hundred capsules, one wrong mass, and the whole batch stops.", t_ar:"مئة كبسولة، وخطأ في الوزن، فتتوقف الدفعة كلها."},
-  "rezeptur.spuele":{t_de:"Reinigung ist dokumentierter Arbeitsschritt, nicht Nebensache.", t_en:"Cleaning is a documented step, not an afterthought.", t_ar:"التنظيف خطوة موثّقة لا أمر جانبي."},
-  "rezeptur.etikett":{t_de:"Das Etikett trägt die Haftung. Es wird gelesen, nicht überflogen.", t_en:"The label carries the liability. It is read, not skimmed.", t_ar:"الملصق يحمل المسؤولية. يُقرأ ولا يُتصفَّح."},
-  "rezeptur.abzug":{t_de:"Für alles, was man nicht einatmen will.", t_en:"For everything you do not want to breathe.", t_ar:"لكل ما لا تريد استنشاقه."},
-  "rezeptur.insel":{t_de:"Eine Rezeptur zur Zeit. Alles andere kommt vom Tisch.", t_en:"One preparation at a time. Everything else leaves the bench.", t_ar:"تحضير واحد في المرة. وكل ما عداه يُرفع عن الطاولة."},
-  "rezeptur.plausi":{t_de:"Vor dem Ansetzen, nicht danach. Sonst ist es nur Protokoll.", t_en:"Before mixing, not after. Otherwise it is only paperwork.", t_ar:"قبل التحضير لا بعده. وإلا صار مجرد ورق."},
-  "rezeptur.ordner":{t_de:"Vorschriften, Chargen, Prüfprotokolle.", t_en:"Formulas, batches, test records.", t_ar:"الوصفات والدفعات ومحاضر الفحص."},
+  "buero.door_offizin":{t_de:"Zurück in die Offizin oder weiter zu Rezeptur und Küche.", t_en:"Back to the floor or on to compounding and kitchen.", t_ar:"عودة إلى الصالة أو إلى التحضير والمطبخ."},
+  "rezeptur.insel":{t_de:"Topitec, Waage, Ansatz. Eine Rezeptur zur Zeit.", t_en:"Topitec, balance, batch. One preparation at a time.", t_ar:"توبيتك وميزان وتحضير. واحد في المرة."},
+  "rezeptur.plausi":{t_de:"Vor dem Ansetzen, nicht danach.", t_en:"Before mixing, not after.", t_ar:"قبل التحضير لا بعده."},
   "rezeptur.door_buero":{t_de:"Zurück in den Flur.", t_en:"Back to the corridor.", t_ar:"عودة إلى الرواق."},
   "kueche.kaffee":{t_de:"Die kürzeste Pause der Welt. Und die nötigste.", t_en:"The shortest break in the world. And the most needed.", t_ar:"أقصر استراحة في العالم. وألزمها."},
-  "kueche.kuehl":{t_de:"Der private Kühlschrank. Nicht der für die Ware.", t_en:"The private fridge. Not the one for the goods.", t_ar:"براد الفريق. لا براد البضاعة."},
-  "kueche.mikro":{t_de:"Mittagessen zwischen zwei Rezepten.", t_en:"Lunch between two prescriptions.", t_ar:"غداء بين وصفتين."},
-  "kueche.spuele":{t_de:"Wer die Tasse stehen lässt, findet sie am Abend wieder.", t_en:"Leave the cup and you will meet it again in the evening.", t_ar:"من يترك كوبه يجده مساءً بانتظاره."},
-  "kueche.tisch":{t_de:"Hier fallen die Absprachen, die nie im Protokoll stehen.", t_en:"Here fall the agreements that never reach the minutes.", t_ar:"هنا تُعقد الاتفاقات التي لا تصل المحضر أبداً."},
-  "kueche.sofa":{t_de:"Zehn Minuten sitzen senkt den Stresspegel messbar.", t_en:"Ten minutes of sitting lowers the stress level measurably.", t_ar:"عشر دقائق جلوس تخفض التوتر بقدر يُقاس."},
+  "kueche.tisch":{t_de:"Hier fallen die Absprachen, die nie im Protokoll stehen.", t_en:"Here fall the agreements that never reach the minutes.", t_ar:"هنا تُعقد الاتفاقات التي لا تصل المحضر."},
+  "kueche.sofa":{t_de:"Zehn Minuten sitzen senkt den Stresspegel messbar.", t_en:"Ten minutes of sitting lowers stress measurably.", t_ar:"عشر دقائق جلوس تخفض التوتر بقدر يُقاس."},
   "kueche.kalender":{t_de:"Wer im Notdienst steht, weiß es lange vorher.", t_en:"Whoever is on emergency duty knows long in advance.", t_ar:"من عليه مناوبة الطوارئ يعرف قبلها بوقت طويل."},
   "kueche.door_buero":{t_de:"Zurück in den Flur.", t_en:"Back to the corridor.", t_ar:"عودة إلى الرواق."},
-  "beratung.tisch":{t_de:"Kein Tresen dazwischen. Das ändert das Gespräch.", t_en:"No counter in between. That changes the conversation.", t_ar:"لا طاولة بيع بينكما. وهذا يغيّر الحديث."},
-  "beratung.rr":{t_de:"Zweimal messen, die zweite Zahl zählt.", t_en:"Measure twice, the second figure counts.", t_ar:"قِس مرتين، والقياس الثاني هو المعتبَر."},
-  "beratung.spuele":{t_de:"Vor und nach jedem Kontakt.", t_en:"Before and after every contact.", t_ar:"قبل كل تماس وبعده."},
-  "beratung.screen":{t_de:"Für Schemata, Inhalatortechnik, Medikationsplan.", t_en:"For schemes, inhaler technique, medication plans.", t_ar:"للمخططات وتقنية البخاخ وخطة الدواء."},
-  "beratung.fenster":{t_de:"Licht herein, Blicke draußen. Diskretion ist baulich gelöst.", t_en:"Light in, eyes out. Discretion is solved by the architecture.", t_ar:"الضوء يدخل والنظرات تبقى خارجاً. الخصوصية محلولة بالبناء."},
-  "beratung.door_offizin":{t_de:"Zurück nach vorne.", t_en:"Back to the front.", t_ar:"عودة إلى الأمام."}
+  "beratung.door_offizin":{t_de:"Das Gespräch ist beendet.", t_en:"The conversation is over.", t_ar:"انتهى الحديث."}
 };
 var COFFEE_TIPS={
   de:["Bei Kindern wird immer nach Körpergewicht dosiert, nie nach Alter.",
@@ -5897,7 +5875,8 @@ var _gdThen=null;
 function openGuide(then){
   _gdThen=then||null;
   document.getElementById('gdTitle').textContent=t('guide');
-  document.getElementById('gdBody').innerHTML=GUIDE[state.lang]||GUIDE.de;
+  document.getElementById('gdBody').innerHTML=(GUIDE[state.lang]||GUIDE.de)+
+    '<p class="gd-build">Build '+PC_BUILD+'</p>';
   document.getElementById('gdClose').textContent=t('weiter');
   document.getElementById('guideModal').classList.add('show');
   state.guideSeen=true; save();
