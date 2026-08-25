@@ -161,6 +161,10 @@ body.rtl .lc-stars{right:auto;left:10px}
   background:radial-gradient(closest-side, rgba(78,205,196,.30), rgba(78,205,196,0));
   animation:ringPulse 2.2s ease-in-out infinite}
 @keyframes ringPulse{0%,100%{transform:scale(.88);opacity:.55}50%{transform:scale(1.06);opacity:1}}
+.w-spot .sic{color:#fff;opacity:.9;line-height:0;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,.75))}
+.w-spot .sic .ico{width:21px;height:21px;stroke-width:1.9}
+.w-spot.near .sic{opacity:1;transform:scale(1.12)}
 .w-spot .lb{font-size:9.5px;font-weight:700;color:#fff;background:rgba(0,0,0,.6);
   padding:2px 6px;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .2s}
 .w-spot.near .lb{opacity:1}
@@ -5118,6 +5122,8 @@ function renderRankBar(){
 }
 
 /* ---------- MAP ---------- */
+/* Welcher Bereich der Fallliste gezeigt wird: 'hv', 'buero' oder alles. */
+var MAP_FILTER = null;
 function levelBanner(topic){
   return topic.banner
     ? '<img src="'+topic.banner+'" alt="" loading="lazy" decoding="async" '+
@@ -5128,13 +5134,15 @@ function gridSection(grid, label){
   var h=document.createElement('div'); h.className='grid-sec'; h.textContent=label;
   grid.appendChild(h);
 }
-function renderMap(){
+function renderMap(only){
   renderRankBar();
+  MAP_FILTER = (only===undefined) ? MAP_FILTER : only;
+  var only2 = MAP_FILTER;
   var grid=document.getElementById('levelsGrid'); grid.innerHTML='';
   var num=0;
-  gridSection(grid, t('secCounter'));
+  if(only2!=='buero') gridSection(grid, t('secCounter'));
   // real levels
-  LEVELS.forEach(function(lv,li){
+  if(only2!=='buero') LEVELS.forEach(function(lv,li){
     num++;
     var topic=TOPICS[lv.topic], persona=PERSONAS[lv.persona];
     /* Sequenz: ein Fall öffnet den nächsten. Abgeschlossene bleiben frei wählbar. */
@@ -5157,7 +5165,7 @@ function renderMap(){
     grid.appendChild(card);
   });
   // coming soon placeholders
-  COMING.forEach(function(c){
+  if(only2!=='buero') COMING.forEach(function(c){
     num++;
     var persona=PERSONAS[c.persona];
     var card=document.createElement('div');
@@ -5171,7 +5179,7 @@ function renderMap(){
     grid.appendChild(card);
   });
   // Büro: eigener Abschnitt, eigene Sequenz
-  if(typeof OFFICE_LEVELS!=='undefined' && OFFICE_LEVELS.length){
+  if(typeof OFFICE_LEVELS!=='undefined' && OFFICE_LEVELS.length && only2!=='hv'){
     gridSection(grid, t('secOffice'));
     OFFICE_LEVELS.forEach(function(lv,li){
       var topic=TOPICS[lv.topic]; if(!topic) return;
@@ -5392,37 +5400,80 @@ function maybeRankup(prevRank,newRank){
    WORLD: free movement across the pharmacy (grid 48x48, walk masks)
 ===================================================================== */
 var WORLD_G = 48;
-var WORLD_MASKS = {"offizin": "00000000000000000000000000000000000000000000000000000000000003ffc00000e00000c00000e00000c00000e00000c00000e00000c00000e00000c00000e00000c000ffe00000ffffffe00000ffffffe003ffffffffe003ffffffffe003ffffffffe003ffffffffe003f800000fe003f800000fe003f800000fe003f800000fe003f800000fe003f800000fe003f800000fe003f800000fe003f800000fe003f800000fe003ffffffffe003ffffffffe003ffffffffe0000fffffc0e0000fffffc0e0000fffffc0e0000fffffc0e0000fffffc0e0000fffffc0e000001fc0000000001fc0000000001fc00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "backroom": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffc000000000ffc000000000ffc000000000ffc000000000ffc0000001ffffc0000001ffffffe00001ffffffe00001ffffffe00001ffffffe00001ffffffe00001ffffffe00001ffffffe00001ffffffe00001ffffc0000001ffffc0000001ffffc0000001ffffc0000001ffffc0000001ffffc0000001ffffc0000001ffffc0000001ffffc000000000ff0000000000ff0000000000ff00000000000000000000000000000000000000000", "breakroom": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001ffe000000001ffe000000001ffe000000001ffe000000001ffe000000001ffe000000001ffe000000001ffffe0000000007fe0000000007fe0000000007fe00000000078000000000078000000000078000000000078000000000078000001fe0078000001fffff8000001fffff8000001ffffffe00001ffffffe00001ffffffe00001ffffffe00001ffffffe00000000ff0000000000ff0000000000ff0000000000ff0000000000000000000000000000000000000000"};
+var WORLD_MASKS = {
+  offizin:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007f07e00000003f07e00060003f07e00078003fffe0007e003fffe0007f803fffe0007fe03fffe00000783fffe00000700fffc00000700ffc000000700fe0000000700e00000000700800000000700800000000700c0007ff80700c0007ff80700c0007ff80700c0007ff80700e0007ff80700e0007fffff00e0007fffff00e0007fffff00f0007ffffffff0007ffffffff0007ffffffff0007ffffffff8007ffffffff8007ffffffffffe000000000000",
+  buero:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffc001fff001ffc001fff003fffe01fff807fffe01fff80ffffc0ffffc003fc01ffffc003c001ffffc0020001ffffe0020001ffffe0020001ffffe0020001ffffe0020001ffffe0020001e00060020001e00060020001e00060020001e00060020001e00060020001e00060020001e00060020001e00067ff0001e00067ffc001e00067ffe003e00067ffe01fe00067ffe03fe00067ffffffe0006000000000000",
+  rezeptur:"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001ffe000007ffffff300007ffffe03fc007fffc003ff007ffe0001ffe07ffe0001ffe07ffe0001ffe07ffe0001ffe07ffe000180007ffe000180007ffe000180007ffe000180007fff000180007fff000180007fff000180007fff000180007fff000180007fff000780007fff07ff80007fffffff80007fffffff8000000000000000",
+  kueche:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fe0000000000fff000000001ffff00000003fffff0007e07ffffff80fe07fffffff8fe0ffffffffffe0ffff0007ffe0ffff0007ffe0ffff0007ffe0ffff0007ffe0ffff0007e000ffff0007e000ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007fffffff80007fffffff80007fffffff80007fffffff80007fffffff80007fffffff8000000000000000",
+  beratung:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007fff00000000ffff0000000003ffffe0000003e00000000003e00000800003e00007800003e0000f800003e0000f800003e0000fc00003e0000fc00003e0000fc00003e0000fc00003e0000fc00003e0000fc007ffe0000fc007ffe0000fc007ffe0000fc007ffe0000fc007ffe0000fc007ffe0000fc007ffffffffc007ffffffffc007ffffffffc007ffffffffc007ffffffffc007ffffffffc007ffffffffc00000000000000"
+};
 
 var ROOMS = {
-  offizin:{ img:"assets/map_offizin.jpg", mask:"offizin",
-    de:"Offizin", en:"Sales floor", ar:"صالة الصيدلية",
-    start:[22,34],
+  offizin:{ img:"assets/maps/map_offizin_v004.jpg", mask:"offizin",
+    de:"Offizin", en:"Sales floor", ar:"الصالة",
+    start:[24,44],
     spots:[
-      {id:"counter", c:[24,17], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5"/><path d="M12 8.5v7"/></svg>', de:"HV-Tisch", en:"Counter", ar:"طاولة البيع"},
-      {id:"sicht",   c:[24,13], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M10 2h4v3h-4z"/><path d="M8.5 5h7l1.5 4v11a2 2 0 0 1-2 2h-6a2 2 0 0 1-2-2V9l1.5-4Z"/></svg>', de:"Sichtwahl", en:"Front shelf", ar:"رف العرض"},
-      {id:"corner",  c:[10,15], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11a9 9 0 0 1 18 0"/><rect x="3" y="11" width="4.5" height="7" rx="2"/><rect x="16.5" y="11" width="4.5" height="7" rx="2"/></svg>', de:"Beratungsecke", en:"Consultation corner", ar:"ركن الاستشارة"},
-      {id:"aushang", c:[9,22], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M12 17v4M8 21h8"/><path d="M7 8h10M7 12h6"/></svg>', de:"Aushang", en:"Notice board", ar:"لوحة الإعلانات",
-       urls:[{url:LINKS.course, de:"OTC-Kurs", en:"OTC course", ar:"دورة OTC"},
-             {url:LINKS.about,  de:"Das Projekt", en:"The project", ar:"المشروع"}]},
-      {id:"door_back", c:[36,12], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3H6v18h9"/><path d="M11 12h9m0 0-3.5-3.5M20 12l-3.5 3.5"/></svg>', de:"Hinterzimmer", en:"Back rooms", ar:"الغرف الخلفية"}
+      {id:"counter", c:[21,20], ico:"counter", de:"HV-Tisch", en:"Counter", ar:"طاولة البيع"},
+      {id:"sicht", c:[19,20], ico:"shelf", de:"Sichtwahl", en:"Front shelf", ar:"رف العرض"},
+      {id:"kommi", c:[29,18], ico:"box", de:"Kommissionierer", en:"Commissioner", ar:"آلة التجهيز"},
+      {id:"freiwahl", c:[22,30], ico:"shelf", de:"Freiwahl", en:"Free-choice shelf", ar:"الرف الحر"},
+      {id:"freiwahl2", c:[23,38], ico:"shelf", de:"Freiwahl II", en:"Free-choice shelf II", ar:"الرف الحر الثاني"},
+      {id:"warte", c:[6,35], ico:"sofa", de:"Wartezone", en:"Waiting area", ar:"منطقة الانتظار"},
+      {id:"ecke", c:[33,33], ico:"table", de:"Beratungsecke", en:"Consultation corner", ar:"ركن الاستشارة"},
+      {id:"rr", c:[34,22], ico:"heart", de:"Blutdruckkabine", en:"Blood pressure booth", ar:"كابينة الضغط"},
+      {id:"aushang", c:[14,44], ico:"board", de:"Aushang", en:"Notice board", ar:"لوحة الإعلانات"},
+      {id:"door_buero", c:[44,22], ico:"door", de:"Tür zum Flur", en:"Door to the corridor", ar:"الباب إلى الرواق"}
     ]},
-  backroom:{ img:"assets/map_backroom.jpg", mask:"backroom",
-    de:"Büro & Rezeptur", en:"Office & compounding", ar:"المكتب والتحضير",
-    start:[24,40],
+  buero:{ img:"assets/maps/map_buero_v004.jpg", mask:"buero",
+    de:"Büro", en:"Office", ar:"المكتب",
+    start:[29,46],
     spots:[
-      {id:"kommi",  c:[17,25], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 8.5 12 4l9 4.5V16l-9 4.5L3 16V8.5Z"/><path d="m3 8.5 9 4.5 9-4.5M12 13v7.5"/></svg>', de:"Kommissionierer", en:"Commissioner", ar:"آلة التجهيز"},
-      {id:"fridge", c:[33,26], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M4 6l16 12M20 6 4 18"/></svg>', de:"Kühlschrank", en:"Fridge", ar:"الثلاجة"},
-      {id:"rezept", c:[33,31], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3v6.2L4.6 18a2 2 0 0 0 1.7 3h11.4a2 2 0 0 0 1.7-3l-4.9-8.8V3"/><path d="M8 3h8M7.4 14h9.2"/></svg>', de:"Rezeptur", en:"Compounding", ar:"التحضير"},
-      {id:"door_out", c:[24,43], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3H6v18h9"/><path d="M11 12h9m0 0-3.5-3.5M20 12l-3.5 3.5"/></svg>', de:"Zurück zur Offizin", en:"Back to the floor", ar:"عودة إلى الصالة"}
+      {id:"desk", c:[24,46], ico:"monitor", de:"Schreibtisch", en:"Desk", ar:"المكتب"},
+      {id:"akten", c:[13,22], ico:"files", de:"Aktenschrank", en:"File cabinet", ar:"خزانة الملفات"},
+      {id:"btm", c:[21,25], ico:"lock", de:"BtM-Schrank", en:"Narcotics cabinet", ar:"خزانة المخدرات"},
+      {id:"fridge", c:[28,26], ico:"fridge", de:"Kühlschrank", en:"Fridge", ar:"البراد"},
+      {id:"printer", c:[6,43], ico:"printer", de:"Drucker", en:"Printer", ar:"الطابعة"},
+      {id:"meet", c:[36,31], ico:"table", de:"Besprechungstisch", en:"Meeting table", ar:"طاولة الاجتماع"},
+      {id:"door_offizin", c:[35,25], ico:"door", de:"Tür zum Flur", en:"Door to the corridor", ar:"الباب إلى الرواق"}
     ]},
-  breakroom:{ img:"assets/map_breakroom.jpg", mask:"breakroom",
-    de:"Pausenraum", en:"Break room", ar:"غرفة الاستراحة",
-    start:[27,40],
+  rezeptur:{ img:"assets/maps/map_rezeptur_v005.jpg", mask:"rezeptur",
+    de:"Rezeptur", en:"Compounding room", ar:"غرفة التحضير",
+    start:[8,40],
     spots:[
-      {id:"coffee", c:[33,26], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8Z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2v3M12 2v3"/></svg>', de:"Kaffeemaschine", en:"Coffee machine", ar:"ماكينة القهوة"},
-      {id:"table",  c:[24,36], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>', de:"Tisch", en:"Table", ar:"الطاولة"},
-      {id:"door_out2", c:[27,42], ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3H6v18h9"/><path d="M11 12h9m0 0-3.5-3.5M20 12l-3.5 3.5"/></svg>', de:"Zurück zur Offizin", en:"Back to the floor", ar:"عودة إلى الصالة"}
+      {id:"waage", c:[22,26], ico:"balance", de:"Waage", en:"Balance", ar:"الميزان"},
+      {id:"mischer", c:[25,26], ico:"mixer", de:"Salbenmischer", en:"Ointment mixer", ar:"خلاط المراهم"},
+      {id:"kapsel", c:[29,27], ico:"pill", de:"Kapselmaschine", en:"Capsule machine", ar:"آلة الكبسولات"},
+      {id:"spuele", c:[33,29], ico:"sink", de:"Spüle", en:"Sink", ar:"الحوض"},
+      {id:"etikett", c:[36,30], ico:"doc", de:"Etikettendrucker", en:"Label printer", ar:"طابعة الملصقات"},
+      {id:"abzug", c:[42,31], ico:"hood", de:"Abzug", en:"Fume hood", ar:"خزانة السحب"},
+      {id:"insel", c:[18,44], ico:"island", de:"Arbeitsinsel", en:"Work island", ar:"جزيرة العمل"},
+      {id:"plausi", c:[34,36], ico:"monitor", de:"Plausibilitätsprüfung", en:"Plausibility check", ar:"فحص المعقولية"},
+      {id:"ordner", c:[10,25], ico:"files", de:"Ordnerregal", en:"Folder shelf", ar:"رف المصنفات"},
+      {id:"door_buero", c:[17,27], ico:"door", de:"Tür zum Flur", en:"Door to the corridor", ar:"الباب إلى الرواق"}
+    ]},
+  kueche:{ img:"assets/maps/map_kueche_v005.jpg", mask:"kueche",
+    de:"Teamküche", en:"Team kitchen", ar:"مطبخ الفريق",
+    start:[10,40],
+    spots:[
+      {id:"kaffee", c:[30,20], ico:"coffee", de:"Kaffeemaschine", en:"Coffee machine", ar:"ماكينة القهوة"},
+      {id:"kuehl", c:[16,18], ico:"fridge", de:"Kühlschrank", en:"Fridge", ar:"البراد"},
+      {id:"mikro", c:[35,21], ico:"microwave", de:"Mikrowelle", en:"Microwave", ar:"الميكروويف"},
+      {id:"spuele", c:[24,19], ico:"sink", de:"Spüle", en:"Sink", ar:"الحوض"},
+      {id:"tisch", c:[26,42], ico:"table", de:"Esstisch", en:"Dining table", ar:"طاولة الطعام"},
+      {id:"sofa", c:[40,27], ico:"sofa", de:"Sofa", en:"Sofa", ar:"الكنبة"},
+      {id:"kalender", c:[9,17], ico:"calendar", de:"Dienstplan", en:"Duty roster", ar:"جدول المناوبات"},
+      {id:"door_buero", c:[42,22], ico:"door", de:"Tür zum Flur", en:"Door to the corridor", ar:"الباب إلى الرواق"}
+    ]},
+  beratung:{ img:"assets/maps/map_beratung_v005.jpg", mask:"beratung",
+    de:"Beratungsraum", en:"Consultation room", ar:"غرفة الاستشارة",
+    start:[20,44],
+    spots:[
+      {id:"tisch", c:[17,41], ico:"table", de:"Runder Tisch", en:"Round table", ar:"الطاولة المستديرة"},
+      {id:"rr", c:[23,21], ico:"heart", de:"Blutdruckgerät", en:"Blood pressure monitor", ar:"جهاز الضغط"},
+      {id:"spuele", c:[11,29], ico:"sink", de:"Waschbecken", en:"Wash basin", ar:"المغسلة"},
+      {id:"screen", c:[28,22], ico:"monitor", de:"Wandbildschirm", en:"Wall screen", ar:"شاشة الحائط"},
+      {id:"fenster", c:[36,27], ico:"window", de:"Milchglasfenster", en:"Frosted window", ar:"النافذة المعتمة"},
+      {id:"door_offizin", c:[13,22], ico:"door", de:"Tür zur Offizin", en:"Door to the sales floor", ar:"الباب إلى الصالة"}
     ]}
 };
 
@@ -5540,7 +5591,8 @@ function drawSpots(){
     var el=document.createElement('div'); el.className='w-spot'; el.dataset.id=sp.id;
     el.style.left=(W.ox+(sp.c[0]+0.5)*W.cell)+'px';
     el.style.top =(W.oy+(sp.c[1]+0.5)*W.cellY)+'px';
-    el.innerHTML='<div class="ic"></div><div class="lb">'+locName(sp)+'</div>';
+    el.innerHTML='<div class="sic">'+ICONS.draw(sp.ico||'target')+'</div>'+
+      '<div class="ic"></div><div class="lb">'+locName(sp)+'</div>';
     host.appendChild(el);
   });
 }
@@ -5627,16 +5679,24 @@ function openPanel(title, text, acts){
 }
 function closePanel(){ document.getElementById('wPanel').classList.remove('up'); }
 
+function locRoom(r){ return locName(ROOMS[r]||{de:r,en:r,ar:r}); }
 function openSpot(sp){
-  var L=state.lang, T=WSPOT[sp.id]||{};
+  var L=state.lang, T=WSPOT[W.room+'.'+sp.id]||WSPOT[sp.id]||{};
   var title=locName(sp), text=(T['t_'+L]||T.t_de||'');
   var acts=[];
-  if(sp.id==='counter')  acts.push({t:t('play'), cls:'main', fn:function(){ renderMap(); show('mapScreen'); }});
-  if(sp.id==='door_back') acts.push(
-    {t:(L==='ar'?'المكتب':(L==='en'?'Office':'Büro')), cls:'main', fn:function(){ enterRoom('backroom'); }},
-    {t:(L==='ar'?'غرفة الاستراحة':(L==='en'?'Break room':'Pausenraum')), fn:function(){ enterRoom('breakroom'); }});
-  if(sp.id==='door_out'||sp.id==='door_out2') acts.push({t:locName(sp), cls:'main', fn:function(){ enterRoom('offizin',[36,13]); }});
-  if(sp.id==='coffee') acts.push({t:(L==='ar'?'خذ استراحة':(L==='en'?'Take a break':'Pause machen')), cls:'main', fn:coffeeBreak});
+  /* Der Flur ist kein eigener Raum, sondern eine Auswahl. Die Karten
+     zeigen je eine Tuer, nicht drei, und erfundene Tueren waeren gelogen. */
+  function goTo(room){ return function(){ enterRoom(room); }; }
+  if(sp.id==='counter') acts.push({t:t('play'), cls:'main', fn:function(){ renderMap('hv'); show('mapScreen'); }});
+  if(sp.id==='desk')    acts.push({t:t('play'), cls:'main', fn:function(){ renderMap('buero'); show('mapScreen'); }});
+  if(sp.id==='ecke')    acts.push({t:locRoom('beratung'), cls:'main', fn:goTo('beratung')});
+  if(sp.id==='door_offizin' || sp.id==='door_buero'){
+    ['offizin','buero','rezeptur','kueche'].forEach(function(r,i){
+      if(r===W.room) return;
+      acts.push({t:locRoom(r), cls:acts.length?'':'main', fn:goTo(r)});
+    });
+  }
+  if(sp.id==='kaffee') acts.push({t:(L==='ar'?'خذ استراحة':(L==='en'?'Take a break':'Pause machen')), cls:'main', fn:coffeeBreak});
   /* allgemeiner Punkt: oeffnet einen Link nach draussen */
   if(sp.url) acts.push({t:locName(sp), cls:'main', fn:function(){ window.open(sp.url,'_blank','noopener'); }});
   if(sp.urls) sp.urls.forEach(function(u,i){
@@ -5645,35 +5705,48 @@ function openSpot(sp){
   acts.push({t:(L==='ar'?'إغلاق':(L==='en'?'Close':'Schließen')), cls:'ghost'});
   openPanel(title, text, acts);
 }
-var WSPOT={
-  counter:{t_de:"Hier findet die Beratung statt. Wähle einen Fall und stell dich hinter den HV-Tisch.",
-    t_en:"This is where consultations happen. Pick a case and step behind the counter.",
-    t_ar:"هنا تجري الاستشارة. اختر حالة وقف خلف طاولة البيع."},
-  sicht:{t_de:"Die Sichtwahl. Später: freies Üben an den Präparaten.",
-    t_en:"The front shelf. Later: free practice with the products.",
-    t_ar:"رف العرض. لاحقاً: تدريب حر على المستحضرات."},
-  corner:{t_de:"Die Beratungsecke – für alles, was nicht an den Tresen gehört.",
-    t_en:"The consultation corner - for everything that does not belong at the counter.",
-    t_ar:"ركن الاستشارة – لكل ما لا يُقال عند الطاولة."},
-  aushang:{t_de:"Am Aushang hängen der OTC-Kurs und die Seite des Projekts.",
-    t_en:"The notice board carries the OTC course and the project page.",
-    t_ar:"على لوحة الإعلانات دورة OTC وصفحة المشروع."},
-  door_back:{t_de:"Hinter der Tür liegen Büro, Rezeptur und der Pausenraum.",
-    t_en:"Behind the door: office, compounding and the break room.",
-    t_ar:"خلف الباب: المكتب والتحضير وغرفة الاستراحة."},
-  kommi:{t_de:"Der Kommissionierer. Später: Einsortier-Minispiel gegen die Zeit.",
-    t_en:"The commissioner. Later: a timed sorting mini-game.",
-    t_ar:"آلة التجهيز. لاحقاً: لعبة فرز سريعة ضد الوقت."},
-  fridge:{t_de:"Kühlkette. Später: Temperatur-Minispiel.",
-    t_en:"Cold chain. Later: a temperature mini-game.",
-    t_ar:"سلسلة التبريد. لاحقاً: لعبة درجة الحرارة."},
-  rezept:{t_de:"Die Rezeptur. Später: Herstellung Schritt für Schritt.",
-    t_en:"Compounding. Later: step-by-step preparation.",
-    t_ar:"التحضير. لاحقاً: التحضير خطوة بخطوة."},
-  coffee:{t_de:"Kurz durchatmen – und einen Tipp mitnehmen.",
-    t_en:"Take a breath - and pick up a tip.", t_ar:"خذ نفساً – واحصل على نصيحة."},
-  table:{t_de:"Hier sitzt das Team in der Pause.",
-    t_en:"Where the team sits during breaks.", t_ar:"هنا يجلس الفريق في الاستراحة."}
+var WSPOT = {
+  "offizin.counter":{t_de:"Hier warten die Beratungsfälle. Achtzehn Gespräche aus der Selbstmedikation.", t_en:"The consultation cases wait here. Eighteen conversations from self medication.", t_ar:"هنا تنتظر حالات الاستشارة. ثماني عشرة محادثة من الدواء بلا وصفة."},
+  "offizin.sicht":{t_de:"Hinter dem Tisch, in Griffweite und im Blick des Kunden.", t_en:"Behind the counter, within reach and in the customer view.", t_ar:"خلف الطاولة، في متناول اليد وأمام عين الزبون."},
+  "offizin.kommi":{t_de:"Die Packung kommt aus dem Lager, ohne dass jemand läuft.", t_en:"The pack arrives from the store without anyone walking.", t_ar:"العلبة تصل من المستودع بلا أن يمشي أحد."},
+  "offizin.freiwahl":{t_de:"Was der Kunde selbst nimmt. Und worüber er trotzdem fragt.", t_en:"What the customer picks alone. And still asks about.", t_ar:"ما يأخذه الزبون بنفسه. ويسأل عنه رغم ذلك."},
+  "offizin.freiwahl2":{t_de:"Die zweite Insel. Kosmetik, Nahrungsergänzung, Impulskäufe.", t_en:"The second island. Cosmetics, supplements, impulse buys.", t_ar:"الجزيرة الثانية. مستحضرات التجميل والمكملات ومشتريات اللحظة."},
+  "offizin.warte":{t_de:"Wer hier sitzt, hört mit. Das ist beim Beraten mitzudenken.", t_en:"Whoever sits here listens in. Keep that in mind while counselling.", t_ar:"من يجلس هنا يسمع. هذا يُحسب حسابه أثناء الاستشارة."},
+  "offizin.ecke":{t_de:"Von hier geht es in den geschlossenen Beratungsraum.", t_en:"From here into the closed consultation room.", t_ar:"من هنا إلى غرفة الاستشارة المغلقة."},
+  "offizin.rr":{t_de:"Messen, notieren, einordnen. Noch nicht freigeschaltet.", t_en:"Measure, record, interpret. Not unlocked yet.", t_ar:"قياس وتسجيل وتفسير. لم تُفتح بعد."},
+  "offizin.aushang":{t_de:"Am Aushang hängen der OTC-Kurs und die Seite des Projekts.", t_en:"The board carries the OTC course and the project page.", t_ar:"على اللوحة دورة OTC وصفحة المشروع."},
+  "offizin.door_buero":{t_de:"Hinter der Tür liegen Büro, Rezeptur und die Teamküche.", t_en:"Behind the door: office, compounding room and team kitchen.", t_ar:"خلف الباب: المكتب وغرفة التحضير ومطبخ الفريق."},
+  "buero.desk":{t_de:"Zwei Bildschirme, ein Stapel Bescheide. Hier liegen die Retax-Fälle.", t_en:"Two screens, a stack of notices. The claw-back cases are here.", t_ar:"شاشتان وكومة إشعارات. هنا حالات الريتاكس."},
+  "buero.akten":{t_de:"Zehn Jahre Aufbewahrung. Wer schlecht ablegt, sucht später lange.", t_en:"Ten years of retention. Bad filing means long searching later.", t_ar:"حفظ عشر سنوات. من يرتّب سيئاً يبحث طويلاً لاحقاً."},
+  "buero.btm":{t_de:"Verschlossen, dokumentiert, jederzeit prüfbar.", t_en:"Locked, documented, auditable at any time.", t_ar:"مقفلة وموثّقة وقابلة للتدقيق في أي وقت."},
+  "buero.fridge":{t_de:"Zwei bis acht Grad. Die Temperaturliste ist Teil der Ware.", t_en:"Two to eight degrees. The temperature log is part of the goods.", t_ar:"من درجتين إلى ثماني. سجل الحرارة جزء من البضاعة."},
+  "buero.printer":{t_de:"Protokolle, Einsprüche, Nachweise. Papier ist hier Beweis.", t_en:"Protocols, appeals, evidence. Paper is proof here.", t_ar:"بروتوكولات واعتراضات وإثباتات. الورق هنا دليل."},
+  "buero.meet":{t_de:"Kurze Runde, klare Absprache. Teamthemen kommen später.", t_en:"Short round, clear agreement. Team topics come later.", t_ar:"جلسة قصيرة واتفاق واضح. مواضيع الفريق تأتي لاحقاً."},
+  "buero.door_offizin":{t_de:"Der Flur führt zurück in die Offizin und weiter zu Rezeptur und Küche.", t_en:"The corridor leads back to the sales floor and on to compounding and kitchen.", t_ar:"الرواق يعود إلى الصالة ويمضي إلى غرفة التحضير والمطبخ."},
+  "rezeptur.waage":{t_de:"Geeicht, zugfrei aufgestellt, vor jeder Rezeptur geprüft.", t_en:"Calibrated, placed away from draughts, checked before every batch.", t_ar:"معايَر وموضوع بعيداً عن التيار ويُفحص قبل كل تحضير."},
+  "rezeptur.mischer":{t_de:"Drehzahl und Zeit gehören ins Protokoll, nicht ins Gedächtnis.", t_en:"Speed and time belong in the record, not in memory.", t_ar:"السرعة والزمن مكانهما البروتوكول لا الذاكرة."},
+  "rezeptur.kapsel":{t_de:"Hundert Kapseln, eine Fehlmasse, und die ganze Charge steht still.", t_en:"A hundred capsules, one wrong mass, and the whole batch stops.", t_ar:"مئة كبسولة، وخطأ في الوزن، فتتوقف الدفعة كلها."},
+  "rezeptur.spuele":{t_de:"Reinigung ist dokumentierter Arbeitsschritt, nicht Nebensache.", t_en:"Cleaning is a documented step, not an afterthought.", t_ar:"التنظيف خطوة موثّقة لا أمر جانبي."},
+  "rezeptur.etikett":{t_de:"Das Etikett trägt die Haftung. Es wird gelesen, nicht überflogen.", t_en:"The label carries the liability. It is read, not skimmed.", t_ar:"الملصق يحمل المسؤولية. يُقرأ ولا يُتصفَّح."},
+  "rezeptur.abzug":{t_de:"Für alles, was man nicht einatmen will.", t_en:"For everything you do not want to breathe.", t_ar:"لكل ما لا تريد استنشاقه."},
+  "rezeptur.insel":{t_de:"Eine Rezeptur zur Zeit. Alles andere kommt vom Tisch.", t_en:"One preparation at a time. Everything else leaves the bench.", t_ar:"تحضير واحد في المرة. وكل ما عداه يُرفع عن الطاولة."},
+  "rezeptur.plausi":{t_de:"Vor dem Ansetzen, nicht danach. Sonst ist es nur Protokoll.", t_en:"Before mixing, not after. Otherwise it is only paperwork.", t_ar:"قبل التحضير لا بعده. وإلا صار مجرد ورق."},
+  "rezeptur.ordner":{t_de:"Vorschriften, Chargen, Prüfprotokolle.", t_en:"Formulas, batches, test records.", t_ar:"الوصفات والدفعات ومحاضر الفحص."},
+  "rezeptur.door_buero":{t_de:"Zurück in den Flur.", t_en:"Back to the corridor.", t_ar:"عودة إلى الرواق."},
+  "kueche.kaffee":{t_de:"Die kürzeste Pause der Welt. Und die nötigste.", t_en:"The shortest break in the world. And the most needed.", t_ar:"أقصر استراحة في العالم. وألزمها."},
+  "kueche.kuehl":{t_de:"Der private Kühlschrank. Nicht der für die Ware.", t_en:"The private fridge. Not the one for the goods.", t_ar:"براد الفريق. لا براد البضاعة."},
+  "kueche.mikro":{t_de:"Mittagessen zwischen zwei Rezepten.", t_en:"Lunch between two prescriptions.", t_ar:"غداء بين وصفتين."},
+  "kueche.spuele":{t_de:"Wer die Tasse stehen lässt, findet sie am Abend wieder.", t_en:"Leave the cup and you will meet it again in the evening.", t_ar:"من يترك كوبه يجده مساءً بانتظاره."},
+  "kueche.tisch":{t_de:"Hier fallen die Absprachen, die nie im Protokoll stehen.", t_en:"Here fall the agreements that never reach the minutes.", t_ar:"هنا تُعقد الاتفاقات التي لا تصل المحضر أبداً."},
+  "kueche.sofa":{t_de:"Zehn Minuten sitzen senkt den Stresspegel messbar.", t_en:"Ten minutes of sitting lowers the stress level measurably.", t_ar:"عشر دقائق جلوس تخفض التوتر بقدر يُقاس."},
+  "kueche.kalender":{t_de:"Wer im Notdienst steht, weiß es lange vorher.", t_en:"Whoever is on emergency duty knows long in advance.", t_ar:"من عليه مناوبة الطوارئ يعرف قبلها بوقت طويل."},
+  "kueche.door_buero":{t_de:"Zurück in den Flur.", t_en:"Back to the corridor.", t_ar:"عودة إلى الرواق."},
+  "beratung.tisch":{t_de:"Kein Tresen dazwischen. Das ändert das Gespräch.", t_en:"No counter in between. That changes the conversation.", t_ar:"لا طاولة بيع بينكما. وهذا يغيّر الحديث."},
+  "beratung.rr":{t_de:"Zweimal messen, die zweite Zahl zählt.", t_en:"Measure twice, the second figure counts.", t_ar:"قِس مرتين، والقياس الثاني هو المعتبَر."},
+  "beratung.spuele":{t_de:"Vor und nach jedem Kontakt.", t_en:"Before and after every contact.", t_ar:"قبل كل تماس وبعده."},
+  "beratung.screen":{t_de:"Für Schemata, Inhalatortechnik, Medikationsplan.", t_en:"For schemes, inhaler technique, medication plans.", t_ar:"للمخططات وتقنية البخاخ وخطة الدواء."},
+  "beratung.fenster":{t_de:"Licht herein, Blicke draußen. Diskretion ist baulich gelöst.", t_en:"Light in, eyes out. Discretion is solved by the architecture.", t_ar:"الضوء يدخل والنظرات تبقى خارجاً. الخصوصية محلولة بالبناء."},
+  "beratung.door_offizin":{t_de:"Zurück nach vorne.", t_en:"Back to the front.", t_ar:"عودة إلى الأمام."}
 };
 var COFFEE_TIPS={
   de:["Bei Kindern wird immer nach Körpergewicht dosiert, nie nach Alter.",
@@ -5740,6 +5813,7 @@ document.getElementById('wBack').addEventListener('click',function(){
   cancelAnimationFrame(W.raf); W.raf=null; show('startScreen');
 });
 function openWorld(){
+  MAP_FILTER = null;
   show('worldScreen');
   document.getElementById('wRankName').textContent=locName(RANKS[state.rankIdx]);
   document.getElementById('wPts').textContent=state.totalPts;
