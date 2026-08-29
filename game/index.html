@@ -158,45 +158,39 @@ body.rtl .lc-stars{right:auto;left:10px}
 /* Auf breiten Schirmen darf die Buehne ihr Verhaeltnis behalten. Auf dem
    Telefon nicht: dort blieben oben und unten schwarze Balken stehen.
    Stattdessen fuellt die Karte die Hoehe und schwenkt seitlich mit. */
-@media(min-aspect-ratio:5/4){
-  .w-stage.w-169{aspect-ratio:16/9;flex:0 1 auto;align-self:center;width:100%;
-    max-height:100%;background:transparent}
-}
+.w-stage.w-169{aspect-ratio:16/9;flex:0 0 auto;align-self:stretch;width:100%;
+  max-height:62vh;background:transparent}
 .w-map{position:absolute;left:0;top:0;display:block;user-select:none;-webkit-user-drag:none;
   object-fit:fill;transition:left .18s linear}
 .w-hot{position:absolute;inset:0;pointer-events:none}
-.w-spot{position:absolute;transform:translate(-50%,-100%);pointer-events:none;
+.w-spot{position:absolute;transform:translate(-50%,-50%);pointer-events:none;
   display:flex;flex-direction:column;align-items:center;gap:3px;transition:opacity .25s;z-index:7}
 .w-spot .ic{display:none}
-/* Nebenpunkte: ein leises Zeichen, kein Ring auf dem Boden. */
-.w-spot .sic{width:17px;height:17px;color:#fff;opacity:.5;line-height:0;
-  filter:drop-shadow(0 1px 2px rgba(0,0,0,.85));animation:spotBreath 3.4s ease-in-out infinite}
-.w-spot .sic .ico{width:17px;height:17px;stroke-width:2}
-@keyframes spotBreath{0%,100%{opacity:.38}50%{opacity:.72}}
-.w-spot.near .sic{opacity:1;animation:none}
-.w-spot .lb{font-size:9.5px;font-weight:700;color:#fff;background:rgba(0,0,0,.55);
+/* Der Punkt sitzt auf dem Gegenstand und glimmt. Kein Ring auf dem Boden,
+   keine Marke, die daneben in der Luft haengt. */
+.w-spot .sic{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;color:#fff;line-height:0;
+  background:radial-gradient(circle,rgba(255,255,255,.34) 0%,rgba(255,255,255,0) 70%);
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,.9));animation:spotGlow 2.6s ease-in-out infinite}
+.w-spot .sic .ico{width:16px;height:16px;stroke-width:2.1}
+@keyframes spotGlow{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
+.w-spot.near .sic{opacity:1;animation:none;background:radial-gradient(circle,rgba(255,255,255,.5) 0%,rgba(255,255,255,0) 72%)}
+.w-spot .lb{font-size:9.5px;font-weight:700;color:#fff;background:rgba(0,0,0,.6);
   padding:2px 6px;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .2s}
 .w-spot.near .lb{opacity:1}
 
-/* Wichtige Punkte: Türen und alles, was Fälle öffnet. Immer sichtbar. */
-.w-spot.key{gap:0}
-.w-spot.key .sic{width:auto;height:auto;opacity:1;animation:none;filter:none;
-  display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.96);
-  color:var(--teal-dark);border:2px solid var(--teal-dark);border-radius:999px;
-  padding:6px 12px 6px 9px;box-shadow:0 6px 16px rgba(0,0,0,.35);
-  font-family:'Inter',system-ui,sans-serif;font-weight:800;font-size:12.5px;line-height:1;
-  animation:keyFloat 2.6s ease-in-out infinite}
-.w-spot.key .sic .ico{width:17px;height:17px;stroke-width:2}
-.w-spot.key .lb{display:none}
-.w-spot.key::after{content:'';width:9px;height:9px;margin-top:-4px;background:var(--teal-dark);
-  transform:rotate(45deg);border-radius:2px}
-@keyframes keyFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-.w-spot.key.near .sic{background:var(--teal-dark);color:#fff;border-color:#fff}
+/* Tueren und alles, was Faelle oeffnet: eine helle Marke, immer sichtbar. */
+.w-spot.key .sic{width:34px;height:34px;background:var(--teal-dark);border:2.5px solid #fff;
+  box-shadow:0 4px 14px rgba(0,0,0,.5);animation:keyPulse 2.4s ease-in-out infinite}
+.w-spot.key .sic .ico{width:18px;height:18px;stroke-width:2.2}
+@keyframes keyPulse{0%,100%{box-shadow:0 4px 14px rgba(0,0,0,.5),0 0 0 0 rgba(0,109,91,.55)}
+  50%{box-shadow:0 4px 14px rgba(0,0,0,.5),0 0 0 12px rgba(0,109,91,0)}}
+.w-spot.key .lb{opacity:1;background:rgba(255,255,255,.95);color:var(--teal-dark);
+  font-size:10px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
 @media(max-width:760px){
-  .w-spot .sic{width:14px;height:14px} .w-spot .sic .ico{width:14px;height:14px}
-  .w-spot.key .sic{font-size:11px;padding:5px 10px 5px 8px}
-  .w-spot.key .sic .ico{width:14px;height:14px}
-  .w-spot .lb{font-size:8.5px}
+  .w-spot .sic{width:22px;height:22px} .w-spot .sic .ico{width:14px;height:14px}
+  .w-spot.key .sic{width:29px;height:29px} .w-spot.key .sic .ico{width:16px;height:16px}
+  .w-spot .lb{font-size:9px}
 }
 .w-char{position:absolute;transform-origin:50% 100%;pointer-events:none;z-index:6;
   filter:drop-shadow(0 5px 5px rgba(0,0,0,.5));will-change:left,top,transform}
@@ -569,6 +563,19 @@ body.rtl .docs-strip>summary::after{float:left}
 .mute-btn .ico{width:18px;height:18px}
 .bin h4 .ico{width:15px;height:15px;margin-inline-end:5px}
 
+/* Punkteleiste. Auf dem Telefon sieht man sonst nie, was der Raum bietet. */
+.w-dock{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  padding:10px 12px;background:#12141A;border-top:1px solid rgba(255,255,255,.08);flex:0 0 auto}
+.w-dock::-webkit-scrollbar{display:none}
+.d-btn{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:999px;
+  border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#EDEAE4;
+  font-family:'Inter',system-ui,sans-serif;font-weight:700;font-size:12.5px;cursor:pointer;
+  white-space:nowrap}
+.d-btn .ico{width:16px;height:16px;stroke-width:1.9}
+.d-btn:hover{background:rgba(255,255,255,.12)}
+.d-btn.key{background:var(--teal-dark);border-color:var(--teal-dark);color:#fff}
+.d-btn.here{outline:2px solid var(--teal);outline-offset:2px}
+
 /* Lesen zuerst, dann laeuft die Uhr */
 .tg{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:2px 0 10px}
 .tg-btn{padding:9px 18px;border-radius:999px;border:none;background:var(--teal-dark);color:#fff;
@@ -829,6 +836,7 @@ body.rtl .rv-nav{flex-direction:row-reverse}
     <img class="w-char" id="wChar" src="" alt="">
     <div class="w-tap" id="wTap"></div>
   </div>
+  <div class="w-dock" id="wDock"></div>
   <div class="w-panel" id="wPanel">
     <div class="w-p-title" id="wpTitle"></div>
     <div class="w-p-text" id="wpText"></div>
@@ -1144,7 +1152,7 @@ var I18N = {
 /* ---------------- SPIELANLEITUNG ---------------- */
 /* Baukennung. Steht unten in der Spielanleitung und in der Konsole.
    Damit ist mit einem Blick klar, welche Datei wirklich laeuft. */
-var PC_BUILD = "2026-08-25c · Kamera + Raumwechsel";
+var PC_BUILD = "2026-08-26 · Ganze Karte + Punkteleiste";
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
 var GUIDE = {
@@ -5442,7 +5450,7 @@ function maybeRankup(prevRank,newRank){
 ===================================================================== */
 var WORLD_G = 48;
 var WORLD_MASKS = {
-  offizin:"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000001e00000000001fc0000000001ff8000000000fff0000000001ffe0000000003ffc0000000007ff0000000000ff00000000001f0000000000030000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  offizin:"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007000000000007000000000007800000000007c00000000007f00000000007fe0000000007ff8000000007ffe000000007807800000000007e00000000007000000000007000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
   buero:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffc001fff001ffc001fff003fffe01fff807fffe01fff80ffffc0ffffc003fc01ffffc003c001ffffc0020001ffffe0020001ffffe0020001ffffe0020001ffffe0020001ffffe0020001e00060020001e00060020001e00060020001e00060020001e00060020001e00060020001e00060020001e00067ff0001e00067ffc001e00067ffe003e00067ffe01fe00067ffe03fe00067ffffffe0006000000000000",
   rezeptur:"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001ffe000007ffffff300007ffffe03fc007fffc003ff007ffe0001ffe07ffe0001ffe07ffe0001ffe07ffe0001ffe07ffe000180007ffe000180007ffe000180007ffe000180007fff000180007fff000180007fff000180007fff000180007fff000180007fff000780007fff07ff80007fffffff80007fffffff8000000000000000",
   kueche:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fe0000000000fff000000001ffff00000003fffff0007e07ffffff80fe07fffffff8fe0ffffffffffe0ffff0007ffe0ffff0007ffe0ffff0007ffe0ffff0007ffe0ffff0007e000ffff0007e000ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007fffffff80007fffffff80007fffffff80007fffffff80007fffffff80007fffffff8000000000000000",
@@ -5452,10 +5460,10 @@ var WORLD_MASKS = {
 var ROOMS = {
   offizin:{ img:"assets/maps/map_offizin_v004.jpg", mask:"offizin",
     de:"Offizin", en:"Sales floor", ar:"الصالة",
-    start:[20,12],
+    start:[20,23],
     spots:[
-      {id:"counter", c:[22,14], ico:"counter", key:true, de:"HV-Tisch", en:"Counter", ar:"طاولة البيع"},
-      {id:"door_buero", c:[13,11], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
+      {id:"counter", c:[22,24], ico:"counter", key:true, de:"HV-Tisch", en:"Counter", ar:"طاولة البيع"},
+      {id:"door_buero", c:[13,20], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
   buero:{ img:"assets/maps/map_buero_v004.jpg", mask:"buero",
     de:"Büro", en:"Office", ar:"المكتب",
@@ -5471,7 +5479,7 @@ var ROOMS = {
     de:"Rezeptur", en:"Compounding room", ar:"غرفة التحضير",
     start:[8,40],
     spots:[
-      {id:"insel", c:[18,44], ico:"island", de:"Rezepturtisch", en:"Compounding bench", ar:"طاولة التحضير"},
+      {id:"insel", c:[23,27], ico:"island", de:"Rezepturtisch", en:"Compounding bench", ar:"طاولة التحضير"},
       {id:"plausi", c:[34,36], ico:"monitor", de:"Plausibilitätsprüfung", en:"Plausibility check", ar:"فحص المعقولية"},
       {id:"door_buero", c:[17,27], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
@@ -5593,11 +5601,12 @@ function worldLayout(){
   var sw=st.clientWidth, sh=st.clientHeight;
   if(!sw||!sh) return;
   var ar = img.naturalWidth/img.naturalHeight;
-  /* Die Hoehe wird immer gefuellt. Passt die Breite nicht, wird geschwenkt. */
-  var dh = sh, dw = sh*ar;
-  W.dw=dw; W.dh=dh; W.pan = (dw > sw+1);
+  /* Ganzer Raum sichtbar. Schwenken war auf dem Telefon unbrauchbar:
+     man sah nie, wo die Punkte liegen, und die Kamera zerrte beim Gehen. */
+  var dw = Math.min(sw, sh*ar), dh = dw/ar;
+  W.dw=dw; W.dh=dh; W.pan = false;
   W.cell=dw/WORLD_G; W.cellY=dh/WORLD_G;
-  var dx = camX(), dy = 0;
+  var dx = (sw-dw)/2, dy = (sh-dh)/2;
   img.style.width=dw+'px'; img.style.height=dh+'px';
   img.style.left=dx+'px'; img.style.top=dy+'px';
   W.ox=dx; W.oy=dy;
@@ -5606,7 +5615,7 @@ function worldLayout(){
      also gehoert die Figur auf etwa elf. Dazu eine leichte Tiefenskala. */
   var depth = 0.92 + 0.16*(W.pos.y/WORLD_G);
   var h=W.cellY*11.2*depth; ch.style.height=h+'px'; ch.style.width='auto';
-  drawSpots(); placeChar();
+  drawSpots(); drawDock(); placeChar();
 }
 function placeChar(){
   cameraFollow();
@@ -5623,6 +5632,39 @@ function placeChar(){
   sh.style.width=sw+'px'; sh.style.height=(sw*0.42)+'px';
   sh.style.left=px+'px'; sh.style.top=py+'px';
 }
+/* Die Leiste unter der Karte: jeder Punkt des Raumes als Knopf. */
+function drawDock(){
+  var dock=document.getElementById('wDock'); if(!dock) return;
+  dock.innerHTML='';
+  ROOMS[W.room].spots.forEach(function(sp){
+    var b=document.createElement('button');
+    b.className='d-btn'+(sp.key?' key':'');
+    b.innerHTML=ICONS.draw(sp.ico||'target')+'<span>'+locName(sp)+'</span>';
+    b.addEventListener('click',function(){
+      var t=nearCell(sp.c[0], sp.c[1]);
+      if(t && (Math.abs(W.pos.x-sp.c[0])>1.5 || Math.abs(W.pos.y-sp.c[1])>1.5)) goTo(t.x,t.y);
+      openSpot(sp);
+    });
+    dock.appendChild(b);
+  });
+}
+/* naechstes begehbares Feld zu einem Punkt */
+function nearCell(x,y){
+  if(maskAt(W.mask,x,y)) return {x:x,y:y};
+  var best=null;
+  for(var r=1;r<=5;r++){
+    for(var dy=-r;dy<=r;dy++) for(var dx=-r;dx<=r;dx++){
+      var nx=x+dx, ny=y+dy;
+      if(nx<0||ny<0||nx>=WORLD_G||ny>=WORLD_G) continue;
+      if(!maskAt(W.mask,nx,ny)) continue;
+      var d=dx*dx+dy*dy;
+      if(!best||d<best.d) best={x:nx,y:ny,d:d};
+    }
+    if(best) return best;
+  }
+  return null;
+}
+
 function drawSpots(){
   var host=document.getElementById('wHot'); host.innerHTML='';
   ROOMS[W.room].spots.forEach(function(sp){
@@ -5630,8 +5672,7 @@ function drawSpots(){
     el.style.left=(W.ox+(sp.c[0]+0.5)*W.cell)+'px';
     el.style.top =(W.oy+(sp.c[1]+0.5)*W.cellY)+'px';
     if(sp.key) el.classList.add('key');
-    el.innerHTML='<div class="sic">'+ICONS.draw(sp.ico||'target')+
-      (sp.key?'<span>'+locName(sp)+'</span>':'')+'</div>'+
+    el.innerHTML='<div class="sic">'+ICONS.draw(sp.ico||'target')+'</div>'+
       '<div class="lb">'+locName(sp)+'</div>';
     host.appendChild(el);
   });
@@ -5651,9 +5692,14 @@ function tick(t){
     W.moving=true;
     var n=W.path[0], dx=n.x-W.pos.x, dy=n.y-W.pos.y, d=Math.hypot(dx,dy);
     var sp=9.5*dt;
+    /* Blickrichtung aus dem weiteren Weg ableiten. Ein einzelnes Feld
+       liefert bei schraegen Wegen ein Flackern zwischen zwei Richtungen. */
+    var look=W.path[Math.min(W.path.length-1,3)];
+    var lx=look.x-W.pos.x, ly=look.y-W.pos.y;
+    if(Math.abs(lx)>Math.abs(ly)*1.3) W.dir=(lx>0?'right':'left');
+    else if(Math.abs(ly)>Math.abs(lx)*1.3) W.dir=(ly>0?'down':'up');
     if(d<=sp){ W.pos.x=n.x; W.pos.y=n.y; W.path.shift(); }
-    else { W.pos.x+=dx/d*sp; W.pos.y+=dy/d*sp;
-      W.dir = Math.abs(dx)>Math.abs(dy) ? (dx>0?'right':'left') : (dy>0?'down':'up'); }
+    else { W.pos.x+=dx/d*sp; W.pos.y+=dy/d*sp; }
     placeChar();
   } else if(W.moving){
     W.moving=false; placeChar(); arrive();
