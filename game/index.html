@@ -158,8 +158,10 @@ body.rtl .lc-stars{right:auto;left:10px}
 /* Auf breiten Schirmen darf die Buehne ihr Verhaeltnis behalten. Auf dem
    Telefon nicht: dort blieben oben und unten schwarze Balken stehen.
    Stattdessen fuellt die Karte die Hoehe und schwenkt seitlich mit. */
-.w-stage.w-169{aspect-ratio:16/9;flex:0 0 auto;align-self:stretch;width:100%;
-  max-height:62vh;background:transparent}
+/* Die neuen Karten sind hochkant 3:4. Damit fuellt der Raum auf dem
+   Telefon vier Fuenftel der Hoehe statt einem Drittel. */
+.w-stage.w-hoch{aspect-ratio:3/4;flex:1 1 auto;align-self:stretch;width:100%;
+  max-height:100%;background:transparent}
 .w-map{position:absolute;left:0;top:0;display:block;user-select:none;-webkit-user-drag:none;
   object-fit:fill;transition:left .18s linear}
 .w-hot{position:absolute;inset:0;pointer-events:none}
@@ -836,7 +838,7 @@ body.rtl .rv-nav{flex-direction:row-reverse}
     <img class="w-char" id="wChar" src="" alt="">
     <div class="w-tap" id="wTap"></div>
   </div>
-  <div class="w-dock" id="wDock"></div>
+
   <div class="w-panel" id="wPanel">
     <div class="w-p-title" id="wpTitle"></div>
     <div class="w-p-text" id="wpText"></div>
@@ -1157,7 +1159,7 @@ var I18N = {
    ist, steht es unten in der Spielanleitung, damit es niemandem entgeht. */
 var UNLOCK_ALL = true;
 
-var PC_BUILD = "2026-08-26 \u00b7 Ganze Karte + Punkteleiste" +
+var PC_BUILD = "2026-08-29 \u00b7 Hochformat-Karten" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5456,54 +5458,54 @@ function maybeRankup(prevRank,newRank){
 ===================================================================== */
 var WORLD_G = 48;
 var WORLD_MASKS = {
-  offizin:"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007000000000007000000000007800000000007c00000000007f00000000007fe0000000007ff8000000007ffe000000007807800000000007e00000000007000000000007000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-  buero:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffc001fff001ffc001fff003fffe01fff807fffe01fff80ffffc0ffffc003fc01ffffc003c001ffffc0020001ffffe0020001ffffe0020001ffffe0020001ffffe0020001ffffe0020001e00060020001e00060020001e00060020001e00060020001e00060020001e00060020001e00060020001e00067ff0001e00067ffc001e00067ffe003e00067ffe01fe00067ffe03fe00067ffffffe0006000000000000",
-  rezeptur:"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001ffe000007ffffff300007ffffe03fc007fffc003ff007ffe0001ffe07ffe0001ffe07ffe0001ffe07ffe0001ffe07ffe000180007ffe000180007ffe000180007ffe000180007fff000180007fff000180007fff000180007fff000180007fff000180007fff000780007fff07ff80007fffffff80007fffffff8000000000000000",
-  kueche:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fe0000000000fff000000001ffff00000003fffff0007e07ffffff80fe07fffffff8fe0ffffffffffe0ffff0007ffe0ffff0007ffe0ffff0007ffe0ffff0007ffe0ffff0007e000ffff0007e000ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007ffff0007e007fffffff80007fffffff80007fffffff80007fffffff80007fffffff80007fffffff8000000000000000",
-  beratung:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007fff00000000ffff0000000003ffffe0000003e00000000003e00000800003e00007800003e0000f800003e0000f800003e0000fc00003e0000fc00003e0000fc00003e0000fc00003e0000fc00003e0000fc007ffe0000fc007ffe0000fc007ffe0000fc007ffe0000fc007ffe0000fc007ffe0000fc007ffffffffc007ffffffffc007ffffffffc007ffffffffc007ffffffffc007ffffffffc007ffffffffc00000000000000"
+  offizin:"00000000000000000000000000000000000000000000000000001ffff80000001ffff80000001ffff80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  buero:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001ffffffe00001ffffffe00001ffffffe000001fffffe000001fffffe000001fffffe000001fffffe0000007ffffe0000007ffffe0000007fffffc000007fffffc000007fffffc000007fffffc000007fffffc000007fffffc000007fffffc000007fffffc0000fffffffc0001ffffffff000180001fff000180001fff000180001fff000780001fff000780001fff000780001fff000780001fff0007f800ffff0007f801ffff0007f801ffff0007f801ffff0007f801ffff8007f801ffff8007ffffffff8007ffffffff8007ffffffff8007ffffffff8007ffffffff8007ffffffff80000000000000000000000000",
+  rezeptur:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000000fff000000000fff000000000fff000000000fff000000000fff000000000fff000000000fff000000003fff000000807fff000003807fff000003807fff000003807fff000003807fff000003ffffff000003ffffff000003fffffff00003fffffff00003fffffff00003fffffff000000000000000000000000000",
+  kueche:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000001fffffe00000001fffe00000001fffe00000001fffe00000001fffe00000001ffff80000001ffff80000001ffff80000001ffff80000001ffff800000ffffff800001ffffff800001ffffff800001ffffff800001ffffff800001ffffff8000000007ff8000000007ff8000000007ff8000060007ff8000060007ff8000060007ff8000060007ff8000060007ff8000060007ff8000060007ff8000060007ff8000060007fff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff000000000000000000000000000",
+  beratung:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fffffffc000003fffffc000003fffffc000003fffffc000003fffffc000003fffffc000003fffffc000003fffffc000003ffffe000007fffffe00000ffffffe00000ffffffe00000ffffffe00000e00000e00000e00000e00000e00000e00000e00000e00000e00000e00003e00000e00003e00000e00003e00000e00003e00000e00003e00000fc0003e00000fc0003e00000fc0003e00000fc0003e00000fc0003fffffffc0003fffffffc0003fffffffc0003fffffffc0003fffffffc0003fffffffc0003fffffffc0003fffffffc0003fffffffc0003fffffffc0003fffffffc00000000000000000000000000"
 };
 
 var ROOMS = {
-  offizin:{ img:"assets/maps/map_offizin_v004.jpg", mask:"offizin",
+  offizin:{ img:"assets/maps/map_offizin_v005.jpg", mask:"offizin",
     de:"Offizin", en:"Sales floor", ar:"الصالة",
-    start:[20,23],
+    start:[34,30],
     spots:[
-      {id:"counter", c:[22,24], ico:"counter", key:true, de:"HV-Tisch", en:"Counter", ar:"طاولة البيع"},
-      {id:"door_buero", c:[13,20], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
+      {id:"counter", c:[33,20], ico:"counter", key:true, de:"HV-Tisch", en:"Counter", ar:"طاولة البيع"},
+      {id:"door_buero", c:[24,5], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
-  buero:{ img:"assets/maps/map_buero_v004.jpg", mask:"buero",
+  buero:{ img:"assets/maps/map_buero_v005.jpg", mask:"buero",
     de:"Büro", en:"Office", ar:"المكتب",
-    start:[29,46],
+    start:[24,20],
     spots:[
-      {id:"desk", c:[24,46], ico:"monitor", key:true, de:"Schreibtisch", en:"Desk", ar:"المكتب"},
-      {id:"akten", c:[13,22], ico:"files", de:"Aktenschrank", en:"File cabinet", ar:"خزانة الملفات"},
-      {id:"btm", c:[21,25], ico:"lock", de:"BtM-Schrank", en:"Narcotics cabinet", ar:"خزانة المخدرات"},
-      {id:"fridge", c:[28,26], ico:"fridge", de:"Kühlschrank", en:"Fridge", ar:"البراد"},
-      {id:"door_offizin", c:[35,25], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
+      {id:"desk", c:[18,28], ico:"monitor", key:true, de:"Schreibtisch", en:"Desk", ar:"المكتب"},
+      {id:"akten", c:[41,30], ico:"files", de:"Aktenschrank", en:"File cabinet", ar:"خزانة الملفات"},
+      {id:"btm", c:[39,21], ico:"lock", de:"BtM-Schrank", en:"Narcotics cabinet", ar:"خزانة المخدرات"},
+      {id:"fridge", c:[36,14], ico:"fridge", de:"Kühlschrank", en:"Fridge", ar:"البراد"},
+      {id:"door_offizin", c:[24,9], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
-  rezeptur:{ img:"assets/maps/map_rezeptur_v005.jpg", mask:"rezeptur",
+  rezeptur:{ img:"assets/maps/map_rezeptur_v006.jpg", mask:"rezeptur",
     de:"Rezeptur", en:"Compounding room", ar:"غرفة التحضير",
-    start:[8,40],
+    start:[24,20],
     spots:[
-      {id:"insel", c:[23,27], ico:"island", de:"Rezepturtisch", en:"Compounding bench", ar:"طاولة التحضير"},
-      {id:"plausi", c:[34,36], ico:"monitor", de:"Plausibilitätsprüfung", en:"Plausibility check", ar:"فحص المعقولية"},
-      {id:"door_buero", c:[17,27], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
+      {id:"waage", c:[34,29], ico:"balance", de:"Waage und Topitec", en:"Balance and mixer", ar:"الميزان والتوبيتك"},
+      {id:"plausi", c:[13,29], ico:"monitor", de:"Plausibilitätsprüfung", en:"Plausibility check", ar:"فحص المعقولية"},
+      {id:"door_buero", c:[24,8], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
-  kueche:{ img:"assets/maps/map_kueche_v005.jpg", mask:"kueche",
+  kueche:{ img:"assets/maps/map_kueche_v006.jpg", mask:"kueche",
     de:"Teamküche", en:"Team kitchen", ar:"مطبخ الفريق",
-    start:[10,40],
+    start:[24,20],
     spots:[
-      {id:"kaffee", c:[30,20], ico:"coffee", de:"Kaffeemaschine", en:"Coffee machine", ar:"ماكينة القهوة"},
-      {id:"tisch", c:[26,42], ico:"table", de:"Esstisch", en:"Dining table", ar:"طاولة الطعام"},
-      {id:"sofa", c:[40,27], ico:"sofa", de:"Sofa", en:"Sofa", ar:"الكنبة"},
-      {id:"kalender", c:[9,17], ico:"calendar", de:"Dienstplan", en:"Duty roster", ar:"جدول المناوبات"},
-      {id:"door_buero", c:[42,22], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
+      {id:"kaffee", c:[33,23], ico:"coffee", de:"Kaffeemaschine", en:"Coffee machine", ar:"ماكينة القهوة"},
+      {id:"tisch", c:[19,29], ico:"table", de:"Esstisch", en:"Dining table", ar:"طاولة الطعام"},
+      {id:"sofa", c:[14,13], ico:"sofa", de:"Sofa", en:"Sofa", ar:"الكنبة"},
+      {id:"kalender", c:[7,14], ico:"calendar", de:"Dienstplan", en:"Duty roster", ar:"جدول المناوبات"},
+      {id:"door_buero", c:[24,8], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
-  beratung:{ img:"assets/maps/map_beratung_v005.jpg", mask:"beratung",
+  beratung:{ img:"assets/maps/map_beratung_v006.jpg", mask:"beratung",
     de:"Beratungsraum", en:"Consultation room", ar:"غرفة الاستشارة",
-    start:[20,44],
+    start:[24,14],
     spots:[
-      {id:"door_offizin", c:[13,22], ico:"door", key:true, de:"Zurück in die Offizin", en:"Back to the floor", ar:"عودة إلى الصالة"}
+      {id:"door_offizin", c:[24,9], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]}
 };
 
@@ -5619,9 +5621,11 @@ function worldLayout(){
   var ch=document.getElementById('wChar');
   /* Groesse am Mobiliar gemessen: eine Tuer ist rund fuenfzehn Zellen hoch,
      also gehoert die Figur auf etwa elf. Dazu eine leichte Tiefenskala. */
-  var depth = 0.92 + 0.16*(W.pos.y/WORLD_G);
-  var h=W.cellY*11.2*depth; ch.style.height=h+'px'; ch.style.width='auto';
-  drawSpots(); drawDock(); placeChar();
+  /* Am Mobiliar der neuen Karten gemessen: hinter dem Tresen etwa 6,6
+     Zellen hoch, vorn im Bild etwas mehr, weil naeher an der Kamera. */
+  var depth = 0.85 + 0.45*(W.pos.y/WORLD_G);
+  var h=W.cellY*6.6*depth; ch.style.height=h+'px'; ch.style.width='auto';
+  drawSpots(); placeChar();
 }
 function placeChar(){
   cameraFollow();
@@ -5745,7 +5749,7 @@ function enterRoom(id, at){
     st.classList.remove('w-err');
     /* 16:9 nur, wenn die Karte selbst 16:9 ist */
     var ar=img.naturalWidth/img.naturalHeight;
-    st.classList.toggle('w-169', Math.abs(ar-16/9)<0.02);
+    st.classList.toggle('w-hoch', ar < 1);
     worldLayout();
   };
   img.onerror=function(){
@@ -5804,17 +5808,17 @@ var WSPOT = {
   "buero.desk":{t_de:"Zwei Bildschirme, ein Stapel Bescheide. Hier liegen die Retax-Fälle.", t_en:"Two screens, a stack of notices. The claw-back cases are here.", t_ar:"شاشتان وكومة إشعارات. هنا حالات الريتاكس."},
   "buero.akten":{t_de:"Zehn Jahre Aufbewahrung. Hier kommen die Dokumentationsfälle hin.", t_en:"Ten years of retention. The documentation cases live here.", t_ar:"حفظ عشر سنوات. هنا حالات التوثيق."},
   "buero.btm":{t_de:"Verschlossen, dokumentiert, jederzeit prüfbar. Eigene Fälle.", t_en:"Locked, documented, auditable. Cases of its own.", t_ar:"مقفلة وموثّقة وقابلة للتدقيق. ولها حالاتها."},
-  "buero.fridge":{t_de:"Zwei bis acht Grad. Kühlkette, Temperaturliste, eigene Fälle.", t_en:"Two to eight degrees. Cold chain, temperature log, cases of its own.", t_ar:"من درجتين إلى ثماني. سلسلة التبريد وسجل الحرارة، ولها حالاتها."},
-  "buero.door_offizin":{t_de:"Zurück in die Offizin oder weiter zu Rezeptur und Küche.", t_en:"Back to the floor or on to compounding and kitchen.", t_ar:"عودة إلى الصالة أو إلى التحضير والمطبخ."},
-  "rezeptur.insel":{t_de:"Topitec, Waage, Ansatz. Eine Rezeptur zur Zeit.", t_en:"Topitec, balance, batch. One preparation at a time.", t_ar:"توبيتك وميزان وتحضير. واحد في المرة."},
+  "buero.fridge":{t_de:"Zwei bis acht Grad. Kühlkette und Temperaturliste.", t_en:"Two to eight degrees. Cold chain and temperature log.", t_ar:"من درجتين إلى ثماني. سلسلة التبريد وسجل الحرارة."},
+  "buero.door_offizin":{t_de:"Zurück in die Offizin oder weiter.", t_en:"Back to the floor or onward.", t_ar:"عودة إلى الصالة أو إلى غيرها."},
+  "rezeptur.waage":{t_de:"Geeicht, zugfrei, vor jedem Ansatz geprüft.", t_en:"Calibrated, draught-free, checked before every batch.", t_ar:"معايَر وبعيد عن التيار ويُفحص قبل كل تحضير."},
   "rezeptur.plausi":{t_de:"Vor dem Ansetzen, nicht danach.", t_en:"Before mixing, not after.", t_ar:"قبل التحضير لا بعده."},
-  "rezeptur.door_buero":{t_de:"Zurück in den Flur.", t_en:"Back to the corridor.", t_ar:"عودة إلى الرواق."},
+  "rezeptur.door_buero":{t_de:"Büro, Rezeptur und Teamküche.", t_en:"Office, compounding room and team kitchen.", t_ar:"المكتب وغرفة التحضير ومطبخ الفريق."},
   "kueche.kaffee":{t_de:"Die kürzeste Pause der Welt. Und die nötigste.", t_en:"The shortest break in the world. And the most needed.", t_ar:"أقصر استراحة في العالم. وألزمها."},
   "kueche.tisch":{t_de:"Hier fallen die Absprachen, die nie im Protokoll stehen.", t_en:"Here fall the agreements that never reach the minutes.", t_ar:"هنا تُعقد الاتفاقات التي لا تصل المحضر."},
   "kueche.sofa":{t_de:"Zehn Minuten sitzen senkt den Stresspegel messbar.", t_en:"Ten minutes of sitting lowers stress measurably.", t_ar:"عشر دقائق جلوس تخفض التوتر بقدر يُقاس."},
   "kueche.kalender":{t_de:"Wer im Notdienst steht, weiß es lange vorher.", t_en:"Whoever is on emergency duty knows long in advance.", t_ar:"من عليه مناوبة الطوارئ يعرف قبلها بوقت طويل."},
-  "kueche.door_buero":{t_de:"Zurück in den Flur.", t_en:"Back to the corridor.", t_ar:"عودة إلى الرواق."},
-  "beratung.door_offizin":{t_de:"Das Gespräch ist beendet.", t_en:"The conversation is over.", t_ar:"انتهى الحديث."}
+  "kueche.door_buero":{t_de:"Büro, Rezeptur und Teamküche.", t_en:"Office, compounding room and team kitchen.", t_ar:"المكتب وغرفة التحضير ومطبخ الفريق."},
+  "beratung.door_offizin":{t_de:"Zurück in die Offizin oder weiter.", t_en:"Back to the floor or onward.", t_ar:"عودة إلى الصالة أو إلى غيرها."}
 };
 var COFFEE_TIPS={
   de:["Bei Kindern wird immer nach Körpergewicht dosiert, nie nach Alter.",
