@@ -1152,7 +1152,13 @@ var I18N = {
 /* ---------------- SPIELANLEITUNG ---------------- */
 /* Baukennung. Steht unten in der Spielanleitung und in der Konsole.
    Damit ist mit einem Blick klar, welche Datei wirklich laeuft. */
-var PC_BUILD = "2026-08-26 · Ganze Karte + Punkteleiste";
+/* ZEITWEILIG. Oeffnet alle Faelle zum Durchsehen und haengt die Reihenfolge
+   aus. Vor der Veroeffentlichung auf false setzen. Solange der Schalter an
+   ist, steht es unten in der Spielanleitung, damit es niemandem entgeht. */
+var UNLOCK_ALL = true;
+
+var PC_BUILD = "2026-08-26 \u00b7 Ganze Karte + Punkteleiste" +
+               (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
 var GUIDE = {
@@ -5196,7 +5202,7 @@ function renderMap(only){
     var topic=TOPICS[lv.topic], persona=PERSONAS[lv.persona];
     /* Sequenz: ein Fall öffnet den nächsten. Abgeschlossene bleiben frei wählbar. */
     var prevDone = (li===0) || !!state.levelBest[LEVELS[li-1].id];
-    var locked = (state.rankIdx < lv.reqRank) || !prevDone;
+    var locked = UNLOCK_ALL ? false : ((state.rankIdx < lv.reqRank) || !prevDone);
     var best = state.levelBest[lv.id];
     var stars = best ? starStr(best.stars) : '';
     var card=document.createElement('div');
@@ -5233,7 +5239,7 @@ function renderMap(only){
     OFFICE_LEVELS.forEach(function(lv,li){
       var topic=TOPICS[lv.topic]; if(!topic) return;
       var prevDone=(li===0)||!!state.levelBest[OFFICE_LEVELS[li-1].id];
-      var locked=(state.rankIdx<lv.reqRank)||!prevDone;
+      var locked=UNLOCK_ALL ? false : ((state.rankIdx<lv.reqRank)||!prevDone);
       var best=state.levelBest[lv.id];
       var stars=best?starStr(best.stars):'';
       var card=document.createElement('div');
