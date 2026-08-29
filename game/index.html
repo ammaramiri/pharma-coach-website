@@ -1159,7 +1159,7 @@ var I18N = {
    ist, steht es unten in der Spielanleitung, damit es niemandem entgeht. */
 var UNLOCK_ALL = true;
 
-var PC_BUILD = "2026-08-29 \u00b7 Hochformat-Karten" +
+var PC_BUILD = "2026-08-29b \u00b7 Hindernisse + einheitliche Punkte" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5459,10 +5459,10 @@ function maybeRankup(prevRank,newRank){
 var WORLD_G = 48;
 var WORLD_MASKS = {
   offizin:"00000000000000000000000000000000000000000000000000001ffff80000001ffff80000001ffff80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-  buero:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001ffffffe00001ffffffe00001ffffffe000001fffffe000001fffffe000001fffffe000001fffffe0000007ffffe0000007ffffe0000007fffffc000007fffffc000007fffffc000007fffffc000007fffffc000007fffffc000007fffffc000007fffffc0000fffffffc0001ffffffff000180001fff000180001fff000180001fff000780001fff000780001fff000780001fff000780001fff0007f800ffff0007f801ffff0007f801ffff0007f801ffff0007f801ffff8007f801ffff8007ffffffff8007ffffffff8007ffffffff8007ffffffff8007ffffffff8007ffffffff80000000000000000000000000",
-  rezeptur:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000ffffff000000000fff000000000fff000000000fff000000000fff000000000fff000000000fff000000000fff000000003fff000000807fff000003807fff000003807fff000003807fff000003807fff000003ffffff000003ffffff000003fffffff00003fffffff00003fffffff00003fffffff000000000000000000000000000",
-  kueche:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000001fffffe00000001fffe00000001fffe00000001fffe00000001fffe00000001ffff80000001ffff80000001ffff80000001ffff80000001ffff800000ffffff800001ffffff800001ffffff800001ffffff800001ffffff800001ffffff8000000007ff8000000007ff8000000007ff8000060007ff8000060007ff8000060007ff8000060007ff8000060007ff8000060007ff8000060007ff8000060007ff8000060007fff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff000000000000000000000000000",
-  beratung:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fffffffc000003fffffc000003fffffc000003fffffc000003fffffc000003fffffc000003fffffc000003fffffc000003ffffe000007fffffe00000ffffffe00000ffffffe00000ffffffe00000e00000e00000e00000e00000e00000e00000e00000e00000e00000e00003e00000e00003e00000e00003e00000e00003e00000e00003e00000fc0003e00000fc0003e00000fc0003e00000fc0003e00000fc0003fffffffc0003fffffffc0003fffffffc0003fffffffc0003fffffffc0003fffffffc0003fffffffc0003fffffffc0003fffffffc0003fffffffc0003fffffffc00000000000000000000000000"
+  buero:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001ffffff80000007ffff80000007ffff80000007ffff80000007ffff80000007ffff80000003ffff80000003ffff80000003ffff80000003ffff80000003ffff80000003fffff0000003fffff0000003fffff0000003fffff0000003fffff0000003fffff00000000007f00000000007f00000000007f00000000007fc0000000007fc0006000007fc0006000007fc0006000007fc0006000007fc0007f0003ffc0007f0007ffc0007f0007ffc0007f0007ffc0007f0007ffc0007f0007ffc0007f0007fff8007f0007fff8007ffffffff8007ffffffff8007ffffffff8007ffffffff80000000000000000000000000",
+  rezeptur:"000000000000000000000000000000000000000000000000000000000000000000000000000000000000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000000003fe0000000003fe0000000003fe0000000003fe0000000003fe0000000003fe0000000003fe0000000003fe000000000ffe000000001ffe000003801ffe000003801ffe000003801ffe000003801ffe000003801ffe000003801ffe000003fffffe000003fffffff00003fffffff00003fffffff000000000000000000000000000",
+  kueche:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000007ff8000000007ff8000000007ff8000000007ff8000000007ff8000000007ff8000000007ff8000000007fff000000007fff000000007fff000000007fff000000ffffff000001ffffff000001ffffff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001fff000000001fff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff000000000000000000000000000",
+  beratung:"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001fffffc000001fffffc000001fffffc000001fffffc000001fffffc000001fffffc000001fffffc000001ffffc0000001ffffc0000001ffffc000007fffffc000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
 };
 
 var ROOMS = {
@@ -5470,35 +5470,35 @@ var ROOMS = {
     de:"Offizin", en:"Sales floor", ar:"الصالة",
     start:[34,30],
     spots:[
-      {id:"counter", c:[33,20], ico:"counter", key:true, de:"HV-Tisch", en:"Counter", ar:"طاولة البيع"},
+      {id:"counter", c:[33,20], ico:"counter", de:"HV-Tisch", en:"Counter", ar:"طاولة البيع"},
       {id:"door_buero", c:[24,5], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
   buero:{ img:"assets/maps/map_buero_v005.jpg", mask:"buero",
     de:"Büro", en:"Office", ar:"المكتب",
     start:[24,20],
     spots:[
-      {id:"desk", c:[18,28], ico:"monitor", key:true, de:"Schreibtisch", en:"Desk", ar:"المكتب"},
-      {id:"akten", c:[41,30], ico:"files", de:"Aktenschrank", en:"File cabinet", ar:"خزانة الملفات"},
-      {id:"btm", c:[39,21], ico:"lock", de:"BtM-Schrank", en:"Narcotics cabinet", ar:"خزانة المخدرات"},
-      {id:"fridge", c:[36,14], ico:"fridge", de:"Kühlschrank", en:"Fridge", ar:"البراد"},
+      {id:"desk", c:[18,25], ico:"monitor", de:"Schreibtisch", en:"Desk", ar:"المكتب"},
+      {id:"akten", c:[38,31], ico:"files", de:"Aktenschrank", en:"File cabinet", ar:"خزانة الملفات"},
+      {id:"btm", c:[36,21], ico:"lock", de:"BtM-Schrank", en:"Narcotics cabinet", ar:"خزانة المخدرات"},
+      {id:"fridge", c:[33,12], ico:"fridge", de:"Kühlschrank", en:"Fridge", ar:"البراد"},
       {id:"door_offizin", c:[24,9], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
   rezeptur:{ img:"assets/maps/map_rezeptur_v006.jpg", mask:"rezeptur",
     de:"Rezeptur", en:"Compounding room", ar:"غرفة التحضير",
     start:[24,20],
     spots:[
-      {id:"waage", c:[34,29], ico:"balance", de:"Waage und Topitec", en:"Balance and mixer", ar:"الميزان والتوبيتك"},
-      {id:"plausi", c:[13,29], ico:"monitor", de:"Plausibilitätsprüfung", en:"Plausibility check", ar:"فحص المعقولية"},
+      {id:"waage", c:[32,28], ico:"balance", de:"Waage und Topitec", en:"Balance and mixer", ar:"الميزان والتوبيتك"},
+      {id:"plausi", c:[14,26], ico:"monitor", de:"Plausibilitätsprüfung", en:"Plausibility check", ar:"فحص المعقولية"},
       {id:"door_buero", c:[24,8], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
   kueche:{ img:"assets/maps/map_kueche_v006.jpg", mask:"kueche",
     de:"Teamküche", en:"Team kitchen", ar:"مطبخ الفريق",
-    start:[24,20],
+    start:[26,20],
     spots:[
-      {id:"kaffee", c:[33,23], ico:"coffee", de:"Kaffeemaschine", en:"Coffee machine", ar:"ماكينة القهوة"},
-      {id:"tisch", c:[19,29], ico:"table", de:"Esstisch", en:"Dining table", ar:"طاولة الطعام"},
-      {id:"sofa", c:[14,13], ico:"sofa", de:"Sofa", en:"Sofa", ar:"الكنبة"},
-      {id:"kalender", c:[7,14], ico:"calendar", de:"Dienstplan", en:"Duty roster", ar:"جدول المناوبات"},
+      {id:"kaffee", c:[33,24], ico:"coffee", de:"Kaffeemaschine", en:"Coffee machine", ar:"ماكينة القهوة"},
+      {id:"tisch", c:[22,29], ico:"table", de:"Esstisch", en:"Dining table", ar:"طاولة الطعام"},
+      {id:"sofa", c:[16,13], ico:"sofa", de:"Sofa", en:"Sofa", ar:"الكنبة"},
+      {id:"kalender", c:[8,17], ico:"calendar", de:"Dienstplan", en:"Duty roster", ar:"جدول المناوبات"},
       {id:"door_buero", c:[24,8], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
   beratung:{ img:"assets/maps/map_beratung_v006.jpg", mask:"beratung",
@@ -5693,7 +5693,7 @@ function nearestSpot(){
     var d=Math.hypot(sp.c[0]-W.pos.x, sp.c[1]-W.pos.y);
     if(d<bd){bd=d;best=sp;}
   });
-  return bd<=3.2 ? best : null;
+  return bd<=3.6 ? best : null;
 }
 function tick(t){
   if(!W.last) W.last=t;
