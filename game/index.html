@@ -695,18 +695,25 @@ body.rtl .rx-hint{right:auto;left:14px}
 .ia-h.ia-pulse{color:#B0812A}
 
 /* Kunden in der Offizin */
-.w-cust{position:absolute;transform-origin:50% 100%;pointer-events:none;z-index:5;
-  transform:translate(-50%,-100%);filter:drop-shadow(0 6px 10px rgba(0,0,0,.28))}
-.w-cust.blank{display:flex;align-items:flex-end;justify-content:center}
+.w-custlayer{position:absolute;inset:0;pointer-events:none;z-index:5}
+.w-cust .cu-body{width:100%;height:100%;line-height:0}
+.w-cust.tapp{pointer-events:auto;cursor:pointer}
+.cu-tag{position:absolute;left:50%;top:-6px;transform:translate(-50%,-100%);
+  background:rgba(255,255,255,.96);border:2px solid var(--teal-dark);border-radius:999px;
+  padding:4px 8px;line-height:0;box-shadow:0 3px 10px rgba(0,0,0,.3);
+  animation:keyPulse 2.4s ease-in-out infinite}
+.cu-tag .ico{width:15px;height:15px;color:var(--teal-dark)}
+.cu-tag.mad{border-color:var(--red);color:var(--red);font-family:'Inter',system-ui,sans-serif;
+  font-weight:800;font-size:11px;line-height:1.2;white-space:nowrap;animation:none}
+.w-cust.mad{filter:drop-shadow(0 0 6px rgba(193,18,31,.55))}
+.replay-note{margin:10px 0 0;font-size:12px;color:var(--soft);background:var(--sand);
+  border-radius:10px;padding:8px 12px}
+.pts-toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);z-index:30;
+  background:var(--red);color:#fff;font-family:'Fraunces',serif;font-weight:800;font-size:17px;
+  padding:8px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.35);animation:pop .3s ease-out}
+.w-cust{position:absolute;transform-origin:50% 100%;z-index:5;
+  filter:drop-shadow(0 6px 10px rgba(0,0,0,.28))}
 .w-cust svg{width:100%;height:100%}
-.w-cshadow{position:absolute;transform:translate(-50%,-50%);border-radius:50%;
-  background:radial-gradient(ellipse,rgba(0,0,0,.34),rgba(0,0,0,0) 70%);pointer-events:none;z-index:4}
-.w-cbubble{position:absolute;transform:translate(-50%,-100%);z-index:8;pointer-events:none;
-  background:rgba(255,255,255,.96);border:2px solid var(--red);border-radius:999px;
-  padding:5px 11px;font-family:'Inter',system-ui,sans-serif;font-weight:800;font-size:11.5px;
-  color:var(--red);white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.3);
-  animation:keyPulse 2.2s ease-in-out infinite}
-@media(max-width:760px){.w-cbubble{font-size:10px;padding:4px 9px}}
 
 /* Comic-Panel ohne Bild */
 .panel.panel-plain{background:linear-gradient(160deg,#EFEAE0,#E2DBCC);min-height:0;
@@ -843,6 +850,7 @@ body.rtl .rv-nav{flex-direction:row-reverse}
   <div class="w-top">
     <button class="w-btn" id="wBack">‹</button>
     <button class="w-room" id="wRoomName"></button>
+    <button class="hud-back" id="wArchiv"></button>
     <div class="w-rank"><span id="wRankName"></span><b id="wPts">0</b></div>
   </div>
   <div class="w-stage" id="wStage">
@@ -850,9 +858,7 @@ body.rtl .rv-nav{flex-direction:row-reverse}
     <div class="w-hot" id="wHot"></div>
     <div class="w-shadow" id="wShadow"></div>
     <img class="w-char" id="wChar" src="" alt="">
-    <div class="w-cshadow" id="wCustShadow" style="display:none"></div>
-    <div class="w-cust" id="wCust" style="display:none"></div>
-    <div class="w-cbubble" id="wCustBubble" style="display:none"></div>
+    <div class="w-custlayer" id="wCustLayer"></div>
     <div class="w-tap" id="wTap"></div>
   </div>
 
@@ -1107,8 +1113,10 @@ var I18N = {
     step:"Schritt", closeBtn:"Schließen", lockedPrev:"Erst den vorherigen Fall abschließen",
     startTimer:"Uhr starten", startNote:"In Ruhe lesen. Die {s} Sekunden laufen erst ab dem Tippen.",
     roomSwitch:"Raum wechseln", roomSwitchHint:"Direkt hinübergehen, ohne zu laufen.",
-    serveNow:"Kunden bedienen", backShop:"Zurück an den HV-Tisch",
-    waiting:"{p} wartet am Tisch.",
+    serveNow:"Beraten", backShop:"Zurück an den HV-Tisch",
+    custHere:"Jemand steht am Tisch", custHint:"Der Fall zeigt sich im Gespräch.",
+    custMad:"So lange warte ich nicht.",
+    archiv:"Archiv", replayNote:"Wiederholung zum Nachlesen. Punkte gibt es nur beim ersten Mal.",
     quitConfirm:"Beratung wirklich abbrechen? Der Fortschritt dieser Beratung geht verloren.",
     disclaimer:"Alle Inhalte dienen ausschließlich der pharmazeutischen Fortbildung und ersetzen keine ärztliche oder pharmazeutische Beratung im Einzelfall.",
     correctIs:"Richtig wäre:",
@@ -1135,8 +1143,10 @@ var I18N = {
     step:"Step", closeBtn:"Close", lockedPrev:"Finish the previous case first",
     startTimer:"Start the clock", startNote:"Read in peace. The {s} seconds only run from the tap.",
     roomSwitch:"Change room", roomSwitchHint:"Go straight over, without walking.",
-    serveNow:"Serve the customer", backShop:"Back to the counter",
-    waiting:"{p} is waiting at the counter.",
+    serveNow:"Advise", backShop:"Back to the counter",
+    custHere:"Someone is at the counter", custHint:"The case shows itself in the conversation.",
+    custMad:"I am not waiting this long.",
+    archiv:"Archive", replayNote:"A replay for reading up. Points are given only the first time.",
     quitConfirm:"Really quit this consultation? Progress in this case will be lost.",
     disclaimer:"All content is intended solely for pharmaceutical training and does not replace medical or pharmaceutical advice in individual cases.",
     correctIs:"The correct value would be:",
@@ -1163,8 +1173,10 @@ var I18N = {
     step:"خطوة", closeBtn:"إغلاق", lockedPrev:"أنهِ الحالة السابقة أولاً",
     startTimer:"شغّل الساعة", startNote:"اقرأ على مهلك. الـ{s} ثانية تبدأ عند الضغط فقط.",
     roomSwitch:"تغيير الغرفة", roomSwitchHint:"انتقل مباشرة بلا مشي.",
-    serveNow:"استقبل الزبون", backShop:"عودة إلى الطاولة",
-    waiting:"{p} ينتظر عند الطاولة.",
+    serveNow:"ابدأ الاستشارة", backShop:"عودة إلى الطاولة",
+    custHere:"أحدهم عند الطاولة", custHint:"الحالة تنكشف في أثناء الحديث.",
+    custMad:"لن أنتظر كل هذا.",
+    archiv:"الأرشيف", replayNote:"إعادة للمراجعة. النقاط تُحتسب في المرة الأولى وحدها.",
     quitConfirm:"هل تريد فعلاً إنهاء الاستشارة؟ سيضيع تقدمك في هذه الحالة.",
     disclaimer:"جميع المحتويات مخصصة للتدريب الصيدلاني فقط ولا تُغني عن الاستشارة الطبية أو الصيدلانية في الحالات الفردية.",
     correctIs:"الصحيح هو:",
@@ -1182,7 +1194,7 @@ var I18N = {
    ist, steht es unten in der Spielanleitung, damit es niemandem entgeht. */
 var UNLOCK_ALL = true;
 
-var PC_BUILD = "2026-08-30 \u00b7 Kunden" +
+var PC_BUILD = "2026-08-30b \u00b7 Warteschlange + Archiv" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5185,51 +5197,48 @@ var ICONS = (function(){
 /* =====================================================================
    KUNDEN
    Sie betreten die Offizin durch die Glastuer unten, gehen an der
-   Kundenseite des Tresens entlang nach vorn und warten. Der Weg ist
-   fest gelegt, nicht gesucht: Kunden laufen immer dieselbe Strecke,
-   und ein fester Weg kann nicht in ein Moebel geraten.
+   Kundenseite des Tresens entlang nach vorn und stellen sich an.
+   Der Weg ist fest gelegt, nicht gesucht: ein fester Weg kann nicht
+   in ein Moebel geraten. Die Uhr der Kunden laeuft unabhaengig vom
+   Spieler weiter, auch wenn er stillsteht.
 ===================================================================== */
-var CUS = {
-  on:false, state:'off', p:null, pos:null, path:[], t:0, wait:0, lv:null, dir:'up', walking:false
-};
-/* Wegpunkte in Rasterfeldern: Tuer -> Tresenmitte -> zurueck */
-var CUS_IN  = [[12,45],[15,38],[19,31],[21,25],[22,21]];
-var CUS_OUT = [[21,26],[18,33],[14,41],[11,47]];
-var CUS_SPOT = [22,21];
+var CUS = { on:false, list:[], t:2.0, next:0 };
 
-/* Ein Bild je Persona unter assets/cust/. Fehlt es, zeichnet das Spiel
-   eine schlichte Silhouette, damit Ablauf und Zeiten trotzdem pruefbar sind. */
+/* Wegpunkte in Rasterfeldern */
+var CUS_IN   = [[12,45],[15,38],[19,31]];
+var CUS_SLOT = [[22,21],[21,26],[20,31]];   /* erster, zweiter, dritter Platz */
+var CUS_OUT  = [[18,33],[14,41],[11,47]];
+var CUS_MAX  = 3;
+var CUS_GEDULD = 95;    /* Sekunden, bis einer von selbst geht */
+var CUS_STRAFE = -20;   /* Punkte, wenn er veraergert geht */
+
 var CUS_IMG = {};
 function custSrc(id){ return 'assets/cust/cus_'+id+'.png'; }
 (function(){
   for(var k in PERSONAS){
-    (function(id){
-      var im=new Image();
-      im.onload=function(){ CUS_IMG[id]=custSrc(id); };
-      im.src=custSrc(id);
-    })(k);
+    (function(id){ var im=new Image();
+      im.onload=function(){ CUS_IMG[id]=custSrc(id); }; im.src=custSrc(id); })(k);
   }
 })();
 var CUS_BLANK = '<svg viewBox="0 0 40 96" xmlns="http://www.w3.org/2000/svg">'+
-  '<ellipse cx="20" cy="93" rx="13" ry="3" fill="rgba(0,0,0,.18)"/>'+
   '<path d="M20 20c-9 0-14 6-14 15v28c0 4 2 6 5 6h18c3 0 5-2 5-6V35c0-9-5-15-14-15Z" fill="#5A6B7A"/>'+
   '<path d="M13 69h6v22h-6zM21 69h6v22h-6z" fill="#3E4A56"/>'+
   '<circle cx="20" cy="12" r="10" fill="#E8C39E"/></svg>';
+var CUS_BLANK_MAD = CUS_BLANK.replace('#5A6B7A','#8C4A45').replace('#3E4A56','#5E2F2C');
 
 function custStart(){
   if(W.room!=='offizin'){ custStop(); return; }
   CUS.on=true;
-  if(CUS.state==='off'){ CUS.state='away'; CUS.t=1.2; }
+  if(!CUS.list.length){ custArrive(); CUS.t=4; }   /* schon jemand da beim Betreten */
 }
 function custStop(){
-  CUS.on=false; CUS.state='off'; CUS.p=null;
-  ['wCust','wCustShadow','wCustBubble'].forEach(function(id){
-    var e=document.getElementById(id); if(e) e.style.display='none';
-  });
+  CUS.on=false;
+  var l=document.getElementById('wCustLayer'); if(l) l.innerHTML='';
 }
-/* welcher Fall kommt mit diesem Kunden herein */
 function custPickLevel(){
+  var used=CUS.list.map(function(c){ return c.lv.id; });
   var open=LEVELS.filter(function(lv,li){
+    if(used.indexOf(lv.id)>=0) return false;
     if(UNLOCK_ALL) return true;
     var prev=(li===0)||!!state.levelBest[LEVELS[li-1].id];
     return prev && state.rankIdx>=lv.reqRank;
@@ -5237,65 +5246,124 @@ function custPickLevel(){
   if(!open.length) return null;
   return open[Math.floor(Math.random()*open.length)];
 }
-function custArrive(){
-  var lv=custPickLevel(); if(!lv) return;
-  CUS.lv=lv; CUS.p=lv.persona;
-  CUS.pos={x:CUS_IN[0][0], y:CUS_IN[0][1]};
-  CUS.path=CUS_IN.slice(1).map(function(c){ return {x:c[0], y:c[1]}; });
-  CUS.state='in'; CUS.dir='up'; CUS.walking=true;
+function custFreeSlot(){
+  for(var i=0;i<CUS_MAX;i++){
+    var taken=CUS.list.some(function(c){ return c.slot===i; });
+    if(!taken) return i;
+  }
+  return -1;
 }
-function custLeave(){
-  CUS.path=CUS_OUT.map(function(c){ return {x:c[0], y:c[1]}; });
-  CUS.state='out'; CUS.walking=true;
+function custArrive(){
+  var slot=custFreeSlot(); if(slot<0) return;
+  var lv=custPickLevel(); if(!lv) return;
+  var path=CUS_IN.concat([CUS_SLOT[slot]]).map(function(c){ return {x:c[0],y:c[1]}; });
+  CUS.list.push({ id:'c'+(++CUS.next), p:lv.persona, lv:lv, slot:slot,
+    pos:{x:CUS_IN[0][0], y:CUS_IN[0][1]}, path:path.slice(1),
+    state:'in', dir:'up', geduld:CUS_GEDULD, uebergangen:0, seit:performance.now() });
+}
+function custLeave(c, mad){
+  c.state = mad ? 'mad' : 'out';
+  c.madT = mad ? 2.2 : 0;
+  c.path = CUS_OUT.map(function(q){ return {x:q[0],y:q[1]}; });
+}
+function custById(id){
+  for(var i=0;i<CUS.list.length;i++) if(CUS.list[i].id===id) return CUS.list[i];
+  return null;
+}
+/* wer wartet am laengsten */
+function custFirst(){
+  var b=null;
+  CUS.list.forEach(function(c){ if(c.state==='wait' && (!b||c.seit<b.seit)) b=c; });
+  return b;
+}
+function custServe(c){
+  /* Wer vor ihm da war und uebergangen wird, verliert Geduld. Zweimal
+     uebergangen und er geht veraergert. */
+  CUS.list.forEach(function(o){
+    if(o!==c && o.state==='wait' && o.seit < c.seit){
+      o.uebergangen++;
+      o.geduld -= CUS_GEDULD*0.45;
+      if(o.uebergangen>=2 || o.geduld<=0) custLeave(o, true);
+    }
+  });
+  c.state='served';
+  CUS.list = CUS.list.filter(function(o){ return o!==c; });
+  return c;
 }
 function custTick(dt){
   if(!CUS.on) return;
-  if(CUS.state==='away'){
-    CUS.t-=dt; if(CUS.t<=0) custArrive();
-    custDraw(); return;
+  CUS.t -= dt;
+  if(CUS.t<=0){
+    CUS.t = 11 + Math.random()*9;
+    if(CUS.list.length<CUS_MAX) custArrive();
   }
-  if(CUS.state==='in' || CUS.state==='out'){
-    var sp=6.5*dt;
-    while(sp>0 && CUS.path.length){
-      var n=CUS.path[0], dx=n.x-CUS.pos.x, dy=n.y-CUS.pos.y, d=Math.sqrt(dx*dx+dy*dy);
-      if(d<=sp){ CUS.pos.x=n.x; CUS.pos.y=n.y; CUS.path.shift(); sp-=d; }
-      else { CUS.pos.x+=dx/d*sp; CUS.pos.y+=dy/d*sp; sp=0;
-             CUS.dir = Math.abs(dx)>Math.abs(dy) ? (dx>0?'right':'left') : (dy>0?'down':'up'); }
+  var raus=[];
+  CUS.list.forEach(function(c){
+    if(c.state==='wait'){
+      c.geduld -= dt;
+      if(c.geduld<=0) custLeave(c, true);
     }
-    if(!CUS.path.length){
-      CUS.walking=false;
-      if(CUS.state==='in'){ CUS.state='wait'; CUS.dir='right'; }
-      else { CUS.state='away'; CUS.t=3.5 + Math.random()*3; CUS.p=null; }
+    if(c.state==='mad' && c.madT>0){ c.madT-=dt; if(c.madT<=0) c.state='out'; return; }
+    if(c.state==='in' || c.state==='out'){
+      var sp=6.5*dt;
+      while(sp>0 && c.path.length){
+        var n=c.path[0], dx=n.x-c.pos.x, dy=n.y-c.pos.y, d=Math.sqrt(dx*dx+dy*dy);
+        if(d<=sp){ c.pos.x=n.x; c.pos.y=n.y; c.path.shift(); sp-=d; }
+        else { c.pos.x+=dx/d*sp; c.pos.y+=dy/d*sp; sp=0;
+               c.dir = Math.abs(dx)>Math.abs(dy) ? (dx>0?'right':'left') : (dy>0?'down':'up'); }
+      }
+      if(!c.path.length){
+        if(c.state==='in'){ c.state='wait'; c.dir='right'; c.seit=performance.now(); }
+        else raus.push(c);
+      }
     }
+  });
+  if(raus.length){
+    var strafe=0;
+    raus.forEach(function(c){ if(c.uebergangen>0 || c.geduld<=0) strafe+=CUS_STRAFE; });
+    CUS.list = CUS.list.filter(function(c){ return raus.indexOf(c)<0; });
+    if(strafe){ state.totalPts += strafe; save(); renderRankBar(); toastPts(strafe); }
   }
   custDraw();
 }
+function toastPts(v){
+  var t=document.createElement('div');
+  t.className='pts-toast'; t.textContent=(v>0?'+':'')+v+' P';
+  document.getElementById('worldScreen').appendChild(t);
+  setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 2600);
+}
 function custDraw(){
-  var el=document.getElementById('wCust'), sh=document.getElementById('wCustShadow'),
-      bu=document.getElementById('wCustBubble');
-  if(!el) return;
-  if(!CUS.p || CUS.state==='away' || CUS.state==='off'){
-    el.style.display='none'; sh.style.display='none'; bu.style.display='none'; return;
-  }
-  var depth = 0.85 + 0.45*(CUS.pos.y/WORLD_G);
-  var h = W.cellY*6.6*depth, w = h*0.42;
-  var px = W.ox+(CUS.pos.x+0.5)*W.cell, py = W.oy+(CUS.pos.y+0.9)*W.cellY;
-  var bob = CUS.walking ? Math.abs(Math.sin(performance.now()/165))*h*0.022 : 0;
-  var src = CUS_IMG[CUS.p];
-  if(src){ el.className='w-cust'; el.innerHTML='<img src="'+src+'" style="width:100%;height:100%">'; }
-  else   { el.className='w-cust blank'; if(el.innerHTML.indexOf('<svg')<0) el.innerHTML=CUS_BLANK; }
-  el.style.display='block';
-  el.style.height=h+'px'; el.style.width=w+'px';
-  el.style.left=px+'px'; el.style.top=(py-bob)+'px';
-  el.style.transform='translate(-50%,-100%)'+(CUS.dir==='right'?' scaleX(-1)':'');
-  sh.style.display='block';
-  sh.style.width=(w*0.8)+'px'; sh.style.height=(w*0.28)+'px';
-  sh.style.left=px+'px'; sh.style.top=py+'px';
-  if(CUS.state==='wait'){
-    bu.style.display='block';
-    bu.textContent=locName(PERSONAS[CUS.p]);
-    bu.style.left=px+'px'; bu.style.top=(py-h-6)+'px';
-  } else bu.style.display='none';
+  var layer=document.getElementById('wCustLayer'); if(!layer) return;
+  if(!CUS.on){ layer.innerHTML=''; return; }
+  CUS.list.forEach(function(c){
+    var el=document.getElementById('cu_'+c.id);
+    if(!el){
+      el=document.createElement('div'); el.id='cu_'+c.id; el.className='w-cust';
+      layer.appendChild(el);
+    }
+    var depth = 0.85 + 0.45*(c.pos.y/WORLD_G);
+    var h = W.cellY*6.6*depth, w = h*0.42;
+    var px = W.ox+(c.pos.x+0.5)*W.cell, py = W.oy+(c.pos.y+0.9)*W.cellY;
+    var bob = (c.state==='in'||c.state==='out') ? Math.abs(Math.sin(performance.now()/165))*h*0.022 : 0;
+    var src = CUS_IMG[c.p];
+    var mad = (c.state==='mad');
+    var inner = src ? '<img src="'+src+'" style="width:100%;height:100%">'
+                    : (mad?CUS_BLANK_MAD:CUS_BLANK);
+    var mark = (c.state==='wait')
+      ? '<span class="cu-tag">'+ICONS.draw('speak')+'</span>'
+      : (mad ? '<span class="cu-tag mad">'+t('custMad')+'</span>' : '');
+    el.innerHTML='<div class="cu-body">'+inner+'</div>'+mark;
+    el.style.height=h+'px'; el.style.width=w+'px';
+    el.style.left=px+'px'; el.style.top=(py-bob)+'px';
+    el.style.transform='translate(-50%,-100%)';
+    el.querySelector('.cu-body').style.transform = (c.dir==='right'?'scaleX(-1)':'none');
+    el.classList.toggle('mad', mad);
+    el.classList.toggle('tapp', c.state==='wait');
+    el.dataset.cid=c.id;
+  });
+  Array.prototype.slice.call(layer.children).forEach(function(el){
+    if(!custById(el.dataset.cid)) el.remove();
+  });
 }
 
 /* ---------- Rank helpers ---------- */
@@ -5339,6 +5407,7 @@ function renderMap(only){
   if(only2!=='buero') gridSection(grid, t('secCounter'));
   // real levels
   if(only2!=='buero') LEVELS.forEach(function(lv,li){
+    if(only2==='archiv' && !state.levelBest[lv.id]) return;
     num++;
     var topic=TOPICS[lv.topic], persona=PERSONAS[lv.persona];
     /* Sequenz: ein Fall öffnet den nächsten. Abgeschlossene bleiben frei wählbar. */
@@ -5361,7 +5430,7 @@ function renderMap(only){
     grid.appendChild(card);
   });
   // coming soon placeholders
-  if(only2!=='buero') COMING.forEach(function(c){
+  if(only2!=='buero' && only2!=='archiv') COMING.forEach(function(c){
     num++;
     var persona=PERSONAS[c.persona];
     var card=document.createElement('div');
@@ -5379,6 +5448,7 @@ function renderMap(only){
     gridSection(grid, t('secOffice'));
     OFFICE_LEVELS.forEach(function(lv,li){
       var topic=TOPICS[lv.topic]; if(!topic) return;
+      if(only2==='archiv' && !state.levelBest[lv.id]) return;
       var prevDone=(li===0)||!!state.levelBest[OFFICE_LEVELS[li-1].id];
       var locked=UNLOCK_ALL ? false : ((state.rankIdx<lv.reqRank)||!prevDone);
       var best=state.levelBest[lv.id];
@@ -5444,7 +5514,9 @@ function startLevel(lv){
   /* Hybrid loading: fetch every image this level needs, in the background,
      while the player is still reading the opening comic panel. */
   preloadLevel(langSteps, persona);
-  run = { lv:lv, topic:topic, persona:persona, steps:langSteps, stepIdx:0, score:0,
+  /* Wiederholung dient dem Nachlesen, nicht dem Punktesammeln. */
+  var schonGespielt = !!state.levelBest[lv.id];
+  run = { lv:lv, topic:topic, persona:persona, steps:langSteps, stepIdx:0, score:0, replay:schonGespielt,
           trust:persona.trustStart||60, stepScores:{}, review:[],
           office:office, docs:[], pendingReveal:null };
   stopMechTimer(); stopRx();
@@ -5553,6 +5625,7 @@ function finishLevel(){
     '<div class="result-actions">'+
       '<a class="course-cta" href="'+LINKS.course+'" target="_blank" rel="noopener">'+ICONS.draw('book')+' '+t('courseHint')+'</a>'+
     '</div>'+
+    (run.replay?'<div class="replay-note">'+t('replayNote')+'</div>':'')+
     '<div class="result-actions" style="margin-top:14px">'+
       '<button class="confirm-btn" id="replay">'+t('playAgain')+'</button>'+
       (run.review.length?'<button class="hud-back" id="reviewBtn">'+ICONS.draw('lens')+' '+t('review')+'</button>':'')+
@@ -5563,7 +5636,7 @@ function finishLevel(){
   var _rvb=document.getElementById('reviewBtn');
   if(_rvb) _rvb.addEventListener('click', openReview);
   var _ts=document.getElementById('toShop');
-  if(_ts) _ts.addEventListener('click',function(){ custLeave(); enterRoom('offizin'); });
+  if(_ts) _ts.addEventListener('click',function(){ enterRoom('offizin'); });
   document.getElementById('replay').addEventListener('click',function(){ startLevel(run.lv); });
   document.getElementById('toMap').addEventListener('click',function(){ afterLevel(s,stars); });
 
@@ -5579,9 +5652,11 @@ function commitScore(s, stars){
 function afterLevel(s, stars){
   // add points (award full score each play to reward replay, but cap contribution)
   var prevRank=state.rankIdx;
-  state.totalPts += s;
-  var best=state.levelBest[run.lv.id];
-  if(!best || s>best.score) state.levelBest[run.lv.id]={score:s,stars:stars};
+  if(!run.replay){
+    state.totalPts += s;
+    var best=state.levelBest[run.lv.id];
+    if(!best || s>best.score) state.levelBest[run.lv.id]={score:s,stars:stars};
+  }
   /* Punkte dürfen negativ werden, der Rang fällt nie zurück. */
   var newRank=Math.max(state.rankIdx, rankForPts(state.totalPts));
   save();
@@ -5612,7 +5687,6 @@ var ROOMS = {
     de:"Offizin", en:"Sales floor", ar:"الصالة",
     start:[34,30],
     spots:[
-      {id:"counter", c:[33,20], ico:"counter", de:"HV-Tisch", en:"Counter", ar:"طاولة البيع"},
       {id:"door_buero", c:[24,5], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
   buero:{ img:"assets/maps/map_buero_v005.jpg", mask:"buero",
@@ -5853,10 +5927,12 @@ function tick(t){
     if(d<=sp){ W.pos.x=n.x; W.pos.y=n.y; W.path.shift(); }
     else { W.pos.x+=dx/d*sp; W.pos.y+=dy/d*sp; }
     placeChar();
-    custTick(dt);
   } else if(W.moving){
     W.moving=false; placeChar(); arrive();
   }
+  /* Die Kunden haben ihre eigene Zeit. Frueher hing ihr Schritt am
+     Schritt des Spielers, dann standen sie still, sobald er stand. */
+  custTick(dt);
   var nr=nearestSpot();
   if((nr&&nr.id)!==(W.near&&W.near.id)){
     W.near=nr;
@@ -5924,26 +6000,13 @@ function closePanel(){ document.getElementById('wPanel').classList.remove('up');
 function locRoom(r){ return locName(ROOMS[r]||{de:r,en:r,ar:r}); }
 function openSpot(sp){
   var L=state.lang, T=WSPOT[W.room+'.'+sp.id]||WSPOT[sp.id]||{};
-  if(sp.id==='counter' && CUS.state==='wait' && CUS.p){
-    T = {t_de:'', t_en:'', t_ar:''};
-    T['t_'+L] = t('waiting').replace('{p}', locName(PERSONAS[CUS.p]));
-  }
+
   var title=locName(sp), text=(T['t_'+L]||T.t_de||'');
   var acts=[];
   /* Der Flur ist kein eigener Raum, sondern eine Auswahl. Die Karten
      zeigen je eine Tuer, nicht drei, und erfundene Tueren waeren gelogen. */
   function goTo(room){ return function(){ enterRoom(room); }; }
-  if(sp.id==='counter'){
-    if(CUS.state==='wait' && CUS.lv){
-      acts.push({t:t('serveNow'), cls:'main', fn:function(){
-        var lv=CUS.lv; CUS.state='served';
-        startLevel(lv); run.fromCustomer=true;
-      }});
-      acts.push({t:t('play'), fn:function(){ renderMap('hv'); show('mapScreen'); }});
-    } else {
-      acts.push({t:t('play'), cls:'main', fn:function(){ renderMap('hv'); show('mapScreen'); }});
-    }
-  }
+
   if(sp.id==='desk')    acts.push({t:t('play'), cls:'main', fn:function(){ renderMap('buero'); show('mapScreen'); }});
   if(sp.id==='door_offizin' || sp.id==='door_buero'){
     ['offizin','buero','rezeptur','kueche'].forEach(function(r,i){
@@ -6008,6 +6071,9 @@ function coffeeBreak(){
 
 /* ---------- input ---------- */
 /* Wer den Avatar nicht laufen lassen will, wechselt oben ueber den Raumnamen. */
+document.getElementById('wArchiv').addEventListener('click', function(){
+  renderMap('archiv'); show('mapScreen');
+});
 document.getElementById('wRoomName').addEventListener('click', function(){
   var acts=[];
   ['offizin','buero','rezeptur','kueche'].forEach(function(r){
@@ -6015,6 +6081,19 @@ document.getElementById('wRoomName').addEventListener('click', function(){
     acts.push({t:locRoom(r), cls:acts.length?'':'main', fn:function(){ enterRoom(r); }});
   });
   openPanel(t('roomSwitch'), t('roomSwitchHint'), acts);
+});
+
+/* Der Fall haengt am Kunden, nicht an einem Punkt auf dem Tresen. */
+document.getElementById('wCustLayer').addEventListener('click', function(e){
+  var el=e.target.closest ? e.target.closest('.w-cust') : null;
+  if(!el) return;
+  var c=custById(el.dataset.cid);
+  if(!c || c.state!=='wait') return;
+  openPanel(t('custHere'), t('custHint'), [
+    {t:t('serveNow'), cls:'main', fn:function(){
+      var k=custServe(c); startLevel(k.lv); run.fromCustomer=true; }},
+    {t:t('closeBtn'), fn:closePanel}
+  ]);
 });
 
 (function(){
@@ -6255,6 +6334,7 @@ function syncMapNav(){
   if(W) W.textContent = L==='ar' ? 'الصيدلية' : (L==='en' ? 'Pharmacy' : 'Apotheke');
   if(C) C.textContent = L==='ar' ? 'دورة OTC' : (L==='en' ? 'OTC course' : 'OTC-Kurs');
   if(GD){ GD.textContent = t('guideBtn'); GD.parentNode.title = t('guide'); }
+  var AR2=document.getElementById('wArchiv'); if(AR2) AR2.textContent=t('archiv');
   if(AB){ AB.textContent = t('projectBtn'); AB.parentNode.title = t('about'); }
   if(G) G.textContent = L.toUpperCase();
   var order={de:'EN',en:'AR',ar:'DE'};
