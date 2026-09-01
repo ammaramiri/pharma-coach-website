@@ -698,7 +698,17 @@ body.rtl .rx-hint{right:auto;left:14px}
 .stage, .stage-body{max-width:100%;overflow-x:hidden}
 .stage-body img, .panel img, .fb img{max-width:100%;height:auto}
 .bubble{max-width:100%;box-sizing:border-box;overflow-wrap:anywhere;white-space:normal}
-.bubble-stack{max-width:100%;box-sizing:border-box}
+.bubble-stack{max-width:100%;box-sizing:border-box;overflow:hidden}
+@media(max-width:900px){
+  /* Auf dem Telefon ist der Schwanz der Blase teurer als er wert ist.
+     Er wird nach innen gelegt, sonst schiebt er den Text ueber den Rand. */
+  .bubble{max-width:100%}
+  .bubble.tail-left::after{left:10px;top:auto;bottom:-20px;transform:none;
+    border-right-color:transparent;border-top-color:var(--ink)}
+  body.rtl .bubble.tail-left::after{left:auto;right:10px;border-left-color:transparent;
+    border-top-color:var(--ink)}
+  .bubble-stack{padding-left:8px;padding-right:8px}
+}
 .panel .bubble, .panel-doc{max-width:100%}
 @media(max-width:760px){
   .bubble{font-size:12.5px;padding:9px 12px}
@@ -723,6 +733,9 @@ body.rtl .rx-hint{right:auto;left:14px}
 .replay-note{margin:10px 0 0;font-size:12px;color:var(--soft);background:var(--sand);
   border-radius:10px;padding:8px 12px}
 .fb-right{color:var(--teal-dark)}
+.tf-soll{display:block;font-style:normal;font-size:11px;font-weight:700;color:var(--teal-dark);margin-top:3px}
+.a3-answer.a3-soll{border-color:var(--teal-dark);background:#EAF4F1}
+.a3-answer.a3-soll .a3-a-q{color:var(--teal-dark)}
 .pts-toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);z-index:30;
   background:var(--red);color:#fff;font-family:'Fraunces',serif;font-weight:800;font-size:17px;
   padding:8px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.35);animation:pop .3s ease-out}
@@ -933,7 +946,7 @@ body.rtl .rv-nav{flex-direction:row-reverse}
 <div class="screen" id="gameScreen">
   <div class="wrap">
     <div class="hud">
-      <button class="hud-back" id="gameBack">‹ <span id="backTxt">Fälle</span></button>
+      <button class="hud-back" id="gameBack">‹ <span id="backTxt"></span></button>
       <div class="hud-right">
         <button class="hud-back mute-btn" title="Ton"></button>
         <div class="trust">
@@ -1209,7 +1222,7 @@ var I18N = {
    ist, steht es unten in der Spielanleitung, damit es niemandem entgeht. */
 var UNLOCK_ALL = true;
 
-var PC_BUILD = "2026-08-31 \u00b7 Kundentippen + Mobil" +
+var PC_BUILD = "2026-09-01 \u00b7 Loesung + Blasen" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -1631,8 +1644,9 @@ Mech.shelf = function(host, d, done){
       BX.forEach(function(bb,j){ if(bb.ok) sh.querySelectorAll('.box')[j].classList.add('correct'); });
       if(!b.ok) el.classList.add('wrong');
       var rb=(d.boxes||[]).filter(function(q){ return q.ok; })[0];
+      var rn=rb ? (rb.n + (rb.s?' · '+rb.s:'')) : '';
       fbBlock(document.getElementById('fbz'), b.ok, b.h+' · +'+(b.p||0),
-        b.x + (b.ok||!rb ? '' : richtig(rb.t||rb.name||'')),
+        b.x + (b.ok ? '' : richtig(rn)),
         function(){ done(b.p||0, b.tr||0); });
     });
     (i<3?r1:r2).appendChild(el);
@@ -1685,7 +1699,18 @@ Mech.ask3 = function(host, d, done){
       var e=document.createElement('div'); e.className='a3-answer';
       e.innerHTML='<div class="a3-a-q">'+q.q+'</div><div class="a3-a-a">'+q.a+'</div>';
       log.appendChild(e); hint();
-      if(picked.length>=limit) finish();
+      if(picked.length>=limit){
+        var beste=d.questions.slice().sort(function(a,b){ return (b.val||0)-(a.val||0); })
+                   .slice(0,limit).map(function(q){ return q.q; });
+        var fehlt=beste.filter(function(q){ return !picked.some(function(p){ return p.q===q; }); });
+        if(fehlt.length){
+          var e2=document.createElement('div'); e2.className='a3-answer a3-soll';
+          e2.innerHTML='<div class="a3-a-q">'+t('correctIs')+'</div><div class="a3-a-a">'+
+            fehlt.join(' · ')+'</div>';
+          log.appendChild(e2);
+        }
+        finish();
+      }
     });
     g.appendChild(b);
   });
@@ -1821,7 +1846,9 @@ Mech.truefalse = function(host, d, done){
     var it=ITEMS[i], ok=(v===it.ok);
     if(ok){ score+=(it.p||5); SND.good(); } else { wrong++; SND.bad(); }
     var row=document.createElement('div'); row.className='tf-row '+(ok?'ok':'bad');
-    row.innerHTML='<b>'+(ok?'✓':'✗')+'</b> '+it.t+'<span>'+it.why+'</span>';
+    row.innerHTML='<b>'+(ok?'✓':'✗')+'</b> '+it.t+
+      '<i class="tf-soll">'+t('correctIs')+' '+(it.ok?d.trueLabel:d.falseLabel)+'</i>'+
+      '<span>'+it.why+'</span>';
     document.getElementById('tfl').appendChild(row);
     i++;
     if(i<ITEMS.length) show(); else finish();
@@ -5105,7 +5132,7 @@ function applyLang(){
   document.getElementById('mapTitle').textContent=t('chooseCase');
   document.getElementById('mapSubtitle').textContent=t('mapSub');
   document.getElementById('ptsLbl').textContent=t('pts');
-  document.getElementById('backTxt').textContent=t('back');
+  document.getElementById('backTxt').textContent=t('backShop');
   document.getElementById('trustLbl').textContent=t('trust');
   document.getElementById('scoreLbl').textContent=t('pts');
   // email modal
@@ -6325,6 +6352,8 @@ document.getElementById('playBtn').addEventListener('click',function(){
 });
 document.getElementById('linkCases').addEventListener('click',function(e){
   e.preventDefault(); renderMap(); show('mapScreen'); });
+/* Aus einem laufenden Fall geht es zurueck in die Apotheke, nicht in
+   eine Liste aller Faelle. Die gibt es nicht mehr. */
 document.getElementById('gameBack').addEventListener('click',function(){
   uiConfirm(t('quitConfirm'), function(){
     if(window._mechTimer){clearTimeout(window._mechTimer);window._mechTimer=null;}
