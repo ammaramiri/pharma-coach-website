@@ -694,10 +694,24 @@ body.rtl .rx-hint{right:auto;left:14px}
 .ia-c.ia-pulse{animation:iapulse 1.1s ease-in-out 2}
 .ia-h.ia-pulse{color:#B0812A}
 
+/* Auf dem Telefon darf nichts aus der Buehne herauslaufen */
+.stage, .stage-body{max-width:100%;overflow-x:hidden}
+.stage-body img, .panel img, .fb img{max-width:100%;height:auto}
+.bubble{max-width:100%;box-sizing:border-box;overflow-wrap:anywhere;white-space:normal}
+.bubble-stack{max-width:100%;box-sizing:border-box}
+.panel .bubble, .panel-doc{max-width:100%}
+@media(max-width:760px){
+  .bubble{font-size:12.5px;padding:9px 12px}
+  .panel.panel-plain{padding:10px}
+  .shelf-row, .sq-slot, .chips{flex-wrap:wrap}
+  .shelf-box, .box{max-width:100%}
+}
+
 /* Kunden in der Offizin */
-.w-custlayer{position:absolute;inset:0;pointer-events:none;z-index:5}
+.w-custlayer{position:absolute;inset:0;pointer-events:none;z-index:9}
 .w-cust .cu-body{width:100%;height:100%;line-height:0}
 .w-cust.tapp{pointer-events:auto;cursor:pointer}
+.w-cust.tapp::after{content:'';position:absolute;left:-14%;right:-14%;top:-10%;bottom:-6%}
 .cu-tag{position:absolute;left:50%;top:-6px;transform:translate(-50%,-100%);
   background:rgba(255,255,255,.96);border:2px solid var(--teal-dark);border-radius:999px;
   padding:4px 8px;line-height:0;box-shadow:0 3px 10px rgba(0,0,0,.3);
@@ -708,6 +722,7 @@ body.rtl .rx-hint{right:auto;left:14px}
 .w-cust.mad{filter:drop-shadow(0 0 6px rgba(193,18,31,.55))}
 .replay-note{margin:10px 0 0;font-size:12px;color:var(--soft);background:var(--sand);
   border-radius:10px;padding:8px 12px}
+.fb-right{color:var(--teal-dark)}
 .pts-toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);z-index:30;
   background:var(--red);color:#fff;font-family:'Fraunces',serif;font-weight:800;font-size:17px;
   padding:8px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.35);animation:pop .3s ease-out}
@@ -1116,7 +1131,7 @@ var I18N = {
     serveNow:"Beraten", backShop:"Zurück an den HV-Tisch",
     custHere:"Jemand steht am Tisch", custHint:"Der Fall zeigt sich im Gespräch.",
     custMad:"So lange warte ich nicht.",
-    archiv:"Archiv", replayNote:"Wiederholung zum Nachlesen. Punkte gibt es nur beim ersten Mal.",
+    archiv:"Archiv", correctIs:"Richtig wäre:", startGame:"Die Apotheke betreten", replayNote:"Wiederholung zum Nachlesen. Punkte gibt es nur beim ersten Mal.",
     quitConfirm:"Beratung wirklich abbrechen? Der Fortschritt dieser Beratung geht verloren.",
     disclaimer:"Alle Inhalte dienen ausschließlich der pharmazeutischen Fortbildung und ersetzen keine ärztliche oder pharmazeutische Beratung im Einzelfall.",
     correctIs:"Richtig wäre:",
@@ -1146,7 +1161,7 @@ var I18N = {
     serveNow:"Advise", backShop:"Back to the counter",
     custHere:"Someone is at the counter", custHint:"The case shows itself in the conversation.",
     custMad:"I am not waiting this long.",
-    archiv:"Archive", replayNote:"A replay for reading up. Points are given only the first time.",
+    archiv:"Archive", correctIs:"The right answer:", startGame:"Enter the pharmacy", replayNote:"A replay for reading up. Points are given only the first time.",
     quitConfirm:"Really quit this consultation? Progress in this case will be lost.",
     disclaimer:"All content is intended solely for pharmaceutical training and does not replace medical or pharmaceutical advice in individual cases.",
     correctIs:"The correct value would be:",
@@ -1176,7 +1191,7 @@ var I18N = {
     serveNow:"ابدأ الاستشارة", backShop:"عودة إلى الطاولة",
     custHere:"أحدهم عند الطاولة", custHint:"الحالة تنكشف في أثناء الحديث.",
     custMad:"لن أنتظر كل هذا.",
-    archiv:"الأرشيف", replayNote:"إعادة للمراجعة. النقاط تُحتسب في المرة الأولى وحدها.",
+    archiv:"الأرشيف", correctIs:"الصواب:", startGame:"ادخل الصيدلية", replayNote:"إعادة للمراجعة. النقاط تُحتسب في المرة الأولى وحدها.",
     quitConfirm:"هل تريد فعلاً إنهاء الاستشارة؟ سيضيع تقدمك في هذه الحالة.",
     disclaimer:"جميع المحتويات مخصصة للتدريب الصيدلاني فقط ولا تُغني عن الاستشارة الطبية أو الصيدلانية في الحالات الفردية.",
     correctIs:"الصحيح هو:",
@@ -1194,7 +1209,7 @@ var I18N = {
    ist, steht es unten in der Spielanleitung, damit es niemandem entgeht. */
 var UNLOCK_ALL = true;
 
-var PC_BUILD = "2026-08-30b \u00b7 Warteschlange + Archiv" +
+var PC_BUILD = "2026-08-31 \u00b7 Kundentippen + Mobil" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -1544,7 +1559,10 @@ Mech.mcq = function(host, d, done){
     var o, good;
     if(pick){ o=pick.o; good=o.ok; if(!good) pick.btn.classList.add('wrong'); }
     else { o={p:0,tr:-10,h:d.timeoutH||"Zeit abgelaufen",x:d.timeoutX||"Zu langsam."}; good=false; }
-    fbBlock(document.getElementById('fbz'), good, o.h+' · +'+(o.p||0), o.x, function(){ done(o.p||0, o.tr||0); });
+    var richtigeOption = (d.options||[]).filter(function(q){ return q.ok; })[0];
+    fbBlock(document.getElementById('fbz'), good, o.h+' · +'+(o.p||0),
+      o.x + (good||!richtigeOption ? '' : richtig(richtigeOption.t)),
+      function(){ done(o.p||0, o.tr||0); });
   }
 };
 
@@ -1612,7 +1630,10 @@ Mech.shelf = function(host, d, done){
       sh.querySelectorAll('.box').forEach(function(x){ x.disabled=true; });
       BX.forEach(function(bb,j){ if(bb.ok) sh.querySelectorAll('.box')[j].classList.add('correct'); });
       if(!b.ok) el.classList.add('wrong');
-      fbBlock(document.getElementById('fbz'), b.ok, b.h+' · +'+(b.p||0), b.x, function(){ done(b.p||0, b.tr||0); });
+      var rb=(d.boxes||[]).filter(function(q){ return q.ok; })[0];
+      fbBlock(document.getElementById('fbz'), b.ok, b.h+' · +'+(b.p||0),
+        b.x + (b.ok||!rb ? '' : richtig(rb.t||rb.name||'')),
+        function(){ done(b.p||0, b.tr||0); });
     });
     (i<3?r1:r2).appendChild(el);
   });
@@ -1637,7 +1658,8 @@ Mech.dose = function(host, d, done){
     if(diff===0) r={good:true,p:20,tr:8,h:d.exactH,x:d.exactX};
     else if(diff<=d.tol) r={good:true,p:10,tr:3,h:d.closeH,x:d.closeX};
     else r={good:false,p:0,tr:-8,h:d.wrongH,x:(v>d.target?d.highX:d.lowX)+' '+t('correctIs')+' '+d.target+' '+d.unit+'.'};
-    fbBlock(document.getElementById('fbz'), r.good, r.h+' ('+v+' '+d.unit+') · +'+r.p, r.x, function(){ done(r.p, r.tr); });
+    fbBlock(document.getElementById('fbz'), r.good, r.h+' ('+v+' '+d.unit+') · +'+r.p,
+      r.x + (r.good ? '' : richtig(d.right+' '+d.unit)), function(){ done(r.p, r.tr); });
   });
 };
 
@@ -2304,6 +2326,14 @@ function fbNote(host, text){
   z.innerHTML='<div class="fb bad" style="animation:pop .3s ease-out"><p>'+text+'</p></div>';
 }
 
+/* Die richtige Loesung gehoert in jede Rueckmeldung, auch wenn die
+   Begruendung der falschen Wahl schon dasteht. Wer nur liest, warum
+   seine Wahl falsch war, weiss immer noch nicht, was richtig gewesen waere. */
+function richtig(txt){
+  if(!txt) return '';
+  return '<br><b class="fb-right">'+t('correctIs')+'</b> '+txt;
+}
+
 /* shared feedback block */
 function fbBlock(zone, good, head, text, next){
   if(good)SND.good();else SND.bad();
@@ -2375,12 +2405,7 @@ var TOPICS = {
                 {t:"Ein Erwachsenenzäpfchen darf man halbieren, wenn man vorsichtig ist.",ok:false,why:"Niemals. Der Wirkstoff ist nicht homogen verteilt, die Dosis wird unkalkulierbar."},
                 {t:"Ibuprofen wirkt zusätzlich entzündungshemmend, Paracetamol nicht.",ok:true,why:"Ein relevanter Unterschied bei der Auswahl."},
                 {t:"Ein Kopfschmerz, der das Kind nachts aufweckt, ist harmlos.",ok:false,why:"Im Gegenteil: nächtliches Aufwachen ist ein Warnzeichen und gehört abgeklärt."} ] } },
-      { mech:"sentence", data:{ scene:"assets/PCG_SCN_CUS001_D_HANDOVER_v003.jpg", kicker:"Szene 6 · Die Anwendung erklären", title:"Formulieren Sie den Anwendungshinweis für den Vater:",
-        hint:"Tippen Sie die Bausteine in der richtigen Reihenfolge an. ↶ nimmt zurück.", cta:"Satz bestätigen",
-        okH:"Sauber formuliert", badH:"Formulierung holprig",
-        expl:"Der Satz nennt Dosierhilfe, Bezugsgröße und Einnahmezeitpunkt in einem Zug – ohne Fachjargon. Genau so bleibt eine Anwendungsanweisung beim Kunden hängen: konkret, kurz, in der Reihenfolge, in der er es zu Hause tun wird.",
-        chips:["Geben Sie den Saft","mit der Dosierspritze,","die Menge richtet sich","nach dem Gewicht","–","die Tabelle steht","auf der Packung,","am besten zum Essen."],
-        target:[0,1,2,3,4,5,6,7] } },
+      
       { mech:"mcq", data:{ scene:"assets/PCG_CU_CUS001_P04_CU-NEUTRAL_v003.jpg", kicker:"Szene 7 · Abschluss", title:"„Woran erkenne ich, dass ich doch zum Arzt muss?“",
         options:[
           {t:"Sofort bei: Fieber mit Nackensteifheit, wiederholtem Erbrechen, Wesensveränderung oder nach Kopf-Sturz. Und: wenn Schmerzen nach 2-3 Tagen anhalten, stärker werden oder ihn nachts wecken.",p:25,tr:12,ok:true,h:"Perfekter Abschluss",x:"Zwei Kategorien: Notfallzeichen (sofort) und Verlaufszeichen (2-3 Tage). Nächtliches Aufwachen ist das oft vergessene Warnsignal beim Kind."},
@@ -2429,7 +2454,7 @@ TOPICS.halsschmerzen_selbst = {
         cards:[ {t:"Kratzen im Hals seit gestern Abend",flag:false},{t:"Kein Fieber (heute gemessen)",flag:false},
                 {t:"Schmerzen angeblich nur einseitig, stark",flag:true},{t:"Ich bin übrigens Diabetiker",flag:false},
                 {t:"Internet sagt: sicher Streptokokken",flag:false},{t:"Gestern kurz Atemnot beim Essen",flag:true} ] } },
-      { mech:"sentence", data:{ scene:"assets/PCG_SCN_CUS002_B_COUNTER_v003.jpg", kicker:"Szene 3b · Die Formulierung", title:"Formulieren Sie, warum es kein Antibiotikum gibt:", hint:"Tippen Sie die Bausteine in der richtigen Reihenfolge an. ↶ nimmt zurück.", cta:"Satz bestätigen", okH:"Sauber formuliert", badH:"Formulierung holprig", expl:"Der Satz begründet die Ablehnung fachlich, ohne den Kunden zu belehren, und endet mit einer Alternative statt mit einem Nein. Genau diese Struktur – Grund, Beleg, Angebot – ist der Unterschied zwischen einem verlorenen und einem überzeugten Kunden.", chips:["Ihre Beschwerden sprechen","für einen viralen Infekt","–","dagegen wirkt","ein Antibiotikum nicht,","aber ich habe etwas,","das die Schmerzen","deutlich lindert."], target:[0,1,2,3,4,5,6,7] } },
+      
       { mech:"shelf", data:{ kicker:"Szene 3 · Die Empfehlung", title:"Kein Fieber, kein Eiter, Diabetiker. Greifen Sie ins Regal:",
         boxes:[
           {n:"Flurbiprofen",s:"Lutschtabl., zuckerfrei",col:"#1565C0",ok:true,p:20,tr:12,h:"Richtiger Griff",x:"Lokal entzündungshemmend, schmerzlindernd, zuckerfrei – passend für Diabetiker. Hinweis: max. 3 Tage, Vorsicht bei NSAR-Kontraindikationen."},
@@ -2534,7 +2559,7 @@ TOPICS.reisediarrhoe_misstrau = {
      {n:"Kohle",s:"Tabletten",col:"#6A1B9A",p:5,tr:-2,h:"Dünne Datenlage",x:"Traditionsprodukt mit schwacher Evidenz. Ausgerechnet beim Skeptiker riskieren Sie damit Ihre gerade gewonnene Glaubwürdigkeit."},
      {n:"Probiotikum",s:"Kapseln",col:"#00838F",p:8,tr:0,h:"Ehrlich einordnen",x:"Datenlage gemischt, Effekte moderat. Als Option mit ehrlicher Einordnung vertretbar – als Heilsversprechen nicht."},
      {n:"Heilerde",s:"Pulver",col:"#F9A825",p:0,tr:-4,h:"Folklore",x:"Keine belastbare Evidenz bei Reisediarrhö. Er hätte es gegoogelt – und Sie erwischt."}]}},
-   {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS004_D_HANDOVER_v003.jpg",kicker:"Szene 5b · Die Formulierung",title:"Formulieren Sie die wichtigste Regel für unterwegs:",hint:"Tippen Sie die Bausteine in der richtigen Reihenfolge an. ↶ nimmt zurück.",cta:"Satz bestätigen",okH:"Sauber formuliert",badH:"Formulierung holprig",expl:"Der Satz stellt die Rehydratation vor das Stopfmittel und nennt gleich die Grenze. Beim Skeptiker wirkt genau diese Reihenfolge – zuerst das Günstige und Wichtige, dann die Einschränkung – glaubwürdiger als jede Produktempfehlung.",chips:["Das Wichtigste ist","Flüssigkeit mit Elektrolyten","–","das Loperamid","nur im Notfall","und höchstens zwei Tage,","niemals bei Fieber","oder Blut im Stuhl."],target:[0,1,2,3,4,5,6,7]}},
+   
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS004_D_HANDOVER_v003.jpg",kicker:"Szene 6 · Abschluss",title:"„Fair. Und wann muss ich unterwegs zum Arzt?“",
     options:[
      {t:"Bei Fieber über 38,5°, Blut im Stuhl, starker Austrocknung – oder wenn es nach drei Tagen nicht besser wird. Und: Loperamid sofort absetzen, falls Fieber dazukommt.",p:25,tr:12,ok:true,h:"Klare Kriterien, klare Grenze",x:"Vier überprüfbare Warnzeichen plus die wichtigste Loperamid-Regel. Der Skeptiker bekommt, was er respektiert: präzise, ehrliche Grenzen der Selbstmedikation."},
@@ -2624,7 +2649,7 @@ TOPICS.erkaeltung_chronik = {
      {t:"Das dürfen Sie mit Ihrem Blutdruck nicht nehmen. Punkt.",p:5,tr:-8,h:"Richtig, aber verschenkt",x:"Fachlich korrekt, kommunikativ schwach. Ohne Begründung und ohne Alternative kauft er die Kombi in der nächsten Apotheke – wo er nicht gefragt wird."},
      {t:"Fragen Sie am besten Ihren Kardiologen, ob Sie das nehmen dürfen.",p:10,tr:-2,h:"Unnötige Delegation",x:"Das ist eine klassische OTC-Beratungsfrage, die Sie selbst beantworten können. Sie schicken ihn für etwas weg, das Ihre Kernkompetenz ist."},
      {t:"Nehmen Sie die Kombi einfach nur halb dosiert, dann geht das schon.",p:0,tr:-12,h:"Improvisation statt Beratung",x:"Eine Kontraindikation wird nicht durch Halbierung aufgehoben, und die Dosierung von Fertigkombinationen ist nicht beliebig anpassbar."}]}},
-   {mech:"sentence",data:{scene:"assets/PCG_CU_CUS007_P05_CU-TALK_v003.jpg",kicker:"Szene 4b · Die Formulierung",title:"Formulieren Sie den entscheidenden Satz für den Kunden:",hint:"Tippen Sie die Bausteine in der richtigen Reihenfolge an. ↶ nimmt zurück.",cta:"Satz bestätigen",okH:"Sauber formuliert",badH:"Formulierung holprig",expl:"Der Satz erklärt in einem Zug den Wirkstoff, den Mechanismus und den Bezug zu SEINER Therapie – ohne Fachjargon und ohne Vorwurf. Genau diese Formulierung entscheidet, ob ein Chroniker die Einschränkung akzeptiert oder das Produkt in der nächsten Apotheke kauft.",chips:["Diese Kombination","enthält","einen abschwellenden Wirkstoff,","der den Blutdruck","steigern kann","–","das passt nicht","zu Ihren Blutdrucktabletten."],target:[0,1,2,3,4,5,6,7]}},
+   
  {mech:"shelf",data:{kicker:"Szene 5 · Die Empfehlung",title:"Hypertonie, Ramipril/Amlodipin/ASS, verstopfte Nase. Griff ins Regal:",
     boxes:[
      {n:"Xylometazolin",s:"Nasenspray, max. 7 Tage",col:"#1565C0",ok:true,p:20,tr:12,h:"Richtiger Griff",x:"Lokal abschwellend, systemische Wirkung gering – bei Hypertonie die pragmatische Wahl. Entscheidend ist der Hinweis: maximal 5–7 Tage, sonst Rebound-Schwellung."},
@@ -2930,7 +2955,7 @@ TOPICS.heuschnupfen_fahrer = {
      {t:"Das kommt von der verstopften Nase, das gibt sich mit dem Spray.",p:0,tr:-12,h:"Warnzeichen verharmlost",x:"Ein Engegefühl in der Brust hat nichts mit der Nasenatmung zu tun. Sie überschreiben ein mögliches Asthma-Zeichen mit einer bequemen Erklärung."},
      {t:"Dann nehmen Sie zusätzlich ein Asthmaspray.",p:0,tr:-10,h:"Nicht abgebbar",x:"Asthmatherapeutika sind verschreibungspflichtig und setzen eine Diagnose voraus. Diese Entscheidung liegt beim Arzt."},
      {t:"Beobachten Sie das mal ein paar Wochen.",p:5,tr:-4,h:"Zu abwartend",x:"Bei einem Berufskraftfahrer mit Atembeschwerden ist Abwarten die falsche Strategie – hier hängt Arbeitsfähigkeit dran."}]}},
-   {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS013_D_HANDOVER_v004.jpg",kicker:"Szene 4b · Die Formulierung",title:"Formulieren Sie den entscheidenden Hinweis für den Fahrer:",hint:"Tippen Sie die Bausteine in der richtigen Reihenfolge an. ↶ nimmt zurück.",cta:"Satz bestätigen",okH:"Sauber formuliert",badH:"Formulierung holprig",expl:"Der Satz verbindet die Anwendung mit seinem Beruf und macht den Selbsttest zur Bedingung. Für einen Berufskraftfahrer ist das keine Nebenbemerkung, sondern der wichtigste Satz des Gesprächs.",chips:["Nehmen Sie die erste Tablette","an einem Tag,","an dem Sie nicht fahren","–","damit Sie merken,","wie Sie darauf reagieren,","bevor Sie sich","hinters Steuer setzen."],target:[0,1,2,3,4,5,6,7]}},
+   
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS013_D_HANDOVER_v004.jpg",kicker:"Szene 5 · Abschluss",title:"„Und wie nehme ich das jetzt?“",
     options:[
      {t:"Täglich zur gleichen Zeit während der ganzen Pollenzeit, nicht erst wenn es schlimm ist – so wirkt es deutlich besser. Das Nasenspray braucht drei bis vier Tage bis zur vollen Wirkung. Und testen Sie die erste Tablette an einem Tag, an dem Sie nicht fahren.",p:25,tr:12,ok:true,h:"Perfekter Abschluss",x:"Drei entscheidende Punkte: kontinuierliche statt bedarfsweiser Anwendung, realistische Wirkerwartung beim Spray, und der Selbsttest vor der ersten Fahrt. Genau die Beratung, die den Unterschied zwischen wirkt nicht und wirkt ausmacht."},
@@ -2978,7 +3003,7 @@ TOPICS.rauchstopp_entschl = {
      {n:"Zweites Pflaster",s:"zusätzlich 21 mg",col:"#E65100",p:0,tr:-10,h:"Überdosierung",x:"Pflaster werden nicht verdoppelt. Für Spitzen nimmt man ein kurz wirksames Präparat, nicht mehr Basisdosis."},
      {n:"Kräuterzigaretten",s:"nikotinfrei",col:"#F9A825",p:0,tr:-8,h:"Kontraproduktiv",x:"Sie halten das Rauchritual aufrecht und erzeugen ebenfalls schädlichen Rauch. Fachlich nicht empfehlenswert."},
      {n:"Beruhigungstee",s:"pflanzlich",col:"#6A1B9A",p:5,tr:0,h:"Nett, aber wirkungslos",x:"Gegen Nikotinentzug ohne belegte Wirkung. Als Ritual-Ersatz beim Kaffee erwähnenswert, mehr nicht."}]}},
-   {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS014_D_HANDOVER_v003.jpg",kicker:"Szene 5b · Die Formulierung",title:"Formulieren Sie, was er bei einem Rückfall tun soll:",hint:"Tippen Sie die Bausteine in der richtigen Reihenfolge an. ↶ nimmt zurück.",cta:"Satz bestätigen",okH:"Sauber formuliert",badH:"Formulierung holprig",expl:"Der Satz nimmt dem Ausrutscher die Endgültigkeit und verhindert genau den Fehler, der aus einer Zigarette einen kompletten Rückfall macht: das gleichzeitige Absetzen der Pflaster. Diese eine Formulierung entscheidet oft über Erfolg oder Scheitern.",chips:["Wenn Sie einmal","schwach werden,","ist das kein Scheitern","–","rauchen Sie die eine","und machen Sie","mit dem Pflaster","einfach weiter."],target:[0,1,2,3,4,5,6,7]}},
+   
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS014_D_HANDOVER_v003.jpg",kicker:"Szene 6 · Abschluss",title:"„Und wenn ich schwach werde?“",
     options:[
      {t:"Ein Rückfall ist kein Scheitern – die meisten brauchen mehrere Anläufe, und jeder Versuch erhöht die Erfolgschance. Wichtig: nicht rauchen und Pflaster gleichzeitig absetzen, sondern weitermachen. Kommen Sie in zwei Wochen vorbei, dann schauen wir, ob die Stärke passt.",p:25,tr:12,ok:true,h:"Perfekter Abschluss",x:"Sie nehmen dem Rückfall die Endgültigkeit, verhindern den klassischen Abbruch nach dem ersten Ausrutscher und vereinbaren eine Nachbetreuung. Genau diese Begleitung verdoppelt die Erfolgsquote gegenüber der reinen Abgabe."},
@@ -3173,7 +3198,7 @@ TOPICS.husten_raucher = {
      {n:"Codein-Saft",s:"rezeptpflichtig",col:"#6A1B9A",p:0,tr:-10,h:"Nicht abgebbar",x:"Verschreibungspflichtig – und bei Verdacht auf eine chronische Lungenerkrankung mit Atemdepressionsrisiko ohnehin die falsche Richtung."},
      {n:"Stiller + Löser",s:"Kombipackung",col:"#F9A825",p:0,tr:-10,h:"Widerspruch in einer Packung",x:"Schleim lösen und gleichzeitig den Hustenreiz unterdrücken hebt sich gegenseitig auf – der gelöste Schleim bleibt liegen. Einer der klassischen Beratungsfehler beim Husten."},
      {n:"Erkältungsbalsam",s:"zum Einreiben",col:"#00838F",p:8,tr:0,h:"Angenehm, aber nebensächlich",x:"Subjektiv wohltuend, ohne relevanten Effekt auf das eigentliche Problem. Als Zusatz erwähnenswert, mehr nicht."}]}},
-   {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS019_D_HANDOVER_v003.jpg",kicker:"Szene 5b · Die Formulierung",title:"Formulieren Sie die Empfehlung – ohne Vorwurf, ohne Angst:",hint:"Tippen Sie die Bausteine in der richtigen Reihenfolge an. ↶ nimmt zurück.",cta:"Satz bestätigen",okH:"Sauber formuliert",badH:"Formulierung holprig",expl:"Der Satz nennt die drei Befunde sachlich, stellt keine Diagnose und gibt einen positiven Grund für den Arztbesuch. Bei einem Menschen, der Gesundheitsthemen seit Jahren meidet, entscheidet genau dieser Ton darüber, ob er hingeht.",chips:["Vier Monate Husten","mit Luftnot","und Gewichtsverlust","–","das sollte einmal","angeschaut werden,","weil sich so etwas","meist gut behandeln lässt."],target:[0,1,2,3,4,5,6,7]}},
+   
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS019_D_HANDOVER_v003.jpg",kicker:"Szene 6 · Abschluss",title:"„Und wenn ich doch nicht zum Arzt gehe?“",
     options:[
      {t:"Das ist Ihre Entscheidung. Ich sage Ihnen nur, woran Sie es dann selbst merken: Blut im Auswurf, Fieber, zunehmende Luftnot oder weiterer Gewichtsverlust – dann bitte nicht mehr warten. Und wenn Sie irgendwann übers Aufhören nachdenken: kommen Sie einfach vorbei, ohne Termin.",p:25,tr:12,ok:true,h:"Respekt, Kriterien, offene Tür",x:"Sie akzeptieren seine Autonomie, geben ihm trotzdem konkrete Warnzeichen an die Hand, und lassen eine niedrigschwellige Tür für das Rauchstopp-Thema offen – ohne ihn heute damit zu belasten. Genau so gewinnt man einen Menschen, der Gesundheitsthemen seit Jahren meidet."},
@@ -3284,12 +3309,7 @@ TOPICS.kopfschmerzen_kind.steps_en=[
    {t:"An adult suppository may be halved if you are careful.",ok:false,why:"Never. The active substance is not evenly distributed, the dose becomes incalculable."},
    {t:"Ibuprofen is additionally anti-inflammatory, paracetamol is not.",ok:true,why:"A relevant difference when choosing."},
    {t:"A headache that wakes the child at night is harmless.",ok:false,why:"On the contrary: waking at night is a warning sign and needs assessment."}]}},
- {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS001_D_HANDOVER_v003.jpg",kicker:"Scene 6 · Explaining the use",title:"Compose the usage instruction for the father:",
-  hint:"Tap the building blocks in the right order. ↶ undoes.",cta:"Confirm sentence",
-  okH:"Cleanly worded",badH:"Wording clumsy",
-  expl:"The sentence names the dosing aid, the reference quantity and the timing in one go - without jargon. That is how a usage instruction sticks: concrete, short, in the order he will actually do it at home.",
-  chips:["Give the syrup","with the dosing syringe,","the amount depends","on his body weight","-","the table is printed","on the pack,","ideally with food."],
-  target:[0,1,2,3,4,5,6,7]}},
+ 
  {mech:"mcq",data:{scene:"assets/PCG_CU_CUS001_P04_CU-NEUTRAL_v003.jpg",kicker:"Scene 7 · Closing",title:"\u201cHow do I know we DO need a doctor?\u201d",
   options:[
    {t:"Immediately for: fever with neck stiffness, repeated vomiting, altered behaviour, or after a head injury. And: if pain persists past 2-3 days, worsens, or wakes him at night.",p:25,tr:12,ok:true,h:"Perfect closing",x:"Two categories: emergency signs (now) and course signs (2-3 days). Night waking is the often-forgotten warning sign in children."},
@@ -3322,7 +3342,7 @@ TOPICS.halsschmerzen_selbst.steps_en=[
   okH:"Checked systematically",badH:"Gaps in your check",
   expl:"The two apparent alarms resolve on questioning: pain is actually bilateral (no abscess suspicion), and the 'breathlessness' was one choking episode while eating fast. No fever, no pus, swallowing possible – viral pharyngitis likely, self-medication acceptable. And note: the diabetes remark becomes product-relevant!",
   cards:[{t:"Scratchy throat since last evening",flag:false},{t:"No fever (measured today)",flag:false},{t:"Pain supposedly one-sided, severe",flag:true},{t:"By the way, I'm diabetic",flag:false},{t:"Internet says: definitely strep",flag:false},{t:"Brief breathlessness while eating yesterday",flag:true}]}},
- {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS002_B_COUNTER_v003.jpg",kicker:"Scene 3b · The wording",title:"Compose why there will be no antibiotic:",hint:"Tap the building blocks in the right order. ↶ undoes.",cta:"Confirm sentence",okH:"Cleanly worded",badH:"Wording clumsy",expl:"The sentence justifies the refusal professionally without lecturing, and ends with an alternative rather than a no. Exactly this structure - reason, evidence, offer - is the difference between a lost and a convinced customer.",chips:["Your symptoms point","to a viral infection","-","an antibiotic","does not work against that,","but I do have something","that will ease the pain","considerably."],target:[0,1,2,3,4,5,6,7]}},
+ 
  {mech:"shelf",data:{kicker:"Scene 3 · The recommendation",title:"No fever, no pus, diabetic. Reach for the shelf:",
   boxes:[
    {n:"Flurbiprofen",s:"lozenges, sugar-free",col:"#1565C0",ok:true,p:20,tr:12,h:"Right pick",x:"Locally anti-inflammatory, analgesic, sugar-free – right for a diabetic. Note: max 3 days, mind NSAID contraindications."},
@@ -3386,12 +3406,7 @@ TOPICS.kopfschmerzen_kind.steps_ar=[
    {t:"يجوز تنصيف تحميلة البالغين بحذر.",ok:false,why:"أبداً. المادة غير موزّعة بانتظام فتصبح الجرعة غير محسوبة."},
    {t:"الإيبوبروفين مضاد التهاب أيضاً بخلاف الباراسيتامول.",ok:true,why:"فرق مهم عند الاختيار."},
    {t:"الصداع الذي يوقظ الطفل ليلاً أمر حميد.",ok:false,why:"بالعكس: الاستيقاظ الليلي علامة إنذار تستوجب التقييم."}]}},
- {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS001_D_HANDOVER_v003.jpg",kicker:"المشهد 6 · شرح الاستعمال",title:"صُغ إرشاد الاستعمال للأب:",
-  hint:"انقر اللبنات بالترتيب الصحيح. و↶ للتراجع.",cta:"تأكيد الجملة",
-  okH:"صياغة سليمة",badH:"صياغة متعثرة",
-  expl:"الجملة تذكر أداة المعايرة والمرجع والتوقيت دفعة واحدة وبلا مصطلحات. هكذا يثبت إرشاد الاستعمال في ذهن الزبون: ملموس وقصير وبالترتيب الذي سينفّذه في البيت.",
-  chips:["أعطِ الشراب","بمحقنة المعايرة،","والكمية تُحدَّد","بحسب وزنه","–","والجدول مطبوع","على العلبة،","ويُفضَّل مع الطعام."],
-  target:[0,1,2,3,4,5,6,7]}},
+ 
  {mech:"mcq",data:{scene:"assets/PCG_CU_CUS001_P04_CU-NEUTRAL_v003.jpg",kicker:"المشهد 7 · الختام",title:"\u201cمتى أعرف أن علينا مراجعة الطبيب؟\u201d",
   options:[
    {t:"فوراً عند: حمى مع تيبّس الرقبة، تقيؤ متكرر، تغيّر في الوعي أو السلوك، أو بعد إصابة في الرأس. وأيضاً: إذا استمر الألم بعد 2-3 أيام أو اشتد أو أيقظه ليلاً.",p:25,tr:12,ok:true,h:"ختام مثالي",x:"فئتان: علامات طارئة (فوراً) وعلامات المسار (2-3 أيام). والاستيقاظ الليلي من الصداع هو العلامة المنسية عند الأطفال."},
@@ -3424,7 +3439,7 @@ TOPICS.halsschmerzen_selbst.steps_ar=[
   okH:"فحص منهجي",badH:"ثغرات في الفحص",
   expl:"العلامتان الظاهرتان تنحلّان بالسؤال: الألم في الجهتين فعلياً (لا شبهة خرّاج)، و«ضيق النفس» كان شرقة واحدة أثناء أكل سريع. لا حمى، لا قيح، البلع ممكن – التهاب بلعوم فيروسي مرجّح، والعلاج الذاتي مقبول. وانتبه: معلومة السكري ستصبح حاسمة عند اختيار المنتج!",
   cards:[{t:"حرقة في الحلق منذ مساء الأمس",flag:false},{t:"لا حمى (مقاسة اليوم)",flag:false},{t:"ألم شديد بجهة واحدة كما يدّعي",flag:true},{t:"بالمناسبة أنا مصاب بالسكري",flag:false},{t:"الإنترنت يقول: عقديات مؤكدة",flag:false},{t:"ضيق نفس قصير أثناء الأكل أمس",flag:true}]}},
- {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS002_B_COUNTER_v003.jpg",kicker:"المشهد 3ب · الصياغة",title:"صُغ سبب عدم صرف المضاد الحيوي:",hint:"انقر اللبنات بالترتيب الصحيح. و↶ للتراجع.",cta:"تأكيد الجملة",okH:"صياغة سليمة",badH:"صياغة متعثرة",expl:"الجملة تعلّل الرفض علمياً بلا استعلاء، وتنتهي ببديل لا برفض. وهذه البنية بالذات – سبب ثم دليل ثم عرض – هي الفرق بين زبون خاسر وزبون مقتنع.",chips:["أعراضك تشير","إلى عدوى فيروسية","–","والمضاد الحيوي","لا يعمل ضدها،","لكن عندي شيء","يخفف الألم","بشكل واضح."],target:[0,1,2,3,4,5,6,7]}},
+ 
  {mech:"shelf",data:{kicker:"المشهد 3 · التوصية",title:"لا حمى، لا قيح، مريض سكري. مدّ يدك إلى الرف:",
   boxes:[
    {n:"فلوربيبروفين",s:"أقراص مص، خالية من السكر",col:"#1565C0",ok:true,p:20,tr:12,h:"الاختيار الصحيح",x:"مضاد التهاب موضعي مسكّن، خالٍ من السكر – مناسب لمريض السكري. تنبيه: 3 أيام كحد أقصى، وانتبه لموانع مضادات الالتهاب."},
@@ -3540,7 +3555,7 @@ TOPICS.reisediarrhoe_misstrau.steps_en=[
    {n:"Charcoal",s:"tablets",col:"#6A1B9A",p:5,tr:-2,h:"Thin evidence",x:"Traditional product, weak evidence. With a skeptic, of all people, you'd gamble away your fresh credibility."},
    {n:"Probiotic",s:"capsules",col:"#00838F",p:8,tr:0,h:"Frame it honestly",x:"Mixed data, moderate effects. Acceptable as an option with honest framing - not as a promise."},
    {n:"Healing clay",s:"powder",col:"#F9A825",p:0,tr:-4,h:"Folklore",x:"No solid evidence for traveler's diarrhea. He would have googled it - and caught you."}]}},
- {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS004_D_HANDOVER_v003.jpg",kicker:"Scene 5b · The wording",title:"Compose the most important rule for the road:",hint:"Tap the building blocks in the right order. ↶ undoes.",cta:"Confirm sentence",okH:"Cleanly worded",badH:"Wording clumsy",expl:"The sentence puts rehydration before the anti-motility drug and names the limit immediately. With a skeptic, exactly this order - the cheap and essential first, then the restriction - is more credible than any product recommendation.",chips:["The most important thing is","fluid with electrolytes","-","the loperamide","only in an emergency","and for two days at most,","never with fever","or blood in the stool."],target:[0,1,2,3,4,5,6,7]}},
+ 
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS004_D_HANDOVER_v003.jpg",kicker:"Scene 6 · Closing",title:"\u201cFair. And when do I need a doctor on the road?\u201d",
   options:[
    {t:"For fever above 38.5°, blood in the stool, severe dehydration - or no improvement after three days. And: stop loperamide immediately if fever appears.",p:25,tr:12,ok:true,h:"Clear criteria, clear limits",x:"Four checkable warning signs plus the key loperamide rule. The skeptic gets what he respects: precise, honest limits of self-medication."},
@@ -3577,7 +3592,7 @@ TOPICS.reisediarrhoe_misstrau.steps_ar=[
    {n:"فحم طبي",s:"أقراص",col:"#6A1B9A",p:5,tr:-2,h:"أدلة هزيلة",x:"منتج تقليدي بدليل ضعيف. مع المتشكك تحديداً تراهن بمصداقيتك التي كسبتها للتو."},
    {n:"بروبيوتيك",s:"كبسولات",col:"#00838F",p:8,tr:0,h:"قدّمه بصدق",x:"بيانات متباينة وأثر متواضع. مقبول كخيار بتأطير صادق - لا كوعد شفاء."},
    {n:"طين علاجي",s:"مسحوق",col:"#F9A825",p:0,tr:-4,h:"فولكلور",x:"لا دليل متين في إسهال المسافر. كان سيبحث عنه - ويمسك بك."}]}},
- {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS004_D_HANDOVER_v003.jpg",kicker:"المشهد 5ب · الصياغة",title:"صُغ أهم قاعدة أثناء السفر:",hint:"انقر اللبنات بالترتيب الصحيح. و↶ للتراجع.",cta:"تأكيد الجملة",okH:"صياغة سليمة",badH:"صياغة متعثرة",expl:"الجملة تضع تعويض السوائل قبل موقف الإسهال وتذكر الحد فوراً. ومع المتشكك يكون هذا الترتيب بالذات – الأرخص والأهم أولاً ثم القيد – أكثر مصداقية من أي توصية بمنتج.",chips:["الأهم هو","السوائل مع الأملاح","–","أما اللوبيراميد","ففي الطوارئ فقط","ولمدة يومين كحد أقصى،","وممنوع مع الحمى","أو الدم في البراز."],target:[0,1,2,3,4,5,6,7]}},
+ 
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS004_D_HANDOVER_v003.jpg",kicker:"المشهد 6 · الختام",title:"\u201cمنصف. ومتى أراجع الطبيب في السفر؟\u201d",
   options:[
    {t:"عند حمى فوق 38.5°، دم في البراز، جفاف شديد - أو إن لم يتحسن خلال ثلاثة أيام. وأوقف اللوبيراميد فوراً إذا ظهرت حمى.",p:25,tr:12,ok:true,h:"معايير واضحة وحدود واضحة",x:"أربع علامات قابلة للتحقق مع قاعدة اللوبيراميد الأهم. نال المتشكك ما يحترمه: حدود دقيقة صادقة للعلاج الذاتي."},
@@ -3682,7 +3697,7 @@ TOPICS.erkaeltung_chronik.steps_en=[
    {t:"With your blood pressure you must not take that. Full stop.",p:5,tr:-8,h:"Correct but wasted",x:"Professionally right, communicatively weak. Without a reason and without an alternative he buys it at the next pharmacy - where nobody asks."},
    {t:"Better ask your cardiologist whether you may take it.",p:10,tr:-2,h:"Unnecessary delegation",x:"This is a classic OTC counselling question you can answer yourself. You send him away for something that is your core competence."},
    {t:"Just take half the dose of the combination, that'll be fine.",p:0,tr:-12,h:"Improvisation instead of counselling",x:"A contraindication is not removed by halving, and fixed combinations are not freely dose-adjustable."}]}},
- {mech:"sentence",data:{scene:"assets/PCG_CU_CUS007_P05_CU-TALK_v003.jpg",kicker:"Scene 4b · The wording",title:"Compose the decisive sentence for the customer:",hint:"Tap the building blocks in the right order. ↶ undoes.",cta:"Confirm sentence",okH:"Cleanly worded",badH:"Wording clumsy",expl:"The sentence explains in one go the substance, the mechanism and the link to HIS therapy - without jargon and without blame. This exact wording decides whether a chronic patient accepts the restriction or buys the product at the next pharmacy.",chips:["This combination","contains","a decongestant","that can raise","your blood pressure","–","which does not fit","with your blood-pressure tablets."],target:[0,1,2,3,4,5,6,7]}},
+ 
  {mech:"shelf",data:{kicker:"Scene 5 · The recommendation",title:"Hypertension, ramipril/amlodipine/ASA, blocked nose. Reach for the shelf:",
   boxes:[
    {n:"Xylometazoline",s:"nasal spray, max 7 days",col:"#1565C0",ok:true,p:20,tr:12,h:"Right pick",x:"Locally decongestant, minimal systemic effect - the pragmatic choice in hypertension. The key point is the warning: maximum 5-7 days, otherwise rebound swelling."},
@@ -3756,7 +3771,7 @@ TOPICS.erkaeltung_chronik.steps_ar=[
    {t:"ممنوع عليك هذا مع ضغطك. انتهى.",p:5,tr:-8,h:"صحيح لكنه مُهدَر",x:"صحيح علمياً وضعيف تواصلياً. بلا تعليل وبلا بديل سيشتريه من الصيدلية المجاورة - حيث لا يسأله أحد."},
    {t:"اسأل طبيب القلب إن كان مسموحاً لك.",p:10,tr:-2,h:"تفويض بلا داعٍ",x:"هذا سؤال استشارة OTC كلاسيكي تجيب عنه بنفسك. ترسله بعيداً في صميم اختصاصك."},
    {t:"خذ نصف الجرعة من المركّب وسيكون الأمر بخير.",p:0,tr:-12,h:"ارتجال بدل استشارة",x:"مانع الاستعمال لا يزول بالتنصيف، وجرعات المركّبات الجاهزة ليست قابلة للتعديل اعتباطاً."}]}},
- {mech:"sentence",data:{scene:"assets/PCG_CU_CUS007_P05_CU-TALK_v003.jpg",kicker:"المشهد 4ب · الصياغة",title:"صُغ الجملة الحاسمة للزبون:",hint:"انقر اللبنات بالترتيب الصحيح. و↶ للتراجع.",cta:"تأكيد الجملة",okH:"صياغة سليمة",badH:"صياغة متعثرة",expl:"الجملة تشرح دفعة واحدة المادة والآلية وعلاقتها بعلاجه هو - بلا مصطلحات وبلا لوم. وهذه الصياغة بالذات تحسم إن كان المريض المزمن سيتقبّل القيد أم سيشتري المنتج من الصيدلية المجاورة.",chips:["هذا المستحضر المركّب","يحتوي","مادة مزيلة للاحتقان","قد ترفع","ضغط دمك","–","وهذا لا يناسب","أقراص الضغط التي تتناولها."],target:[0,1,2,3,4,5,6,7]}},
+ 
  {mech:"shelf",data:{kicker:"المشهد 5 · التوصية",title:"ارتفاع ضغط، راميبريل/أملوديبين/أسبرين، أنف مسدود. مدّ يدك إلى الرف:",
   boxes:[
    {n:"زيلوميتازولين",s:"بخاخ أنف، 7 أيام كحد أقصى",col:"#1565C0",ok:true,p:20,tr:12,h:"الاختيار الصحيح",x:"مزيل احتقان موضعي بأثر جهازي ضئيل - الخيار العملي مع ارتفاع الضغط. والحاسم هو التنبيه: 5-7 أيام كحد أقصى وإلا حدث تورّم ارتدادي."},
@@ -4141,7 +4156,7 @@ TOPICS.heuschnupfen_fahrer.steps_en=[
    {t:"That's from the blocked nose, the spray will fix it.",p:0,tr:-12,h:"Warning sign trivialized",x:"Chest tightness has nothing to do with nasal breathing. You overwrite a possible asthma sign with a convenient explanation."},
    {t:"Then take an asthma inhaler as well.",p:0,tr:-10,h:"Not dispensable",x:"Asthma medication is prescription-only and requires a diagnosis. That decision belongs to a physician."},
    {t:"Just watch it for a few weeks.",p:5,tr:-4,h:"Too passive",x:"In a professional driver with breathing symptoms, waiting is the wrong strategy - his ability to work depends on it."}]}},
- {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS013_D_HANDOVER_v004.jpg",kicker:"Scene 4b · The wording",title:"Compose the decisive instruction for the driver:",hint:"Tap the building blocks in the right order. ↶ undoes.",cta:"Confirm sentence",okH:"Cleanly worded",badH:"Wording clumsy",expl:"The sentence links the usage to his job and makes the self-test a condition. For a professional driver that is not a side remark but the most important sentence of the conversation.",chips:["Take the first tablet","on a day","when you are not driving","-","so you notice","how you react to it","before you get","behind the wheel."],target:[0,1,2,3,4,5,6,7]}},
+ 
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS013_D_HANDOVER_v004.jpg",kicker:"Scene 5 · Closing",title:"\u201cAnd how do I take this?\u201d",
   options:[
    {t:"Daily at the same time throughout the pollen season, not only when it gets bad - it works considerably better that way. The nasal spray needs three to four days for full effect. And test the first tablet on a day when you are not driving.",p:25,tr:12,ok:true,h:"Perfect closing",x:"Three decisive points: continuous instead of on-demand use, realistic expectations for the spray, and the self-test before the first shift. Exactly the counselling that makes the difference between it doesn't work and it works."},
@@ -4177,7 +4192,7 @@ TOPICS.rauchstopp_entschl.steps_en=[
    {n:"A second patch",s:"another 21 mg",col:"#E65100",p:0,tr:-10,h:"Overdose",x:"Patches are not doubled. For peaks you use a short-acting product, not more base dose."},
    {n:"Herbal cigarettes",s:"nicotine-free",col:"#F9A825",p:0,tr:-8,h:"Counterproductive",x:"They maintain the smoking ritual and still produce harmful smoke. Not professionally recommendable."},
    {n:"Calming tea",s:"herbal",col:"#6A1B9A",p:5,tr:0,h:"Pleasant but ineffective",x:"No proven effect against nicotine withdrawal. Worth mentioning as a ritual substitute with coffee, nothing more."}]}},
- {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS014_D_HANDOVER_v003.jpg",kicker:"Scene 5b · The wording",title:"Compose what he should do after a slip:",hint:"Tap the building blocks in the right order. ↶ undoes.",cta:"Confirm sentence",okH:"Cleanly worded",badH:"Wording clumsy",expl:"The sentence removes the finality from a slip and prevents exactly the error that turns one cigarette into a full relapse: stopping the patches at the same time. This single wording often decides between success and failure.",chips:["If you slip","once,","that is not failure","-","smoke that one","and simply carry on","with the patch","as before."],target:[0,1,2,3,4,5,6,7]}},
+ 
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS014_D_HANDOVER_v003.jpg",kicker:"Scene 6 · Closing",title:"\u201cAnd what if I slip?\u201d",
   options:[
    {t:"A slip is not failure - most people need several attempts, and each attempt raises the odds. Important: don't stop the patches along with it, carry on. Come back in two weeks and we'll check whether the strength fits.",p:25,tr:12,ok:true,h:"Perfect closing",x:"You remove the finality from a relapse, prevent the classic abandonment after the first slip, and arrange follow-up. Precisely this accompaniment doubles the success rate compared with dispensing alone."},
@@ -4215,7 +4230,7 @@ TOPICS.heuschnupfen_fahrer.steps_ar=[
    {t:"هذا من انسداد الأنف وسيزول مع البخاخ.",p:0,tr:-12,h:"تهوين لعلامة إنذار",x:"الضيق في الصدر لا علاقة له بتنفس الأنف. تستبدل علامة ربو محتملة بتفسير مريح."},
    {t:"إذن خذ بخاخ ربو أيضاً.",p:0,tr:-10,h:"غير قابل للصرف",x:"أدوية الربو بوصفة وتستلزم تشخيصاً. هذا قرار الطبيب."},
    {t:"راقب الأمر بضعة أسابيع.",p:5,tr:-4,h:"سلبي أكثر مما يجب",x:"مع سائق مهني يعاني أعراضاً تنفسية يصبح الانتظار استراتيجية خاطئة - فقدرته على العمل معلّقة بها."}]}},
- {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS013_D_HANDOVER_v004.jpg",kicker:"المشهد 4ب · الصياغة",title:"صُغ التنبيه الحاسم للسائق:",hint:"انقر اللبنات بالترتيب الصحيح. و↶ للتراجع.",cta:"تأكيد الجملة",okH:"صياغة سليمة",badH:"صياغة متعثرة",expl:"الجملة تربط الاستعمال بمهنته وتجعل الاختبار الذاتي شرطاً. وبالنسبة لسائق مهني ليست هذه ملاحظة جانبية بل أهم جملة في الحوار كله.",chips:["تناول القرص الأول","في يوم","لا تقود فيه","–","لتلاحظ","كيف يؤثر فيك","قبل أن تجلس","خلف المقود."],target:[0,1,2,3,4,5,6,7]}},
+ 
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS013_D_HANDOVER_v004.jpg",kicker:"المشهد 5 · الختام",title:"\u201cوكيف أتناوله الآن؟\u201d",
   options:[
    {t:"يومياً في الوقت نفسه طوال موسم اللقاح، لا عند اشتداد الأعراض فقط - فمفعوله أفضل بوضوح هكذا. وبخاخ الأنف يحتاج ثلاثة إلى أربعة أيام ليكتمل مفعوله. وجرّب القرص الأول في يوم لا تقود فيه.",p:25,tr:12,ok:true,h:"ختام مثالي",x:"ثلاث نقاط حاسمة: الاستعمال المستمر بدل عند الحاجة، وتوقع واقعي لمفعول البخاخ، والاختبار الذاتي قبل أول رحلة. هذه بالضبط الاستشارة التي تصنع الفرق بين «لا ينفع» و«ينفع»."},
@@ -4251,7 +4266,7 @@ TOPICS.rauchstopp_entschl.steps_ar=[
    {n:"لصقة ثانية",s:"21 ملغ إضافية",col:"#E65100",p:0,tr:-10,h:"جرعة زائدة",x:"اللصقات لا تُضاعَف. وللذروات يُستعمل مستحضر قصير المفعول لا مزيد من الجرعة الأساسية."},
    {n:"سجائر أعشاب",s:"بلا نيكوتين",col:"#F9A825",p:0,tr:-8,h:"عكس المطلوب",x:"تُبقي طقس التدخين وتنتج دخاناً ضاراً أيضاً. غير موصى بها مهنياً."},
    {n:"شاي مهدّئ",s:"نباتي",col:"#6A1B9A",p:5,tr:0,h:"لطيف لكنه بلا مفعول",x:"لا أثر مثبت على انسحاب النيكوتين. يُذكر كبديل طقسي مع القهوة، لا أكثر."}]}},
- {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS014_D_HANDOVER_v003.jpg",kicker:"المشهد 5ب · الصياغة",title:"صُغ ما عليه فعله عند الزلة:",hint:"انقر اللبنات بالترتيب الصحيح. و↶ للتراجع.",cta:"تأكيد الجملة",okH:"صياغة سليمة",badH:"صياغة متعثرة",expl:"الجملة تنزع عن الزلة صفة النهائية وتمنع بالضبط الخطأ الذي يحوّل سيجارة واحدة إلى انتكاس كامل: إيقاف اللصقات معها. وهذه الصياغة وحدها تحسم النجاح أو الفشل غالباً.",chips:["إن ضعفتَ","مرة،","فهذا ليس فشلاً","–","دخّن تلك الواحدة","وواصل","مع اللصقة","كما كنت."],target:[0,1,2,3,4,5,6,7]}},
+ 
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS014_D_HANDOVER_v003.jpg",kicker:"المشهد 6 · الختام",title:"\u201cوماذا لو ضعفتُ؟\u201d",
   options:[
    {t:"الزلة ليست فشلاً - أغلب الناس يحتاجون محاولات عدة، وكل محاولة ترفع فرص النجاح. والمهم: لا توقف اللصقات معها بل واصل. وعُد بعد أسبوعين لنرى إن كان العيار مناسباً.",p:25,tr:12,ok:true,h:"ختام مثالي",x:"نزعت عن الانتكاس صفة النهائية، ومنعت التوقف الكلاسيكي بعد أول زلة، ورتّبت متابعة. وهذه المرافقة تحديداً تضاعف نسبة النجاح مقارنة بالصرف المجرد."},
@@ -4472,7 +4487,7 @@ TOPICS.husten_raucher.steps_en=[
    {n:"Codeine syrup",s:"prescription only",col:"#6A1B9A",p:0,tr:-10,h:"Not dispensable",x:"Prescription-only - and with suspected chronic lung disease and respiratory depression risk the wrong direction anyway."},
    {n:"Suppressant + expectorant",s:"combination pack",col:"#F9A825",p:0,tr:-10,h:"A contradiction in one box",x:"Loosening phlegm while suppressing the cough reflex cancels itself out - the loosened secretion stays put. One of the classic counselling errors in cough."},
    {n:"Cold rub",s:"topical balm",col:"#00838F",p:8,tr:0,h:"Pleasant but peripheral",x:"Subjectively soothing, without relevant effect on the actual problem. Worth mentioning as an addition, nothing more."}]}},
- {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS019_D_HANDOVER_v003.jpg",kicker:"Scene 5b · The wording",title:"Compose the recommendation - without blame, without fear:",hint:"Tap the building blocks in the right order. ↶ undoes.",cta:"Confirm sentence",okH:"Cleanly worded",badH:"Wording clumsy",expl:"The sentence names the three findings factually, makes no diagnosis, and gives a positive reason for the doctor's visit. In someone who has avoided health topics for years, exactly this tone decides whether he goes.",chips:["Four months of coughing","with breathlessness","and weight loss","-","that should be","looked at once,","because such things","are usually treatable well."],target:[0,1,2,3,4,5,6,7]}},
+ 
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS019_D_HANDOVER_v003.jpg",kicker:"Scene 6 · Closing",title:"\u201cAnd what if I don't go to a doctor after all?\u201d",
   options:[
    {t:"That's your decision. I'll just tell you what to watch for yourself: blood in the sputum, fever, increasing breathlessness or further weight loss - then please don't wait any longer. And if you ever think about quitting: just drop by, no appointment needed.",p:25,tr:12,ok:true,h:"Respect, criteria, open door",x:"You accept his autonomy, still hand him concrete warning signs, and leave a low-threshold door open for the smoking-cessation topic without burdening him with it today. That is how you keep a person who has avoided health topics for years."},
@@ -4581,7 +4596,7 @@ TOPICS.husten_raucher.steps_ar=[
    {n:"شراب كوديين",s:"بوصفة طبية",col:"#6A1B9A",p:0,tr:-10,h:"غير قابل للصرف",x:"بوصفة - ومع الاشتباه بداء رئوي مزمن وخطر تثبيط التنفس هو الاتجاه الخاطئ أصلاً."},
    {n:"مثبط + مذيب",s:"عبوة مركّبة",col:"#F9A825",p:0,tr:-10,h:"تناقض في علبة واحدة",x:"إذابة البلغم مع كبح منعكس السعال يلغي أحدهما الآخر - فيبقى البلغم المذاب مكانه. من أشهر أخطاء الاستشارة في السعال."},
    {n:"مرهم صدر",s:"للدهن",col:"#00838F",p:8,tr:0,h:"مريح لكنه هامشي",x:"مريح ذاتياً وبلا أثر مهم على المشكلة الحقيقية. يُذكر كإضافة لا أكثر."}]}},
- {mech:"sentence",data:{scene:"assets/PCG_SCN_CUS019_D_HANDOVER_v003.jpg",kicker:"المشهد 5ب · الصياغة",title:"صُغ التوصية – بلا لوم وبلا إخافة:",hint:"انقر اللبنات بالترتيب الصحيح. و↶ للتراجع.",cta:"تأكيد الجملة",okH:"صياغة سليمة",badH:"صياغة متعثرة",expl:"الجملة تسمّي النتائج الثلاث بموضوعية، ولا تضع تشخيصاً، وتمنح سبباً إيجابياً لزيارة الطبيب. ومع شخص تجنّب المواضيع الصحية سنوات، تحسم هذه النبرة تحديداً إن كان سيذهب.",chips:["أربعة أشهر من السعال","مع ضيق النفس","ونقص الوزن","–","هذا يستحق","أن يُفحص مرة،","لأن مثل هذه الأمور","تُعالَج جيداً غالباً."],target:[0,1,2,3,4,5,6,7]}},
+ 
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS019_D_HANDOVER_v003.jpg",kicker:"المشهد 6 · الختام",title:"\u201cوإن لم أذهب إلى الطبيب؟\u201d",
   options:[
    {t:"هذا قرارك. سأخبرك فقط بما تنتبه إليه بنفسك: دم في القشع، أو حمى، أو ازدياد ضيق النفس، أو نقص وزن إضافي - عندها لا تنتظر أكثر. وإن فكّرت يوماً في الإقلاع: مرّ علينا بلا موعد.",p:25,tr:12,ok:true,h:"احترام ومعايير وباب مفتوح",x:"تقبل استقلاليته، وتمنحه رغم ذلك علامات إنذار ملموسة، وتترك باباً منخفض العتبة لموضوع الإقلاع دون أن تُثقله به اليوم. هكذا تكسب إنساناً تجنّب المواضيع الصحية سنوات."},
@@ -5075,7 +5090,7 @@ function applyLang(){
   document.querySelectorAll('.lang-btn').forEach(function(b){ b.classList.toggle('on', b.dataset.lang===state.lang); });
   // start screen
   document.getElementById('gtSub').textContent=t('sub');
-  document.getElementById('playBtn').textContent=t('play');
+  document.getElementById('playBtn').textContent=t('startGame');
   document.getElementById('linkAbout').textContent=t('about');
   document.getElementById('linkCourse').textContent=t('course');
   document.getElementById('linkCases').textContent=
@@ -5352,11 +5367,18 @@ function custDraw(){
     var mark = (c.state==='wait')
       ? '<span class="cu-tag">'+ICONS.draw('speak')+'</span>'
       : (mad ? '<span class="cu-tag mad">'+t('custMad')+'</span>' : '');
-    el.innerHTML='<div class="cu-body">'+inner+'</div>'+mark;
+    /* Nur neu zeichnen, wenn sich wirklich etwas geaendert hat. Sonst
+       verschwindet das Antippziel zwischen Druck und Loslassen. */
+    var sig = c.state+'|'+(src||'-')+'|'+state.lang;
+    if(el.dataset.sig !== sig){
+      el.dataset.sig = sig;
+      el.innerHTML='<div class="cu-body">'+inner+'</div>'+mark;
+    }
     el.style.height=h+'px'; el.style.width=w+'px';
     el.style.left=px+'px'; el.style.top=(py-bob)+'px';
     el.style.transform='translate(-50%,-100%)';
-    el.querySelector('.cu-body').style.transform = (c.dir==='right'?'scaleX(-1)':'none');
+    var body=el.querySelector('.cu-body');
+    if(body) body.style.transform = (c.dir==='right'?'scaleX(-1)':'none');
     el.classList.toggle('mad', mad);
     el.classList.toggle('tapp', c.state==='wait');
     el.dataset.cid=c.id;
