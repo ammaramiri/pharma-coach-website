@@ -710,7 +710,7 @@ body.rtl .rx-hint{right:auto;left:14px}
 /* Kunden in der Offizin */
 .w-custlayer{position:absolute;inset:0;pointer-events:none;z-index:9}
 .w-cust .cu-body{width:100%;height:100%;line-height:0}
-.w-cust.tapp{pointer-events:auto;cursor:pointer}
+.w-cust.tapp{pointer-events:auto;cursor:pointer;touch-action:manipulation}
 .w-cust.tapp::after{content:'';position:absolute;left:-14%;right:-14%;top:-10%;bottom:-6%}
 .cu-tag{position:absolute;left:50%;top:-6px;transform:translate(-50%,-100%);
   background:rgba(255,255,255,.96);border:2px solid var(--teal-dark);border-radius:999px;
@@ -6111,6 +6111,11 @@ document.getElementById('wCustLayer').addEventListener('click', function(e){
   if(!el) return;
   var c=custById(el.dataset.cid);
   if(!c || c.state!=='wait') return;
+  /* Ohne das hier lief der Klick weiter bis zur Buehne. Deren erste Zeile
+     lautet: ist eine Karte offen, schliesse sie. Also ging das Panel im
+     selben Klick wieder zu, in dem es aufging. */
+  e.stopPropagation();
+  if(e.preventDefault) e.preventDefault();
   openPanel(t('custHere'), t('custHint'), [
     {t:t('serveNow'), cls:'main', fn:function(){
       var k=custServe(c); startLevel(k.lv); run.fromCustomer=true; }},
