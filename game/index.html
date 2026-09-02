@@ -735,7 +735,9 @@ body.rtl .rx-hint{right:auto;left:14px}
   animation:keyPulse 2.4s ease-in-out infinite}
 .cu-tag .ico{width:15px;height:15px;color:var(--teal-dark)}
 .cu-tag.mad{border-color:var(--red);color:var(--red);font-family:'Inter',system-ui,sans-serif;
-  font-weight:800;font-size:11px;line-height:1.2;white-space:nowrap;animation:none}
+  font-weight:800;font-size:11px;line-height:1.2;white-space:nowrap;animation:none;
+  position:relative;z-index:70}
+.w-cust.mad{z-index:60}
 .w-cust.mad{filter:drop-shadow(0 0 6px rgba(193,18,31,.55))}
 .replay-note{margin:10px 0 0;font-size:12px;color:var(--soft);background:var(--sand);
   border-radius:10px;padding:8px 12px}
@@ -1230,7 +1232,7 @@ var I18N = {
    ist, steht es unten in der Spielanleitung, damit es niemandem entgeht. */
 var UNLOCK_ALL = true;
 
-var PC_BUILD = "2026-09-03 \u00b7 Kundenbilder" +
+var PC_BUILD = "2026-09-03c \u00b7 Tiefensortierung" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5261,13 +5263,32 @@ var CUS_GEDULD = 95;    /* Sekunden, bis einer von selbst geht */
 var CUS_STRAFE = -20;   /* Punkte, wenn er veraergert geht */
 
 var CUS_IMG = {};
+var CUS_LOAD = { ok:0, fail:0, total:0, ersterFehler:null };
 function custSrc(id){ return 'assets/cust/cus_'+id+'.png'; }
-(function(){
+function custPreload(){
+  CUS_IMG={}; CUS_LOAD={ ok:0, fail:0, total:0, ersterFehler:null };
   for(var k in PERSONAS){
-    (function(id){ var im=new Image();
-      im.onload=function(){ CUS_IMG[id]=custSrc(id); }; im.src=custSrc(id); })(k);
+    (function(id){
+      CUS_LOAD.total++;
+      var url=custSrc(id);
+      var im=new Image();
+      im.onload =function(){ CUS_IMG[id]=url; CUS_LOAD.ok++; };
+      im.onerror=function(){
+        CUS_LOAD.fail++;
+        if(!CUS_LOAD.ersterFehler){
+          CUS_LOAD.ersterFehler=im.src;
+          try{ console.warn('Kundenbild fehlt: '+im.src); }catch(e){}
+        }
+      };
+      im.src=url;
+    })(k);
   }
-})();
+  setTimeout(function(){
+    try{ console.log('Kundenbilder: '+CUS_LOAD.ok+' geladen, '+CUS_LOAD.fail+' fehlgeschlagen'+
+      (CUS_LOAD.ersterFehler?' · erster Fehler: '+CUS_LOAD.ersterFehler:'')); }catch(e){}
+  }, 4000);
+}
+custPreload();
 var CUS_BLANK = '<svg viewBox="0 0 40 96" xmlns="http://www.w3.org/2000/svg">'+
   '<path d="M20 20c-9 0-14 6-14 15v28c0 4 2 6 5 6h18c3 0 5-2 5-6V35c0-9-5-15-14-15Z" fill="#5A6B7A"/>'+
   '<path d="M13 69h6v22h-6zM21 69h6v22h-6z" fill="#3E4A56"/>'+
@@ -5412,6 +5433,7 @@ function custDraw(){
     el.style.transform='translate(-50%,-100%)';
     var body=el.querySelector('.cu-body');
     if(body) body.style.transform = (c.dir==='right'?'scaleX(-1)':'none');
+    el.style.zIndex = mad ? 60 : (10 + Math.round(c.pos.y));
     el.classList.toggle('mad', mad);
     el.classList.toggle('tapp', c.state==='wait');
     el.dataset.cid=c.id;
@@ -6303,8 +6325,10 @@ var _gdThen=null;
 function openGuide(then){
   _gdThen=then||null;
   document.getElementById('gdTitle').textContent=t('guide');
+  var kb = CUS_LOAD.ok+'/'+CUS_LOAD.total;
+  if(CUS_LOAD.ersterFehler) kb += ' · '+CUS_LOAD.ersterFehler;
   document.getElementById('gdBody').innerHTML=(GUIDE[state.lang]||GUIDE.de)+
-    '<p class="gd-build">Build '+PC_BUILD+'</p>';
+    '<p class="gd-build">Build '+PC_BUILD+'<br>Kunden '+kb+'</p>';
   document.getElementById('gdClose').textContent=t('weiter');
   document.getElementById('guideModal').classList.add('show');
   state.guideSeen=true; save();
