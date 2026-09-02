@@ -700,14 +700,21 @@ body.rtl .rx-hint{right:auto;left:14px}
 .bubble{max-width:100%;box-sizing:border-box;overflow-wrap:anywhere;white-space:normal}
 .bubble-stack{max-width:100%;box-sizing:border-box;overflow:hidden}
 @media(max-width:900px){
-  /* Auf dem Telefon ist der Schwanz der Blase teurer als er wert ist.
-     Er wird nach innen gelegt, sonst schiebt er den Text ueber den Rand. */
-  .bubble{max-width:100%}
-  .bubble.tail-left::after{left:10px;top:auto;bottom:-20px;transform:none;
-    border-right-color:transparent;border-top-color:var(--ink)}
-  body.rtl .bubble.tail-left::after{left:auto;right:10px;border-left-color:transparent;
-    border-top-color:var(--ink)}
-  .bubble-stack{padding-left:8px;padding-right:8px}
+  /* Auf dem Telefon liegt der Text nicht mehr ueber dem Bild, sondern
+     darunter. Eine Sprechblase auf einem Bild muss immer schmaler sein
+     als das Bild, und sobald der Satz laenger wird, laeuft sie heraus.
+     Untereinander gibt es diese Grenze nicht mehr. */
+  .panel{grid-template-areas:"vis" "stack";grid-template-rows:auto auto;
+    background:var(--sand)}
+  .panel::before{display:none}
+  .panel img{grid-area:vis;position:relative;width:100%;height:auto;
+    aspect-ratio:16/9;object-fit:cover;align-self:start}
+  .panel .rx-visual{grid-area:vis}
+  .bubble-stack{grid-area:stack;position:relative;align-self:auto;
+    padding:12px 12px 60px;align-items:stretch;gap:10px}
+  .bubble{max-width:100%;width:100%}
+  .bubble.tail-left::after{display:none}
+  .bubble .who{color:var(--red)}
 }
 .panel .bubble, .panel-doc{max-width:100%}
 @media(max-width:760px){
@@ -732,6 +739,8 @@ body.rtl .rx-hint{right:auto;left:14px}
 .w-cust.mad{filter:drop-shadow(0 0 6px rgba(193,18,31,.55))}
 .replay-note{margin:10px 0 0;font-size:12px;color:var(--soft);background:var(--sand);
   border-radius:10px;padding:8px 12px}
+.arch-empty{grid-column:1/-1;text-align:center;color:var(--soft);font-size:13.5px;
+  padding:34px 18px;background:var(--sand);border-radius:14px}
 .fb-right{color:var(--teal-dark)}
 .tf-soll{display:block;font-style:normal;font-size:11px;font-weight:700;color:var(--teal-dark);margin-top:3px}
 .a3-answer.a3-soll{border-color:var(--teal-dark);background:#EAF4F1}
@@ -1144,7 +1153,7 @@ var I18N = {
     serveNow:"Beraten", backShop:"Zurück an den HV-Tisch",
     custHere:"Jemand steht am Tisch", custHint:"Der Fall zeigt sich im Gespräch.",
     custMad:"So lange warte ich nicht.",
-    archiv:"Archiv", correctIs:"Richtig wäre:", startGame:"Die Apotheke betreten", replayNote:"Wiederholung zum Nachlesen. Punkte gibt es nur beim ersten Mal.",
+    archiv:"Archiv", archivEmpty:"Noch nichts im Archiv. Was du abschließt, sammelt sich hier.", correctIs:"Richtig wäre:", startGame:"Die Apotheke betreten", replayNote:"Wiederholung zum Nachlesen. Punkte gibt es nur beim ersten Mal.",
     quitConfirm:"Beratung wirklich abbrechen? Der Fortschritt dieser Beratung geht verloren.",
     disclaimer:"Alle Inhalte dienen ausschließlich der pharmazeutischen Fortbildung und ersetzen keine ärztliche oder pharmazeutische Beratung im Einzelfall.",
     correctIs:"Richtig wäre:",
@@ -1174,7 +1183,7 @@ var I18N = {
     serveNow:"Advise", backShop:"Back to the counter",
     custHere:"Someone is at the counter", custHint:"The case shows itself in the conversation.",
     custMad:"I am not waiting this long.",
-    archiv:"Archive", correctIs:"The right answer:", startGame:"Enter the pharmacy", replayNote:"A replay for reading up. Points are given only the first time.",
+    archiv:"Archive", archivEmpty:"Nothing archived yet. What you finish collects here.", correctIs:"The right answer:", startGame:"Enter the pharmacy", replayNote:"A replay for reading up. Points are given only the first time.",
     quitConfirm:"Really quit this consultation? Progress in this case will be lost.",
     disclaimer:"All content is intended solely for pharmaceutical training and does not replace medical or pharmaceutical advice in individual cases.",
     correctIs:"The correct value would be:",
@@ -1204,7 +1213,7 @@ var I18N = {
     serveNow:"ابدأ الاستشارة", backShop:"عودة إلى الطاولة",
     custHere:"أحدهم عند الطاولة", custHint:"الحالة تنكشف في أثناء الحديث.",
     custMad:"لن أنتظر كل هذا.",
-    archiv:"الأرشيف", correctIs:"الصواب:", startGame:"ادخل الصيدلية", replayNote:"إعادة للمراجعة. النقاط تُحتسب في المرة الأولى وحدها.",
+    archiv:"الأرشيف", archivEmpty:"لا شيء في الأرشيف بعد. ما تنهيه يُجمع هنا.", correctIs:"الصواب:", startGame:"ادخل الصيدلية", replayNote:"إعادة للمراجعة. النقاط تُحتسب في المرة الأولى وحدها.",
     quitConfirm:"هل تريد فعلاً إنهاء الاستشارة؟ سيضيع تقدمك في هذه الحالة.",
     disclaimer:"جميع المحتويات مخصصة للتدريب الصيدلاني فقط ولا تُغني عن الاستشارة الطبية أو الصيدلانية في الحالات الفردية.",
     correctIs:"الصحيح هو:",
@@ -1222,7 +1231,7 @@ var I18N = {
    ist, steht es unten in der Spielanleitung, damit es niemandem entgeht. */
 var UNLOCK_ALL = true;
 
-var PC_BUILD = "2026-09-01 \u00b7 Loesung + Blasen" +
+var PC_BUILD = "2026-09-02 \u00b7 Archiv + Blasen unter dem Bild" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5447,16 +5456,20 @@ function gridSection(grid, label){
   var h=document.createElement('div'); h.className='grid-sec'; h.textContent=label;
   grid.appendChild(h);
 }
+/* Die Fallliste ist zum Archiv geworden. Wer einen Fall noch nicht
+   gespielt hat, sieht ihn hier nicht: die Faelle kommen ueber die
+   Kunden und ueber die Punkte in den Raeumen, nicht aus einem Katalog. */
 function renderMap(only){
   renderRankBar();
   MAP_FILTER = (only===undefined) ? MAP_FILTER : only;
   var only2 = MAP_FILTER;
   var grid=document.getElementById('levelsGrid'); grid.innerHTML='';
   var num=0;
-  if(only2!=='buero') gridSection(grid, t('secCounter'));
+  var hatHV = LEVELS.some(function(lv){ return !!state.levelBest[lv.id]; });
+  if(only2!=='buero' && hatHV) gridSection(grid, t('secCounter'));
   // real levels
   if(only2!=='buero') LEVELS.forEach(function(lv,li){
-    if(only2==='archiv' && !state.levelBest[lv.id]) return;
+    if(!state.levelBest[lv.id]) return;
     num++;
     var topic=TOPICS[lv.topic], persona=PERSONAS[lv.persona];
     /* Sequenz: ein Fall öffnet den nächsten. Abgeschlossene bleiben frei wählbar. */
@@ -5479,7 +5492,7 @@ function renderMap(only){
     grid.appendChild(card);
   });
   // coming soon placeholders
-  if(only2!=='buero' && only2!=='archiv') COMING.forEach(function(c){
+  if(false) COMING.forEach(function(c){
     num++;
     var persona=PERSONAS[c.persona];
     var card=document.createElement('div');
@@ -5492,12 +5505,19 @@ function renderMap(only){
       '<div class="lc-persona"><span class="dot"></span>'+(persona?locName(persona):'')+'</div></div>';
     grid.appendChild(card);
   });
+  if(!grid.querySelector('.level-card')){
+    var leer=document.createElement('div');
+    leer.className='arch-empty'; leer.textContent=t('archivEmpty');
+    grid.appendChild(leer);
+  }
   // Büro: eigener Abschnitt, eigene Sequenz
-  if(typeof OFFICE_LEVELS!=='undefined' && OFFICE_LEVELS.length && only2!=='hv'){
+  var hatBuero = (typeof OFFICE_LEVELS!=='undefined') && OFFICE_LEVELS.some(function(lv){
+    return !!state.levelBest[lv.id]; });
+  if(typeof OFFICE_LEVELS!=='undefined' && OFFICE_LEVELS.length && only2!=='hv' && hatBuero){
     gridSection(grid, t('secOffice'));
     OFFICE_LEVELS.forEach(function(lv,li){
       var topic=TOPICS[lv.topic]; if(!topic) return;
-      if(only2==='archiv' && !state.levelBest[lv.id]) return;
+      if(!state.levelBest[lv.id]) return;
       var prevDone=(li===0)||!!state.levelBest[OFFICE_LEVELS[li-1].id];
       var locked=UNLOCK_ALL ? false : ((state.rankIdx<lv.reqRank)||!prevDone);
       var best=state.levelBest[lv.id];
@@ -5635,7 +5655,7 @@ function customerLeaves(){
     '<div class="result-actions">'+
     '<button class="confirm-btn" id="retry">'+t('playAgain')+'</button>'+
     (run.review.length?'<button class="hud-back" id="reviewBtn2">'+ICONS.draw('lens')+' '+t('review')+'</button>':'')+
-    '<button class="hud-back" id="toMap2">'+t('toMap')+'</button></div></div></div>';
+    '<button class="hud-back" id="toMap2">'+t('backShop')+'</button></div></div></div>';
   var _rvb2=document.getElementById('reviewBtn2');
   if(_rvb2) _rvb2.addEventListener('click', openReview);
   document.getElementById('retry').addEventListener('click',function(){ startLevel(run.lv); });
@@ -5678,14 +5698,11 @@ function finishLevel(){
     '<div class="result-actions" style="margin-top:14px">'+
       '<button class="confirm-btn" id="replay">'+t('playAgain')+'</button>'+
       (run.review.length?'<button class="hud-back" id="reviewBtn">'+ICONS.draw('lens')+' '+t('review')+'</button>':'')+
-      (run.fromCustomer?'<button class="hud-back" id="toShop">'+t('backShop')+'</button>':'')+
-      '<button class="hud-back" id="toMap">'+t('toMap')+'</button>'+
+      '<button class="hud-back" id="toMap">'+t('backShop')+'</button>'+
     '</div></div></div>';
 
   var _rvb=document.getElementById('reviewBtn');
   if(_rvb) _rvb.addEventListener('click', openReview);
-  var _ts=document.getElementById('toShop');
-  if(_ts) _ts.addEventListener('click',function(){ enterRoom('offizin'); });
   document.getElementById('replay').addEventListener('click',function(){ startLevel(run.lv); });
   document.getElementById('toMap').addEventListener('click',function(){ afterLevel(s,stars); });
 
@@ -5713,9 +5730,13 @@ function afterLevel(s, stars){
   if(!state.emailAsked && s>=45){ state.emailAsked=true; save(); openEmail(function(){ maybeRankup(prevRank,newRank); }); }
   else maybeRankup(prevRank,newRank);
 }
+/* Nach einem Fall steht man wieder im Raum, aus dem man kam. */
+function zurueckInDenRaum(){
+  enterRoom(W.room && ROOMS[W.room] ? W.room : 'offizin');
+}
 function maybeRankup(prevRank,newRank){
   if(newRank>prevRank){ state.rankIdx=newRank; save(); showRankup(newRank); }
-  else { state.rankIdx=newRank; save(); renderMap(); show('mapScreen'); }
+  else { state.rankIdx=newRank; save(); zurueckInDenRaum(); }
 }
 
 
@@ -6056,7 +6077,17 @@ function openSpot(sp){
      zeigen je eine Tuer, nicht drei, und erfundene Tueren waeren gelogen. */
   function goTo(room){ return function(){ enterRoom(room); }; }
 
-  if(sp.id==='desk')    acts.push({t:t('play'), cls:'main', fn:function(){ renderMap('buero'); show('mapScreen'); }});
+  if(sp.id==='desk'){
+    /* Kein Katalog. Der Schreibtisch gibt den naechsten offenen Fall aus. */
+    var naechster=null;
+    for(var oi=0; oi<OFFICE_LEVELS.length; oi++){
+      var ol=OFFICE_LEVELS[oi];
+      var vor=(oi===0)||!!state.levelBest[OFFICE_LEVELS[oi-1].id];
+      if(!state.levelBest[ol.id] && (UNLOCK_ALL || (vor && state.rankIdx>=ol.reqRank))){ naechster=ol; break; }
+    }
+    if(naechster) acts.push({t:t('serveNow'), cls:'main', fn:function(){ startLevel(naechster); }});
+    else acts.push({t:t('archiv'), cls:'main', fn:function(){ renderMap('buero'); show('mapScreen'); }});
+  }
   if(sp.id==='door_offizin' || sp.id==='door_buero'){
     ['offizin','buero','rezeptur','kueche'].forEach(function(r,i){
       if(r===W.room) return;
@@ -6359,7 +6390,8 @@ document.getElementById('gameBack').addEventListener('click',function(){
     if(window._mechTimer){clearTimeout(window._mechTimer);window._mechTimer=null;}
     if(window._mechGrace){clearTimeout(window._mechGrace);window._mechGrace=null;}
     if(window._typeInt){clearInterval(window._typeInt);window._typeInt=null;}
-    renderMap(); show('mapScreen');
+    stopRx();
+    zurueckInDenRaum();
   });
 });
 /* ===== أزرار شاشة المراحل ===== */
