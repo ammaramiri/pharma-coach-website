@@ -1230,7 +1230,7 @@ var I18N = {
    ist, steht es unten in der Spielanleitung, damit es niemandem entgeht. */
 var UNLOCK_ALL = true;
 
-var PC_BUILD = "2026-09-02b \u00b7 Rueckweg + Start ohne Liste" +
+var PC_BUILD = "2026-09-03 \u00b7 Kundenbilder" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5390,7 +5390,7 @@ function custDraw(){
       layer.appendChild(el);
     }
     var depth = 0.85 + 0.45*(c.pos.y/WORLD_G);
-    var h = W.cellY*6.6*depth, w = h*0.42;
+    var h = W.cellY*6.6*depth, w = h*(400/700);
     var px = W.ox+(c.pos.x+0.5)*W.cell, py = W.oy+(c.pos.y+0.9)*W.cellY;
     var bob = (c.state==='in'||c.state==='out') ? Math.abs(Math.sin(performance.now()/165))*h*0.022 : 0;
     var src = CUS_IMG[c.p];
