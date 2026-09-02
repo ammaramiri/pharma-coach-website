@@ -869,7 +869,6 @@ body.rtl .rv-nav{flex-direction:row-reverse}
     <div class="start-links">
       <a class="slink" id="linkAbout" href="#" target="_blank" rel="noopener">Über Pharma-Coach</a>
       <a class="slink" id="linkCourse" href="#" target="_blank" rel="noopener">Zum OTC-Kurs (ab Anfang 2027)</a>
-      <a class="slink" id="linkCases" href="#">Fallliste</a>
     </div>
     <div class="legal-foot">
       <div id="legalDisclaimer"></div>
@@ -1231,7 +1230,7 @@ var I18N = {
    ist, steht es unten in der Spielanleitung, damit es niemandem entgeht. */
 var UNLOCK_ALL = true;
 
-var PC_BUILD = "2026-09-02 \u00b7 Archiv + Blasen unter dem Bild" +
+var PC_BUILD = "2026-09-02b \u00b7 Rueckweg + Start ohne Liste" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5129,8 +5128,6 @@ function applyLang(){
   document.getElementById('playBtn').textContent=t('startGame');
   document.getElementById('linkAbout').textContent=t('about');
   document.getElementById('linkCourse').textContent=t('course');
-  document.getElementById('linkCases').textContent=
-    state.lang==='ar'?'قائمة الحالات':(state.lang==='en'?'Case list':'Fallliste');
   document.getElementById('linkAbout').href=LINKS.about;
   document.getElementById('linkCourse').href=LINKS.course;
   document.getElementById('legalDisclaimer').textContent=t('disclaimer');
@@ -5732,7 +5729,12 @@ function afterLevel(s, stars){
 }
 /* Nach einem Fall steht man wieder im Raum, aus dem man kam. */
 function zurueckInDenRaum(){
+  /* enterRoom baut den Raum auf, blendet ihn aber nicht ein. Ohne das
+     show blieb der Spieler auf dem Ergebnisbildschirm stehen und der
+     Knopf sah aus, als taete er nichts. */
   enterRoom(W.room && ROOMS[W.room] ? W.room : 'offizin');
+  show('worldScreen');
+  worldLayout();
 }
 function maybeRankup(prevRank,newRank){
   if(newRank>prevRank){ state.rankIdx=newRank; save(); showRankup(newRank); }
@@ -6381,8 +6383,6 @@ document.getElementById('playBtn').addEventListener('click',function(){
   if(!state.guideSeen) openGuide(function(){ openWorld(); });
   else openWorld();
 });
-document.getElementById('linkCases').addEventListener('click',function(e){
-  e.preventDefault(); renderMap(); show('mapScreen'); });
 /* Aus einem laufenden Fall geht es zurueck in die Apotheke, nicht in
    eine Liste aller Faelle. Die gibt es nicht mehr. */
 document.getElementById('gameBack').addEventListener('click',function(){
