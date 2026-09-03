@@ -104,6 +104,16 @@ a[style*="B30F1E"]:active,.btn-red:active{transform:translateY(1px);box-shadow:0
 footer a{transition:color .18s ease,transform .18s ease;display:inline-block;}
 footer a:hover{color:#fff!important;transform:translateY(-1px);}
 .ltbtn:hover{opacity:.85;}
+
+h2.sec{display:inline-block;position:relative;padding-bottom:5px;transition:color .22s ease;}
+h2.sec::after{content:"";position:absolute;left:50%;bottom:0;height:2.5px;width:0;background:linear-gradient(90deg,#2DDDC4,#E8192B);border-radius:2px;transform:translateX(-50%);transition:width .35s cubic-bezier(.4,0,.2,1);}
+h2.sec:hover::after{width:70%;}
+.diff-icon{transition:transform .3s cubic-bezier(.34,1.4,.64,1);}
+.diff-card:hover .diff-icon{transform:scale(1.1) rotate(-6deg);}
+.cat-icon{transition:transform .3s cubic-bezier(.34,1.4,.64,1);}
+.cat-block:hover .cat-icon{transform:scale(1.1) rotate(-6deg);}
+.step-num{transition:transform .3s cubic-bezier(.34,1.4,.64,1);}
+.step:hover .step-num{transform:scale(1.15);}
 </style>
 </head>
 <body id="body">
