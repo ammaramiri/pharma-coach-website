@@ -1232,7 +1232,7 @@ var I18N = {
    ist, steht es unten in der Spielanleitung, damit es niemandem entgeht. */
 var UNLOCK_ALL = true;
 
-var PC_BUILD = "2026-09-03c \u00b7 Tiefensortierung" +
+var PC_BUILD = "2026-09-03d \u00b7 Stufe 3 Text" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -2522,10 +2522,10 @@ TOPICS.sodbrennen_eilig = {
   persona:"eilig",
   banner:"assets/PCG_CARD_CUS003_v003.jpg",
   steps:[
-   {mech:"comic",data:{kicker:"Szene 1 · Der Kunde kommt",title:"Ein Geschäftsmann eilt herein – Blick auf die Smartwatch",img:"assets/PCG_SCN_CUS003_A_ENTRANCE_v003.jpg",cta:"Reagieren →",
+   {mech:"comic",data:{kicker:"Szene 1 · Der Kunde kommt",title:"Ein Mann eilt herein – Jacke offen, Blick zur Tür zurück",img:"assets/PCG_SCN_CUS003_A_ENTRANCE_v003.jpg",cta:"Reagieren →",
     bubbles:[{who:"Kunde",txt:"Schnell bitte – <b>Sodbrennen</b>, seit Tagen jeden Abend. Ich muss in fünf Minuten weiter."},{who:"Kunde",txt:"Geben Sie mir einfach <b>das Stärkste</b>, was Sie haben."}]}},
    {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS003_B_COUNTER_v003.jpg",kicker:"Entscheidung · 35 Sekunden",title:"Der Eilige will das Stärkste – sofort. Ihre Reaktion?",seconds:35,
-    timeoutH:"Zeit abgelaufen",timeoutX:"Er schaut demonstrativ auf die Smartwatch. Richtig wäre gewesen: Tempo zusagen, Führung behalten.",
+    timeoutH:"Zeit abgelaufen",timeoutX:"Er dreht sich demonstrativ zur Tür. Richtig wäre gewesen: Tempo zusagen, Führung behalten.",
     options:[
      {t:"Kommt sofort – hier, ein Protonenpumpenhemmer.",p:5,tr:-3,h:"Schnell, aber blind",x:"Tempo ersetzt keine Triage. Ohne eine einzige Frage wissen Sie nicht, ob Selbstmedikation überhaupt vertretbar ist."},
      {t:"Geht ganz schnell: Zwei gezielte Fragen, dann haben Sie in einer Minute genau das Richtige.",p:25,tr:10,ok:true,h:"Führung + Tempo",x:"Sie nehmen sein Zeitlimit ernst UND behalten die fachliche Kontrolle. Genau die Sprache, die dieser Kundentyp versteht."},
@@ -3495,10 +3495,10 @@ TOPICS.halsschmerzen_selbst.steps_ar=[
 ];
 
 TOPICS.sodbrennen_eilig.steps_en=[
- {mech:"comic",data:{kicker:"Scene 1 · The customer arrives",title:"A businessman rushes in - eyes on his smartwatch",img:"assets/PCG_SCN_CUS003_A_ENTRANCE_v003.jpg",cta:"React →",
+ {mech:"comic",data:{kicker:"Scene 1 · The customer arrives",title:"A man rushes in - jacket open, glancing back at the door",img:"assets/PCG_SCN_CUS003_A_ENTRANCE_v003.jpg",cta:"React →",
   bubbles:[{who:"Customer",txt:"Quick please - <b>heartburn</b>, every evening for days. I have to leave in five minutes."},{who:"Customer",txt:"Just give me <b>the strongest thing</b> you have."}]}},
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS003_B_COUNTER_v003.jpg",kicker:"Decision · 35 seconds",title:"He wants the strongest - now. Your reaction?",seconds:35,
-  timeoutH:"Time's up",timeoutX:"He glances at his smartwatch. The right move: promise speed, keep the lead.",
+  timeoutH:"Time's up",timeoutX:"He turns pointedly towards the door. The right move: promise speed, keep the lead.",
   options:[
    {t:"Coming right up - here, a proton pump inhibitor.",p:5,tr:-3,h:"Fast but blind",x:"Speed is no substitute for triage. Without a single question you don't even know if self-medication is acceptable."},
    {t:"Super quick: two targeted questions, and in one minute you'll have exactly the right thing.",p:25,tr:10,ok:true,h:"Lead + speed",x:"You take his time limit seriously AND keep professional control. Exactly the language this type understands."},
@@ -3529,10 +3529,10 @@ TOPICS.sodbrennen_eilig.steps_en=[
    {t:"Just read the package leaflet.",p:5,tr:-6,h:"Delegated",x:"He'll never read it - you both know that."}]}}
 ];
 TOPICS.sodbrennen_eilig.steps_ar=[
- {mech:"comic",data:{kicker:"المشهد 1 · وصول الزبون",title:"رجل أعمال يدخل مسرعاً - عينه على ساعته الذكية",img:"assets/PCG_SCN_CUS003_A_ENTRANCE_v003.jpg",cta:"تصرّف ←",
+ {mech:"comic",data:{kicker:"المشهد 1 · وصول الزبون",title:"رجل يدخل مسرعاً - سترته مفتوحة وعينه على الباب",img:"assets/PCG_SCN_CUS003_A_ENTRANCE_v003.jpg",cta:"تصرّف ←",
   bubbles:[{who:"الزبون",txt:"بسرعة من فضلك - <b>حرقة معدة</b> كل مساء منذ أيام. عليّ المغادرة خلال خمس دقائق."},{who:"الزبون",txt:"أعطني <b>أقوى ما عندك</b> وحسب."}]}},
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS003_B_COUNTER_v003.jpg",kicker:"قرار · 35 ثانية",title:"يريد الأقوى - فوراً. ردّك؟",seconds:35,
-  timeoutH:"انتهى الوقت",timeoutX:"ينظر إلى ساعته باستعراض. الصحيح كان: عِد بالسرعة واحتفظ بالقيادة.",
+  timeoutH:"انتهى الوقت",timeoutX:"يلتفت إلى الباب باستعراض. الصحيح كان: عِد بالسرعة واحتفظ بالقيادة.",
   options:[
    {t:"حاضر فوراً - تفضل، مثبط مضخة البروتون.",p:5,tr:-3,h:"سريع لكنه أعمى",x:"السرعة لا تعوّض الفرز. بلا سؤال واحد لا تعرف حتى إن كان العلاج الذاتي مقبولاً."},
    {t:"بسرعة تامة: سؤالان محددان، وخلال دقيقة يكون معك الصحيح تماماً.",p:25,tr:10,ok:true,h:"قيادة + سرعة",x:"أخذت وقته على محمل الجد واحتفظت بالسيطرة المهنية. هذه بالضبط اللغة التي يفهمها هذا النمط."},
