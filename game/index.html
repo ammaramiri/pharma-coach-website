@@ -1232,7 +1232,7 @@ var I18N = {
    ist, steht es unten in der Spielanleitung, damit es niemandem entgeht. */
 var UNLOCK_ALL = true;
 
-var PC_BUILD = "2026-09-03d \u00b7 Stufe 3 Text" +
+var PC_BUILD = "2026-09-04 \u00b7 Stufe 3 und 9 Text" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -2814,7 +2814,7 @@ TOPICS.insektenstich_panisch = {
   persona:"panisch",
   banner:"assets/PCG_CARD_CUS010_v003.jpg",
   steps:[
-   {mech:"comic",data:{kicker:"Szene 1 · Der Kunde kommt",title:"Ein junger Vater stürmt herein – das Handy noch in der Hand",img:"assets/PCG_SCN_CUS010_A_ENTRANCE_v003.jpg",cta:"Reagieren →",
+   {mech:"comic",data:{kicker:"Szene 1 · Der Kunde kommt",title:"Ein junger Vater stürmt herein – die Tochter an der Hand",img:"assets/PCG_SCN_CUS010_A_ENTRANCE_v003.jpg",cta:"Reagieren →",
     bubbles:[{who:"Vater",txt:"Meine Tochter, fünf Jahre – eine <b>Wespe</b> hat sie am Arm gestochen, vor zehn Minuten im Garten! Es ist schon ganz rot und geschwollen!"},{who:"Vater",txt:"Meine Frau ist bei ihr. Was mache ich denn jetzt?! <b>Kann das gefährlich werden?</b>"}]}},
    {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS010_B_COUNTER_v003.jpg",kicker:"Entscheidung · 35 Sekunden",title:"Der Vater ist in Panik. Ihre erste Reaktion?",seconds:35,
     timeoutH:"Zeit abgelaufen",timeoutX:"Der Vater dreht sich schon zur Tür. Richtig wäre gewesen: erst beruhigen, dann sofort die Notfallzeichen abfragen.",
@@ -3900,7 +3900,7 @@ TOPICS.rueckenschmerzen_handwerk.steps_en=[
    {t:"Just come back next week.",p:10,tr:-2,h:"No substitute for criteria",x:"A follow-up visit is well meant, but with numbness or bladder dysfunction the route leads straight to the emergency department, not the pharmacy."}]}}
 ];
 TOPICS.insektenstich_panisch.steps_en=[
- {mech:"comic",data:{kicker:"Scene 1 · The customer arrives",title:"A young father rushes in - phone still in his hand",img:"assets/PCG_SCN_CUS010_A_ENTRANCE_v003.jpg",cta:"React →",
+ {mech:"comic",data:{kicker:"Scene 1 · The customer arrives",title:"A young father rushes in - his daughter by the hand",img:"assets/PCG_SCN_CUS010_A_ENTRANCE_v003.jpg",cta:"React →",
   bubbles:[{who:"Father",txt:"My daughter, five years old - a <b>wasp</b> stung her on the arm, ten minutes ago in the garden! It's already red and swollen!"},{who:"Father",txt:"My wife is with her. What do I do?! <b>Can this get dangerous?</b>"}]}},
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS010_B_COUNTER_v003.jpg",kicker:"Decision · 35 seconds",title:"The father is panicking. Your first response?",seconds:35,
   timeoutH:"Time's up",timeoutX:"The father is already turning to the door. The right move: calm him and immediately ask the emergency questions.",
@@ -3976,7 +3976,7 @@ TOPICS.rueckenschmerzen_handwerk.steps_ar=[
    {t:"عد إلينا الأسبوع القادم وحسب.",p:10,tr:-2,h:"لا يعوّض المعايير",x:"الزيارة المتابعة نية حسنة، لكن مع الخدر أو اضطراب المثانة الطريق إلى الطوارئ مباشرة لا إلى الصيدلية."}]}}
 ];
 TOPICS.insektenstich_panisch.steps_ar=[
- {mech:"comic",data:{kicker:"المشهد 1 · وصول الزبون",title:"أب شاب يندفع داخلاً وهاتفه في يده",img:"assets/PCG_SCN_CUS010_A_ENTRANCE_v003.jpg",cta:"تصرّف ←",
+ {mech:"comic",data:{kicker:"المشهد 1 · وصول الزبون",title:"أب شاب يندفع داخلاً وابنته بيده",img:"assets/PCG_SCN_CUS010_A_ENTRANCE_v003.jpg",cta:"تصرّف ←",
   bubbles:[{who:"الأب",txt:"ابنتي، خمس سنوات - <b>دبور</b> لدغها في ذراعها قبل عشر دقائق في الحديقة! المكان أحمر ومتورم!"},{who:"الأب",txt:"زوجتي معها. ماذا أفعل الآن؟! <b>هل يمكن أن يصبح الأمر خطيراً؟</b>"}]}},
  {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS010_B_COUNTER_v003.jpg",kicker:"قرار · 35 ثانية",title:"الأب في ذعر. أول ردّ منك؟",seconds:35,
   timeoutH:"انتهى الوقت",timeoutX:"الأب يستدير نحو الباب. الصحيح كان: طمئنه واسأل فوراً عن علامات الطوارئ.",
