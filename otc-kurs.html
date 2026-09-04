@@ -114,6 +114,15 @@ h2.sec:hover::after{width:180px;}
 .cat-block:hover .cat-icon{transform:scale(1.1) rotate(-6deg);}
 .step-num{transition:transform .3s cubic-bezier(.34,1.4,.64,1);}
 .step:hover .step-num{transform:scale(1.15);}
+
+.sec-ava{position:absolute;bottom:0;width:180px;pointer-events:none;user-select:none;z-index:2;}
+.sec-ava img{width:100%;display:block;transition:opacity .32s ease;}
+.sec-ava .p-b{position:absolute;inset:0;opacity:0;}
+section:hover .sec-ava .p-a{opacity:0;}
+section:hover .sec-ava .p-b{opacity:1;}
+.sec-ava.left{left:max(6px,calc(50% - 640px));}
+.sec-ava.right{right:max(6px,calc(50% - 640px));}
+@media(max-width:1320px){.sec-ava{display:none;}}
 </style>
 </head>
 <body id="body">
@@ -196,7 +205,8 @@ h2.sec:hover::after{width:180px;}
 </section>
 
 <!-- BUCH-VERGLEICH -->
-<section style="padding:80px 24px;background:#FBF9F8;">
+<section style="position:relative;overflow:hidden;padding:80px 24px;background:#FBF9F8;">
+  <div class="sec-ava right" aria-hidden="true"><img class="p-a" src="pose-buecher-a.webp" alt="" loading="lazy"><img class="p-b" src="pose-buecher-b.webp" alt="" loading="lazy"></div>
   <h2 class="sec"><span class="de-content">Warum nicht einfach ein Buch?</span><span class="en-content">Why not just a book?</span></h2>
   <p class="sub"><span class="de-content">Das Wissen existiert, verteilt auf Bücher, Seminare und Fachartikel. Was fehlt, ist ein Ort, der es ordnet.</span><span class="en-content">The knowledge exists, scattered across books, seminars and articles. What is missing is one place that organises it.</span></p>
   <div class="cmp-grid">
@@ -216,7 +226,8 @@ h2.sec:hover::after{width:180px;}
 </section>
 
 <!-- 6 SCHRITTE -->
-<section style="padding:80px 24px;background:#fff;">
+<section style="position:relative;overflow:hidden;padding:80px 24px;background:#fff;">
+  <div class="sec-ava left" aria-hidden="true"><img class="p-a" src="pose-schritte-a.webp" alt="" loading="lazy"><img class="p-b" src="pose-schritte-b.webp" alt="" loading="lazy"></div>
   <h2 class="sec"><span class="de-content">Jedes Thema in 6 Schritten</span><span class="en-content">Every topic in 6 steps</span></h2>
   <p class="sub"><span class="de-content">Immer dieselbe Struktur. Nach wenigen Themen denken Sie automatisch in diesem Raster, auch am HV-Tisch.</span><span class="en-content">Always the same structure. After a few topics you think in this pattern automatically, at the counter too.</span></p>
   <div class="step-grid">
