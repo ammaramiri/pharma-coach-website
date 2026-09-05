@@ -115,21 +115,7 @@ h2.sec:hover::after{width:180px;}
 .step-num{transition:transform .3s cubic-bezier(.34,1.4,.64,1);}
 .step:hover .step-num{transform:scale(1.15);}
 
-.sec-ava{position:absolute;bottom:0;width:180px;pointer-events:none;user-select:none;z-index:2;}
-.sec-ava img{width:100%;display:block;transition:opacity .32s ease;}
-.sec-ava .p-b{position:absolute;inset:0;opacity:0;}
-section:hover .sec-ava .p-a{opacity:0;}
-section:hover .sec-ava .p-b{opacity:1;}
-.sec-ava.left{left:max(6px,calc(50% - 640px));}
-.sec-ava.right{right:max(6px,calc(50% - 640px));}
-
-/* ===== Avatare: mobil sichtbar, zentriert über dem Abschnitt ===== */
-@media(max-width:1320px){
-  .sec-ava{position:relative;bottom:auto;left:auto;right:auto;display:block;width:126px;margin:0 auto 22px;}
-}
-@media(max-width:520px){ .sec-ava{width:108px;margin-bottom:18px;} }
-.sec-ava.swap .p-a{opacity:0;}
-.sec-ava.swap .p-b{opacity:1;}
+section:hover section:hover 
 .hero-orb.tap .av-a{opacity:0;}
 .hero-orb.tap .av-b{opacity:1;}
 </style>
@@ -215,7 +201,6 @@ section:hover .sec-ava .p-b{opacity:1;}
 
 <!-- BUCH-VERGLEICH -->
 <section style="position:relative;overflow:hidden;padding:80px 24px;background:#FBF9F8;">
-  <div class="sec-ava right" aria-hidden="true"><img class="p-a" src="pose-buecher-a.webp" alt="" loading="lazy"><img class="p-b" src="pose-buecher-b.webp" alt="" loading="lazy"></div>
   <h2 class="sec"><span class="de-content">Warum nicht einfach ein Buch?</span><span class="en-content">Why not just a book?</span></h2>
   <p class="sub"><span class="de-content">Das Wissen existiert, verteilt auf Bücher, Seminare und Fachartikel. Was fehlt, ist ein Ort, der es ordnet.</span><span class="en-content">The knowledge exists, scattered across books, seminars and articles. What is missing is one place that organises it.</span></p>
   <div class="cmp-grid">
@@ -236,7 +221,6 @@ section:hover .sec-ava .p-b{opacity:1;}
 
 <!-- 6 SCHRITTE -->
 <section style="position:relative;overflow:hidden;padding:80px 24px;background:#fff;">
-  <div class="sec-ava left" aria-hidden="true"><img class="p-a" src="pose-schritte-a.webp" alt="" loading="lazy"><img class="p-b" src="pose-schritte-b.webp" alt="" loading="lazy"></div>
   <h2 class="sec"><span class="de-content">Jedes Thema in 6 Schritten</span><span class="en-content">Every topic in 6 steps</span></h2>
   <p class="sub"><span class="de-content">Immer dieselbe Struktur. Nach wenigen Themen denken Sie automatisch in diesem Raster, auch am HV-Tisch.</span><span class="en-content">Always the same structure. After a few topics you think in this pattern automatically, at the counter too.</span></p>
   <div class="step-grid">
@@ -485,8 +469,7 @@ function playGratis(id){var d=document.getElementById(id);d.innerHTML='<iframe s
         else { e.target.classList.remove('swap'); }
       });
     },{threshold:0.55});
-    document.querySelectorAll('.sec-ava').forEach(function(a){ io.observe(a); });
-  }
+    document.querySelectorAll('  }
   document.querySelectorAll('.hero-orb').forEach(function(o){
     o.addEventListener('click', function(){ o.classList.toggle('tap'); });
     setInterval(function(){

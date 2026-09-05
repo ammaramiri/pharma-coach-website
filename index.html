@@ -111,23 +111,8 @@ footer ul a:hover{color:#fff!important;transform:translateX(5px);}
 #fsp-de h2,#fsp-en h2,#preis-de h2,#preis-en h2{transition:transform .3s ease;}
 #fsp-de:hover h2,#fsp-en:hover h2{transform:scale(1.015);}
 
-/* ===== Section avatars ===== */
-.sec-ava{position:absolute;bottom:0;width:180px;pointer-events:none;user-select:none;z-index:2;}
-.sec-ava img{width:100%;display:block;transition:opacity .32s ease;}
-.sec-ava .p-b{position:absolute;inset:0;opacity:0;}
-section:hover .sec-ava .p-a{opacity:0;}
-section:hover .sec-ava .p-b{opacity:1;}
-.sec-ava.left{left:max(6px,calc(50% - 660px));}
-.sec-ava.right{right:max(6px,calc(50% - 660px));}
-
-/* ===== Avatare: mobil sichtbar, zentriert über dem Abschnitt ===== */
-@media(max-width:1320px){
-  .sec-ava{position:relative;bottom:auto;left:auto;right:auto;display:block;width:126px;margin:0 auto 22px;}
 }
-@media(max-width:520px){ .sec-ava{width:108px;margin-bottom:18px;} }
-.sec-ava.swap .p-a{opacity:0;}
-.sec-ava.swap .p-b{opacity:1;}
-.hero-orb.tap .av-a{opacity:0;}
+@media(max-width:520px){ .hero-orb.tap .av-a{opacity:0;}
 .hero-orb.tap .av-b{opacity:1;}
 </style>
 </head>
@@ -238,7 +223,6 @@ section:hover .sec-ava .p-b{opacity:1;}
 </section>
 
 <section style="position:relative;overflow:hidden;background:#23272E;padding:80px 24px;" class="sp">
-  <div class="sec-ava right" aria-hidden="true"><img class="p-a" src="pose-konkurrenz-a.webp" alt="" loading="lazy"><img class="p-b" src="pose-konkurrenz-b.webp" alt="" loading="lazy"></div>
   <div style="max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:44px;align-items:center;" class="two-col">
     <div>
       <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(28px,4vw,46px);line-height:1.1;color:#fff;margin-bottom:18px;">
@@ -284,7 +268,6 @@ section:hover .sec-ava .p-b{opacity:1;}
 
 <!-- GAME PROMO -->
 <section style="position:relative;overflow:hidden;background:#1C2026;padding:84px 24px;overflow:hidden;" class="sp">
-  <div class="sec-ava left" aria-hidden="true"><img class="p-a" src="pose-spiel-a.webp" alt="" loading="lazy"><img class="p-b" src="pose-spiel-b.webp" alt="" loading="lazy"></div>
   <div style="max-width:1080px;margin:0 auto;">
     <div style="display:grid;grid-template-columns:1fr 1.12fr;gap:48px;align-items:center;" class="game-grid">
       <div>
@@ -334,7 +317,6 @@ section:hover .sec-ava .p-b{opacity:1;}
 
 <!-- PREIS -->
 <section id="preis-de" style="position:relative;overflow:hidden;padding:90px 24px;background:#23272E;" class="sp">
-  <div class="sec-ava left" aria-hidden="true"><img class="p-a" src="pose-preis-a.webp" alt="" loading="lazy"><img class="p-b" src="pose-preis-b.webp" alt="" loading="lazy"></div>
   <div style="max-width:700px;margin:0 auto;text-align:center;">
     <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(24px,3.5vw,40px);color:#23272E;margin-bottom:12px;">
       Ein Abo, ständig neue Inhalte
@@ -376,7 +358,6 @@ section:hover .sec-ava .p-b{opacity:1;}
 
 <!-- DEMNÄCHST -->
 <section id="demnaechst-de" style="position:relative;overflow:hidden;padding:90px 24px;background:#fff;" class="sp">
-  <div class="sec-ava right" aria-hidden="true"><img class="p-a" src="pose-demnaechst-a.webp" alt="" loading="lazy"><img class="p-b" src="pose-demnaechst-b.webp" alt="" loading="lazy"></div>
   <div style="max-width:1100px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:44px;">
       <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(24px,3.5vw,40px);color:#23272E;margin-bottom:12px;">
@@ -482,7 +463,6 @@ section:hover .sec-ava .p-b{opacity:1;}
 
 <!-- FAQ -->
 <section id="faq-de" style="position:relative;overflow:hidden;padding:90px 24px;background:#FFFCFB;" class="sp">
-  <div class="sec-ava left" aria-hidden="true"><img class="p-a" src="pose-faq-a.webp" alt="" loading="lazy"><img class="p-b" src="pose-faq-b.webp" alt="" loading="lazy"></div>
   <div style="max-width:720px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:44px;">
       <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(24px,3.5vw,40px);color:#23272E;">
@@ -672,7 +652,6 @@ section:hover .sec-ava .p-b{opacity:1;}
 </section>
 
 <section style="position:relative;overflow:hidden;background:#23272E;padding:80px 24px;" class="sp">
-  <div class="sec-ava right" aria-hidden="true"><img class="p-a" src="pose-konkurrenz-a.webp" alt="" loading="lazy"><img class="p-b" src="pose-konkurrenz-b.webp" alt="" loading="lazy"></div>
   <div style="max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:44px;align-items:center;" class="two-col">
     <div>
       <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(28px,4vw,46px);line-height:1.1;color:#fff;margin-bottom:18px;">
@@ -718,7 +697,6 @@ section:hover .sec-ava .p-b{opacity:1;}
 
 <!-- GAME PROMO -->
 <section style="position:relative;overflow:hidden;background:#1C2026;padding:84px 24px;overflow:hidden;" class="sp">
-  <div class="sec-ava left" aria-hidden="true"><img class="p-a" src="pose-spiel-a.webp" alt="" loading="lazy"><img class="p-b" src="pose-spiel-b.webp" alt="" loading="lazy"></div>
   <div style="max-width:1080px;margin:0 auto;">
     <div style="display:grid;grid-template-columns:1fr 1.12fr;gap:48px;align-items:center;" class="game-grid">
       <div>
@@ -768,7 +746,6 @@ section:hover .sec-ava .p-b{opacity:1;}
 
 <!-- PREIS -->
 <section id="preis-en" style="position:relative;overflow:hidden;padding:90px 24px;background:#23272E;" class="sp">
-  <div class="sec-ava left" aria-hidden="true"><img class="p-a" src="pose-preis-a.webp" alt="" loading="lazy"><img class="p-b" src="pose-preis-b.webp" alt="" loading="lazy"></div>
   <div style="max-width:700px;margin:0 auto;text-align:center;">
     <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(24px,3.5vw,40px);color:#23272E;margin-bottom:12px;">
       One subscription, constantly new content
@@ -810,7 +787,6 @@ section:hover .sec-ava .p-b{opacity:1;}
 
 <!-- DEMNÄCHST -->
 <section id="demnaechst-en" style="position:relative;overflow:hidden;padding:90px 24px;background:#fff;" class="sp">
-  <div class="sec-ava right" aria-hidden="true"><img class="p-a" src="pose-demnaechst-a.webp" alt="" loading="lazy"><img class="p-b" src="pose-demnaechst-b.webp" alt="" loading="lazy"></div>
   <div style="max-width:1100px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:44px;">
       <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(24px,3.5vw,40px);color:#23272E;margin-bottom:12px;">
@@ -916,7 +892,6 @@ section:hover .sec-ava .p-b{opacity:1;}
 
 <!-- FAQ -->
 <section id="faq-en" style="position:relative;overflow:hidden;padding:90px 24px;background:#FFFCFB;" class="sp">
-  <div class="sec-ava left" aria-hidden="true"><img class="p-a" src="pose-faq-a.webp" alt="" loading="lazy"><img class="p-b" src="pose-faq-b.webp" alt="" loading="lazy"></div>
   <div style="max-width:720px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:44px;">
       <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(24px,3.5vw,40px);color:#23272E;">
@@ -1032,8 +1007,7 @@ function playGratis(id){var d=document.getElementById(id);d.innerHTML='<iframe s
         else { e.target.classList.remove('swap'); }
       });
     },{threshold:0.55});
-    document.querySelectorAll('.sec-ava').forEach(function(a){ io.observe(a); });
-  }
+    document.querySelectorAll('  }
   document.querySelectorAll('.hero-orb').forEach(function(o){
     o.addEventListener('click', function(){ o.classList.toggle('tap'); });
     setInterval(function(){
