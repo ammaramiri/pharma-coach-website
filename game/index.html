@@ -43,7 +43,24 @@ body.rtl{direction:rtl}
              rgba(16,14,18,.42) 55%,rgba(16,14,18,.80) 100%)}
 .hero-content{position:relative;z-index:2;color:#fff;max-width:640px;width:100%;
   padding-top:2vh;text-shadow:0 2px 14px rgba(0,0,0,.55)}
-@media(max-width:700px){ .hero-bg img{object-position:center 84%} }
+@media(max-width:700px){ .hero-bg img{object-position:center 84%}
+
+/* Auf dem hochkanten Telefon wird ein 16:9-Bild von object-fit:cover so
+   stark vergroessert, dass nur noch das Gesicht im Rahmen steht - und der
+   Titel liegt darauf. Deshalb bekommt das Bild dort nur die untere
+   Haelfte des Schirms, der obere Teil bleibt dunkel und traegt die Schrift. */
+@media (max-width:760px) and (orientation:portrait){
+  #startScreen{background:#100E12}
+  .hero-bg{top:auto;bottom:0;height:64%}
+  .hero-bg img{object-position:center 62%}
+  .hero-bg::after{background:linear-gradient(180deg,
+    #100E12 0%, rgba(16,14,18,.82) 26%, rgba(16,14,18,.30) 58%,
+    rgba(16,14,18,.55) 82%, rgba(16,14,18,.92) 100%)}
+  .hero-content{padding-top:0;justify-content:flex-start}
+  .brand-row{margin-top:6vh}
+  .game-title{font-size:clamp(34px,13vw,54px)}
+  .game-sub{max-width:22em;margin-left:auto;margin-right:auto}
+} }
 .brand-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:22px}
 .brand-mark{width:52px;height:33px;background:linear-gradient(90deg,var(--red) 50%,var(--teal) 50%);
   border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(0,0,0,.4)}
@@ -1041,6 +1058,19 @@ body.rtl .rv-nav{flex-direction:row-reverse}
 </div>
 
 <!-- Email modal -->
+<div class="modal-bg" id="nameModal">
+  <div class="modal">
+    <h3 id="nmTitle"></h3>
+    <p id="nmDesc"></p>
+    <input type="text" id="nmInput" maxlength="24" autocomplete="off">
+    <div class="m-actions">
+      <button class="m-save" id="nmSave"></button>
+      <button class="m-skip" id="nmSkip"></button>
+    </div>
+    <div class="m-status" id="nmNote"></div>
+  </div>
+</div>
+
 <div class="modal-bg" id="emailModal">
   <div class="modal">
     <h3 id="emTitle">Fortschritt sichern</h3>
@@ -1164,6 +1194,10 @@ var I18N = {
     custHere:"Jemand steht am Tisch", custHint:"Der Fall zeigt sich im Gespräch.",
     custMad:"So lange warte ich nicht.",
     archiv:"Archiv", archivEmpty:"Noch nichts im Archiv. Was du abschließt, sammelt sich hier.", correctIs:"Richtig wäre:", startGame:"Die Apotheke betreten",
+    nmTitle:"Wie sollen dich die Kolleginnen nennen?",
+    nmDesc:"Nur der Vorname genügt. Er steht später in den Gesprächen im Team und auf deiner Urkunde.",
+    nmNote:"Bleibt auf diesem Gerät. Wird an keinen Server gesendet.",
+    nmSave:"Weiter", nmSkip:"Überspringen ({n})", nmDefault:"Kollege",
     kraftMuede:"Ich brauche einen Kaffee. Kurz in die Küche, dann geht es weiter.",
     kraftLeer:"So mache ich Fehler. Erst eine Pause, dann der nächste Kunde.",
     kraftAbzug:"Müde beraten: {p} Punkte weniger. Eine Pause in der Teamküche hätte das gespart.",
@@ -1200,6 +1234,10 @@ var I18N = {
     custHere:"Someone is at the counter", custHint:"The case shows itself in the conversation.",
     custMad:"I am not waiting this long.",
     archiv:"Archive", archivEmpty:"Nothing archived yet. What you finish collects here.", correctIs:"The right answer:", startGame:"Enter the pharmacy",
+    nmTitle:"What should your colleagues call you?",
+    nmDesc:"A first name is enough. It appears later in the team conversations and on your certificate.",
+    nmNote:"Stays on this device. Sent to no server.",
+    nmSave:"Continue", nmSkip:"Skip ({n})", nmDefault:"Colleague",
     kraftMuede:"I need a coffee. A quick stop in the kitchen, then on we go.",
     kraftLeer:"This is how mistakes happen. A break first, then the next customer.",
     kraftAbzug:"Advising while tired: {p} points less. A break in the team kitchen would have saved that.",
@@ -1236,6 +1274,10 @@ var I18N = {
     custHere:"أحدهم عند الطاولة", custHint:"الحالة تنكشف في أثناء الحديث.",
     custMad:"لن أنتظر كل هذا.",
     archiv:"الأرشيف", archivEmpty:"لا شيء في الأرشيف بعد. ما تنهيه يُجمع هنا.", correctIs:"الصواب:", startGame:"ادخل الصيدلية",
+    nmTitle:"ماذا يناديك زملاؤك؟",
+    nmDesc:"الاسم الأول يكفي. سيظهر لاحقاً في حوارات الفريق وعلى شهادتك.",
+    nmNote:"يبقى على هذا الجهاز ولا يُرسل إلى أي خادم.",
+    nmSave:"متابعة", nmSkip:"تخطٍ ({n})", nmDefault:"زميل",
     kraftMuede:"أحتاج قهوة. مرور سريع على المطبخ ثم أكمل.",
     kraftLeer:"هكذا تقع الأخطاء. استراحة أولاً ثم الزبون التالي.",
     kraftAbzug:"استشارة وأنت مُرهَق: {p} نقاط أقل. استراحة في المطبخ كانت ستوفّرها.",
@@ -1254,12 +1296,20 @@ var I18N = {
 /* ---------------- SPIELANLEITUNG ---------------- */
 /* Baukennung. Steht unten in der Spielanleitung und in der Konsole.
    Damit ist mit einem Blick klar, welche Datei wirklich laeuft. */
-/* ZEITWEILIG. Oeffnet alle Faelle zum Durchsehen und haengt die Reihenfolge
-   aus. Vor der Veroeffentlichung auf false setzen. Solange der Schalter an
-   ist, steht es unten in der Spielanleitung, damit es niemandem entgeht. */
-var UNLOCK_ALL = true;
+/* Alle Faelle oeffnen und die Reihenfolge aushaengen. Fuer Spieler aus.
+   Zum Durchsehen einmal die Seite mit ?unlock=1 aufrufen, dann bleibt es
+   auf diesem Geraet an, bis ?unlock=0 aufgerufen wird. Solange es an ist,
+   steht es unten in der Spielanleitung, damit es niemandem entgeht. */
+var UNLOCK_ALL = (function(){
+  var KEY='pc_unlock_all';
+  try{
+    var q=(location.search||'').match(/[?&]unlock=([01])/);
+    if(q){ localStorage.setItem(KEY, q[1]); }
+    return localStorage.getItem(KEY)==='1';
+  }catch(e){ return false; }
+})();
 
-var PC_BUILD = "2026-09-04b \u00b7 Kraft und Pause" +
+var PC_BUILD = "2026-09-05 \u00b7 Name und Freigabe" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5213,8 +5263,9 @@ document.querySelectorAll('.lang-btn[data-lang]').forEach(function(b){
 /* ---------- Returning user chip ---------- */
 function updateReturning(){
   var chip=document.getElementById('returningChip');
-  if(state.user&&state.user.name){ chip.style.display='flex';
-    chip.textContent=t('welcomeBack')+', '+state.user.name; }
+  var nm = (state.player&&state.player.name) || (state.user&&state.user.name);
+  if(nm){ chip.style.display='flex';
+    chip.textContent=t('welcomeBack')+', '+nm; }
   else chip.style.display='none';
 }
 
@@ -6334,6 +6385,39 @@ document.getElementById('wBack').addEventListener('click',function(){
   if(W.room!=='offizin'){ enterRoom('offizin',[36,13]); return; }
   cancelAnimationFrame(W.raf); W.raf=null; show('startScreen');
 });
+/* =====================================================================
+   NAME DES SPIELERS
+   Einmal beim ersten Start. Steht nur im Speicher dieses Geraets und
+   geht an keinen Server. Wird in den Gespraechen mit den Kolleginnen
+   und auf der Abschlussurkunde gebraucht.
+===================================================================== */
+function spielerName(){
+  return (state.player && state.player.name) ? state.player.name : t('nmDefault');
+}
+function nameSetzen(n){
+  n = (n||'').trim().replace(/\s+/g,' ').slice(0,24);
+  state.player = { name: n || t('nmDefault') };
+  save();
+  updateReturning();
+}
+function openName(next){
+  var m=document.getElementById('nameModal');
+  document.getElementById('nmTitle').textContent=t('nmTitle');
+  document.getElementById('nmDesc').textContent=t('nmDesc');
+  document.getElementById('nmNote').textContent=t('nmNote');
+  document.getElementById('nmSave').textContent=t('nmSave');
+  document.getElementById('nmSkip').textContent=t('nmSkip').replace('{n}', t('nmDefault'));
+  var inp=document.getElementById('nmInput');
+  inp.placeholder=t('nmDefault');
+  inp.value=(state.player&&state.player.name)||'';
+  function schliessen(){ m.classList.remove('show'); if(next) next(); }
+  document.getElementById('nmSave').onclick=function(){ nameSetzen(inp.value); schliessen(); };
+  document.getElementById('nmSkip').onclick=function(){ nameSetzen(''); schliessen(); };
+  inp.onkeydown=function(e){ if(e.key==='Enter'){ nameSetzen(inp.value); schliessen(); } };
+  m.classList.add('show');
+  setTimeout(function(){ try{ inp.focus(); }catch(e){} }, 120);
+}
+
 function openWorld(){
   MAP_FILTER = null;
   show('worldScreen');
@@ -6498,8 +6582,11 @@ document.getElementById('emSkip').addEventListener('click',closeEmail);
 /* WIRING                                                                */
 /* ===================================================================== */
 document.getElementById('playBtn').addEventListener('click',function(){
-  if(!state.guideSeen) openGuide(function(){ openWorld(); });
-  else openWorld();
+  function weiter(){
+    if(!state.guideSeen) openGuide(function(){ openWorld(); });
+    else openWorld();
+  }
+  if(!state.player) openName(weiter); else weiter();
 });
 /* Aus einem laufenden Fall geht es zurueck in die Apotheke, nicht in
    eine Liste aller Faelle. Die gibt es nicht mehr. */
@@ -6549,7 +6636,8 @@ function syncMapNav(){
 }
 document.getElementById('resetBtn').addEventListener('click',function(){
   uiConfirm(t('resetConfirm'), function(){ localStorage.removeItem(SAVE_KEY);
-    state={ lang:state.lang, totalPts:0, rankIdx:0, levelBest:{}, user:null, emailAsked:false, guideSeen:false, muted:state.muted }; save();
+    state={ lang:state.lang, totalPts:0, rankIdx:0, levelBest:{}, user:null, player:null,
+            kraft:100, emailAsked:false, guideSeen:false, muted:state.muted }; save();
     updateReturning(); renderMap(); });
 });
 
