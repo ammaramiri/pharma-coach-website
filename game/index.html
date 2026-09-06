@@ -62,27 +62,31 @@ body.rtl{direction:rtl}
    stark vergroessert, dass nur noch das Gesicht im Rahmen steht - und der
    Titel liegt darauf. Deshalb bekommt das Bild dort nur die untere
    Haelfte des Schirms, der obere Teil bleibt dunkel und traegt die Schrift. */
-/* Hochkant: Schrift oben, Bild darunter, alles auf einem Schirm.
-   Der Text nimmt sich, was er braucht. Das Bild bekommt genau den Rest
-   und schrumpft mit, statt eine Bildlaufleiste zu erzwingen. Damit
-   kann die Schrift nie auf dem Apotheker landen und nichts rutscht
-   unter den Rand. */
+/* Hochkant: das Bild oben als vollstaendiges Band, die Schrift darunter.
+   Das Bild wird nicht beschnitten, es zeigt die ganze Aufnahme. Darunter
+   laeuft es weich ins Dunkle aus, damit Bild und Schrift zusammengehoeren
+   statt uebereinanderzuliegen. Kein Bildlauf: die Schrift ist so gesetzt,
+   dass sie mit dem Band auf einen Schirm passt. */
 @media (max-width:760px) and (orientation:portrait){
   #startScreen{background:#100E12;display:flex;flex-direction:column;
-    justify-content:flex-start;padding:84px 0 0;overflow:hidden}
-  .hero-content{order:1;flex:0 0 auto;padding:0 20px 8px;justify-content:flex-start}
-  .brand-row{margin-top:0}
-  .game-title{font-size:clamp(28px,10.5vw,44px);margin-bottom:6px}
-  .game-sub{max-width:24em;margin:0 auto 14px;font-size:14px}
-  .play-btn{margin-bottom:10px}
-  .start-links{gap:8px}
-  .legal-foot{margin-top:12px;font-size:10px}
-  .hero-bg{order:2;position:relative;inset:auto;width:100%;flex:1 1 auto;min-height:96px}
-  .hero-bg picture{position:absolute;inset:0;display:block}
-  .hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center 16%}
+    justify-content:flex-start;padding:0;overflow:hidden}
+  .hero-bg{order:1;position:relative;inset:auto;width:100%;flex:0 0 auto;line-height:0}
+  .hero-bg picture{position:relative;inset:auto;display:block}
+  .hero-bg img{position:relative;width:100%;height:auto;object-fit:contain}
   .hero-bg::after{background:linear-gradient(180deg,
-    #100E12 0%, rgba(16,14,18,.50) 15%, rgba(16,14,18,0) 42%,
-    rgba(16,14,18,0) 78%, rgba(16,14,18,.30) 100%)}
+    rgba(16,14,18,.55) 0%, rgba(16,14,18,.10) 22%, rgba(16,14,18,0) 46%,
+    rgba(16,14,18,.45) 78%, #100E12 100%)}
+  .hero-content{order:2;flex:1 1 auto;min-height:0;padding:14px 18px 10px;
+    justify-content:flex-start;text-shadow:none}
+  .brand-row{margin-top:0;margin-bottom:4px}
+  .brand-row img{height:30px!important}
+  .brand-name{font-size:17px}
+  .game-title{font-size:clamp(26px,9vw,38px);margin:0 0 4px}
+  .game-sub{max-width:26em;margin:0 auto 12px;font-size:13.5px;line-height:1.5}
+  .play-btn{margin-bottom:9px;padding:14px 30px;font-size:16px}
+  .start-links{gap:7px}
+  .slink{font-size:12.5px;padding:9px 14px}
+  .legal-foot{margin-top:10px;font-size:9.5px;line-height:1.5}
 } }
 .brand-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:22px}
 .brand-mark{width:52px;height:33px;background:linear-gradient(90deg,var(--red) 50%,var(--teal) 50%);
@@ -901,7 +905,7 @@ body.rtl .rv-nav{flex-direction:row-reverse}
 <!-- ============ START SCREEN ============ -->
 <div class="screen active" id="startScreen">
   <div class="hero-bg"><picture>
-    <source media="(max-width:760px) and (orientation:portrait)" srcset="assets/hero_mobile.webp" type="image/webp">
+    <source media="(max-width:760px) and (orientation:portrait)" srcset="assets/hero_wide.webp" type="image/webp">
     <source srcset="assets/hero_split.webp" type="image/webp">
     <img src="assets/hero_cover.jpg" alt="" fetchpriority="high" decoding="async">
   </picture></div>
@@ -1336,7 +1340,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-06d \u00b7 Start ohne Bildlauf" +
+var PC_BUILD = "2026-09-06e \u00b7 Bild oben, Text darunter" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
