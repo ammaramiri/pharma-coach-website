@@ -62,17 +62,26 @@ body.rtl{direction:rtl}
    stark vergroessert, dass nur noch das Gesicht im Rahmen steht - und der
    Titel liegt darauf. Deshalb bekommt das Bild dort nur die untere
    Haelfte des Schirms, der obere Teil bleibt dunkel und traegt die Schrift. */
+/* Hochkant: kein Bild hinter der Schrift, sondern untereinander.
+   Solange das Bild als Hintergrund lag, wanderten die Knoepfe darauf,
+   sobald der Text ein wenig laenger wurde. Jetzt sind es zwei Bloecke:
+   oben die Schrift, unten das Bild, ohne jede Ueberschneidung. */
 @media (max-width:760px) and (orientation:portrait){
-  #startScreen{background:#100E12}
-  .hero-bg{top:auto;bottom:0;height:56%}
-  .hero-bg img{object-position:center 22%}
+  #startScreen{background:#100E12;display:flex;flex-direction:column;
+    justify-content:flex-start;padding:96px 0 0;overflow-y:auto}
+  .hero-bg{position:relative;inset:auto;order:2;width:100%;height:auto;flex:0 0 auto;
+    margin-top:18px}
+  .hero-bg picture{position:relative;inset:auto;display:block}
+  .hero-bg img{position:relative;width:100%;height:auto;aspect-ratio:4/5;
+    object-fit:cover;object-position:center 18%}
   .hero-bg::after{background:linear-gradient(180deg,
-    #100E12 0%, rgba(16,14,18,.82) 26%, rgba(16,14,18,.30) 58%,
-    rgba(16,14,18,.55) 82%, rgba(16,14,18,.92) 100%)}
-  .hero-content{padding-top:0;justify-content:flex-start}
-  .brand-row{margin-top:6vh}
-  .game-title{font-size:clamp(34px,13vw,54px)}
-  .game-sub{max-width:22em;margin-left:auto;margin-right:auto}
+    #100E12 0%, rgba(16,14,18,.55) 16%, rgba(16,14,18,0) 42%,
+    rgba(16,14,18,0) 74%, rgba(16,14,18,.35) 100%)}
+  .hero-content{order:1;flex:0 0 auto;padding:0 20px 6px;justify-content:flex-start}
+  .brand-row{margin-top:0}
+  .game-title{font-size:clamp(32px,12vw,50px)}
+  .game-sub{max-width:24em;margin-left:auto;margin-right:auto}
+  .legal-foot{order:3;margin:16px auto 22px;padding:0 20px}
 } }
 .brand-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:22px}
 .brand-mark{width:52px;height:33px;background:linear-gradient(90deg,var(--red) 50%,var(--teal) 50%);
@@ -1326,7 +1335,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-06b \u00b7 Startbild hochkant" +
+var PC_BUILD = "2026-09-06c \u00b7 Start hochkant getrennt" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
