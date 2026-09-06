@@ -45,6 +45,25 @@ body.rtl{direction:rtl}
   padding-top:2vh;text-shadow:0 2px 14px rgba(0,0,0,.55)}
 @media(max-width:700px){ .hero-bg img{object-position:center 84%}
 
+/* Das Startbild ist links absichtlich leer. Dort steht die Schrift,
+   nie auf dem Apotheker. Frueher lag der Titel auf seinem Gesicht. */
+.hero-bg picture{position:absolute;inset:0;display:block}
+.hero-bg picture img{width:100%;height:100%;object-fit:cover}
+@media(min-aspect-ratio:1/1){
+  .hero-bg img{object-position:center center}
+  .hero-bg::after{background:linear-gradient(90deg,
+    rgba(16,14,18,.94) 0%, rgba(16,14,18,.86) 36%, rgba(16,14,18,.34) 54%,
+    rgba(16,14,18,.10) 74%, rgba(16,14,18,.36) 100%)}
+  .hero-content{max-width:none;width:100%;align-items:flex-start;text-align:left;
+    padding-inline-start:6vw;padding-inline-end:50vw}
+  body.rtl .hero-content{align-items:flex-end;text-align:right}
+}
+/* Hochkant bleibt das Bild unten und die Schrift darueber, aber der
+   Ausschnitt zeigt den Apotheker, nicht die leere Haelfte. */
+@media (max-width:760px) and (orientation:portrait){
+  .hero-bg img{object-position:80% 62%}
+}
+
 /* Auf dem hochkanten Telefon wird ein 16:9-Bild von object-fit:cover so
    stark vergroessert, dass nur noch das Gesicht im Rahmen steht - und der
    Titel liegt darauf. Deshalb bekommt das Bild dort nur die untere
@@ -877,7 +896,10 @@ body.rtl .rv-nav{flex-direction:row-reverse}
 
 <!-- ============ START SCREEN ============ -->
 <div class="screen active" id="startScreen">
-  <div class="hero-bg"><img src="assets/hero_cover.jpg" alt="" fetchpriority="high" decoding="async"></div>
+  <div class="hero-bg"><picture>
+    <source srcset="assets/hero_split.webp" type="image/webp">
+    <img src="assets/hero_cover.jpg" alt="" fetchpriority="high" decoding="async">
+  </picture></div>
   <div class="lang-switch">
     <button class="lang-btn mute-btn" title="Ton"></button>
     <button class="lang-btn on" data-lang="de">DE</button>
@@ -1309,7 +1331,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-05 \u00b7 Name und Freigabe" +
+var PC_BUILD = "2026-09-06 \u00b7 Startbild geteilt" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
