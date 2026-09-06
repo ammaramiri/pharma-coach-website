@@ -58,20 +58,14 @@ body.rtl{direction:rtl}
     padding-inline-start:6vw;padding-inline-end:50vw}
   body.rtl .hero-content{align-items:flex-end;text-align:right}
 }
-/* Hochkant bleibt das Bild unten und die Schrift darueber, aber der
-   Ausschnitt zeigt den Apotheker, nicht die leere Haelfte. */
-@media (max-width:760px) and (orientation:portrait){
-  .hero-bg img{object-position:80% 62%}
-}
-
 /* Auf dem hochkanten Telefon wird ein 16:9-Bild von object-fit:cover so
    stark vergroessert, dass nur noch das Gesicht im Rahmen steht - und der
    Titel liegt darauf. Deshalb bekommt das Bild dort nur die untere
    Haelfte des Schirms, der obere Teil bleibt dunkel und traegt die Schrift. */
 @media (max-width:760px) and (orientation:portrait){
   #startScreen{background:#100E12}
-  .hero-bg{top:auto;bottom:0;height:64%}
-  .hero-bg img{object-position:center 62%}
+  .hero-bg{top:auto;bottom:0;height:56%}
+  .hero-bg img{object-position:center 22%}
   .hero-bg::after{background:linear-gradient(180deg,
     #100E12 0%, rgba(16,14,18,.82) 26%, rgba(16,14,18,.30) 58%,
     rgba(16,14,18,.55) 82%, rgba(16,14,18,.92) 100%)}
@@ -897,6 +891,7 @@ body.rtl .rv-nav{flex-direction:row-reverse}
 <!-- ============ START SCREEN ============ -->
 <div class="screen active" id="startScreen">
   <div class="hero-bg"><picture>
+    <source media="(max-width:760px) and (orientation:portrait)" srcset="assets/hero_mobile.webp" type="image/webp">
     <source srcset="assets/hero_split.webp" type="image/webp">
     <img src="assets/hero_cover.jpg" alt="" fetchpriority="high" decoding="async">
   </picture></div>
@@ -1331,7 +1326,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-06 \u00b7 Startbild geteilt" +
+var PC_BUILD = "2026-09-06b \u00b7 Startbild hochkant" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
