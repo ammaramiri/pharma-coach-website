@@ -76,17 +76,20 @@ body.rtl{direction:rtl}
   .hero-bg::after{background:linear-gradient(180deg,
     rgba(16,14,18,.55) 0%, rgba(16,14,18,.10) 22%, rgba(16,14,18,0) 46%,
     rgba(16,14,18,.45) 78%, #100E12 100%)}
-  .hero-content{order:2;flex:1 1 auto;min-height:0;padding:14px 18px 10px;
+  .hero-content{order:2;flex:1 1 auto;min-height:0;padding:8px 16px 8px;
     justify-content:flex-start;text-shadow:none}
-  .brand-row{margin-top:0;margin-bottom:4px}
-  .brand-row img{height:30px!important}
-  .brand-name{font-size:17px}
-  .game-title{font-size:clamp(26px,9vw,38px);margin:0 0 4px}
-  .game-sub{max-width:26em;margin:0 auto 12px;font-size:13.5px;line-height:1.5}
-  .play-btn{margin-bottom:9px;padding:14px 30px;font-size:16px}
-  .start-links{gap:7px}
-  .slink{font-size:12.5px;padding:9px 14px}
-  .legal-foot{margin-top:10px;font-size:9.5px;line-height:1.5}
+  .brand-row{margin-top:0;margin-bottom:2px;gap:8px}
+  .brand-row img{height:26px!important}
+  .brand-name{font-size:15.5px}
+  .game-title{font-size:clamp(22px,7.4vw,32px);margin:0 0 3px;line-height:1.05}
+  .game-sub{max-width:27em;margin:0 auto 9px;font-size:12.5px;line-height:1.45}
+  .play-btn{margin-bottom:7px;padding:12px 26px;font-size:15px}
+  .start-links{gap:6px}
+  .slink{font-size:11.5px;padding:7px 12px}
+  .legal-foot{margin-top:7px;font-size:9px;line-height:1.45}
+  .lang-switch{top:10px;right:10px}
+  body.rtl .lang-switch{right:auto;left:10px}
+  .returning-chip{top:10px;font-size:11px;padding:6px 10px}
 } }
 .brand-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:22px}
 .brand-mark{width:52px;height:33px;background:linear-gradient(90deg,var(--red) 50%,var(--teal) 50%);
@@ -884,7 +887,7 @@ body.rtl .rv-nav{flex-direction:row-reverse}
   text-shadow:0 1px 3px rgba(0,0,0,.5)}
 
 .hidden{display:none!important}
-@media(max-width:640px){
+@media(max-width:640px) and (orientation:landscape){
   #startScreen{padding-top:104px}
   .lang-switch{top:14px;right:14px;gap:5px}
   body.rtl .lang-switch{right:auto;left:14px}
@@ -1340,7 +1343,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-06e \u00b7 Bild oben, Text darunter" +
+var PC_BUILD = "2026-09-07b \u00b7 Name nach dem ersten Fall" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5856,6 +5859,9 @@ function finishLevel(){
 
   var _rvb=document.getElementById('reviewBtn');
   if(_rvb) _rvb.addEventListener('click', openReview);
+  /* Erst jetzt nach dem Namen fragen: der Fall ist vorbei, der Spieler
+     hat gesehen, worum es geht, und der Ablauf steht ohnehin still. */
+  if(!state.player && !run.replay) setTimeout(function(){ openName(null); }, 900);
   document.getElementById('replay').addEventListener('click',function(){ startLevel(run.lv); });
   document.getElementById('toMap').addEventListener('click',function(){ afterLevel(s,stars); });
 
@@ -6613,11 +6619,8 @@ document.getElementById('emSkip').addEventListener('click',closeEmail);
 /* WIRING                                                                */
 /* ===================================================================== */
 document.getElementById('playBtn').addEventListener('click',function(){
-  function weiter(){
-    if(!state.guideSeen) openGuide(function(){ openWorld(); });
-    else openWorld();
-  }
-  if(!state.player) openName(weiter); else weiter();
+  if(!state.guideSeen) openGuide(function(){ openWorld(); });
+  else openWorld();
 });
 /* Aus einem laufenden Fall geht es zurueck in die Apotheke, nicht in
    eine Liste aller Faelle. Die gibt es nicht mehr. */
