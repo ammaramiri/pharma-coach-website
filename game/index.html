@@ -892,18 +892,19 @@ body.rtl .rv-nav{flex-direction:row-reverse}
   .hero-bg::after{background:linear-gradient(180deg,
     rgba(16,14,18,.55) 0%, rgba(16,14,18,.10) 22%, rgba(16,14,18,0) 46%,
     rgba(16,14,18,.45) 78%, #100E12 100%)}
-  .hero-content{order:2;flex:1 1 auto;min-height:0;padding:6px 16px 6px;
-    justify-content:flex-start;text-shadow:none}
-  .brand-row{margin-top:0;margin-bottom:2px;gap:7px}
-  .hero-content{padding-top:6px}
-  .brand-row img{height:24px!important}
-  .brand-name{font-size:14.5px}
-  .game-title{font-size:clamp(20px,6.6vw,29px);margin:0 0 3px;line-height:1.05}
-  .game-sub{max-width:28em;margin:0 auto 10px;font-size:12px;line-height:1.4}
-  .play-btn{margin-bottom:6px;padding:11px 24px;font-size:14.5px}
-  .start-links{gap:5px;margin-top:8px}
-  .slink{font-size:11px;padding:6px 11px}
-  .legal-foot{margin-top:8px;margin-bottom:0;font-size:8.5px;line-height:1.38}
+  /* Der Text nimmt den Rest des Schirms ein und sitzt darin mittig.
+     Vorher war er oben gestapelt und liess unten ein schwarzes Feld. */
+  .hero-content{order:2;flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;padding:10px 16px 14px;text-shadow:none}
+  .brand-row{margin-top:0;margin-bottom:6px;gap:9px}
+  .brand-row img{height:32px!important}
+  .brand-name{font-size:18px}
+  .game-title{font-size:clamp(27px,9vw,40px);margin:0 0 8px;line-height:1.04}
+  .game-sub{max-width:26em;margin:0 auto 18px;font-size:14.5px;line-height:1.5}
+  .play-btn{margin-bottom:4px;padding:15px 38px;font-size:17.5px}
+  .start-links{gap:8px;margin-top:16px}
+  .slink{font-size:13px;padding:9px 15px}
+  .legal-foot{margin-top:18px;margin-bottom:0;font-size:10.5px;line-height:1.5}
   .lang-switch{top:9px;right:10px}
   body.rtl .lang-switch{right:auto;left:10px}
   .returning-chip{top:9px;font-size:10.5px;padding:5px 9px}
@@ -1351,7 +1352,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-07d \u00b7 Start passt auf einen Schirm" +
+var PC_BUILD = "2026-09-07e \u00b7 Start ausgewogen" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
