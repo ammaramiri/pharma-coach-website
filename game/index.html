@@ -62,36 +62,7 @@ body.rtl{direction:rtl}
    stark vergroessert, dass nur noch das Gesicht im Rahmen steht - und der
    Titel liegt darauf. Deshalb bekommt das Bild dort nur die untere
    Haelfte des Schirms, der obere Teil bleibt dunkel und traegt die Schrift. */
-/* Hochkant: das Bild oben als vollstaendiges Band, die Schrift darunter.
-   Das Bild wird nicht beschnitten, es zeigt die ganze Aufnahme. Darunter
-   laeuft es weich ins Dunkle aus, damit Bild und Schrift zusammengehoeren
-   statt uebereinanderzuliegen. Kein Bildlauf: die Schrift ist so gesetzt,
-   dass sie mit dem Band auf einen Schirm passt. */
-@media (max-width:760px) and (orientation:portrait){
-  #startScreen{background:#100E12;padding:52px 0 0;overflow:hidden}
-  #startScreen.active{display:flex;flex-direction:column;justify-content:flex-start}
-  .hero-bg{order:1;position:relative;inset:auto;width:100%;flex:0 0 auto;line-height:0}
-  .hero-bg picture{position:relative;inset:auto;display:block}
-  .hero-bg img{position:relative;width:100%;height:auto;object-fit:contain}
-  .hero-bg::after{background:linear-gradient(180deg,
-    rgba(16,14,18,.55) 0%, rgba(16,14,18,.10) 22%, rgba(16,14,18,0) 46%,
-    rgba(16,14,18,.45) 78%, #100E12 100%)}
-  .hero-content{order:2;flex:1 1 auto;min-height:0;padding:6px 16px 6px;
-    justify-content:flex-start;text-shadow:none}
-  .brand-row{margin-top:0;margin-bottom:2px;gap:7px}
-  .brand-row img{height:24px!important}
-  .brand-name{font-size:14.5px}
-  .game-title{font-size:clamp(20px,6.6vw,29px);margin:0 0 3px;line-height:1.05}
-  .game-sub{max-width:28em;margin:0 auto 8px;font-size:12px;line-height:1.4}
-  .play-btn{margin-bottom:6px;padding:11px 24px;font-size:14.5px}
-  .start-links{gap:5px}
-  .slink{font-size:11px;padding:6px 11px}
-  .legal-foot{margin-top:6px;font-size:8.5px;line-height:1.4}
-  .lang-switch{top:9px;right:10px}
-  body.rtl .lang-switch{right:auto;left:10px}
-  .returning-chip{top:9px;font-size:10.5px;padding:5px 9px}
-  .tap-hint{display:none}
-} }
+ }
 .brand-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:22px}
 .brand-mark{width:52px;height:33px;background:linear-gradient(90deg,var(--red) 50%,var(--teal) 50%);
   border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(0,0,0,.4)}
@@ -902,6 +873,42 @@ body.rtl .rv-nav{flex-direction:row-reverse}
   .bins{grid-template-columns:1fr}
   .xp-track{max-width:none}
 }
+
+/* Dieser Block steht bewusst ganz am Ende des Blattes. Weiter oben
+   folgen noch allgemeine Regeln mit denselben Selektoren, und bei
+   gleicher Spezifitaet gewinnt die spaetere. Vorher wurden meine
+   engeren Abstaende von ihnen wieder aufgehoben. */
+/* Hochkant: das Bild oben als vollstaendiges Band, die Schrift darunter.
+   Das Bild wird nicht beschnitten, es zeigt die ganze Aufnahme. Darunter
+   laeuft es weich ins Dunkle aus, damit Bild und Schrift zusammengehoeren
+   statt uebereinanderzuliegen. Kein Bildlauf: die Schrift ist so gesetzt,
+   dass sie mit dem Band auf einen Schirm passt. */
+@media (max-width:760px) and (orientation:portrait){
+  #startScreen{background:#100E12;padding:52px 0 0;overflow:hidden}
+  #startScreen.active{display:flex;flex-direction:column;justify-content:flex-start}
+  .hero-bg{order:1;position:relative;inset:auto;width:100%;flex:0 0 auto;line-height:0}
+  .hero-bg picture{position:relative;inset:auto;display:block}
+  .hero-bg img{position:relative;width:100%;height:auto;object-fit:contain}
+  .hero-bg::after{background:linear-gradient(180deg,
+    rgba(16,14,18,.55) 0%, rgba(16,14,18,.10) 22%, rgba(16,14,18,0) 46%,
+    rgba(16,14,18,.45) 78%, #100E12 100%)}
+  .hero-content{order:2;flex:1 1 auto;min-height:0;padding:6px 16px 6px;
+    justify-content:flex-start;text-shadow:none}
+  .brand-row{margin-top:0;margin-bottom:2px;gap:7px}
+  .hero-content{padding-top:6px}
+  .brand-row img{height:24px!important}
+  .brand-name{font-size:14.5px}
+  .game-title{font-size:clamp(20px,6.6vw,29px);margin:0 0 3px;line-height:1.05}
+  .game-sub{max-width:28em;margin:0 auto 10px;font-size:12px;line-height:1.4}
+  .play-btn{margin-bottom:6px;padding:11px 24px;font-size:14.5px}
+  .start-links{gap:5px;margin-top:8px}
+  .slink{font-size:11px;padding:6px 11px}
+  .legal-foot{margin-top:8px;margin-bottom:0;font-size:8.5px;line-height:1.38}
+  .lang-switch{top:9px;right:10px}
+  body.rtl .lang-switch{right:auto;left:10px}
+  .returning-chip{top:9px;font-size:10.5px;padding:5px 9px}
+  .tap-hint{display:none}
+}
 </style>
 </head>
 <body>
@@ -1344,7 +1351,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-07c \u00b7 Bildschirmwechsel" +
+var PC_BUILD = "2026-09-07d \u00b7 Start passt auf einen Schirm" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
