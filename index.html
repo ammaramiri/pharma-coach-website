@@ -122,26 +122,6 @@ footer ul a:hover{color:#fff!important;transform:translateX(5px);}
 /* Eine einzige Aufnahme, auf jedem Schirm vollstaendig. Der hochkante
    Ausschnitt hat dem Apotheker die Haende abgeschnitten. */
 
-/* ===== Erinnerung an den Kursstart ===== */
-.notify-box{max-width:520px;margin:26px auto 0;text-align:left;background:#fff;
-  border:1.5px solid #F0E8E5;border-radius:14px;padding:20px 20px 18px;
-  box-shadow:0 10px 26px rgba(20,30,40,.07);}
-.notify-row{display:flex;gap:9px;flex-wrap:wrap;}
-.notify-row input[type=email]{flex:1 1 210px;min-width:0;padding:13px 15px;border-radius:12px;
-  border:2px solid #ECE6E4;background:#FBF9F8;color:#23272E;
-  font-family:Montserrat,sans-serif;font-size:15px;}
-.notify-row input[type=email]::placeholder{color:#A8AEB6;}
-.notify-row input[type=email]:focus{outline:none;border-color:#2DDDC4;background:#fff;}
-.notify-row button{flex:0 0 auto;background:#16B8A6;color:#fff;border:none;cursor:pointer;
-  font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;padding:13px 22px;
-  border-radius:12px;box-shadow:0 3px 0 #0E8C7E;transition:transform .16s ease,box-shadow .16s ease;}
-.notify-row button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 5px 0 #0E8C7E;}
-.notify-row button:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
-.notify-consent{display:flex;gap:9px;align-items:flex-start;margin-top:12px;
-  font-size:12.5px;line-height:1.55;color:#6B707A;cursor:pointer;}
-.notify-consent input{margin-top:3px;flex:0 0 auto;width:17px;height:17px;accent-color:#16B8A6;}
-.notify-consent a{color:#16B8A6;font-weight:600;}
-.notify-status{font-size:13px;line-height:1.5;margin-top:9px;min-height:18px;color:#5A5F68;}
 </style></head>
 <body>
 
@@ -290,19 +270,6 @@ footer ul a:hover{color:#fff!important;transform:translateX(5px);}
     <div style="font-size:11.5px;color:#9AA0AA;margin:9px auto 22px;max-width:720px;text-align:center;">Beim Abspielen wird eine Verbindung zu YouTube (Google) hergestellt.</div>
     <a href="https://youtu.be/6HAqN36258E" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:9px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;padding:14px 24px;border-radius:13px;box-shadow:0 4px 0 #B30F1E;text-decoration:none;">Gratis-Lektion ansehen →</a>
     <a href="otc-kurs.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:9px;background:#fff;color:#23272E;font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;padding:14px 24px;border-radius:13px;border:2px solid #ECE6E4;box-shadow:0 4px 0 #ECE6E4;text-decoration:none;margin-left:10px;">Alle 50 Themen ansehen →</a>
-    <div class="notify-box">
-      <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;margin-bottom:4px;">Benachrichtige mich zum Start</div>
-      <div style="font-size:13px;line-height:1.6;color:#5A5F68;margin-bottom:12px;">Eine einzige E-Mail, wenn der OTC-Kurs öffnet. Kein Newsletter.</div>
-      <div class="notify-row">
-        <input type="email" class="notify-mail" placeholder="Deine E-Mail" autocomplete="email" inputmode="email">
-        <button type="button" class="notify-go" disabled>Eintragen</button>
-      </div>
-      <label class="notify-consent">
-        <input type="checkbox" class="notify-ok">
-        <span>Ich bin einverstanden, dass meine E-Mail-Adresse für diese eine Benachrichtigung gespeichert wird. Widerruf jederzeit per Mail. <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutz</a></span>
-      </label>
-      <div class="notify-status" role="status"></div>
-    </div>
   </div>
 </section>
 
@@ -735,19 +702,6 @@ footer ul a:hover{color:#fff!important;transform:translateX(5px);}
     <div style="font-size:11.5px;color:#9AA0AA;margin:9px auto 22px;max-width:720px;text-align:center;">Playing the video connects to YouTube (Google).</div>
     <a href="https://youtu.be/6HAqN36258E" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:9px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;padding:14px 24px;border-radius:13px;box-shadow:0 4px 0 #B30F1E;text-decoration:none;">Watch free lesson →</a>
     <a href="otc-kurs.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:9px;background:#fff;color:#23272E;font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;padding:14px 24px;border-radius:13px;border:2px solid #ECE6E4;box-shadow:0 4px 0 #ECE6E4;text-decoration:none;margin-left:10px;">See all 50 topics →</a>
-    <div class="notify-box">
-      <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;margin-bottom:4px;">Notify me at launch</div>
-      <div style="font-size:13px;line-height:1.6;color:#5A5F68;margin-bottom:12px;">One single e-mail when the OTC course opens. No newsletter.</div>
-      <div class="notify-row">
-        <input type="email" class="notify-mail" placeholder="Your e-mail" autocomplete="email" inputmode="email">
-        <button type="button" class="notify-go" disabled>Sign up</button>
-      </div>
-      <label class="notify-consent">
-        <input type="checkbox" class="notify-ok">
-        <span>I agree that my e-mail address is stored for this one notification. Revocable at any time by mail. <a href="datenschutz.html" target="_blank" rel="noopener">Privacy</a></span>
-      </label>
-      <div class="notify-status" role="status"></div>
-    </div>
   </div>
 </section>
 
@@ -1092,50 +1046,7 @@ var FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSeNOfrWdr5KiYJD_ns8A
 var FORM_FELD   = "entry.399821848";
 var FALLBACK_MAIL = "pharma.coach.ammar@gmail.com";
 
-(function(){
-  function gueltig(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
-  var senke=null;
-  function stilleSenke(){
-    if(senke) return senke;
-    senke=document.createElement('iframe');
-    senke.name='pc-notify-sink'; senke.style.display='none';
-    document.body.appendChild(senke); return senke;
-  }
-  document.querySelectorAll('.notify-box').forEach(function(box){
-    var feld=box.querySelector('.notify-mail'), haken=box.querySelector('.notify-ok'),
-        knopf=box.querySelector('.notify-go'), stand=box.querySelector('.notify-status');
-    var en=/Notify me/.test(box.textContent);
-    var T = en
-      ? { bad:'Please check the address.', tick:'Please tick the box first.',
-          ok:'Noted. You will hear from us at launch.', wait:'Sending…' }
-      : { bad:'Bitte die Adresse prüfen.', tick:'Bitte zuerst das Häkchen setzen.',
-          ok:'Notiert. Du hörst zum Start von uns.', wait:'Wird gesendet…' };
-    function melden(t,rot){ stand.textContent=t; stand.style.color=rot?'#FF8A93':'#2DDDC4'; }
-    function pruefen(){ knopf.disabled=!(haken.checked && gueltig((feld.value||'').trim())); }
-    feld.addEventListener('input',pruefen);
-    haken.addEventListener('change',pruefen);
-    function senden(){
-      var v=(feld.value||'').trim();
-      if(!gueltig(v)){ melden(T.bad,true); feld.focus(); return; }
-      if(!haken.checked){ melden(T.tick,true); return; }
-      if(!FORM_ACTION || !FORM_FELD){
-        var betreff = en ? 'Notify me at launch' : 'Benachrichtige mich zum Start';
-        window.location.href='mailto:'+FALLBACK_MAIL+'?subject='+encodeURIComponent(betreff)+
-          '&body='+encodeURIComponent(v);
-        melden(T.ok,false); return;
-      }
-      knopf.disabled=true; melden(T.wait,false); stilleSenke();
-      var f=document.createElement('form');
-      f.action=FORM_ACTION; f.method='POST'; f.target='pc-notify-sink'; f.style.display='none';
-      var i=document.createElement('input'); i.type='hidden'; i.name=FORM_FELD; i.value=v;
-      f.appendChild(i); document.body.appendChild(f); f.submit();
-      setTimeout(function(){ document.body.removeChild(f); melden(T.ok,false);
-        feld.value=''; haken.checked=false; pruefen(); }, 900);
-    }
-    knopf.addEventListener('click',senden);
-    feld.addEventListener('keydown',function(e){ if(e.key==='Enter' && !knopf.disabled) senden(); });
-  });
-})();
+
 </script>
 </body>
 </html>
