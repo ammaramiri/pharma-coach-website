@@ -1,6 +1,6 @@
 # خطة توسعة Pharma-Coach: The Game
 
-**وثيقة المرجع الوحيدة · النسخة 14 · 04.09.2026**
+**وثيقة المرجع الوحيدة · النسخة 15 · 05.09.2026**
 **تُعدَّل من محادثة القيادة وحدها.**
 
 ارفع هذا الملف إلى `game/PLAN.md` في المستودع. عندها أقرأه بنفسي في أي محادثة
@@ -383,7 +383,11 @@ Diskretion Beratungsraum Anforderungen
 - **لا نباتات على رفوف الأدوية ولا على الكاونتر ولا على أسطح العمل** في أي صورة، خريطة كانت أو مشهداً. نباتات أرضية فقط، وبعدد قليل. المطبخ استثناء.
 - **لا براد مشروبات في الصالة.** براد الأدوية مكانه المكتب.
 - الغرف الداخلية تخرج دائماً أدكن من الصالة لأنها بلا واجهة زجاجية. يجب طلب إضاءة إضافية صراحةً في كل برومبت غرفة.
-- 16:9 · JPG · يُصغَّر إلى 1600×900
+- **الصيغة: WebP حصراً** لكل أصل جديد. لا JPG ولا PNG يدخل المستودع
+  بعد 04.09.2026. التحويل يجري في محادثة المعالجة قبل التسليم.
+  الـ201 ملف JPG القائمة تُحوَّل دفعة واحدة قبل الإطلاق.
+- المقاسات: مشاهد الاستشارة 16:9 تُصغَّر إلى 1600×900 · خرائط الغرف
+  3:4 عند 1440×1920 · بطاقات المراحل 640×360 · أصول المكتب حسب الحاجة
 - الكيس الورقي البنّي المغلق في مشهد التسليم، لا علبة عارية ولا بطاقة بيضاء
 - الزبون يدخل **مواجهاً الكاميرا** في مشهد `A_ENTRANCE`
 
@@ -1404,3 +1408,48 @@ Ammar لا يبحث عن صورة مرجعية في محادثات سابقة. �
 **ولماذا تبقى مفيدة للعربي رغم ذلك:** جمهور Ammar الأساسي صيادلة عرب
 يسعون إلى الاعتراف الألماني، وهذه المراحل **بالضبط ما سيواجهونه**.
 الوسم يمنع الإحباط ولا يمنع الفائدة.
+
+---
+
+## 22 · أصول الريتاكس · الأسماء الدقيقة (04.09.2026)
+
+المسار `game/assets/Retax/` · **حرف R كبير** · أسماء الملفات بحروف صغيرة.
+أي مسار يُكتب `retax` بصغيرة يعطي **404 صامتاً**.
+
+### الشعارات الخمسة · للربط بين الوصفة المبنية بالكود والكاسات الوهمية
+```
+retax_logo_nordwaldt_kasse.webp          12.2 KB   Nordwaldt Kasse
+retax_logo_bruncker_classic.webp         12.8 KB   Bruncker Classic
+retax_logo_spektrion.webp                12.5 KB   Spektrion
+retax_logo_girsberg_pruefdienst.webp      5.0 KB   Girsberg Prüfdienst
+retax_logo_betriebskasse_nordstern.webp  13.1 KB   Betriebskasse Nordstern
+```
+كلها **مربّعة وشفافة**. الاسم يُكتب نصّاً بالكود بجانب العلامة، ولا
+تُستعمل ملفات شعار أفقية.
+
+### الوثائق الاثنتا عشرة · طبقة سفلى بلا نصّ
+```
+retax_doc_bescheid_k1_nordwaldt.webp        retax_doc_umschlag_k1.webp
+retax_doc_bescheid_k2_bruncker.webp         retax_doc_umschlag_k2.webp
+retax_doc_bescheid_k3_spektrion.webp        retax_doc_umschlag_k3.webp
+retax_doc_bescheid_k4_girsberg.webp         retax_doc_umschlag_k4.webp
+retax_doc_bescheid_k5_nordstern.webp        retax_doc_umschlag_k5.webp
+retax_doc_lieferbeleg.webp
+retax_doc_protokoll_nichtverfuegbar.webp
+```
+
+### المشاهد الخمسة والعشرون · متاحة لكل الفئات لا الريتاكس وحدها
+```
+blatt_teilt_sich · drucker_streifen · finger_zeigt · haende_bescheid
+kalender_acht_monate · karte_in_fach · klein_und_gross · lupe
+sanduhr · schublade_schliessen · sechs_blatt · stempel_kissen
+taschenrechner · textmarker · umschlag_geschlossen · umschlag_oeffnen
+undichte_kiste · vergleich_zwei_blatt · vier_karten
+vier_karten_verdeckt · waage_schale · waage_zeit_geld
+zwei_blatt_ein_umschlag · zwei_packungsgroessen · zwei_stapel
+```
+جميعها بالبادئة `retax_scene_` واللاحقة `.webp`.
+
+**قابلة لإعادة الاستعمال في `Rezeptprüfung` و`Dokumentation` و`Rezeptur`**
+حسب قاعدة تبادل الأصول. مثال: `lupe` و`finger_zeigt` و`textmarker`
+تصلح لأي خطوة فحص وثيقة.
