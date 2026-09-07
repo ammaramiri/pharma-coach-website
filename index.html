@@ -123,22 +123,25 @@ footer ul a:hover{color:#fff!important;transform:translateX(5px);}
    Ausschnitt hat dem Apotheker die Haende abgeschnitten. */
 
 /* ===== Erinnerung an den Kursstart ===== */
-.notify-box{max-width:520px;margin:22px auto 0;text-align:left;}
+.notify-box{max-width:520px;margin:26px auto 0;text-align:left;background:#fff;
+  border:1.5px solid #F0E8E5;border-radius:14px;padding:20px 20px 18px;
+  box-shadow:0 10px 26px rgba(20,30,40,.07);}
 .notify-row{display:flex;gap:9px;flex-wrap:wrap;}
 .notify-row input[type=email]{flex:1 1 210px;min-width:0;padding:13px 15px;border-radius:12px;
-  border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;
+  border:2px solid #ECE6E4;background:#FBF9F8;color:#23272E;
   font-family:Montserrat,sans-serif;font-size:15px;}
-.notify-row input[type=email]::placeholder{color:rgba(255,255,255,.45);}
-.notify-row input[type=email]:focus{outline:none;border-color:#2DDDC4;}
-.notify-row button{flex:0 0 auto;background:#2DDDC4;color:#10222A;border:none;cursor:pointer;
+.notify-row input[type=email]::placeholder{color:#A8AEB6;}
+.notify-row input[type=email]:focus{outline:none;border-color:#2DDDC4;background:#fff;}
+.notify-row button{flex:0 0 auto;background:#16B8A6;color:#fff;border:none;cursor:pointer;
   font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;padding:13px 22px;
-  border-radius:12px;}
-.notify-row button:disabled{opacity:.45;cursor:not-allowed;}
-.notify-consent{display:flex;gap:9px;align-items:flex-start;margin-top:11px;
-  font-size:12.5px;line-height:1.55;color:rgba(255,255,255,.6);}
-.notify-consent input{margin-top:3px;flex:0 0 auto;width:16px;height:16px;}
-.notify-consent a{color:#2DDDC4;}
-.notify-status{font-size:13px;line-height:1.5;margin-top:9px;min-height:18px;}
+  border-radius:12px;box-shadow:0 3px 0 #0E8C7E;transition:transform .16s ease,box-shadow .16s ease;}
+.notify-row button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 5px 0 #0E8C7E;}
+.notify-row button:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
+.notify-consent{display:flex;gap:9px;align-items:flex-start;margin-top:12px;
+  font-size:12.5px;line-height:1.55;color:#6B707A;cursor:pointer;}
+.notify-consent input{margin-top:3px;flex:0 0 auto;width:17px;height:17px;accent-color:#16B8A6;}
+.notify-consent a{color:#16B8A6;font-weight:600;}
+.notify-status{font-size:13px;line-height:1.5;margin-top:9px;min-height:18px;color:#5A5F68;}
 </style></head>
 <body>
 
@@ -270,10 +273,10 @@ footer ul a:hover{color:#fff!important;transform:translateX(5px);}
 <!-- GRATIS VIDEO -->
 <section style="background:#FFFCFB;padding:76px 24px;" class="sp">
   <div style="max-width:840px;margin:0 auto;text-align:center;">
-    <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(22px,3.5vw,38px);color:#fff;margin-bottom:13px;">
+    <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(22px,3.5vw,38px);color:#23272E;margin-bottom:13px;">
       Ein komplettes OTC-Thema: kostenlos ansehen
     </h2>
-    <p style="font-size:15.5px;line-height:1.7;color:rgba(255,255,255,.7);max-width:560px;margin:0 auto 28px;">
+    <p style="font-size:15.5px;line-height:1.7;color:#5A5F68;max-width:560px;margin:0 auto 28px;">
       Schau dir eine vollständige Indikation in allen 6 Schritten an, ganz ohne Abo.
     </p>
     <div id="gv-de" onclick="playGratis('gv-de')" role="button" aria-label="Gratis-Lektion abspielen" style="aspect-ratio:16/9;max-width:720px;margin:0 auto;border-radius:10px;overflow:hidden;background:#000;position:relative;cursor:pointer;box-shadow:0 18px 44px rgba(0,0,0,.35);">
@@ -288,8 +291,8 @@ footer ul a:hover{color:#fff!important;transform:translateX(5px);}
     <a href="https://youtu.be/6HAqN36258E" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:9px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;padding:14px 24px;border-radius:13px;box-shadow:0 4px 0 #B30F1E;text-decoration:none;">Gratis-Lektion ansehen →</a>
     <a href="otc-kurs.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:9px;background:#fff;color:#23272E;font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;padding:14px 24px;border-radius:13px;border:2px solid #ECE6E4;box-shadow:0 4px 0 #ECE6E4;text-decoration:none;margin-left:10px;">Alle 50 Themen ansehen →</a>
     <div class="notify-box">
-      <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#fff;margin-bottom:4px;">Benachrichtige mich zum Start</div>
-      <div style="font-size:13px;line-height:1.6;color:rgba(255,255,255,.6);margin-bottom:12px;">Eine einzige E-Mail, wenn der OTC-Kurs öffnet. Kein Newsletter.</div>
+      <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;margin-bottom:4px;">Benachrichtige mich zum Start</div>
+      <div style="font-size:13px;line-height:1.6;color:#5A5F68;margin-bottom:12px;">Eine einzige E-Mail, wenn der OTC-Kurs öffnet. Kein Newsletter.</div>
       <div class="notify-row">
         <input type="email" class="notify-mail" placeholder="Deine E-Mail" autocomplete="email" inputmode="email">
         <button type="button" class="notify-go" disabled>Eintragen</button>
@@ -715,10 +718,10 @@ footer ul a:hover{color:#fff!important;transform:translateX(5px);}
 <!-- GRATIS VIDEO -->
 <section style="background:#FFFCFB;padding:76px 24px;" class="sp">
   <div style="max-width:840px;margin:0 auto;text-align:center;">
-    <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(22px,3.5vw,38px);color:#fff;margin-bottom:13px;">
+    <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(22px,3.5vw,38px);color:#23272E;margin-bottom:13px;">
       One complete OTC topic: watch for free
     </h2>
-    <p style="font-size:15.5px;line-height:1.7;color:rgba(255,255,255,.7);max-width:560px;margin:0 auto 28px;">
+    <p style="font-size:15.5px;line-height:1.7;color:#5A5F68;max-width:560px;margin:0 auto 28px;">
       Watch a full indication across all 6 steps, without a subscription.
     </p>
     <div id="gv-en" onclick="playGratis('gv-en')" role="button" aria-label="Play free lesson" style="aspect-ratio:16/9;max-width:720px;margin:0 auto;border-radius:10px;overflow:hidden;background:#000;position:relative;cursor:pointer;box-shadow:0 18px 44px rgba(0,0,0,.35);">
@@ -733,8 +736,8 @@ footer ul a:hover{color:#fff!important;transform:translateX(5px);}
     <a href="https://youtu.be/6HAqN36258E" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:9px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;padding:14px 24px;border-radius:13px;box-shadow:0 4px 0 #B30F1E;text-decoration:none;">Watch free lesson →</a>
     <a href="otc-kurs.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:9px;background:#fff;color:#23272E;font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;padding:14px 24px;border-radius:13px;border:2px solid #ECE6E4;box-shadow:0 4px 0 #ECE6E4;text-decoration:none;margin-left:10px;">See all 50 topics →</a>
     <div class="notify-box">
-      <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#fff;margin-bottom:4px;">Notify me at launch</div>
-      <div style="font-size:13px;line-height:1.6;color:rgba(255,255,255,.6);margin-bottom:12px;">One single e-mail when the OTC course opens. No newsletter.</div>
+      <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;margin-bottom:4px;">Notify me at launch</div>
+      <div style="font-size:13px;line-height:1.6;color:#5A5F68;margin-bottom:12px;">One single e-mail when the OTC course opens. No newsletter.</div>
       <div class="notify-row">
         <input type="email" class="notify-mail" placeholder="Your e-mail" autocomplete="email" inputmode="email">
         <button type="button" class="notify-go" disabled>Sign up</button>
