@@ -849,6 +849,27 @@ body.rtl .rx-hint{right:auto;left:14px}
   animation:pop .3s ease-out}
 .ph-say.leer{border-color:var(--red);color:var(--red)}
 @media(max-width:760px){.ph-say{font-size:11px;max-width:170px}}
+.tri-prog{margin:4px 0 12px}
+.tri-count{font-family:'Fraunces',serif;font-weight:700;font-size:15px;margin-bottom:5px}
+.tri-bar{height:7px;border-radius:99px;background:#E8E3DA;overflow:hidden}
+.tri-fill{height:100%;background:var(--teal-dark);transition:width .3s ease}
+.tri-karte{background:#fff;border:2px solid var(--line);border-radius:14px;padding:16px 16px;
+  text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.07);transition:border-color .2s,background .2s}
+.tri-karte.ok{border-color:var(--teal-dark);background:#EAF4F1}
+.tri-karte.no{border-color:var(--red);background:#FDECEE}
+.tri-n{font-family:'Fraunces',serif;font-weight:700;font-size:17px;line-height:1.25}
+.tri-s{margin-top:3px;font-size:12.5px;color:var(--soft)}
+.tri-faecher{display:flex;flex-direction:column;gap:9px;margin-top:12px}
+.tri-f{display:flex;flex-direction:column;gap:2px;text-align:start;padding:13px 15px;
+  border:2px solid var(--line);border-radius:13px;background:#fff;cursor:pointer;
+  font-family:inherit;transition:border-color .15s,background .15s}
+.tri-f b{font-size:14.5px;color:var(--ink)}
+.tri-f span{font-size:11.5px;color:var(--soft)}
+.tri-f:hover:not(:disabled){border-color:var(--teal-dark)}
+.tri-f:disabled{cursor:default}
+.tri-f.ok{border-color:var(--teal-dark);background:#EAF4F1}
+.tri-f.no{border-color:var(--red);background:#FDECEE}
+.tri-f.soll{border-color:var(--teal-dark);border-style:dashed}
 .pts-toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);z-index:30;
   background:var(--red);color:#fff;font-family:'Fraunces',serif;font-weight:800;font-size:17px;
   padding:8px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.35);animation:pop .3s ease-out}
@@ -1430,7 +1451,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-13b \u00b7 B2 Korrekturen" +
+var PC_BUILD = "2026-09-13c \u00b7 Triage und Bilder" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -1742,6 +1763,56 @@ Mech.comic = function(host, d, done){
   });
   setTimeout(function(){ typeBubble(0); }, 500);
   document.getElementById('pnext').addEventListener('click',function(e){ e.stopPropagation(); done(0,0); });
+};
+
+
+/* triage: ein Fall nach dem anderen in eines von drei Faechern. */
+Mech.triage = function(host, d, done){
+  var idx=0, punkte=0, vertrauen=0;
+  host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
+    '<div class="stage-title">'+d.title+'</div></div><div class="stage-body">'+sceneStrip(d)+
+    '<div class="tri-prog"><div class="tri-count" id="trC"></div>'+
+    '<div class="tri-bar"><div class="tri-fill" id="trF"></div></div></div>'+
+    '<div class="tri-karte" id="trK"></div><div class="tri-faecher" id="trB"></div>'+
+    '<div id="fbz"></div></div></div>';
+  var kEl=document.getElementById('trK'), bEl=document.getElementById('trB');
+
+  function stand(){
+    document.getElementById('trC').textContent=
+      (d.progress||'{a} / {b}').replace('{a}', idx).replace('{b}', d.items.length);
+    document.getElementById('trF').style.width=Math.round(idx/d.items.length*100)+'%';
+  }
+  function zeigen(){
+    stand();
+    if(idx>=d.items.length){
+      bEl.innerHTML='';
+      kEl.innerHTML='';
+      return fbBlock(document.getElementById('fbz'),
+        punkte>=(d.items.length*(d.per||5)), (punkte===d.items.length*(d.per||5)?d.okH:d.badH)+' \u00b7 +'+punkte,
+        d.expl, function(){ done(punkte, vertrauen); });
+    }
+    var it=d.items[idx];
+    kEl.className='tri-karte';
+    kEl.innerHTML='<div class="tri-n">'+it.n+'</div>'+(it.s?'<div class="tri-s">'+it.s+'</div>':'');
+    bEl.innerHTML=d.trays.map(function(f,i){
+      return '<button class="tri-f" data-i="'+i+'"><b>'+f.n+'</b>'+
+             (f.s?'<span>'+f.s+'</span>':'')+'</button>';
+    }).join('');
+    bEl.querySelectorAll('.tri-f').forEach(function(b){
+      b.addEventListener('click', function(){
+        var richtig=(+b.dataset.i===it.tray);
+        bEl.querySelectorAll('.tri-f').forEach(function(x){ x.disabled=true; });
+        b.classList.add(richtig?'ok':'no');
+        if(!richtig) bEl.querySelector('.tri-f[data-i="'+it.tray+'"]').classList.add('soll');
+        kEl.classList.add(richtig?'ok':'no');
+        if(richtig){ punkte+=(d.per||5); vertrauen+=2; }
+        fbNote(host, (richtig?'\u2713 ':'\u2717 ')+it.why+
+          (richtig?'  +'+(d.per||5):'  '+t('correctIs')+' '+d.trays[it.tray].n));
+        setTimeout(function(){ idx++; zeigen(); }, richtig?1100:2100);
+      });
+    });
+  }
+  zeigen();
 };
 
 /* MCQ (optionally timed) */
@@ -5902,12 +5973,15 @@ function karteiC(){ return KARTEI_C[state.lang]||KARTEI_C.de; }
 TOPICS.buero_formfehler_01 = {
   de:"Drei Rezepte, drei Fallen", en:"Three Prescriptions, Three Traps",
   ar:"ثلاث وصفات، ثلاثة فخاخ",
-  tag_de:"Formfehler", tag_en:"Formal defects", tag_ar:"أخطاء الشكل",
+  tag:"Rezeptprüfung",
+  banner:"assets/Rezeptpruefung/pruef_card_b2.webp",
+  sub:{de:"Büro · Rezeptprüfung", en:"Office · Prescription review", ar:"المكتب · تدقيق الوصفات"},
+  badges:[],
   reqRank:0,
   steps:[
   {mech:"comic",data:{kicker:"Szene 1 · Der Prüfkorb",
     title:"Drei Rezepte aus der Frühschicht",
-    img:"assets/Retax/retax_scene_sechs_blatt.webp", cta:"Prüfen →",
+    img:"assets/Rezeptpruefung/pruef_korb_drei_rezepte.webp", cta:"Prüfen →",
     bubbles:[{who:"Büro",txt:"Der Prüfkorb auf deinem Schreibtisch. Drei Rezepte aus der Frühschicht, sie warten darauf, durch deine Hand zu gehen, bevor sie ins Rechenzentrum wandern. Was hier durchgeht, ist <b>deine Verantwortung</b>."}]}},
 
   {mech:"rezept",data:{kicker:"Rezept A · Nordwaldt Kasse", penalty:true, p:25,
@@ -5939,7 +6013,7 @@ TOPICS.buero_formfehler_01 = {
     phases:[
       {q:"Eine fehlende Angabe stoppt hier jede weitere Prüfung. Tippe sie an.",
        answer:"datum", p:25, okH:"Ohne Datum keine Prüfung",
-       img:"assets/Retax/retax_scene_kalender_acht_monate.webp",
+       img:"assets/Rezeptpruefung/pruef_feld_leer_lupe.webp",
        wrong:{dosis:"Richtig gesehen, und gleich ist sie dran. Aber diese Angabe hindert dich nicht daran, weiterzuprüfen."},
        expl:"Ohne Ausstellungsdatum kannst du die Gültigkeit überhaupt nicht beurteilen. Du weißt nicht, ob die 28-Tage-Frist läuft, abgelaufen ist oder im Drei-Tage-Puffer liegt. Das Datum ist die Voraussetzung jeder weiteren Prüfung."},
       {q:"Eine zweite Angabe fehlt ebenfalls. Tippe sie an.",
@@ -5976,26 +6050,26 @@ TOPICS.buero_formfehler_01 = {
     missNote:"Formal in Ordnung. Das Problem liegt woanders.",
     expl:"Ibuprofen und Phenprocoumon zusammen erhöhen das Blutungsrisiko doppelt: NSAR hemmen die Thrombozytenaggregation und schädigen die Magenschleimhaut, zusätzlich kann die INR steigen. Das Pantoprazol schützt den Magen, nicht die Gerinnung. Das ist kein Retaxthema, sondern Patientensicherheit. Rücksprache mit der Praxis, Alternativvorschlag Metamizol oder Paracetamol je nach Indikation. Zusatz: Phenprocoumon steht auf der Substitutionsausschlussliste und darf auch ohne Aut-idem-Kreuz nicht ausgetauscht werden."}},
 
-  {mech:"connect",data:{kicker:"Szene 5 · Drei Stapel", per:5,
+  {mech:"triage",data:{kicker:"Szene 5 \u00b7 Drei Fächer", per:5,
     scene:"assets/Rezeptpruefung/pruef_drei_stapel.webp",
-    title:"Ordne jedem Fehler seine Folge zu",
-    hint:"Ein Feld antippen, dann das zweite. Passt es zusammen, rastet die Verbindung ein.",
-    progress:"{a} von {b} zugeordnet",
-    okH:"Alle Folgen richtig zugeordnet", badH:"Eine Folge saß falsch",
+    title:"In welches Fach gehört der Fehler?",
+    progress:"{a} von {b} einsortiert",
+    okH:"Alle fünf richtig einsortiert", badH:"Nicht alle saßen richtig",
+    trays:[
+      {n:"Vollständiger Verlust", s:"Der Erstattungsanspruch entfällt ganz"},
+      {n:"Keine Retaxation", s:"Seit § 129 Abs. 4d folgenlos"},
+      {n:"Nur der Einkaufspreis", s:"Die Marge fällt weg, die Ware nicht"}],
     items:[
-      {n:"Fehlende Arztunterschrift",s:"Rezept A",col:"#C1121F"},
-      {n:"Fehlendes Ausstellungsdatum",s:"Rezept B",col:"#B5651D"},
-      {n:"Fehlende Dosierungsangabe",s:"Rezept B",col:"#B5651D"},
-      {n:"Abweichung von der Abgaberangfolge",s:"ohne Dokumentation",col:"#7A5C2E"},
-      {n:"Abgabe am 30. Tag",s:"Kassenrezept",col:"#4A6FA5"},
-      {n:"Vollständiger Verlust des Erstattungsanspruchs",s:"Stufe 3",col:"#8B0000"},
-      {n:"Keine Retaxation möglich",s:"Stufe 1",col:"#006D5B"},
-      {n:"Erstattung nur zum Einkaufspreis",s:"Stufe 2",col:"#B8860B"}],
-    pairs:[[0,5,"Unterschrift → alles oder nichts"],
-           [1,6,"Datum → seit § 129 Abs. 4d geschützt"],
-           [2,6,"Dosierung → ergänzbar, retaxgeschützt"],
-           [3,7,"Rangfolge → nur die Marge fällt weg"],
-           [4,6,"Tag 30 → noch im Drei-Tage-Puffer"]],
+      {n:"Fehlende Arztunterschrift", s:"Rezept A", tray:0,
+       why:"Die eine Ausnahme, bei der es um alles geht."},
+      {n:"Fehlendes Ausstellungsdatum", s:"Rezept B", tray:1,
+       why:"Seit § 129 Abs. 4d retaxgeschützt und ergänzbar."},
+      {n:"Fehlende Dosierungsangabe", s:"Rezept B", tray:1,
+       why:"Ergänzbar durch pharmazeutisches Personal, retaxgeschützt."},
+      {n:"Abweichung von der Abgaberangfolge", s:"ohne Dokumentation", tray:2,
+       why:"Keine Nullretaxation mehr, aber die Marge ist weg."},
+      {n:"Abgabe am 30. Tag", s:"Kassenrezept", tray:1,
+       why:"Tag 30 liegt noch im Drei-Tage-Puffer."}],
     expl:"Drei Stufen statt einer. Vieles, was im Kopf noch als Nullretax gilt, ist heute entweder folgenlos oder nur noch eine Margenkürzung. Die eine Ausnahme, bei der es um alles geht, ist die fehlende Unterschrift. Die 28-Tage-Frist ist bis zu drei Tage geschützt: Tag 30 liegt noch im Puffer, Tag 32 nicht mehr. Vom Schutz ausgenommen bleiben BtM-Rezepte, T-Rezepte, Entlassrezepte und oral einzunehmende Retinoide bei Frauen im gebärfähigen Alter."}}
   ]
 };
