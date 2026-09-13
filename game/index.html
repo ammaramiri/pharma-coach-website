@@ -1006,6 +1006,12 @@ body.rtl .rv-nav{flex-direction:row-reverse}
   .returning-chip{top:9px;font-size:10.5px;padding:5px 9px}
   .tap-hint{display:none}
 }
+
+/* Diese Zeile steht bewusst am Ende des Blattes. Weiter oben gilt
+   .stage-body img{height:auto}, und bei gleicher Spezifitaet gewinnt
+   die spaetere Regel. Deshalb wuchs das Kassenlogo auf volle Breite. */
+.m16 .m16-head img{height:24px!important;width:auto!important;max-width:140px;
+  object-fit:contain;flex:0 0 auto}
 </style>
 </head>
 <body>
@@ -1333,6 +1339,9 @@ var I18N = {
     custHere:"Jemand steht am Tisch", custHint:"Der Fall zeigt sich im Gespräch.",
     custMad:"So lange warte ich nicht.",
     workTitle:"Woran arbeitest du?", workOpen:"Arbeit wählen",
+    catDone:"Diese Arbeit ist durch",
+    catDoneText:"Hier wartet gerade nichts Neues. Neue Fälle kommen mit dem nächsten Update.",
+    catRepeat:"Letzten Fall wiederholen",
     archiv:"Archiv", archivEmpty:"Noch nichts im Archiv. Was du abschließt, sammelt sich hier.", correctIs:"Richtig wäre:", startGame:"Die Apotheke betreten",
     nmTitle:"Wie sollen dich die Kolleginnen nennen?",
     nmDesc:"Nur der Vorname genügt. Er steht später in den Gesprächen im Team und auf deiner Urkunde.",
@@ -1374,6 +1383,9 @@ var I18N = {
     custHere:"Someone is at the counter", custHint:"The case shows itself in the conversation.",
     custMad:"I am not waiting this long.",
     workTitle:"What are you working on?", workOpen:"Choose the work",
+    catDone:"This work is done",
+    catDoneText:"Nothing new is waiting here. New cases arrive with the next update.",
+    catRepeat:"Repeat the last case",
     archiv:"Archive", archivEmpty:"Nothing archived yet. What you finish collects here.", correctIs:"The right answer:", startGame:"Enter the pharmacy",
     nmTitle:"What should your colleagues call you?",
     nmDesc:"A first name is enough. It appears later in the team conversations and on your certificate.",
@@ -1415,6 +1427,9 @@ var I18N = {
     custHere:"أحدهم عند الطاولة", custHint:"الحالة تنكشف في أثناء الحديث.",
     custMad:"لن أنتظر كل هذا.",
     workTitle:"على ماذا تعمل؟", workOpen:"اختر العمل",
+    catDone:"هذا العمل منتهٍ",
+    catDoneText:"لا جديد ينتظر هنا. الحالات الجديدة تأتي مع التحديث القادم.",
+    catRepeat:"أعد آخر حالة",
     archiv:"الأرشيف", archivEmpty:"لا شيء في الأرشيف بعد. ما تنهيه يُجمع هنا.", correctIs:"الصواب:", startGame:"ادخل الصيدلية",
     nmTitle:"ماذا يناديك زملاؤك؟",
     nmDesc:"الاسم الأول يكفي. سيظهر لاحقاً في حوارات الفريق وعلى شهادتك.",
@@ -1451,7 +1466,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-13c \u00b7 Triage und Bilder" +
+var PC_BUILD = "2026-09-13d \u00b7 Keine Auswahl in der Kategorie" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -6619,10 +6634,18 @@ function openWorkPicker(raum){
   }).join('')+'</div>';
   box.querySelectorAll('.wk-card').forEach(function(b){
     b.addEventListener('click',function(){
-      var lv=catNext(b.dataset.cat);
+      var cat=b.dataset.cat, lv=catNext(cat);
       closePanel();
-      if(lv) startLevel(lv);
-      else { renderMap('buero'); show('mapScreen'); }
+      if(lv){ startLevel(lv); return; }
+      /* Kategorie durch. Keine Liste: der Spieler waehlt nie einen Fall
+         aus, er bekommt den naechsten. Hier gibt es keinen naechsten. */
+      var fertig=catLevels(cat).filter(function(x){ return !!state.levelBest[x.id]; });
+      var letzter=fertig[fertig.length-1];
+      var acts=[];
+      if(letzter) acts.push({t:t('catRepeat'), cls:'main',
+        fn:function(){ startLevel(letzter); }});
+      acts.push({t:t('closeBtn'), fn:closePanel});
+      openPanel(t('catDone'), t('catDoneText'), acts);
     });
   });
   var host=document.getElementById('wpActs'); host.innerHTML='';
