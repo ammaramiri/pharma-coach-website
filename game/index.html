@@ -1320,7 +1320,7 @@ var UNLOCKS = {
 
 /* ---------------- i18n (UI-Strings) ---------------- */
 var I18N = {
-  de:{ play:"Beratung starten", sub:"Steh hinter dem HV-Tisch. Berate echte Kundentypen. Werde vom Praktikanten zur Apotheken-Legende.",
+  de:{ play:"Beratung starten", sub:"Die ganze Apotheke, nicht nur der HV-Tisch. Berate am Tresen, prüfe Rezepte im Büro, arbeite in der Rezeptur. Werde vom Praktikanten zur Apotheken-Legende.",
     about:"Über Pharma-Coach", course:"Zum OTC-Kurs (ab Anfang 2027)", chooseCase:"Wähle deinen Fall",
     mapSub:"Jeder Kunde ist anders. Jede Beratung zählt.", pts:"Punkte", trust:"Vertrauen",
     back:"Fälle", locked:"Gesperrt", nextRank:"bis", weiter:"Weiter", result:"Beratung abgeschlossen",
@@ -1339,7 +1339,7 @@ var I18N = {
     step:"Schritt", closeBtn:"Schließen", lockedPrev:"Erst den vorherigen Fall abschließen",
     startTimer:"Uhr starten", startNote:"In Ruhe lesen. Die {s} Sekunden laufen erst ab dem Tippen.",
     roomSwitch:"Raum wechseln", roomSwitchHint:"Direkt hinübergehen, ohne zu laufen.",
-    serveNow:"Beraten", backShop:"Zurück an den HV-Tisch",
+    serveNow:"Beraten", backShop:"Zurück an den HV-Tisch", backTo:"Zurück · {r}",
     custHere:"Jemand steht am Tisch", custHint:"Der Fall zeigt sich im Gespräch.",
     custMad:"So lange warte ich nicht.",
     workTitle:"Woran arbeitest du?", workOpen:"Arbeit wählen",
@@ -1364,7 +1364,7 @@ var I18N = {
     yes:"Ja, abbrechen", cancel:"Weiter spielen", resetConfirm:"Gesamten Fortschritt wirklich zurücksetzen?",
     leftTitle:"Der Kunde hat die Apotheke verlassen", leftText:"Das Vertrauen ist auf 0 gefallen. Beratung ist mehr als Fachwissen – Ton und Vertrauen entscheiden mit.",
     trustHigh:"Der Kunde verlässt die Apotheke mit vollem Vertrauen – er kommt wieder.", trustMid:"Der Kunde geht – ganz überzeugt wirkte er nicht.", trustLow:"Das Vertrauen hat gelitten. Fast hätte er die Apotheke gewechselt." },
-  en:{ play:"Start Consultation", sub:"Step behind the counter. Advise real customer types. Rise from Trainee to Pharmacy Legend.",
+  en:{ play:"Start Consultation", sub:"The whole pharmacy, not just the counter. Advise at the front, check prescriptions in the office, work in the compounding room. Rise from Trainee to Pharmacy Legend.",
     about:"About Pharma-Coach", course:"To the OTC Course (from early 2027)", chooseCase:"Choose your case",
     mapSub:"Every customer is different. Every consultation counts.", pts:"Points", trust:"Trust",
     back:"Cases", locked:"Locked", nextRank:"to", weiter:"Continue", result:"Consultation complete",
@@ -1383,7 +1383,7 @@ var I18N = {
     step:"Step", closeBtn:"Close", lockedPrev:"Finish the previous case first",
     startTimer:"Start the clock", startNote:"Read in peace. The {s} seconds only run from the tap.",
     roomSwitch:"Change room", roomSwitchHint:"Go straight over, without walking.",
-    serveNow:"Advise", backShop:"Back to the counter",
+    serveNow:"Advise", backShop:"Back to the counter", backTo:"Back · {r}",
     custHere:"Someone is at the counter", custHint:"The case shows itself in the conversation.",
     custMad:"I am not waiting this long.",
     workTitle:"What are you working on?", workOpen:"Choose the work",
@@ -1408,7 +1408,7 @@ var I18N = {
     yes:"Yes, quit", cancel:"Keep playing", resetConfirm:"Really reset all progress?",
     leftTitle:"The customer has left the pharmacy", leftText:"Trust dropped to 0. Consultation is more than knowledge – tone and trust decide too.",
     trustHigh:"The customer leaves with full trust – he will come back.", trustMid:"The customer leaves – not fully convinced.", trustLow:"Trust was damaged. He almost switched pharmacies." },
-  ar:{ play:"ابدأ الاستشارة", sub:"قف خلف طاولة الصيدلية. تعامل مع أنواع الزبائن الحقيقية. ارتقِ من متدرب إلى أسطورة.",
+  ar:{ play:"ابدأ الاستشارة", sub:"الصيدلية كلها لا طاولة البيع وحدها. استشر عند الطاولة، ودقّق الوصفات في المكتب، واعمل في غرفة التحضير. ارتقِ من متدرب إلى أسطورة.",
     about:"عن Pharma-Coach", course:"إلى دورة OTC (ابتداءً من مطلع ٢٠٢٧)", chooseCase:"اختر حالتك",
     mapSub:"كل زبون مختلف. كل استشارة مهمة.", pts:"نقاط", trust:"الثقة",
     back:"الحالات", locked:"مقفل", nextRank:"حتى", weiter:"متابعة", result:"انتهت الاستشارة",
@@ -1427,7 +1427,7 @@ var I18N = {
     step:"خطوة", closeBtn:"إغلاق", lockedPrev:"أنهِ الحالة السابقة أولاً",
     startTimer:"شغّل الساعة", startNote:"اقرأ على مهلك. الـ{s} ثانية تبدأ عند الضغط فقط.",
     roomSwitch:"تغيير الغرفة", roomSwitchHint:"انتقل مباشرة بلا مشي.",
-    serveNow:"ابدأ الاستشارة", backShop:"عودة إلى الطاولة",
+    serveNow:"ابدأ الاستشارة", backShop:"عودة إلى الطاولة", backTo:"عودة · {r}",
     custHere:"أحدهم عند الطاولة", custHint:"الحالة تنكشف في أثناء الحديث.",
     custMad:"لن أنتظر كل هذا.",
     workTitle:"على ماذا تعمل؟", workOpen:"اختر العمل",
@@ -1470,7 +1470,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-13h \u00b7 Rezeptbilder statt Blankopapier" +
+var PC_BUILD = "2026-09-13i \u00b7 Kundenabgang und Raumnamen" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5643,7 +5643,7 @@ function applyLang(){
   document.getElementById('mapTitle').textContent=t('chooseCase');
   document.getElementById('mapSubtitle').textContent=t('mapSub');
   document.getElementById('ptsLbl').textContent=t('pts');
-  document.getElementById('backTxt').textContent=t('backShop');
+  document.getElementById('backTxt').textContent=zurueckLabel();
   document.getElementById('trustLbl').textContent=t('trust');
   document.getElementById('scoreLbl').textContent=t('pts');
   // email modal
@@ -5859,8 +5859,11 @@ function custServe(c){
       if(o.uebergangen>=2 || o.geduld<=0) custLeave(o, true);
     }
   });
-  c.state='served';
-  CUS.list = CUS.list.filter(function(o){ return o!==c; });
+  /* Er wird nicht aus der Liste geloescht, sondern geht hinaus. Wer
+     bedient wurde, verlaesst die Apotheke sichtbar, und sein Platz wird
+     frei fuer den naechsten. */
+  custLeave(c, false);
+  CUS.t = Math.min(CUS.t, 2.5);   /* der naechste kommt bald nach */
   return c;
 }
 function custTick(dt){
@@ -6540,7 +6543,7 @@ function customerLeaves(){
     '<div class="result-actions">'+
     '<button class="confirm-btn" id="retry">'+t('playAgain')+'</button>'+
     (run.review.length?'<button class="hud-back" id="reviewBtn2">'+ICONS.draw('lens')+' '+t('review')+'</button>':'')+
-    '<button class="hud-back" id="toMap2">'+t('backShop')+'</button></div></div></div>';
+    '<button class="hud-back" id="toMap2">'+zurueckLabel()+'</button></div></div></div>';
   var _rvb2=document.getElementById('reviewBtn2');
   if(_rvb2) _rvb2.addEventListener('click', openReview);
   document.getElementById('retry').addEventListener('click',function(){ startLevel(run.lv); });
@@ -6584,7 +6587,7 @@ function finishLevel(){
     '<div class="result-actions" style="margin-top:14px">'+
       '<button class="confirm-btn" id="replay">'+t('playAgain')+'</button>'+
       (run.review.length?'<button class="hud-back" id="reviewBtn">'+ICONS.draw('lens')+' '+t('review')+'</button>':'')+
-      '<button class="hud-back" id="toMap">'+t('backShop')+'</button>'+
+      '<button class="hud-back" id="toMap">'+zurueckLabel()+'</button>'+
     '</div></div></div>';
 
   var _rvb=document.getElementById('reviewBtn');
@@ -6622,6 +6625,11 @@ function afterLevel(s, stars){
   else maybeRankup(prevRank,newRank);
 }
 /* Nach einem Fall steht man wieder im Raum, aus dem man kam. */
+/* Der Knopf heisst nach dem Raum, nicht immer nach dem HV-Tisch. */
+function zurueckLabel(){
+  var r = (W.room && ROOMS[W.room]) ? W.room : 'offizin';
+  return t('backTo').replace('{r}', locName(ROOMS[r]));
+}
 function zurueckInDenRaum(){
   /* enterRoom baut den Raum auf, blendet ihn aber nicht ein. Ohne das
      show blieb der Spieler auf dem Ergebnisbildschirm stehen und der
