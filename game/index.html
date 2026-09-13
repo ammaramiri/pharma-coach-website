@@ -1470,7 +1470,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-13l \u00b7 Uebergangen sagt warum" +
+var PC_BUILD = "2026-09-13o \u00b7 Spuren, Aufruecken, Tuerabstand" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5759,9 +5759,12 @@ var ICONS = (function(){
 var CUS = { on:false, list:[], t:2.0, next:0 };
 
 /* Wegpunkte in Rasterfeldern */
-var CUS_IN   = [[12,45],[15,38],[19,31]];
-var CUS_SLOT = [[22,21],[21,26],[20,31]];   /* erster, zweiter, dritter Platz */
-var CUS_OUT  = [[18,33],[14,41],[11,47]];
+/* Zwei getrennte Spuren. Der Weg herein liegt dicht am Tresen, der Weg
+   hinaus vier Felder weiter links. Vorher benutzten beide dieselbe
+   Linie, und wer hereinkam, lief mitten durch die Wartenden. */
+var CUS_IN   = [[22,47],[23,40],[23,33]];          /* Eingangsspur x 22-23 */
+var CUS_SLOT = [[23,11],[23,18],[23,25]];          /* Schlange laengs des Tresens */
+var CUS_OUT  = [[19,14],[19,30],[15,37],[11,47]];  /* Ausgangsspur x 19 -> 11 */
 var CUS_MAX  = 3;
 var CUS_GEDULD = 95;    /* Sekunden, bis einer von selbst geht */
 var CUS_STRAFE = -20;   /* Punkte, wenn er veraergert geht */
@@ -5822,14 +5825,29 @@ function custPickLevel(){
   return pool[Math.floor(Math.random()*pool.length)];
 }
 function custFreeSlot(){
-  for(var i=0;i<CUS_MAX;i++){
-    var taken=CUS.list.some(function(c){ return c.slot===i; });
-    if(!taken) return i;
-  }
-  return -1;
+  /* Angehaengt wird immer hinten. Wer hereinkommt, laeuft nie an einem
+     Wartenden vorbei, sondern stellt sich hinter ihn. */
+  var da=CUS.list.filter(function(c){ return c.state==='in'||c.state==='wait'; }).length;
+  return da<CUS_MAX ? da : -1;
+}
+/* Geht einer, ruecken die anderen einen Platz vor. */
+function custRuecken(){
+  var q=CUS.list.filter(function(c){ return c.state==='in'||c.state==='wait'; })
+                .sort(function(a,b){ return a.slot-b.slot; });
+  q.forEach(function(c,i){
+    if(c.slot===i) return;
+    c.slot=i;
+    var ziel={x:CUS_SLOT[i][0], y:CUS_SLOT[i][1]};
+    if(c.state==='wait'){ c.state='in'; c.path=[ziel]; }
+    else if(c.path.length){ c.path[c.path.length-1]=ziel; }
+  });
 }
 function custArrive(){
   var slot=custFreeSlot(); if(slot<0) return;
+  /* Niemand betritt den Laden, solange der Vorige noch im Tuerbereich
+     steht. Sonst stehen zwei auf demselben Feld. */
+  var besetzt=CUS.list.some(function(c){ return c.state==='in' && c.pos && c.pos.y>36; });
+  if(besetzt){ CUS.t=Math.max(CUS.t, 3); return; }
   var lv=custPickLevel(); if(!lv) return;
   var path=CUS_IN.concat([CUS_SLOT[slot]]).map(function(c){ return {x:c[0],y:c[1]}; });
   CUS.list.push({ id:'c'+(++CUS.next), p:lv.persona, lv:lv, slot:slot,
@@ -5876,6 +5894,7 @@ function custAbgaenge(){
     offen++;
   });
   if(offen) CUS.t=Math.min(CUS.t, 3.0);   /* Nachschub folgt zuegig */
+  custRuecken();
   return offen;
 }
 function custTick(dt){
@@ -5908,6 +5927,7 @@ function custTick(dt){
   });
   if(raus.length){
     var strafe=0;
+    setTimeout(custRuecken, 0);
     raus.forEach(function(c){ if(c.uebergangen>0 || c.geduld<=0) strafe+=CUS_STRAFE; });
     CUS.list = CUS.list.filter(function(c){ return raus.indexOf(c)<0; });
     if(strafe){ state.totalPts += strafe; save(); renderRankBar(); toastPts(strafe); }
