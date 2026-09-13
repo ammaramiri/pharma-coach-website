@@ -695,8 +695,12 @@ body.rtl .mt-num{text-align:left}
 .euro-opt.wrong{border-color:var(--red);background:#FBEBEC}
 .eu-ledger{border:1.5px solid #D8D2C6;border-radius:12px;background:#FCFAF6;padding:10px 12px;margin:10px 0;
   animation:pop .4s ease-out}
-.eu-line{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:6px 0;
+.eu-line{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:7px 0;
   border-bottom:1px dashed #E6E0D3;font-size:13px}
+.eu-line span{flex:1 1 auto;min-width:0}
+/* Der Betrag bleibt in einer Zeile. Vorher rutschte das Euro-Zeichen
+   unter die Zahl, sobald die Bezeichnung lang wurde. */
+.eu-line b{flex:0 0 auto;white-space:nowrap;text-align:end}
 .eu-line:last-child{border-bottom:none}
 .eu-line span{color:var(--soft)}
 .eu-line b{font-variant-numeric:tabular-nums;font-weight:800;color:var(--ink)}
@@ -1426,7 +1430,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-13 \u00b7 Rezeptpruefung B2" +
+var PC_BUILD = "2026-09-13b \u00b7 B2 Korrekturen" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5861,13 +5865,13 @@ var REZ_A = { logo:'retax_logo_nordwaldt_kasse.webp', kasse:'Nordwaldt Kasse',
   unterschrift:'' };
 
 var REZ_B = { logo:'retax_logo_bruncker_classic.webp', kasse:'Bruncker Classic',
-  ktk:'103480007', name:'Mäh, Heinz', geb:'29.12.38', vers:'H012345678', status:'5',
+  ktk:'103480007', name:'Kleinschmidt, Heinz', geb:'29.12.38', vers:'H012345678', status:'5',
   datum:'', verordnung:'1 × Ramipril 5 mg 100 St. N3', dosis:'',
   stempel:'Dr. med. Anke Reuter\nHausärztin\nLindenplatz 3\n59609 Anröchte',
   unterschrift:'i. V. Reuter' };
 
 var REZ_C = { logo:'retax_logo_spektrion.webp', kasse:'Spektrion',
-  name:'Kay, Peter', geb:'24.12.91', datum:'17.08.26',
+  name:'Kellermann, Peter', geb:'24.12.91', datum:'17.08.26',
   verordnung:'1 × Ibuprofen 600 mg 50 St. N2  &gt;&gt;1-1-1&lt;&lt;', dosis:'&gt;&gt;1-1-1&lt;&lt;',
   stempel:'Dr. med. Anke Reuter\nHausärztin\nLindenplatz 3\n59609 Anröchte',
   unterschrift:'i. V. Reuter' };
@@ -6778,7 +6782,7 @@ function openSpot(sp){
 var WSPOT = {
   "offizin.counter":{t_de:"Hier warten die Beratungsfälle.", t_en:"The consultation cases wait here.", t_ar:"هنا تنتظر حالات الاستشارة."},
   "offizin.door_buero":{t_de:"Büro, Rezeptur und Teamküche.", t_en:"Office, compounding room and team kitchen.", t_ar:"المكتب وغرفة التحضير ومطبخ الفريق."},
-  "buero.desk":{t_de:"Zwei Bildschirme, ein Stapel Bescheide. Hier liegen die Retax-Fälle.", t_en:"Two screens, a stack of notices. The claw-back cases are here.", t_ar:"شاشتان وكومة إشعارات. هنا حالات الريتاكس."},
+  "buero.desk":{t_de:"Zwei Bildschirme, ein Stapel Bescheide, daneben der Prüfkorb. Hier entscheidest du, woran du arbeitest.", t_en:"Two screens, a stack of notices, the review basket beside them. Here you decide what to work on.", t_ar:"شاشتان وكومة إشعارات وبجانبها سلة المراجعة. من هنا تقرّر على ماذا تعمل."},
   "buero.akten":{t_de:"Zehn Jahre Aufbewahrung. Hier kommen die Dokumentationsfälle hin.", t_en:"Ten years of retention. The documentation cases live here.", t_ar:"حفظ عشر سنوات. هنا حالات التوثيق."},
   "buero.btm":{t_de:"Verschlossen, dokumentiert, jederzeit prüfbar. Eigene Fälle.", t_en:"Locked, documented, auditable. Cases of its own.", t_ar:"مقفلة وموثّقة وقابلة للتدقيق. ولها حالاتها."},
   "buero.fridge":{t_de:"Zwei bis acht Grad. Kühlkette und Temperaturliste.", t_en:"Two to eight degrees. Cold chain and temperature log.", t_ar:"من درجتين إلى ثماني. سلسلة التبريد وسجل الحرارة."},
