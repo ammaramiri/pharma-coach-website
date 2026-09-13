@@ -1341,7 +1341,7 @@ var I18N = {
     roomSwitch:"Raum wechseln", roomSwitchHint:"Direkt hinübergehen, ohne zu laufen.",
     serveNow:"Beraten", backShop:"Zurück an den HV-Tisch", backTo:"Zurück · {r}",
     custHere:"Jemand steht am Tisch", custHint:"Der Fall zeigt sich im Gespräch.",
-    custMad:"So lange warte ich nicht.",
+    custMad:"Ich stand vor ihm.", custMadTime:"So lange warte ich nicht.",
     workTitle:"Woran arbeitest du?", workOpen:"Arbeit wählen",
     catDone:"Diese Arbeit ist durch",
     catDoneText:"Hier wartet gerade nichts Neues. Neue Fälle kommen mit dem nächsten Update.",
@@ -1385,7 +1385,7 @@ var I18N = {
     roomSwitch:"Change room", roomSwitchHint:"Go straight over, without walking.",
     serveNow:"Advise", backShop:"Back to the counter", backTo:"Back · {r}",
     custHere:"Someone is at the counter", custHint:"The case shows itself in the conversation.",
-    custMad:"I am not waiting this long.",
+    custMad:"I was here before him.", custMadTime:"I am not waiting this long.",
     workTitle:"What are you working on?", workOpen:"Choose the work",
     catDone:"This work is done",
     catDoneText:"Nothing new is waiting here. New cases arrive with the next update.",
@@ -1429,7 +1429,7 @@ var I18N = {
     roomSwitch:"تغيير الغرفة", roomSwitchHint:"انتقل مباشرة بلا مشي.",
     serveNow:"ابدأ الاستشارة", backShop:"عودة إلى الطاولة", backTo:"عودة · {r}",
     custHere:"أحدهم عند الطاولة", custHint:"الحالة تنكشف في أثناء الحديث.",
-    custMad:"لن أنتظر كل هذا.",
+    custMad:"أنا كنت قبله.", custMadTime:"لن أنتظر كل هذا.",
     workTitle:"على ماذا تعمل؟", workOpen:"اختر العمل",
     catDone:"هذا العمل منتهٍ",
     catDoneText:"لا جديد ينتظر هنا. الحالات الجديدة تأتي مع التحديث القادم.",
@@ -1470,7 +1470,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-13i \u00b7 Kundenabgang und Raumnamen" +
+var PC_BUILD = "2026-09-13l \u00b7 Uebergangen sagt warum" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5802,6 +5802,7 @@ var CUS_BLANK_MAD = CUS_BLANK.replace('#5A6B7A','#8C4A45').replace('#3E4A56','#5
 function custStart(){
   if(W.room!=='offizin'){ custStop(); return; }
   CUS.on=true;
+  custAbgaenge();
   if(!CUS.list.length){ custArrive(); CUS.t=4; }   /* schon jemand da beim Betreten */
 }
 function custStop(){
@@ -5810,14 +5811,15 @@ function custStop(){
 }
 function custPickLevel(){
   var used=CUS.list.map(function(c){ return c.lv.id; });
-  var open=LEVELS.filter(function(lv,li){
-    if(used.indexOf(lv.id)>=0) return false;
+  var offen=LEVELS.filter(function(lv,li){
     if(UNLOCK_ALL) return true;
     var prev=(li===0)||!!state.levelBest[LEVELS[li-1].id];
     return prev && state.rankIdx>=lv.reqRank;
   });
-  if(!open.length) return null;
-  return open[Math.floor(Math.random()*open.length)];
+  if(!offen.length) return null;
+  var frisch=offen.filter(function(lv){ return used.indexOf(lv.id)<0; });
+  var pool = frisch.length ? frisch : offen;
+  return pool[Math.floor(Math.random()*pool.length)];
 }
 function custFreeSlot(){
   for(var i=0;i<CUS_MAX;i++){
@@ -5850,21 +5852,31 @@ function custFirst(){
   return b;
 }
 function custServe(c){
-  /* Wer vor ihm da war und uebergangen wird, verliert Geduld. Zweimal
-     uebergangen und er geht veraergert. */
+  /* Wer vor ihm da war, wurde uebergangen. Einmal genuegt: er geht,
+     und er sagt warum. Ausgefuehrt wird das erst, wenn der Spieler
+     zurueck in der Offizin steht, damit er es sieht. */
   CUS.list.forEach(function(o){
     if(o!==c && o.state==='wait' && o.seit < c.seit){
       o.uebergangen++;
-      o.geduld -= CUS_GEDULD*0.45;
-      if(o.uebergangen>=2 || o.geduld<=0) custLeave(o, true);
+      o.abgang='mad';
     }
   });
-  /* Er wird nicht aus der Liste geloescht, sondern geht hinaus. Wer
-     bedient wurde, verlaesst die Apotheke sichtbar, und sein Platz wird
-     frei fuer den naechsten. */
-  custLeave(c, false);
-  CUS.t = Math.min(CUS.t, 2.5);   /* der naechste kommt bald nach */
+  c.state='served';
+  c.abgang='out';
   return c;
+}
+/* Beim Betreten der Offizin werden die vorgemerkten Abgaenge gestartet. */
+function custAbgaenge(){
+  var offen=0;
+  CUS.list.forEach(function(c){
+    if(!c.abgang) return;
+    var mad=(c.abgang==='mad');
+    c.abgang=null;
+    custLeave(c, mad);
+    offen++;
+  });
+  if(offen) CUS.t=Math.min(CUS.t, 3.0);   /* Nachschub folgt zuegig */
+  return offen;
 }
 function custTick(dt){
   if(!CUS.on) return;
@@ -5927,10 +5939,11 @@ function custDraw(){
                     : (mad?CUS_BLANK_MAD:CUS_BLANK);
     var mark = (c.state==='wait')
       ? '<span class="cu-tag">'+ICONS.draw('speak')+'</span>'
-      : (mad ? '<span class="cu-tag mad">'+t('custMad')+'</span>' : '');
+      : (mad ? '<span class="cu-tag mad">'+
+          (c.uebergangen>0 ? t('custMad') : t('custMadTime'))+'</span>' : '');
     /* Nur neu zeichnen, wenn sich wirklich etwas geaendert hat. Sonst
        verschwindet das Antippziel zwischen Druck und Loslassen. */
-    var sig = c.state+'|'+(src||'-')+'|'+state.lang;
+    var sig = c.state+'|'+(src||'-')+'|'+state.lang+'|'+(c.uebergangen>0?'u':'z');
     if(el.dataset.sig !== sig){
       el.dataset.sig = sig;
       el.innerHTML='<div class="cu-body">'+inner+'</div>'+mark;
@@ -6469,6 +6482,10 @@ function startLevel(lv){
   /* Hybrid loading: fetch every image this level needs, in the background,
      while the player is still reading the opening comic panel. */
   preloadLevel(langSteps, persona);
+  /* Waehrend der Beratung laeuft die Zeit der Wartenden nicht weiter.
+     Niemand soll aus Geduldsmangel gehen, waehrend der Spieler gar
+     nicht im Raum ist. */
+  if(typeof CUS!=='undefined') CUS.on=false;
   /* Wiederholung dient dem Nachlesen, nicht dem Punktesammeln. */
   var schonGespielt = !!state.levelBest[lv.id];
   var leerGestartet = istLeer() && !schonGespielt;
@@ -7272,7 +7289,10 @@ function showRankup(idx){
 }
 document.getElementById('ruBtn').addEventListener('click',function(){
   document.getElementById('rankupOverlay').classList.remove('show');
-  renderMap(); show('mapScreen');
+  /* Auch nach einer Beförderung geht es in den Raum zurueck, nicht in
+     eine Liste. Vorher endete jeder Rangaufstieg im Archiv, und die
+     vorgemerkten Abgaenge der Kunden liefen nie an. */
+  zurueckInDenRaum();
 });
 
 /* =====================================================================
