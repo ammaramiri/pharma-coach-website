@@ -1470,7 +1470,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-13o \u00b7 Spuren, Aufruecken, Tuerabstand" +
+var PC_BUILD = "2026-09-13p \u00b7 Spuren durch dieselbe Tuer" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5759,12 +5759,15 @@ var ICONS = (function(){
 var CUS = { on:false, list:[], t:2.0, next:0 };
 
 /* Wegpunkte in Rasterfeldern */
-/* Zwei getrennte Spuren. Der Weg herein liegt dicht am Tresen, der Weg
-   hinaus vier Felder weiter links. Vorher benutzten beide dieselbe
-   Linie, und wer hereinkam, lief mitten durch die Wartenden. */
-var CUS_IN   = [[22,47],[23,40],[23,33]];          /* Eingangsspur x 22-23 */
-var CUS_SLOT = [[23,11],[23,18],[23,25]];          /* Schlange laengs des Tresens */
-var CUS_OUT  = [[19,14],[19,30],[15,37],[11,47]];  /* Ausgangsspur x 19 -> 11 */
+/* Zwei getrennte Spuren durch dieselbe Tuer.
+   Der begehbare Eingang liegt unten zwischen x 17 und x 35; links und
+   rechts davon sind die verglasten Windfaenge, dort geht niemand durch.
+   Herein laeuft man rechts davon, hinaus links davon.
+   Die Schlange steht drei Felder vor dem Tresen, nicht an seiner Kante,
+   und endet weit genug unterhalb der Tuer zu den anderen Raeumen. */
+var CUS_IN   = [[27,48],[26,40],[23,34]];          /* Eingangsspur rechts */
+var CUS_SLOT = [[21,16],[21,22],[21,28]];          /* Schlange, Abstand zum Tresen */
+var CUS_OUT  = [[18,19],[18,34],[20,44],[20,49]];  /* Ausgangsspur links */
 var CUS_MAX  = 3;
 var CUS_GEDULD = 95;    /* Sekunden, bis einer von selbst geht */
 var CUS_STRAFE = -20;   /* Punkte, wenn er veraergert geht */
@@ -5852,6 +5855,7 @@ function custArrive(){
   var path=CUS_IN.concat([CUS_SLOT[slot]]).map(function(c){ return {x:c[0],y:c[1]}; });
   CUS.list.push({ id:'c'+(++CUS.next), p:lv.persona, lv:lv, slot:slot,
     pos:{x:CUS_IN[0][0], y:CUS_IN[0][1]}, path:path.slice(1),
+    tempo:0.82+Math.random()*0.42, halt:0,
     state:'in', dir:'up', geduld:CUS_GEDULD, uebergangen:0, seit:performance.now() });
 }
 function custLeave(c, mad){
@@ -5891,6 +5895,7 @@ function custAbgaenge(){
     var mad=(c.abgang==='mad');
     c.abgang=null;
     custLeave(c, mad);
+    c.halt = offen*1.1;      /* der zweite bricht spaeter auf als der erste */
     offen++;
   });
   if(offen) CUS.t=Math.min(CUS.t, 3.0);   /* Nachschub folgt zuegig */
@@ -5912,7 +5917,8 @@ function custTick(dt){
     }
     if(c.state==='mad' && c.madT>0){ c.madT-=dt; if(c.madT<=0) c.state='out'; return; }
     if(c.state==='in' || c.state==='out'){
-      var sp=6.5*dt;
+      if(c.halt>0){ c.halt-=dt; return; }      /* versetzter Aufbruch */
+      var sp=6.5*dt*(c.tempo||1);
       while(sp>0 && c.path.length){
         var n=c.path[0], dx=n.x-c.pos.x, dy=n.y-c.pos.y, d=Math.sqrt(dx*dx+dy*dy);
         if(d<=sp){ c.pos.x=n.x; c.pos.y=n.y; c.path.shift(); sp-=d; }
