@@ -1470,7 +1470,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-13g \u00b7 Umbruch und leerer Kasten" +
+var PC_BUILD = "2026-09-13h \u00b7 Rezeptbilder statt Blankopapier" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -6033,7 +6033,7 @@ TOPICS.buero_formfehler_01 = {
 
   {mech:"rezept",data:{kicker:"Rezept B · Bruncker Classic", penalty:true,
     title:"Zwei Angaben fehlen",
-    scene:"assets/Retax/retax_scene_lupe.webp",
+    scene:"assets/Rezeptpruefung/pruef_lupe_rezept.webp",
     doc:{type:"m16", r:REZ_B, open:["datum","dosis","vers","status","verordnung"]},
     phases:[
       {q:"Eine fehlende Angabe stoppt hier jede weitere Prüfung. Tippe sie an.",
@@ -6047,7 +6047,7 @@ TOPICS.buero_formfehler_01 = {
        expl:"Die fehlende Dosierung ist seit § 129 Abs. 4d SGB V retaxgeschützt und darf vom pharmazeutischen Personal ergänzt werden, wenn sie zweifelsfrei bekannt ist, etwa aus einem Medikationsplan, den der Patient bei sich trägt. Im dringenden Fall ist die Ergänzung auch ohne Rücksprache zulässig. Zwei fehlende Angaben auf einem Rezept, zwei völlig verschiedene Folgen. Genau diesen Unterschied misst dieses Level."}]}},
 
   {mech:"truefalse",data:{kicker:"Szene 3 · Schnellprüfung", title:"Richtig oder falsch?",
-    scene:"assets/Retax/retax_scene_sanduhr.webp",
+    scene:"assets/Rezeptpruefung/pruef_sanduhr_rezept.webp",
     trueLabel:"Richtig", falseLabel:"Falsch",
     okH:"Sauber unterschieden", badH:"Der Zusatz war die Falle",
     expl:"Der erste Teil stimmt, der Zusatz „auf jedem Rezepttyp\" nicht. Auf T-Rezepten darf das Ausstellungsdatum weder ergänzt noch korrigiert werden, auch nicht nach Rücksprache. T-Rezepte sind arztgebunden und nur 7 Tage inklusive Verschreibungstag gültig. Jede zulässige Ergänzung ist mit Datum und Handzeichen abzuzeichnen, ohne Ausnahme.",
@@ -6136,7 +6136,7 @@ TOPICS.buero_formfehler_01.steps_en = [
 
   {mech:"rezept",data:{kicker:"Prescription B · Bruncker Classic", penalty:true,
     title:"Two entries are missing",
-    scene:"assets/Retax/retax_scene_lupe.webp",
+    scene:"assets/Rezeptpruefung/pruef_lupe_rezept.webp",
     doc:{type:"m16", r:REZ_B, open:["datum","dosis","vers","status","verordnung"]},
     phases:[
       {q:"One missing entry stops every further check here. Tap it.",
@@ -6150,7 +6150,7 @@ TOPICS.buero_formfehler_01.steps_en = [
        expl:"A missing dosage has been clawback-protected since § 129 (4d) SGB V and may be added by pharmacy staff when known beyond doubt, for instance from a medication plan the patient carries. In urgent cases it may be added without consultation. Two missing entries on one prescription, two entirely different consequences. That difference is exactly what this level measures."}]}},
 
   {mech:"truefalse",data:{kicker:"Scene 3 · Quick check", title:"True or false?",
-    scene:"assets/Retax/retax_scene_sanduhr.webp",
+    scene:"assets/Rezeptpruefung/pruef_sanduhr_rezept.webp",
     trueLabel:"True", falseLabel:"False",
     okH:"Cleanly distinguished", badH:"The qualifier was the trap",
     expl:"The first part is right, the qualifier \"on every type\" is not. On T-prescriptions the issue date may neither be added nor corrected, not even after consultation. T-prescriptions are tied to the prescriber and valid for only 7 days including the day of issue. Every permitted addition must be dated and initialled, without exception.",
@@ -6237,7 +6237,7 @@ TOPICS.buero_formfehler_01.steps_ar = [
 
   {mech:"rezept",data:{kicker:"الوصفة B · Bruncker Classic", penalty:true,
     title:"بيانان ناقصان",
-    scene:"assets/Retax/retax_scene_lupe.webp",
+    scene:"assets/Rezeptpruefung/pruef_lupe_rezept.webp",
     doc:{type:"m16", r:REZ_B, open:["datum","dosis","vers","status","verordnung"]},
     phases:[
       {q:"بيان واحد ناقص هنا يوقف كل فحص لاحق. اضغطه.",
@@ -6251,7 +6251,7 @@ TOPICS.buero_formfehler_01.steps_ar = [
        expl:"نقص الجرعة محميّ من الريتاكس منذ §129 Abs. 4d SGB V، ويجوز للكادر الصيدلاني إكماله متى كان معروفاً بيقين، مثلاً من خطة دوائية يحملها المريض. وفي الحالة العاجلة يجوز الإكمال بلا اتصال. نقصان في وصفة واحدة، وعاقبتاهما مختلفتان تماماً. وهذا هو الفرق الذي تقيسه المرحلة."}]}},
 
   {mech:"truefalse",data:{kicker:"المشهد 3 · فحص سريع", title:"صحيح أم خطأ؟",
-    scene:"assets/Retax/retax_scene_sanduhr.webp",
+    scene:"assets/Rezeptpruefung/pruef_sanduhr_rezept.webp",
     trueLabel:"صحيح", falseLabel:"خطأ",
     okH:"تمييز دقيق", badH:"الإضافة كانت الفخّ",
     expl:"الجزء الأول صحيح، والإضافة «على كل أنواع الوصفات» خاطئة. على T-Rezept لا يجوز إكمال تاريخ الإصدار ولا تصحيحه، ولا حتى بعد الاتصال. وهي مرتبطة بالطبيب وصلاحيتها سبعة أيام شاملة يوم الوصف. وكل إكمال مسموح يُؤشَّر بالتاريخ والحرف الأول للاسم، بلا استثناء.",
