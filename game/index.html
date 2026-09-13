@@ -686,10 +686,14 @@ body.rtl .docs-strip>summary::after{float:left}
 body.rtl .mt-num{text-align:left}
 
 /* Euro-Mechanik */
-.euro-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:8px 0}
-.euro-opt{padding:16px 10px;background:#fff;border:2px solid var(--line);border-radius:14px;
+.euro-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:8px 0}
+.euro-opt{padding:16px 12px;background:#fff;border:2px solid var(--line);border-radius:14px;
   font-family:'Fraunces',serif;font-weight:800;font-size:19px;color:var(--ink);cursor:pointer;
-  font-variant-numeric:tabular-nums;transition:transform .12s,border-color .15s}
+  font-variant-numeric:tabular-nums;transition:transform .12s,border-color .15s;
+  min-width:0;overflow-wrap:anywhere;hyphens:auto;line-height:1.25}
+/* Antworten mit Satztext bekommen eine Spalte, sonst laufen sie heraus. */
+.euro-opts.lang{grid-template-columns:1fr}
+.euro-opts.lang .euro-opt{font-size:16px;padding:14px 14px;text-align:start}
 .euro-opt:hover:not(:disabled){transform:translateY(-2px);border-color:var(--teal-dark)}
 .euro-opt.correct{border-color:var(--teal-dark);background:#E8F2EF}
 .euro-opt.wrong{border-color:var(--red);background:#FBEBEC}
@@ -1466,7 +1470,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-13f \u00b7 B2 dreisprachig" +
+var PC_BUILD = "2026-09-13g \u00b7 Umbruch und leerer Kasten" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -2151,6 +2155,10 @@ Mech.truefalse = function(host, d, done){
   document.getElementById('tfN').addEventListener('click',function(){ answer(false); });
   show();
   function finish(){
+    /* Der Kasten der laufenden Aussage wird nicht nur geleert, sondern
+       entfernt. Vorher blieb ein leerer weisser Rahmen stehen. */
+    var cur=document.getElementById('tfx'); if(cur) cur.style.display='none';
+    var cnt=document.getElementById('tfc'); if(cnt) cnt.style.display='none';
     document.getElementById('tfx').textContent='';
     document.getElementById('tfY').disabled=true; document.getElementById('tfN').disabled=true;
     var good=wrong<=(d.maxWrong===undefined?1:d.maxWrong);
@@ -2529,6 +2537,8 @@ Mech.euro = function(host, d, done){
       function(){ done(d.p||25, 6); });
   }
   var box=document.getElementById('eo'), OPTS=shuffled(d.options), fin=false;
+  /* Lange Antworten untereinander, kurze Zahlen nebeneinander. */
+  if(OPTS.some(function(o){ return (o.t||'').length>16; })) box.classList.add('lang');
   OPTS.forEach(function(o){
     var b=document.createElement('button'); b.className='euro-opt'; b.textContent=o.t;
     b.addEventListener('click',function(){
