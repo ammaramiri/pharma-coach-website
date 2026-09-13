@@ -531,6 +531,77 @@ body.rtl .doc{direction:ltr;text-align:left}
   color:var(--teal-dark);border-bottom:1.5px solid #E3DDD0;padding-bottom:7px;margin-bottom:9px}
 .doc-sub{font-size:11.5px;color:var(--soft);margin:-5px 0 9px;font-variant-numeric:tabular-nums}
 .doc-row{display:flex;gap:8px;margin-bottom:7px;flex-wrap:wrap}
+/* =====================================================================
+   MUSTER 16
+   Eine Vorlage fuer die ganze Kategorie. Jedes Feld traegt eine feste
+   Kennung und ist antippbar. Kein Bild: gerenderter Text ist in drei
+   Sprachen lesbar, ein Bild waere es nicht.
+===================================================================== */
+.m16{background:#F6F3EC;border:2px solid #C9C0AE;border-radius:12px;padding:0;
+  overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.12);max-width:100%}
+.m16-head{display:flex;align-items:center;gap:10px;padding:9px 12px;
+  background:#EDE7DA;border-bottom:2px solid #C9C0AE}
+.m16-head img{height:24px;width:auto;display:block;filter:grayscale(1) contrast(1.15);opacity:.85}
+.m16-kasse{font-family:'Inter',system-ui,sans-serif;font-weight:800;font-size:12px;
+  letter-spacing:.06em;text-transform:uppercase;color:#4A4433}
+.m16-typ{margin-inline-start:auto;font-size:9.5px;font-weight:800;letter-spacing:.1em;
+  color:#8A8375}
+.m16-grid{display:flex;flex-wrap:wrap;gap:6px;padding:10px}
+.m16-f{flex:1 1 46%;min-width:0;display:flex;flex-direction:column;gap:2px;text-align:start;
+  background:#fff;border:1.5px solid #DCD6C9;border-radius:8px;padding:6px 9px;
+  font-family:inherit;cursor:pointer;position:relative;
+  transition:border-color .15s,background .15s,box-shadow .15s}
+.m16-f.w100{flex:1 1 100%}
+.m16-f:hover:not(:disabled){border-color:var(--teal-dark)}
+.m16-f:disabled{cursor:default}
+.m16-f.m16-static{background:#F4F1EA;border-style:dashed;cursor:default}
+.m16-l{font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:#8A8375;font-weight:700}
+.m16-v{font-size:13px;font-weight:700;color:#23272E;word-break:break-word;line-height:1.35}
+.m16-v.leer{color:#B9B1A0;font-style:italic;font-weight:600}
+.m16-stempel{white-space:pre-line;font-size:11.5px;line-height:1.45}
+
+/* --- Zustand hint: nach zwanzig Sekunden ohne Tipp atmen die Felder --- */
+@keyframes m16Pulse{0%,100%{border-color:#DCD6C9}50%{border-color:var(--teal)}}
+.m16-f.hint:not(:disabled){animation:m16Pulse 1.6s ease-in-out infinite}
+
+/* --- Zustand wrong: bernsteinfarben und ein kurzes Zucken --- */
+@keyframes m16Shake{0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-4px)}40%{transform:translateX(4px)}
+  60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.m16-f.miss{border-color:#D89A2C;background:#FDF6E8;animation:m16Shake .2s ease-in-out}
+.m16-f.miss .m16-v{color:#8A5E10}
+
+/* --- Zustand correct: der rote Kreis liegt ueber dem Feld --- */
+.m16-f.hit{border-color:var(--teal-dark);background:#EAF4F1}
+.m16-ring{position:absolute;inset:-10px;pointer-events:none;z-index:3;
+  background-repeat:no-repeat;background-position:center;background-size:contain}
+
+/* --- Zustand teach: ein Feld leuchtet, der Rest tritt zurueck --- */
+.m16.teach .m16-f{opacity:.35;transition:opacity .25s}
+.m16.teach .m16-f.lit{opacity:1;box-shadow:0 0 0 3px rgba(0,109,91,.28)}
+
+/* Patientenkarte neben dem Rezept */
+.m16-kartei{background:#fff;border:1.5px solid #DCD6C9;border-radius:10px;padding:9px 11px;
+  margin-top:9px}
+.m16-kartei h5{margin:0 0 6px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:#8A8375}
+
+/* Arbeitswahl an einem Punkt: welche Art Arbeit, nicht welcher Fall */
+.wk-grid{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.wk-card{display:block;width:100%;padding:0;border:2px solid rgba(0,0,0,.1);border-radius:14px;
+  overflow:hidden;background:#fff;cursor:pointer;text-align:start;
+  transition:transform .15s,box-shadow .15s,border-color .15s}
+.wk-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.18);
+  border-color:var(--teal-dark)}
+.wk-card img{width:100%;height:96px;object-fit:cover;display:block}
+.wk-body{padding:9px 12px 11px}
+.wk-name{font-family:'Fraunces',serif;font-weight:700;font-size:15.5px;color:var(--ink)}
+.wk-meta{margin-top:3px;font-size:11.5px;color:var(--soft);display:flex;align-items:center;gap:6px}
+.wk-bar{flex:1 1 auto;height:5px;border-radius:99px;background:#E8E3DA;overflow:hidden}
+.wk-fill{height:100%;background:var(--teal-dark)}
+.wk-card.fertig .wk-name::after{content:' \2713';color:var(--teal-dark)}
+@media(max-width:760px){ .wk-card img{height:78px} .wk-name{font-size:14.5px} }
+
 .doc-f{flex:1 1 45%;min-width:0;display:flex;flex-direction:column;gap:2px;text-align:left;
   background:#fff;border:1.5px solid #DCD6C9;border-radius:9px;padding:7px 9px;
   font-family:inherit;cursor:pointer;transition:border-color .15s,background .15s,transform .12s}
@@ -1236,6 +1307,7 @@ var I18N = {
     serveNow:"Beraten", backShop:"Zurück an den HV-Tisch",
     custHere:"Jemand steht am Tisch", custHint:"Der Fall zeigt sich im Gespräch.",
     custMad:"So lange warte ich nicht.",
+    workTitle:"Woran arbeitest du?", workOpen:"Arbeit wählen",
     archiv:"Archiv", archivEmpty:"Noch nichts im Archiv. Was du abschließt, sammelt sich hier.", correctIs:"Richtig wäre:", startGame:"Die Apotheke betreten",
     nmTitle:"Wie sollen dich die Kolleginnen nennen?",
     nmDesc:"Nur der Vorname genügt. Er steht später in den Gesprächen im Team und auf deiner Urkunde.",
@@ -1276,6 +1348,7 @@ var I18N = {
     serveNow:"Advise", backShop:"Back to the counter",
     custHere:"Someone is at the counter", custHint:"The case shows itself in the conversation.",
     custMad:"I am not waiting this long.",
+    workTitle:"What are you working on?", workOpen:"Choose the work",
     archiv:"Archive", archivEmpty:"Nothing archived yet. What you finish collects here.", correctIs:"The right answer:", startGame:"Enter the pharmacy",
     nmTitle:"What should your colleagues call you?",
     nmDesc:"A first name is enough. It appears later in the team conversations and on your certificate.",
@@ -1316,6 +1389,7 @@ var I18N = {
     serveNow:"ابدأ الاستشارة", backShop:"عودة إلى الطاولة",
     custHere:"أحدهم عند الطاولة", custHint:"الحالة تنكشف في أثناء الحديث.",
     custMad:"لن أنتظر كل هذا.",
+    workTitle:"على ماذا تعمل؟", workOpen:"اختر العمل",
     archiv:"الأرشيف", archivEmpty:"لا شيء في الأرشيف بعد. ما تنهيه يُجمع هنا.", correctIs:"الصواب:", startGame:"ادخل الصيدلية",
     nmTitle:"ماذا يناديك زملاؤك؟",
     nmDesc:"الاسم الأول يكفي. سيظهر لاحقاً في حوارات الفريق وعلى شهادتك.",
@@ -1352,7 +1426,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-07e \u00b7 Start ausgewogen" +
+var PC_BUILD = "2026-09-13 \u00b7 Rezeptpruefung B2" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -1896,7 +1970,7 @@ Mech.connect = function(host, d, done){
       var pk=Math.min(a,b)+'-'+Math.max(a,b);
       if(done_pairs[pk]) return;            /* already found, ignore */
       if(key[a+'-'+b]){
-        done_pairs[pk]=1; found++; score+=12; left[a]--; left[b]--;
+        done_pairs[pk]=1; found++; score+=(d.per||12); left[a]--; left[b]--;
         [a,b].forEach(function(k){ g.querySelector('.cn-item[data-i="'+k+'"]').classList.add('touched'); });
         paint();
         var p=d.pairs.filter(function(x){ return (x[0]===a&&x[1]===b)||(x[0]===b&&x[1]===a); })[0];
@@ -2041,8 +2115,106 @@ Mech.sentence = function(host, d, done){
 ===================================================================== */
 
 /* Dokument aus Daten bauen. Jedes Feld mit k ist ein eigenes Tippziel. */
+/* =====================================================================
+   M16 · die Vorlage. Aus ihr entsteht jedes Rezept dieser Kategorie.
+   Reihenfolge und Kennungen sind fest, damit eine Stufe ein Feld
+   ueber seine Kennung ansprechen kann und nicht ueber seine Position.
+===================================================================== */
+var M16 = {
+  /* Feste Feldkennungen. Nie umbenennen: Stufen sprechen sie an. */
+  KEYS: ['kasse','ktk','name','geb','adresse','vers','status','bsnr','lanr',
+         'datum','gebuehr','verordnung','dosis','stempel','unterschrift'],
+  L: {
+    de:{kasse:'Krankenkasse',ktk:'Kostenträgerkennung',name:'Name, Vorname',geb:'geb. am',
+        adresse:'Straße, PLZ Ort',vers:'Versicherten-Nr.',status:'Status',
+        bsnr:'Betriebsstätten-Nr.',lanr:'Arzt-Nr.',datum:'Datum',gebuehr:'Gebühr',
+        verordnung:'Verordnung',dosis:'Dosierung',stempel:'Arztstempel',
+        unterschrift:'Unterschrift des Arztes',typ:'Muster 16',
+        leer:'— nicht ausgefüllt —',kartei:'Patientenkartei'},
+    en:{kasse:'Health insurer',ktk:'Payer code',name:'Surname, first name',geb:'date of birth',
+        adresse:'Street, postcode city',vers:'Insurance no.',status:'Status',
+        bsnr:'Practice no.',lanr:'Physician no.',datum:'Date',gebuehr:'Co-payment',
+        verordnung:'Prescription',dosis:'Dosage',stempel:'Practice stamp',
+        unterschrift:'Physician signature',typ:'Muster 16',
+        leer:'— not filled in —',kartei:'Patient record'},
+    ar:{kasse:'صندوق التأمين',ktk:'رمز جهة التحمّل',name:'الاسم واللقب',geb:'تاريخ الميلاد',
+        adresse:'الشارع والمدينة',vers:'رقم التأمين',status:'الحالة',
+        bsnr:'رقم المنشأة',lanr:'رقم الطبيب',datum:'التاريخ',gebuehr:'الرسم',
+        verordnung:'الوصفة',dosis:'بيان الجرعة',stempel:'ختم الطبيب',
+        unterschrift:'توقيع الطبيب',typ:'Muster 16',
+        leer:'— غير مملوء —',kartei:'بطاقة المريض'}
+  },
+  build: function(doc){
+    var L=this.L[state.lang]||this.L.de, r=doc.r||{};
+    var open=(doc.open||[]);           /* welche Felder antippbar sind */
+    var breit={verordnung:1,stempel:1,adresse:1,unterschrift:1};
+    var zellen=this.KEYS.filter(function(k){
+      return k!=='kasse' && r[k]!==undefined;
+    }).map(function(k){
+      var v=r[k], leer=(v===''||v===null);
+      var an=(open.indexOf(k)>=0);
+      return '<button class="doc-f m16-f'+(breit[k]?' w100':'')+(an?'':' m16-static')+'"'+
+        (an?' data-k="'+k+'"':' disabled')+'>'+
+        '<span class="m16-l">'+L[k]+'</span>'+
+        '<span class="m16-v'+(leer?' leer':'')+(k==='stempel'?' m16-stempel':'')+'">'+
+        (leer?L.leer:v)+'</span></button>';
+    }).join('');
+    var kartei='';
+    if(doc.kartei && doc.kartei.length){
+      kartei='<div class="m16-kartei"><h5>'+L.kartei+'</h5>'+
+        doc.kartei.map(function(z){
+          var an=(open.indexOf(z.k)>=0);
+          return '<button class="doc-f m16-f w100'+(an?'':' m16-static')+'"'+
+            (an?' data-k="'+z.k+'"':' disabled')+'>'+
+            '<span class="m16-l">'+z.l+'</span><span class="m16-v">'+z.v+'</span></button>';
+        }).join('')+'</div>';
+    }
+    return '<div class="m16" id="m16">'+
+      '<div class="m16-head">'+
+        (r.logo?'<img src="assets/Retax/'+r.logo+'" alt="">':'')+
+        '<span class="m16-kasse">'+(r.kasse||'')+'</span>'+
+        '<span class="m16-typ">'+L.typ+'</span>'+
+      '</div><div class="m16-grid">'+zellen+'</div></div>'+kartei;
+  },
+  /* Der rote Kreis liegt als Folge von acht Bildern ueber dem Feld. */
+  ring: function(el, fertig){
+    if(!el) return;
+    var o=document.createElement('div'); o.className='m16-ring';
+    el.appendChild(o);
+    var i=1;
+    (function tick(){
+      o.style.backgroundImage='url(assets/Rezeptpruefung/pruef_kreis_rot_'+
+        (i<10?'0'+i:i)+'.webp)';
+      i++;
+      if(i<=8) setTimeout(tick, 62);
+      else setTimeout(function(){ if(fertig) fertig(); }, 120);
+    })();
+  },
+  /* Nach zwanzig Sekunden ohne Tipp atmen die offenen Felder. */
+  hintUhr: function(host){
+    var t=setTimeout(function(){
+      host.querySelectorAll('.m16-f[data-k]:not(:disabled)').forEach(function(b){
+        b.classList.add('hint');
+      });
+    }, 20000);
+    host.addEventListener('click', function(){
+      clearTimeout(t);
+      host.querySelectorAll('.m16-f.hint').forEach(function(b){ b.classList.remove('hint'); });
+    }, true);
+    return t;
+  },
+  /* teach: ein Feld leuchtet, der Rest tritt zurueck. */
+  teach: function(host, k){
+    var doc=host.querySelector('#m16'); if(!doc) return;
+    doc.classList.add('teach');
+    var el=doc.querySelector('[data-k="'+k+'"]');
+    if(el) el.classList.add('lit');
+  }
+};
+
 function docHTML(doc){
   if(!doc) return '';
+  if(doc.type==='m16') return M16.build(doc);
   if(doc.type==='ia') return IA.build(doc);
   var rows=(doc.rows||[]).map(function(r){
     return '<div class="doc-row">'+r.map(function(f){
@@ -2118,6 +2290,7 @@ function revealDoc(r){
 
 /* rezept: Dokument mit HTML und CSS, das richtige Feld antippen. */
 Mech.rezept = function(host, d, done){
+  if(d.phases || d.penalty) return rezeptStrafe(host, d, done);
   host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
     '<div class="stage-title">'+d.title+'</div></div><div class="stage-body">'+
     (d.hint?'<div class="a3-hint">'+d.hint+'</div>':'')+
@@ -2150,6 +2323,70 @@ Mech.rezept = function(host, d, done){
   });
 };
 
+/* =====================================================================
+   rezeptStrafe · der Weg der Rezeptpruefung
+   Ein Fehlgriff beendet nichts. Er kostet fuenf Punkte, erklaert sich
+   in einem Satz und der Spieler sucht weiter. Der Boden der Stufe ist
+   null: mehr als die Stufe selbst kann niemand verlieren.
+   d.phases traegt eine oder zwei Stufen auf demselben Rezept.
+===================================================================== */
+function rezeptStrafe(host, d, done){
+  var phasen = d.phases || [{ q:d.q, answer:d.answer, p:(d.p||25), okH:d.okH,
+                              badH:d.badH, wrong:d.wrong, expl:d.expl }];
+  var idx=0, punkte=0, vertrauen=0;
+  host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
+    '<div class="stage-title" id="rzTitle"></div></div><div class="stage-body">'+
+    sceneStrip(d)+'<div class="a3-hint" id="rzHint"></div>'+
+    docHTML(d.doc)+'<div id="fbz"></div></div></div>';
+  var wrap=host.querySelector('.stage-body');
+  M16.hintUhr(wrap);
+
+  function phaseStarten(){
+    var ph=phasen[idx];
+    document.getElementById('rzTitle').textContent=ph.q||d.title;
+    var hz=document.getElementById('rzHint');
+    if(ph.hint){ hz.textContent=ph.hint; hz.style.display=''; } else hz.style.display='none';
+    document.getElementById('fbz').innerHTML='';
+    if(ph.img) rxHint(ph.img, 2600);
+    var stufe = (ph.p!=null?ph.p:25), offen=true;
+    var felder = wrap.querySelectorAll('.m16-f[data-k]');
+    felder.forEach(function(b){
+      b.disabled=false; b.classList.remove('miss','hit');
+      if(b._h){ b.removeEventListener('click', b._h); }
+      b._h=function(){
+        if(!offen) return;
+        var k=b.dataset.k;
+        if(k!==ph.answer){
+          /* Fehlgriff: fuenf Punkte weg, Boden null, Schritt laeuft weiter. */
+          if(b.classList.contains('miss')) return;
+          b.classList.add('miss');
+          stufe = Math.max(0, stufe - 5);
+          var satz = (ph.wrong && ph.wrong[k]) || d.missNote || '';
+          if(satz) fbNote(host, satz + '  \u2212 5');
+          return;
+        }
+        offen=false;
+        felder.forEach(function(x){ x.disabled=true; });
+        b.classList.add('hit');
+        M16.ring(b, function(){
+          M16.teach(wrap, ph.answer);
+          punkte += stufe; vertrauen += (stufe>0?8:2);
+          fbBlock(document.getElementById('fbz'), true, ph.okH+' \u00b7 +'+stufe, ph.expl,
+            function(){
+              var lit=wrap.querySelector('.m16-f.lit'); if(lit) lit.classList.remove('lit');
+              var doc=wrap.querySelector('#m16'); if(doc) doc.classList.remove('teach');
+              idx++;
+              if(idx<phasen.length) phaseStarten();
+              else done(punkte, vertrauen);
+            });
+        });
+      };
+      b.addEventListener('click', b._h);
+    });
+  }
+  phaseStarten();
+}
+
 /* hunt: Fehlersuche unter Zeitdruck im selben Dokument. */
 Mech.hunt = function(host, d, done){
   host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
@@ -2158,9 +2395,21 @@ Mech.hunt = function(host, d, done){
     docHTML(d.doc)+'<div id="fbz"></div></div></div>';
   var fin=false, started=false, fields=host.querySelectorAll('.doc-f[data-k]');
   var secs=d.seconds||TIMER_SECONDS;
+  var stufe=(d.p||25);
+  function fehlgriff(k){
+    /* Mit Strafe laeuft die Suche weiter: fuenf Punkte weg, Boden null. */
+    var b=host.querySelector('.doc-f[data-k="'+k+'"]');
+    if(!b || b.classList.contains('miss')) return;
+    b.classList.add('miss');
+    stufe=Math.max(0, stufe-5);
+    var satz=(d.wrong && d.wrong[k]) || d.missNote || '';
+    if(satz) fbNote(host, satz+'  \u2212 5');
+  }
   function close(k){
-    if(fin || (k && !started)) return; fin=true; stopMechTimer();
-    var ok=(k===d.answer), p=ok?(d.p||25):0;
+    if(fin || (k && !started)) return;
+    if(d.penalty && k && k!==d.answer) return fehlgriff(k);
+    fin=true; stopMechTimer();
+    var ok=(k===d.answer), p=ok?(d.penalty?stufe:(d.p||25)):0;
     fields.forEach(function(x){ x.disabled=true; if(x.dataset.k===d.answer) x.classList.add('hit'); });
     if(k && !ok){ var b=host.querySelector('.doc-f[data-k="'+k+'"]'); if(b) b.classList.add('miss'); }
     var head=(ok?d.okH:(k?((d.wrong&&d.wrong[k])||d.badH):(d.timeoutH||d.badH)))+' · +'+p;
@@ -2178,6 +2427,18 @@ Mech.euro = function(host, d, done){
     sceneStrip(d)+(d.hint?'<div class="a3-hint">'+d.hint+'</div>':'')+
     docHTML(d.doc)+'<div class="euro-opts" id="eo"></div>'+
     '<div id="eout"></div><div id="fbz"></div></div></div>';
+  /* Ohne Auswahlmoeglichkeit ist euro eine reine Darstellung: drei Zeilen
+     oder mehr, dann weiter. Keine erfundene Frage. */
+  if(!d.options){
+    if(d.ledger){
+      document.getElementById('eout').innerHTML='<div class="eu-ledger">'+
+        d.ledger.map(function(l){
+          return '<div class="eu-line'+(l.cls?' '+l.cls:'')+'"><span>'+l.l+'</span><b>'+l.v+'</b></div>';
+        }).join('')+'</div>';
+    }
+    return fbBlock(document.getElementById('fbz'), true, d.okH+' \u00b7 +'+(d.p||25), d.expl,
+      function(){ done(d.p||25, 6); });
+  }
   var box=document.getElementById('eo'), OPTS=shuffled(d.options), fin=false;
   OPTS.forEach(function(o){
     var b=document.createElement('button'); b.className='euro-opt'; b.textContent=o.t;
@@ -5202,7 +5463,8 @@ var LEVELS = [
 /* Büro-Level. Eigene Sequenz, eigener Abschnitt auf der Karte.
    Wandern in den Raum, sobald die fünf Karten angebunden sind. */
 var OFFICE_LEVELS = [
-  { id:"B1", topic:"retax_rabatt_klein", persona:null, office:true, reqRank:0 }
+  { id:"B1", topic:"retax_rabatt_klein", persona:null, office:true, reqRank:0, cat:"retax" },
+  { id:"B2", topic:"buero_formfehler_01", persona:null, office:true, reqRank:0, cat:"pruef" }
 ];
 
 /* Fülle bis 20 mit "coming soon" Platzhaltern für die Karte */
@@ -5585,6 +5847,154 @@ function custDraw(){
     if(!custById(el.dataset.cid)) el.remove();
   });
 }
+
+
+/* =====================================================================
+   Die drei Rezepte der Stufe. Nur Daten: die Form kommt aus M16.
+===================================================================== */
+var REZ_A = { logo:'retax_logo_nordwaldt_kasse.webp', kasse:'Nordwaldt Kasse',
+  ktk:'103411401', name:'Mustermann, Johanna', geb:'20.10.45',
+  adresse:'Musterweg 6, 59609 Anröchte', vers:'A123456789', status:'5',
+  bsnr:'123456700', lanr:'123456789', datum:'12.08.26', gebuehr:'geb.-pflichtig',
+  verordnung:'1 × Madopar LT 100 St. N3  &gt;&gt;Dj&lt;&lt;', dosis:'&gt;&gt;Dj&lt;&lt;',
+  stempel:'Dr. Gregory House\nFacharzt für Neurologie\nVersorgungsstr. 25\n59609 Anröchte\nTel. 02947-123456',
+  unterschrift:'' };
+
+var REZ_B = { logo:'retax_logo_bruncker_classic.webp', kasse:'Bruncker Classic',
+  ktk:'103480007', name:'Mäh, Heinz', geb:'29.12.38', vers:'H012345678', status:'5',
+  datum:'', verordnung:'1 × Ramipril 5 mg 100 St. N3', dosis:'',
+  stempel:'Dr. med. Anke Reuter\nHausärztin\nLindenplatz 3\n59609 Anröchte',
+  unterschrift:'i. V. Reuter' };
+
+var REZ_C = { logo:'retax_logo_spektrion.webp', kasse:'Spektrion',
+  name:'Kay, Peter', geb:'24.12.91', datum:'17.08.26',
+  verordnung:'1 × Ibuprofen 600 mg 50 St. N2  &gt;&gt;1-1-1&lt;&lt;', dosis:'&gt;&gt;1-1-1&lt;&lt;',
+  stempel:'Dr. med. Anke Reuter\nHausärztin\nLindenplatz 3\n59609 Anröchte',
+  unterschrift:'i. V. Reuter' };
+
+var KARTEI_C = {
+  de:[{k:'marcumar',l:'Dauermedikation',v:'Marcumar 3 mg 100 St. · letzte Abgabe 09.08.26'},
+      {k:'panto',   l:'Dauermedikation',v:'Pantoprazol 20 mg · letzte Abgabe 09.08.26'},
+      {k:'inr',     l:'Laborwert',      v:'INR letzter Wert 2,8 (11.08.26)'},
+      {k:'abgabe',  l:'Letzte Abgabe',  v:'09.08.26'}],
+  en:[{k:'marcumar',l:'Long-term medication',v:'Marcumar 3 mg 100 St. · last dispensed 09.08.26'},
+      {k:'panto',   l:'Long-term medication',v:'Pantoprazole 20 mg · last dispensed 09.08.26'},
+      {k:'inr',     l:'Lab value',           v:'INR last value 2.8 (11.08.26)'},
+      {k:'abgabe',  l:'Last dispensed',      v:'09.08.26'}],
+  ar:[{k:'marcumar',l:'دواء مزمن', v:'Marcumar 3 mg 100 St. · آخر صرف 09.08.26'},
+      {k:'panto',   l:'دواء مزمن', v:'Pantoprazol 20 mg · آخر صرف 09.08.26'},
+      {k:'inr',     l:'قيمة مخبرية',v:'INR آخر قيمة 2,8 (11.08.26)'},
+      {k:'abgabe',  l:'آخر صرف',   v:'09.08.26'}]
+};
+function karteiC(){ return KARTEI_C[state.lang]||KARTEI_C.de; }
+
+
+/* =====================================================================
+   BÜRO · REZEPTPRÜFUNG · B2 · buero_formfehler_01
+   Quelle: LEVEL_buero_formfehler_01_v1.0.md · 12.09.2026
+   Acht Schritte. Punkte auf den Hausstandard geeicht: 0 + 25x6 + 50 = 200.
+   Spieldatum fest 19.08. Alle Texte stammen aus der Vorlage.
+===================================================================== */
+TOPICS.buero_formfehler_01 = {
+  de:"Drei Rezepte, drei Fallen", en:"Three Prescriptions, Three Traps",
+  ar:"ثلاث وصفات، ثلاثة فخاخ",
+  tag_de:"Formfehler", tag_en:"Formal defects", tag_ar:"أخطاء الشكل",
+  reqRank:0,
+  steps:[
+  {mech:"comic",data:{kicker:"Szene 1 · Der Prüfkorb",
+    title:"Drei Rezepte aus der Frühschicht",
+    img:"assets/Retax/retax_scene_sechs_blatt.webp", cta:"Prüfen →",
+    bubbles:[{who:"Büro",txt:"Der Prüfkorb auf deinem Schreibtisch. Drei Rezepte aus der Frühschicht, sie warten darauf, durch deine Hand zu gehen, bevor sie ins Rechenzentrum wandern. Was hier durchgeht, ist <b>deine Verantwortung</b>."}]}},
+
+  {mech:"rezept",data:{kicker:"Rezept A · Nordwaldt Kasse", penalty:true, p:25,
+    title:"Was stimmt an diesem Rezept nicht? Tippe direkt auf das Feld.",
+    scene:"assets/Rezeptpruefung/pruef_stift_gebrochen_v002.webp",
+    doc:{type:"m16", r:REZ_A, open:["unterschrift","datum","dosis","status","ktk"]},
+    answer:"unterschrift", okH:"Die fehlende Unterschrift",
+    wrong:{datum:"Das Datum liegt sieben Tage zurück. Die 28-Tage-Frist läuft.",
+           dosis:"Korrekt. Das Kürzel bedeutet, dass eine schriftliche Dosierungsanweisung vorliegt.",
+           status:"Status 5 bedeutet Rentnerin. Passt zum Geburtsdatum.",
+           ktk:"Neunstellig und vorhanden. In Ordnung."},
+    expl:"Die eigenhändige Unterschrift ist Pflicht nach § 2 Abs. 1 Nr. 10 AMVV. Eine fehlende Unterschrift lässt den Erstattungsanspruch gegenüber der Kasse verfallen. Das ist keine Ermessensfrage und keine Teilkürzung. Das Retaxverbot des § 129 Abs. 4d SGB V, das die meisten anderen Formfehler entschärft hat, greift hier nicht."}},
+
+  {mech:"mcq",data:{kicker:"Szene 2 · Kundin wartet · HV 2 · 4 Min",
+    scene:"assets/Rezeptpruefung/pruef_telefonhoerer.webp", title:"Was tust du?",
+    options:[
+      {t:"Abgeben und die Unterschrift später nachreichen lassen",p:0,tr:-6,h:"Verbreitet und trotzdem ungedeckt",
+       x:"In der Praxis verbreitet und trotzdem ungedeckt. Der Vergütungsanspruch entsteht erst mit Belieferung einer ordnungsgemäßen Verordnung."},
+      {t:"Selbst abzeichnen, die Praxis ist bekannt",p:0,tr:-10,h:"Das wäre Urkundenfälschung",
+       x:"Ergänzen darfst du Ausstellungsdatum, Dosierung, LANR, Geburtsdatum und IK. Die Unterschrift nie. Das wäre Urkundenfälschung."},
+      {t:"Praxis kontaktieren, Rezept zur Unterschrift zurückgeben, Kundin informieren",ok:true,p:25,tr:9,h:"Der tragfähige Weg",
+       x:"Die Praxis korrigiert ihren eigenen Fehler, der Anspruch bleibt bestehen, und die Kundin weiß, woran sie ist."},
+      {t:"Auf Privatrechnung abgeben",p:0,tr:-8,h:"Die Kundin zahlt für einen fremden Fehler",
+       x:"Die Kundin verliert ihren Leistungsanspruch wegen eines Fehlers, den die Praxis gemacht hat."}]}},
+
+  {mech:"rezept",data:{kicker:"Rezept B · Bruncker Classic", penalty:true,
+    title:"Zwei Angaben fehlen",
+    doc:{type:"m16", r:REZ_B, open:["datum","dosis","vers","status","verordnung"]},
+    phases:[
+      {q:"Eine fehlende Angabe stoppt hier jede weitere Prüfung. Tippe sie an.",
+       answer:"datum", p:25, okH:"Ohne Datum keine Prüfung",
+       img:"assets/Retax/retax_scene_kalender_acht_monate.webp",
+       wrong:{dosis:"Richtig gesehen, und gleich ist sie dran. Aber diese Angabe hindert dich nicht daran, weiterzuprüfen."},
+       expl:"Ohne Ausstellungsdatum kannst du die Gültigkeit überhaupt nicht beurteilen. Du weißt nicht, ob die 28-Tage-Frist läuft, abgelaufen ist oder im Drei-Tage-Puffer liegt. Das Datum ist die Voraussetzung jeder weiteren Prüfung."},
+      {q:"Eine zweite Angabe fehlt ebenfalls. Tippe sie an.",
+       answer:"dosis", p:25, okH:"Die fehlende Dosierung",
+       img:"assets/Retax/retax_scene_textmarker.webp",
+       expl:"Die fehlende Dosierung ist seit § 129 Abs. 4d SGB V retaxgeschützt und darf vom pharmazeutischen Personal ergänzt werden, wenn sie zweifelsfrei bekannt ist, etwa aus einem Medikationsplan, den der Patient bei sich trägt. Im dringenden Fall ist die Ergänzung auch ohne Rücksprache zulässig. Zwei fehlende Angaben auf einem Rezept, zwei völlig verschiedene Folgen. Genau diesen Unterschied misst dieses Level."}]}},
+
+  {mech:"truefalse",data:{kicker:"Szene 3 · Schnellprüfung", title:"Richtig oder falsch?",
+    scene:"assets/Retax/retax_scene_sanduhr.webp",
+    trueLabel:"Richtig", falseLabel:"Falsch",
+    okH:"Sauber unterschieden", badH:"Der Zusatz war die Falle",
+    expl:"Der erste Teil stimmt, der Zusatz „auf jedem Rezepttyp\" nicht. Auf T-Rezepten darf das Ausstellungsdatum weder ergänzt noch korrigiert werden, auch nicht nach Rücksprache. T-Rezepte sind arztgebunden und nur 7 Tage inklusive Verschreibungstag gültig. Jede zulässige Ergänzung ist mit Datum und Handzeichen abzuzeichnen, ohne Ausnahme.",
+    items:[{t:"„Ein fehlendes Ausstellungsdatum darf die Apotheke nach Rücksprache mit der Praxis ergänzen, auf jedem Rezepttyp.\"",ok:false,p:25,
+      why:"Auf T-Rezepten gilt das nicht, auch nicht nach Rücksprache."}]}},
+
+  {mech:"euro",data:{kicker:"Szene 4 · Was es kostet", title:"Zwei Fehler, zwei Schweregrade",
+    p:25, okH:"Die zwei Stufen",
+    scene:"assets/Retax/retax_scene_waage_zeit_geld.webp",
+    scene2:"assets/Retax/retax_scene_zwei_packungsgroessen.webp",
+    ledger:[
+      {l:"Madopar LT 100 St. N3 · Apothekenverkaufspreis", v:"78 €"},
+      {l:"Erstattungsanspruch", v:"0 €", cls:"bad"},
+      {l:"Wareneinsatz bleibt bei der Apotheke", v:"−78 €", cls:"bad"},
+      {l:"Zum Vergleich · Abweichung von der Abgaberangfolge ohne Dokumentation", v:"Erstattung = Einkaufspreis"}],
+    expl:"Zwei verschiedene Schweregrade. Die fehlende Unterschrift lässt den gesamten Erstattungsanspruch verfallen. Weicht die Apotheke dagegen ohne Dokumentation von der Abgaberangfolge ab, wird seit § 129 Abs. 4d nicht mehr auf null retaxiert, sondern nur noch der Einkaufspreis erstattet: Die Marge ist weg, die Ware nicht."}},
+
+  {mech:"hunt",data:{kicker:"Rezept C · Spektrion", penalty:true, p:25, seconds:45,
+    title:"Formal ist alles korrekt. Finde trotzdem das Problem. 45 Sekunden.",
+    doc:{type:"m16", r:REZ_C, kartei:karteiC(),
+         open:["marcumar","panto","inr","abgabe","datum","verordnung","dosis","unterschrift"]},
+    answer:"marcumar", okH:"Die Wechselwirkung gefunden", badH:"Nicht gefunden",
+    timeoutH:"Zeit abgelaufen",
+    timeoutX:"Zeit abgelaufen. Der Blick blieb auf dem Rezept, das Problem stand daneben.",
+    missNote:"Formal in Ordnung. Das Problem liegt woanders.",
+    expl:"Ibuprofen und Phenprocoumon zusammen erhöhen das Blutungsrisiko doppelt: NSAR hemmen die Thrombozytenaggregation und schädigen die Magenschleimhaut, zusätzlich kann die INR steigen. Das Pantoprazol schützt den Magen, nicht die Gerinnung. Das ist kein Retaxthema, sondern Patientensicherheit. Rücksprache mit der Praxis, Alternativvorschlag Metamizol oder Paracetamol je nach Indikation. Zusatz: Phenprocoumon steht auf der Substitutionsausschlussliste und darf auch ohne Aut-idem-Kreuz nicht ausgetauscht werden."}},
+
+  {mech:"connect",data:{kicker:"Szene 5 · Drei Stapel", per:5,
+    scene:"assets/Rezeptpruefung/pruef_drei_stapel.webp",
+    title:"Ordne jedem Fehler seine Folge zu",
+    hint:"Ein Feld antippen, dann das zweite. Passt es zusammen, rastet die Verbindung ein.",
+    progress:"{a} von {b} zugeordnet",
+    okH:"Alle Folgen richtig zugeordnet", badH:"Eine Folge saß falsch",
+    items:[
+      {n:"Fehlende Arztunterschrift",s:"Rezept A",col:"#C1121F"},
+      {n:"Fehlendes Ausstellungsdatum",s:"Rezept B",col:"#B5651D"},
+      {n:"Fehlende Dosierungsangabe",s:"Rezept B",col:"#B5651D"},
+      {n:"Abweichung von der Abgaberangfolge",s:"ohne Dokumentation",col:"#7A5C2E"},
+      {n:"Abgabe am 30. Tag",s:"Kassenrezept",col:"#4A6FA5"},
+      {n:"Vollständiger Verlust des Erstattungsanspruchs",s:"Stufe 3",col:"#8B0000"},
+      {n:"Keine Retaxation möglich",s:"Stufe 1",col:"#006D5B"},
+      {n:"Erstattung nur zum Einkaufspreis",s:"Stufe 2",col:"#B8860B"}],
+    pairs:[[0,5,"Unterschrift → alles oder nichts"],
+           [1,6,"Datum → seit § 129 Abs. 4d geschützt"],
+           [2,6,"Dosierung → ergänzbar, retaxgeschützt"],
+           [3,7,"Rangfolge → nur die Marge fällt weg"],
+           [4,6,"Tag 30 → noch im Drei-Tage-Puffer"]],
+    expl:"Drei Stufen statt einer. Vieles, was im Kopf noch als Nullretax gilt, ist heute entweder folgenlos oder nur noch eine Margenkürzung. Die eine Ausnahme, bei der es um alles geht, ist die fehlende Unterschrift. Die 28-Tage-Frist ist bis zu drei Tage geschützt: Tag 30 liegt noch im Puffer, Tag 32 nicht mehr. Vom Schutz ausgenommen bleiben BtM-Rezepte, T-Rezepte, Entlassrezepte und oral einzunehmende Retinoide bei Frauen im gebärfähigen Alter."}}
+  ]
+};
 
 /* ---------- Rank helpers ---------- */
 function rankForPts(p){ var idx=0; for(var i=0;i<RANKS.length;i++){ if(p>=RANKS[i].pts) idx=i; } return idx; }
@@ -6088,6 +6498,61 @@ function worldLayout(){
   var h=W.cellY*6.6*depth; ch.style.height=h+'px'; ch.style.width='auto';
   drawSpots(); placeChar();
 }
+/* =====================================================================
+   ARBEITSWAHL
+   Am Schreibtisch liegen zwei Arten Arbeit. Die Karte waehlt die Art,
+   nicht den Fall: angetippt startet sofort der naechste offene Fall
+   dieser Art. Ein Katalog der Faelle bleibt es damit nicht.
+===================================================================== */
+var WORK_CATS = {
+  buero:[
+    {id:"retax", img:"assets/Retax/retax_scene_umschlag_oeffnen.webp",
+     de:"Retax-Bescheide", en:"Clawback notices", ar:"إشعارات الريتاكس"},
+    {id:"pruef", img:"assets/Rezeptpruefung/pruef_drei_stapel.webp",
+     de:"Rezeptprüfung", en:"Prescription review", ar:"تدقيق الوصفات"}
+  ]
+};
+function catLevels(cat){
+  return OFFICE_LEVELS.filter(function(lv){ return (lv.cat||'retax')===cat; });
+}
+function catNext(cat){
+  var list=catLevels(cat);
+  for(var i=0;i<list.length;i++){
+    var lv=list[i];
+    var vor=(i===0)||!!state.levelBest[list[i-1].id];
+    if(!state.levelBest[lv.id] && (UNLOCK_ALL || (vor && state.rankIdx>=lv.reqRank))) return lv;
+  }
+  return null;
+}
+function openWorkPicker(raum){
+  var cats=WORK_CATS[raum]||[];
+  document.getElementById('wpTitle').textContent=t('workTitle');
+  var box=document.getElementById('wpText');
+  box.innerHTML='<div class="wk-grid">'+cats.map(function(c){
+    var list=catLevels(c.id);
+    var fertig=list.filter(function(lv){ return !!state.levelBest[lv.id]; }).length;
+    var alle=list.length, voll=(alle>0 && fertig===alle);
+    return '<button class="wk-card'+(voll?' fertig':'')+'" data-cat="'+c.id+'">'+
+      '<img src="'+c.img+'" alt="" loading="lazy">'+
+      '<div class="wk-body"><div class="wk-name">'+locName(c)+'</div>'+
+      '<div class="wk-meta"><span>'+fertig+' / '+alle+'</span>'+
+      '<span class="wk-bar"><span class="wk-fill" style="width:'+
+        (alle?Math.round(fertig/alle*100):0)+'%"></span></span></div></div></button>';
+  }).join('')+'</div>';
+  box.querySelectorAll('.wk-card').forEach(function(b){
+    b.addEventListener('click',function(){
+      var lv=catNext(b.dataset.cat);
+      closePanel();
+      if(lv) startLevel(lv);
+      else { renderMap('buero'); show('mapScreen'); }
+    });
+  });
+  var host=document.getElementById('wpActs'); host.innerHTML='';
+  var c=document.createElement('button'); c.textContent=t('closeBtn');
+  c.addEventListener('click', closePanel); host.appendChild(c);
+  document.getElementById('wPanel').classList.add('up');
+}
+
 /* Der Satz haengt ueber dem Apotheker und verschwindet von selbst. */
 var _sayT=null;
 function apothekerSagt(txt, leer){
@@ -6257,7 +6722,7 @@ function enterRoom(id, at){
 /* ---------- panel ---------- */
 function openPanel(title, text, acts){
   document.getElementById('wpTitle').textContent=title;
-  document.getElementById('wpText').textContent=text||'';
+  document.getElementById('wpText').innerHTML=''; document.getElementById('wpText').textContent=text||'';
   var host=document.getElementById('wpActs'); host.innerHTML='';
   (acts||[]).forEach(function(a){
     var b=document.createElement('button'); b.textContent=a.t;
@@ -6280,15 +6745,8 @@ function openSpot(sp){
   function goTo(room){ return function(){ enterRoom(room); }; }
 
   if(sp.id==='desk'){
-    /* Kein Katalog. Der Schreibtisch gibt den naechsten offenen Fall aus. */
-    var naechster=null;
-    for(var oi=0; oi<OFFICE_LEVELS.length; oi++){
-      var ol=OFFICE_LEVELS[oi];
-      var vor=(oi===0)||!!state.levelBest[OFFICE_LEVELS[oi-1].id];
-      if(!state.levelBest[ol.id] && (UNLOCK_ALL || (vor && state.rankIdx>=ol.reqRank))){ naechster=ol; break; }
-    }
-    if(naechster) acts.push({t:t('serveNow'), cls:'main', fn:function(){ startLevel(naechster); }});
-    else acts.push({t:t('archiv'), cls:'main', fn:function(){ renderMap('buero'); show('mapScreen'); }});
+    /* Zwei Arten Arbeit liegen hier. Der Spieler waehlt die Art. */
+    acts.push({t:t('workOpen'), cls:'main', fn:function(){ openWorkPicker('buero'); }});
   }
   if(sp.id==='door_offizin' || sp.id==='door_buero'){
     ['offizin','buero','rezeptur','kueche'].forEach(function(r,i){
