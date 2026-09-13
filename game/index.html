@@ -1466,7 +1466,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-13d \u00b7 Keine Auswahl in der Kategorie" +
+var PC_BUILD = "2026-09-13e \u00b7 Direkt in den Fall" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -2261,7 +2261,6 @@ var M16 = {
     }
     return '<div class="m16" id="m16">'+
       '<div class="m16-head">'+
-        (r.logo?'<img src="assets/Retax/'+r.logo+'" alt="">':'')+
         '<span class="m16-kasse">'+(r.kasse||'')+'</span>'+
         '<span class="m16-typ">'+L.typ+'</span>'+
       '</div><div class="m16-grid">'+zellen+'</div></div>'+kartei;
@@ -6024,6 +6023,7 @@ TOPICS.buero_formfehler_01 = {
 
   {mech:"rezept",data:{kicker:"Rezept B · Bruncker Classic", penalty:true,
     title:"Zwei Angaben fehlen",
+    scene:"assets/Retax/retax_scene_lupe.webp",
     doc:{type:"m16", r:REZ_B, open:["datum","dosis","vers","status","verordnung"]},
     phases:[
       {q:"Eine fehlende Angabe stoppt hier jede weitere Prüfung. Tippe sie an.",
@@ -6615,7 +6615,11 @@ function catNext(cat){
     var vor=(i===0)||!!state.levelBest[list[i-1].id];
     if(!state.levelBest[lv.id] && (UNLOCK_ALL || (vor && state.rankIdx>=lv.reqRank))) return lv;
   }
-  return null;
+  /* Alles durch: der zuletzt abgeschlossene laeuft erneut. Wiederholung
+     bringt ohnehin keine Punkte. Wichtig ist, dass zwischen der Wahl der
+     Arbeit und dem Fall nie ein Bildschirm steht. */
+  var fertig=list.filter(function(lv){ return !!state.levelBest[lv.id]; });
+  return fertig.length ? fertig[fertig.length-1] : null;
 }
 function openWorkPicker(raum){
   var cats=WORK_CATS[raum]||[];
@@ -6634,18 +6638,9 @@ function openWorkPicker(raum){
   }).join('')+'</div>';
   box.querySelectorAll('.wk-card').forEach(function(b){
     b.addEventListener('click',function(){
-      var cat=b.dataset.cat, lv=catNext(cat);
+      var lv=catNext(b.dataset.cat);
       closePanel();
-      if(lv){ startLevel(lv); return; }
-      /* Kategorie durch. Keine Liste: der Spieler waehlt nie einen Fall
-         aus, er bekommt den naechsten. Hier gibt es keinen naechsten. */
-      var fertig=catLevels(cat).filter(function(x){ return !!state.levelBest[x.id]; });
-      var letzter=fertig[fertig.length-1];
-      var acts=[];
-      if(letzter) acts.push({t:t('catRepeat'), cls:'main',
-        fn:function(){ startLevel(letzter); }});
-      acts.push({t:t('closeBtn'), fn:closePanel});
-      openPanel(t('catDone'), t('catDoneText'), acts);
+      if(lv) startLevel(lv);
     });
   });
   var host=document.getElementById('wpActs'); host.innerHTML='';
