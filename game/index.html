@@ -40,13 +40,7 @@ body.rtl{direction:rtl}
 @keyframes screenIn{from{opacity:0;transform:translateY(10px) scale(.995)}
   to{opacity:1;transform:none}}
 @keyframes screenOut{from{opacity:1}to{opacity:0}}
-/* Laedt die Raumkarte laenger, erscheint ein kleiner Ring statt eines
-   leeren Rahmens. */
-.w-load{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;
-  border:3px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;
-  animation:spin .7s linear infinite;z-index:12;display:none}
-.w-load.on{display:block}
-@keyframes spin{to{transform:rotate(360deg)}}
+
 /* Raumwechsel innerhalb der Apotheke: nur die Buehne blendet kurz auf. */
 @keyframes raumIn{from{opacity:0;transform:scale(1.012)}to{opacity:1;transform:none}}
 .w-stage.raum{animation:raumIn .2s ease-out}
@@ -1099,7 +1093,6 @@ body.rtl .rv-nav{flex-direction:row-reverse}
     <div class="w-custlayer" id="wCustLayer"></div>
     <div class="ph-say" id="wSay" style="display:none"></div>
     <div class="w-tap" id="wTap"></div>
-    <div class="w-load" id="wLoad"></div>
   </div>
 
   <div class="w-panel" id="wPanel">
@@ -1499,7 +1492,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-14e \u00b7 Vorfahrt statt Stillstand" +
+var PC_BUILD = "2026-09-14m \u00b7 Aufruecken ohne Verzoegerung" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5912,21 +5905,46 @@ function custPickLevel(){
   }
   return offen[Math.floor(Math.random()*offen.length)];
 }
-function custFreeSlot(){
-  /* Angehaengt wird immer hinten. Wer hereinkommt, laeuft nie an einem
-     Wartenden vorbei, sondern stellt sich hinter ihn. */
-  var da=CUS.list.filter(function(c){ return c.state==='in'||c.state==='wait'; }).length;
-  return da<CUS_MAX ? da : -1;
+/* Welche Plaetze sind wirklich belegt? Auch wer schon geht, steht noch
+   eine Weile auf seinem Platz. Wuerde man ihn nicht mitzaehlen, liefe
+   der Naechste in ihn hinein. */
+function custBelegt(){
+  var b={};
+  CUS.list.forEach(function(c){ if(c.slot!=null && c.slot>=0) b[c.slot]=true; });
+  return b;
 }
-/* Geht einer, ruecken die anderen einen Platz vor. */
+function custFreeSlot(){
+  /* Der Neue stellt sich ans Ende der bestehenden Schlange. Weil Platz 0
+     am Tresen liegt und Platz 2 an der Tuer, erreicht er sein Ende
+     zuerst und geht an niemandem vorbei. Ist der Platz noch von einem
+     Abgehenden besetzt, wartet er draussen. */
+  var da=CUS.list.filter(function(c){ return c.state==='in'||c.state==='wait'; }).length;
+  if(da>=CUS_MAX) return -1;
+  var b=custBelegt();
+  return b[da] ? -1 : da;     /* der Platz muss auch raeumlich frei sein */
+}
+/* Geht einer, ruecken die anderen einen Platz vor - aber nur auf
+   Plaetze, die niemand mehr besetzt. */
 function custRuecken(){
+  var geht={};
+  CUS.list.forEach(function(c){
+    if(c.state==='out'||c.state==='mad'||c.state==='served') geht[c.slot]=true;
+  });
+  var frei=[];
+  for(var k=0;k<CUS_MAX;k++){ if(!geht[k]) frei.push(k); }
   var q=CUS.list.filter(function(c){ return c.state==='in'||c.state==='wait'; })
                 .sort(function(a,b){ return a.slot-b.slot; });
-  q.forEach(function(c,i){
+  q.forEach(function(c,idx){
+    var i = (idx<frei.length) ? frei[idx] : c.slot;
     if(c.slot===i) return;
     c.slot=i;
     var ziel={x:CUS_SLOT[i][0], y:CUS_SLOT[i][1]};
-    if(c.state==='wait'){ c.state='in'; c.path=[ziel]; }
+    /* Der Vorderste rueckt zuerst, die anderen nacheinander. Sonst
+       laeuft der Hintere in den Platz, den der Vordere noch raeumt. */
+    if(c.state==='wait'){
+      c.state='in'; c.path=[ziel];
+      c.halt=Math.max(c.halt||0, i*1.2);
+    }
     else if(c.path.length){ c.path[c.path.length-1]=ziel; }
   });
 }
@@ -5980,12 +5998,22 @@ function custAbgaenge(){
     var mad=(c.abgang==='mad');
     c.abgang=null;
     custLeave(c, mad);
-    c.halt = offen*1.7;                 /* spaeterer Aufbruch */
-    c.spur = offen * 1.6;                 /* jeder auf eigener Linie */
+    c.halt = offen*2.0;                 /* spaeterer Aufbruch */
+    c.spur = offen * 1.9;                 /* jeder auf eigener Linie */
     offen++;
   });
   if(offen) CUS.t=Math.min(CUS.t, 3.0);   /* Nachschub folgt zuegig */
+  /* Erst rueckt niemand auf. Wer geht, steht noch auf seinem Platz und
+     bricht versetzt auf. Wer nachrueckt, wartet, bis der Gang frei ist,
+     sonst laeuft er durch den Stehenden hindurch. */
+  var letzterAufbruch = 0;
+  CUS.list.forEach(function(c){ if(c.state==='out'||c.state==='mad')
+    letzterAufbruch=Math.max(letzterAufbruch, c.halt||0); });
+  var vorher = CUS.list.filter(function(c){ return c.state==='wait'; });
   custRuecken();
+  vorher.forEach(function(c){
+    if(c.state==='in') c.halt = letzterAufbruch + 1.6 + (c.slot||0)*1.2;
+  });
   return offen;
 }
 function custTick(dt){
@@ -6004,34 +6032,11 @@ function custTick(dt){
     if(c.state==='mad' && c.madT>0){ c.madT-=dt; if(c.madT<=0) c.state='out'; return; }
     if(c.state==='in' || c.state==='out'){
       if(c.halt>0){ c.halt-=dt; return; }      /* versetzter Aufbruch */
-      var sp=6.5*dt*(c.tempo||1);
+      var sp=6.5*dt*(c.state==='out' ? 1 : (c.tempo||1));
       /* Abstand halten. Wer jemandem zu nahe kommt, geht langsamer und
          bleibt notfalls stehen, bis wieder Platz ist. Eine feste
          Staffelung allein reicht nicht: der Vordere kann langsamer
          sein als der Hintere, dann laeuft er ihm auf. */
-      var ziel=c.path[0];
-      var rx=(ziel.x-c.pos.x), ry=(ziel.y-c.pos.y);
-      var rl=Math.sqrt(rx*rx+ry*ry)||1; rx/=rl; ry/=rl;
-      var eng=99;
-      CUS.list.forEach(function(o2){
-        if(o2===c || !o2.pos || o2.state==='wait') return;
-        var ax=o2.pos.x-c.pos.x, ay=o2.pos.y-c.pos.y;
-        /* Zwei Regeln, damit nie beide gleichzeitig stehen bleiben:
-           wer hinten ist, weicht dem Vorderen aus, und wer hereinkommt,
-           laesst den Hinausgehenden zuerst durch. Eine Kreuzung hat
-           damit immer einen, der faehrt. */
-        var vorne   = (ax*rx+ay*ry) > 0;
-        var vorrang = (c.state==='in' && o2.state==='out');
-        if(!vorne && !vorrang) return;
-        var dd=Math.sqrt(ax*ax+ay*ay);
-        if(dd<eng) eng=dd;
-      });
-      if(eng<2.3){ sp=0; c.stau=(c.stau||0)+dt; }
-      else if(eng<2.9){ sp*=0.4; c.stau=0; }
-      else c.stau=0;
-      /* Notausgang gegen das Verklemmen, aber nie so weit, dass zwei
-         einander durchdringen: unter 1,7 Feldern bleibt Halt Halt. */
-      if(c.stau>1.0 && eng>1.7) sp=6.5*dt*(c.tempo||1)*0.5;
       var vers=(c.state==='out' && c.spur) ? c.spur : 0;
       while(sp>0 && c.path.length){
         var n={x:c.path[0].x+vers, y:c.path[0].y}, dx=n.x-c.pos.x, dy=n.y-c.pos.y,
@@ -6048,9 +6053,9 @@ function custTick(dt){
   });
   if(raus.length){
     var strafe=0;
-    setTimeout(custRuecken, 0);
     raus.forEach(function(c){ if(c.uebergangen>0 || c.geduld<=0) strafe+=CUS_STRAFE; });
     CUS.list = CUS.list.filter(function(c){ return raus.indexOf(c)<0; });
+    if(raus.length) custRuecken();
     if(strafe){ state.totalPts += strafe; save(); renderRankBar(); toastPts(strafe); }
   }
   custDraw();
@@ -7191,12 +7196,9 @@ function enterRoom(id, at){
     document.getElementById('wStage').classList.add('w-err');
     document.getElementById('wHint').textContent=r.img+' — الملف غير موجود في game/assets';
     document.getElementById('wHint').classList.remove('hide');
-    var ring2=document.getElementById('wLoad'); if(ring2) ring2.classList.remove('on');
   };
-  var ring=document.getElementById('wLoad');
-  if(ring) ring.classList.add('on');
   img.src=r.img;
-  if(img.complete && img.naturalWidth){ worldLayout(); if(ring) ring.classList.remove('on'); }
+  if(img.complete && img.naturalWidth) worldLayout();
   closePanel();
   if(id==='offizin') custStart(); else custStop();
   var buehne=document.getElementById('wStage');
