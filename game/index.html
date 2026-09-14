@@ -33,11 +33,20 @@ body.rtl{direction:rtl}
    Ein heller Vorhang, 110 ms hinein und 170 ms hinaus. Der Tausch der
    Bildschirme geschieht dahinter, also sieht man nie einen Sprung.
    Kurz gehalten: ein langsamer Uebergang nervt beim zehnten Mal. */
-#pcWipe{position:fixed;inset:0;background:var(--sand);opacity:0;pointer-events:none;
-  z-index:220;transition:opacity .11s ease-out}
-#pcWipe.on{opacity:1}
-.screen.active{animation:screenIn .19s ease-out}
-@keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#pcWipe{display:none}
+.screen.active{animation:screenIn .24s cubic-bezier(.22,.61,.36,1)}
+.screen.leaving{display:block!important;animation:screenOut .15s ease-in forwards;
+  position:fixed;inset:0;z-index:150;pointer-events:none}
+@keyframes screenIn{from{opacity:0;transform:translateY(10px) scale(.995)}
+  to{opacity:1;transform:none}}
+@keyframes screenOut{from{opacity:1}to{opacity:0}}
+/* Laedt die Raumkarte laenger, erscheint ein kleiner Ring statt eines
+   leeren Rahmens. */
+.w-load{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;
+  border:3px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;
+  animation:spin .7s linear infinite;z-index:12;display:none}
+.w-load.on{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
 /* Raumwechsel innerhalb der Apotheke: nur die Buehne blendet kurz auf. */
 @keyframes raumIn{from{opacity:0;transform:scale(1.012)}to{opacity:1;transform:none}}
 .w-stage.raum{animation:raumIn .2s ease-out}
@@ -1090,6 +1099,7 @@ body.rtl .rv-nav{flex-direction:row-reverse}
     <div class="w-custlayer" id="wCustLayer"></div>
     <div class="ph-say" id="wSay" style="display:none"></div>
     <div class="w-tap" id="wTap"></div>
+    <div class="w-load" id="wLoad"></div>
   </div>
 
   <div class="w-panel" id="wPanel">
@@ -1489,7 +1499,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-14c \u00b7 Abstand halten" +
+var PC_BUILD = "2026-09-14e \u00b7 Vorfahrt statt Stillstand" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5652,19 +5662,20 @@ function showNow(id){
 var _wipeT=null;
 function show(id){
   var aktiv=document.querySelector('.screen.active');
-  var w=document.getElementById('pcWipe');
-  /* Ohne Vorhang, wenn der Bildschirm derselbe ist oder die Bewegung
-     abgeschaltet wurde. */
   var still=false;
   try{ still=window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
-  if(!w || still || (aktiv && aktiv.id===id)) return showNow(id);
+  if(still || !aktiv || aktiv.id===id) return showNow(id);
   if(_wipeT) clearTimeout(_wipeT);
-  w.classList.add('on');
+  /* Der alte Bildschirm bleibt sichtbar und verblasst, waehrend der
+     neue schon aufgebaut wird. Dadurch gibt es keinen Moment, in dem
+     gar nichts zu sehen ist. */
+  var alt=aktiv;
+  alt.classList.add('leaving');
+  showNow(id);
   _wipeT=setTimeout(function(){
-    showNow(id);
-    w.classList.remove('on');
+    alt.classList.remove('leaving');
     _wipeT=null;
-  }, 115);
+  }, 160);
 }
 
 /* ---------- Language ---------- */
@@ -5998,14 +6009,29 @@ function custTick(dt){
          bleibt notfalls stehen, bis wieder Platz ist. Eine feste
          Staffelung allein reicht nicht: der Vordere kann langsamer
          sein als der Hintere, dann laeuft er ihm auf. */
+      var ziel=c.path[0];
+      var rx=(ziel.x-c.pos.x), ry=(ziel.y-c.pos.y);
+      var rl=Math.sqrt(rx*rx+ry*ry)||1; rx/=rl; ry/=rl;
       var eng=99;
       CUS.list.forEach(function(o2){
-        if(o2===c || !o2.pos) return;
-        var dd=Math.sqrt(Math.pow(o2.pos.x-c.pos.x,2)+Math.pow(o2.pos.y-c.pos.y,2));
+        if(o2===c || !o2.pos || o2.state==='wait') return;
+        var ax=o2.pos.x-c.pos.x, ay=o2.pos.y-c.pos.y;
+        /* Zwei Regeln, damit nie beide gleichzeitig stehen bleiben:
+           wer hinten ist, weicht dem Vorderen aus, und wer hereinkommt,
+           laesst den Hinausgehenden zuerst durch. Eine Kreuzung hat
+           damit immer einen, der faehrt. */
+        var vorne   = (ax*rx+ay*ry) > 0;
+        var vorrang = (c.state==='in' && o2.state==='out');
+        if(!vorne && !vorrang) return;
+        var dd=Math.sqrt(ax*ax+ay*ay);
         if(dd<eng) eng=dd;
       });
-      if(eng<2.3) sp=0;
-      else if(eng<2.9) sp*=0.4;
+      if(eng<2.3){ sp=0; c.stau=(c.stau||0)+dt; }
+      else if(eng<2.9){ sp*=0.4; c.stau=0; }
+      else c.stau=0;
+      /* Notausgang gegen das Verklemmen, aber nie so weit, dass zwei
+         einander durchdringen: unter 1,7 Feldern bleibt Halt Halt. */
+      if(c.stau>1.0 && eng>1.7) sp=6.5*dt*(c.tempo||1)*0.5;
       var vers=(c.state==='out' && c.spur) ? c.spur : 0;
       while(sp>0 && c.path.length){
         var n={x:c.path[0].x+vers, y:c.path[0].y}, dx=n.x-c.pos.x, dy=n.y-c.pos.y,
@@ -7165,9 +7191,12 @@ function enterRoom(id, at){
     document.getElementById('wStage').classList.add('w-err');
     document.getElementById('wHint').textContent=r.img+' — الملف غير موجود في game/assets';
     document.getElementById('wHint').classList.remove('hide');
+    var ring2=document.getElementById('wLoad'); if(ring2) ring2.classList.remove('on');
   };
+  var ring=document.getElementById('wLoad');
+  if(ring) ring.classList.add('on');
   img.src=r.img;
-  if(img.complete && img.naturalWidth) worldLayout();
+  if(img.complete && img.naturalWidth){ worldLayout(); if(ring) ring.classList.remove('on'); }
   closePanel();
   if(id==='offizin') custStart(); else custStop();
   var buehne=document.getElementById('wStage');
