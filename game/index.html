@@ -1036,6 +1036,30 @@ body.rtl .rv-nav{flex-direction:row-reverse}
    die spaetere Regel. Deshalb wuchs das Kassenlogo auf volle Breite. */
 .m16 .m16-head img{height:24px!important;width:auto!important;max-width:140px;
   object-fit:contain;flex:0 0 auto}
+
+/* ===== Archiv, Ebene 1 ===== */
+.arch-gruppen{display:flex;flex-direction:column;gap:12px}
+.arch-g{display:flex;align-items:stretch;gap:0;padding:0;overflow:hidden;cursor:pointer;
+  background:#fff;border:2px solid var(--line);border-radius:16px;text-align:start;
+  font-family:inherit;animation:pop .35s ease-out both;
+  transition:transform .15s,box-shadow .15s,border-color .15s}
+.arch-g:hover{transform:translateY(-2px);box-shadow:var(--shadow-strong);border-color:var(--teal-dark)}
+.arch-g img{width:120px;height:100px;object-fit:cover;flex:0 0 auto;display:block}
+.ag-body{display:flex;flex-direction:column;justify-content:center;gap:5px;padding:12px 14px;flex:1 1 auto;min-width:0}
+.ag-name{font-family:'Fraunces',serif;font-weight:700;font-size:16.5px;color:var(--ink)}
+.ag-zahl{font-size:12.5px;color:var(--soft)}
+.ag-bar{height:6px;border-radius:99px;background:#E8E3DA;overflow:hidden}
+.ag-fill{display:block;height:100%;background:var(--teal-dark)}
+/* ===== Archiv, Ebene 2 ===== */
+.arch-kopf{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.arch-zurueck{background:#fff;border:2px solid var(--line);border-radius:11px;padding:8px 14px;
+  font-family:inherit;font-weight:700;font-size:13.5px;color:var(--ink);cursor:pointer}
+.arch-zurueck:hover{border-color:var(--teal-dark)}
+.arch-titel{font-family:'Fraunces',serif;font-weight:700;font-size:17px}
+@media(max-width:760px){
+  .arch-g img{width:96px;height:86px}
+  .ag-name{font-size:15px}
+}
 </style>
 </head>
 <body>
@@ -1368,6 +1392,7 @@ var I18N = {
     catDone:"Diese Arbeit ist durch",
     catDoneText:"Hier wartet gerade nichts Neues. Neue Fälle kommen mit dem nächsten Update.",
     catRepeat:"Letzten Fall wiederholen",
+    archivBack:"\u2190 Alle Gruppen", archivCount:"{a} von {b} abgeschlossen",
     archiv:"Archiv", archivEmpty:"Noch nichts im Archiv. Was du abschließt, sammelt sich hier.", correctIs:"Richtig wäre:", startGame:"Die Apotheke betreten",
     nmTitle:"Wie sollen dich die Kolleginnen nennen?",
     nmDesc:"Nur der Vorname genügt. Er steht später in den Gesprächen im Team und auf deiner Urkunde.",
@@ -1412,6 +1437,7 @@ var I18N = {
     catDone:"This work is done",
     catDoneText:"Nothing new is waiting here. New cases arrive with the next update.",
     catRepeat:"Repeat the last case",
+    archivBack:"\u2190 All groups", archivCount:"{a} of {b} completed",
     archiv:"Archive", archivEmpty:"Nothing archived yet. What you finish collects here.", correctIs:"The right answer:", startGame:"Enter the pharmacy",
     nmTitle:"What should your colleagues call you?",
     nmDesc:"A first name is enough. It appears later in the team conversations and on your certificate.",
@@ -1456,6 +1482,7 @@ var I18N = {
     catDone:"هذا العمل منتهٍ",
     catDoneText:"لا جديد ينتظر هنا. الحالات الجديدة تأتي مع التحديث القادم.",
     catRepeat:"أعد آخر حالة",
+    archivBack:"\u2190 كل المجموعات", archivCount:"{a} من {b}",
     archiv:"الأرشيف", archivEmpty:"لا شيء في الأرشيف بعد. ما تنهيه يُجمع هنا.", correctIs:"الصواب:", startGame:"ادخل الصيدلية",
     nmTitle:"ماذا يناديك زملاؤك؟",
     nmDesc:"الاسم الأول يكفي. سيظهر لاحقاً في حوارات الفريق وعلى شهادتك.",
@@ -1492,7 +1519,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-14m \u00b7 Aufruecken ohne Verzoegerung" +
+var PC_BUILD = "2026-09-14n \u00b7 Archiv in zwei Ebenen" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -6504,85 +6531,109 @@ function gridSection(grid, label){
 /* Die Fallliste ist zum Archiv geworden. Wer einen Fall noch nicht
    gespielt hat, sieht ihn hier nicht: die Faelle kommen ueber die
    Kunden und ueber die Punkte in den Raeumen, nicht aus einem Katalog. */
+/* =====================================================================
+   ARCHIV · zwei Ebenen
+   Ebene 1: die Gruppen, in denen etwas abgeschlossen wurde.
+   Ebene 2: die Faelle einer Gruppe.
+   Eine Gruppe ohne abgeschlossenen Fall erscheint nicht. Das Archiv
+   zeigt, was man geschafft hat, nicht was es alles gibt.
+===================================================================== */
+var ARCHIV = { gruppe:null };
+
+function archivGruppen(){
+  var g=[];
+  g.push({ id:'hv',
+    de:'Am HV-Tisch', en:'At the counter', ar:'عند الطاولة',
+    bild:'assets/maps/map_offizin_v005.jpg',
+    faelle:LEVELS.slice() });
+  if(typeof OFFICE_LEVELS!=='undefined'){
+    [{id:'retax', de:'Retax-Bescheide', en:'Clawback notices', ar:'إشعارات الريتاكس',
+      bild:'assets/Retax/retax_scene_umschlag_oeffnen.webp'},
+     {id:'pruef', de:'Rezeptprüfung', en:'Prescription review', ar:'تدقيق الوصفات',
+      bild:'assets/Rezeptpruefung/pruef_drei_stapel.webp'}
+    ].forEach(function(k){
+      k.faelle = OFFICE_LEVELS.filter(function(lv){ return (lv.cat||'retax')===k.id; });
+      if(k.faelle.length) g.push(k);
+    });
+  }
+  return g.filter(function(k){
+    return k.faelle.some(function(lv){ return !!state.levelBest[lv.id]; });
+  });
+}
+
+function levelKarte(lv, nr, reihe){
+  var topic=TOPICS[lv.topic]; if(!topic) return null;
+  var best=state.levelBest[lv.id];
+  var persona = lv.persona ? PERSONAS[lv.persona] : null;
+  var unter = persona ? locName(persona)
+            : locName(topic.sub||{de:"Büro",en:"Office",ar:"المكتب"});
+  var card=document.createElement('div');
+  card.className='level-card';
+  card.style.animationDelay=(nr*0.04)+'s';
+  card.innerHTML=
+    '<div class="lc-banner">'+levelBanner(topic)+
+    '<div class="lc-num">'+(lv.office?('B'+(reihe+1)):nr)+'</div>'+
+    (topic.tag?'<div class="lc-tag">'+topic.tag+'</div>':'')+
+    (best?'<div class="lc-stars">'+starStr(best.stars)+'</div>':'')+'</div>'+
+    '<div class="lc-body"><div class="lc-topic">'+locName(topic)+'</div>'+
+    '<div class="lc-persona"><span class="dot"></span>'+unter+'</div>'+
+    (best?'<div class="lc-best">Best: '+best.score+' P</div>':'')+'</div>';
+  card.addEventListener('click',function(){ startLevel(lv); });
+  return card;
+}
+
 function renderMap(only){
   renderRankBar();
-  MAP_FILTER = (only===undefined) ? MAP_FILTER : only;
-  var only2 = MAP_FILTER;
+  if(only!==undefined) ARCHIV.gruppe=null;    /* von aussen: immer oben anfangen */
   var grid=document.getElementById('levelsGrid'); grid.innerHTML='';
-  var num=0;
-  var hatHV = LEVELS.some(function(lv){ return !!state.levelBest[lv.id]; });
-  if(only2!=='buero' && hatHV) gridSection(grid, t('secCounter'));
-  // real levels
-  if(only2!=='buero') LEVELS.forEach(function(lv,li){
-    if(!state.levelBest[lv.id]) return;
-    num++;
-    var topic=TOPICS[lv.topic], persona=PERSONAS[lv.persona];
-    /* Sequenz: ein Fall öffnet den nächsten. Abgeschlossene bleiben frei wählbar. */
-    var prevDone = (li===0) || !!state.levelBest[LEVELS[li-1].id];
-    var locked = UNLOCK_ALL ? false : ((state.rankIdx < lv.reqRank) || !prevDone);
-    var best = state.levelBest[lv.id];
-    var stars = best ? starStr(best.stars) : '';
-    var card=document.createElement('div');
-    card.className='level-card'+(locked?' locked':'');
-    card.style.animationDelay=(num*0.04)+'s';
-    card.innerHTML=
-      '<div class="lc-banner">'+levelBanner(topic)+
-      '<div class="lc-num">'+num+'</div>'+
-      (locked?'<div class="lc-lock">'+ICONS.draw('lock')+'<em>'+t('lockedPrev')+'</em></div>':'')+
-      (stars?'<div class="lc-stars">'+stars+'</div>':'')+'</div>'+
-      '<div class="lc-body"><div class="lc-topic">'+locName(topic)+'</div>'+
-      '<div class="lc-persona"><span class="dot"></span>'+locName(persona)+'</div>'+
-      (best?'<div class="lc-best">Best: '+best.score+' P</div>':'')+'</div>';
-    if(!locked) card.addEventListener('click',function(){ startLevel(lv); });
-    grid.appendChild(card);
-  });
-  // coming soon placeholders
-  if(false) COMING.forEach(function(c){
-    num++;
-    var persona=PERSONAS[c.persona];
-    var card=document.createElement('div');
-    card.className='level-card locked';
-    card.style.animationDelay=(num*0.04)+'s';
-    card.innerHTML=
-      '<div class="lc-banner" style="background:linear-gradient(135deg,#9a9a9a,#c5c5c5)">'+
-      '<div class="lc-num">'+num+'</div><div class="lc-lock">'+ICONS.draw('clock')+'</div></div>'+
-      '<div class="lc-body"><div class="lc-topic">'+c.de+'</div>'+
-      '<div class="lc-persona"><span class="dot"></span>'+(persona?locName(persona):'')+'</div></div>';
-    grid.appendChild(card);
-  });
-  if(!grid.querySelector('.level-card')){
+  var gruppen=archivGruppen();
+
+  if(!gruppen.length){
     var leer=document.createElement('div');
     leer.className='arch-empty'; leer.textContent=t('archivEmpty');
     grid.appendChild(leer);
+    return;
   }
-  // Büro: eigener Abschnitt, eigene Sequenz
-  var hatBuero = (typeof OFFICE_LEVELS!=='undefined') && OFFICE_LEVELS.some(function(lv){
-    return !!state.levelBest[lv.id]; });
-  if(typeof OFFICE_LEVELS!=='undefined' && OFFICE_LEVELS.length && only2!=='hv' && hatBuero){
-    gridSection(grid, t('secOffice'));
-    OFFICE_LEVELS.forEach(function(lv,li){
-      var topic=TOPICS[lv.topic]; if(!topic) return;
-      if(!state.levelBest[lv.id]) return;
-      var prevDone=(li===0)||!!state.levelBest[OFFICE_LEVELS[li-1].id];
-      var locked=UNLOCK_ALL ? false : ((state.rankIdx<lv.reqRank)||!prevDone);
-      var best=state.levelBest[lv.id];
-      var stars=best?starStr(best.stars):'';
-      var card=document.createElement('div');
-      card.className='level-card'+(locked?' locked':'');
-      card.style.animationDelay=((li+1)*0.04)+'s';
-      card.innerHTML=
-        '<div class="lc-banner">'+levelBanner(topic)+
-        '<div class="lc-num">B'+(li+1)+'</div>'+
-        (topic.tag?'<div class="lc-tag">'+topic.tag+'</div>':'')+
-        (locked?'<div class="lc-lock">'+ICONS.draw('lock')+'<em>'+t('lockedPrev')+'</em></div>':'')+
-        (stars?'<div class="lc-stars">'+stars+'</div>':'')+'</div>'+
-        '<div class="lc-body"><div class="lc-topic">'+locName(topic)+'</div>'+
-        '<div class="lc-persona"><span class="dot"></span>'+locName(topic.sub||{de:"Büro",en:"Office",ar:"المكتب"})+'</div>'+
-        (best?'<div class="lc-best">Best: '+best.score+' P</div>':'')+'</div>';
-      if(!locked) card.addEventListener('click',function(){ startLevel(lv); });
-      grid.appendChild(card);
+
+  /* ---------- Ebene 2: die Faelle einer Gruppe ---------- */
+  var g = ARCHIV.gruppe && gruppen.filter(function(k){ return k.id===ARCHIV.gruppe; })[0];
+  if(g){
+    var kopf=document.createElement('div');
+    kopf.className='arch-kopf';
+    kopf.innerHTML='<button class="arch-zurueck">'+t('archivBack')+'</button>'+
+                   '<span class="arch-titel">'+locName(g)+'</span>';
+    kopf.querySelector('.arch-zurueck').addEventListener('click',function(){
+      ARCHIV.gruppe=null; renderMap();
     });
+    grid.appendChild(kopf);
+    var n=0;
+    g.faelle.forEach(function(lv, reihe){
+      if(!state.levelBest[lv.id]) return;
+      n++;
+      var c=levelKarte(lv, n, reihe);
+      if(c) grid.appendChild(c);
+    });
+    return;
   }
+
+  /* ---------- Ebene 1: die Gruppen ---------- */
+  var box=document.createElement('div');
+  box.className='arch-gruppen';
+  gruppen.forEach(function(k,i){
+    var fertig=k.faelle.filter(function(lv){ return !!state.levelBest[lv.id]; }).length;
+    var alle=k.faelle.length;
+    var b=document.createElement('button');
+    b.className='arch-g';
+    b.style.animationDelay=(i*0.05)+'s';
+    b.innerHTML='<img src="'+k.bild+'" alt="" loading="lazy">'+
+      '<span class="ag-body"><span class="ag-name">'+locName(k)+'</span>'+
+      '<span class="ag-zahl">'+t('archivCount').replace('{a}',fertig).replace('{b}',alle)+'</span>'+
+      '<span class="ag-bar"><span class="ag-fill" style="width:'+
+        Math.round(fertig/alle*100)+'%"></span></span></span>';
+    b.addEventListener('click',function(){ ARCHIV.gruppe=k.id; renderMap(); });
+    box.appendChild(b);
+  });
+  grid.appendChild(box);
 }
 function starStr(n){ return '★★★'.slice(0,n)+'☆☆☆'.slice(0,3-n); }
 
