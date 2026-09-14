@@ -1489,7 +1489,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-13q \u00b7 Weiche Uebergaenge" +
+var PC_BUILD = "2026-09-14c \u00b7 Abstand halten" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5642,6 +5642,12 @@ function showNow(id){
   document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
   try{ window.scrollTo(0,0); }catch(e){}
+  if(id==='worldScreen'){
+    /* Erst jetzt hat die Buehne eine Groesse. Zweimal, weil manche
+       Browser die Masse im selben Einzelbild noch nicht kennen. */
+    try{ worldLayout(); }catch(e){}
+    try{ requestAnimationFrame(function(){ try{ worldLayout(); }catch(e){} }); }catch(e){}
+  }
 }
 var _wipeT=null;
 function show(id){
@@ -5854,17 +5860,46 @@ function custStop(){
   CUS.on=false;
   var l=document.getElementById('wCustLayer'); if(l) l.innerHTML='';
 }
-function custPickLevel(){
-  var used=CUS.list.map(function(c){ return c.lv.id; });
-  var offen=LEVELS.filter(function(lv,li){
+/* Ein Beutel statt eines Wuerfels. Jeder offene Fall kommt einmal
+   heran, erst wenn der Beutel leer ist, wird neu gemischt. Vorher
+   konnte derselbe Kunde direkt nach seinem Abgang wieder hereinkommen. */
+var CUS_BEUTEL = [];
+var CUS_ZULETZT = null;
+function custOffeneFaelle(){
+  return LEVELS.filter(function(lv,li){
     if(UNLOCK_ALL) return true;
     var prev=(li===0)||!!state.levelBest[LEVELS[li-1].id];
     return prev && state.rankIdx>=lv.reqRank;
   });
+}
+function custBeutelFuellen(){
+  var offen=custOffeneFaelle();
+  CUS_BEUTEL = offen.slice();
+  for(var i=CUS_BEUTEL.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var h=CUS_BEUTEL[i]; CUS_BEUTEL[i]=CUS_BEUTEL[j]; CUS_BEUTEL[j]=h;
+  }
+  /* Nicht mit demselben beginnen, der gerade hinausgegangen ist. */
+  if(CUS_BEUTEL.length>1 && CUS_ZULETZT && CUS_BEUTEL[0].id===CUS_ZULETZT){
+    var t2=CUS_BEUTEL.shift(); CUS_BEUTEL.push(t2);
+  }
+}
+function custPickLevel(){
+  var offen=custOffeneFaelle();
   if(!offen.length) return null;
-  var frisch=offen.filter(function(lv){ return used.indexOf(lv.id)<0; });
-  var pool = frisch.length ? frisch : offen;
-  return pool[Math.floor(Math.random()*pool.length)];
+  var drin=CUS.list.map(function(c){ return c.lv.id; });
+  for(var runde=0; runde<2; runde++){
+    if(!CUS_BEUTEL.length) custBeutelFuellen();
+    for(var i=0;i<CUS_BEUTEL.length;i++){
+      if(drin.indexOf(CUS_BEUTEL[i].id)<0){
+        var lv=CUS_BEUTEL.splice(i,1)[0];
+        CUS_ZULETZT=lv.id;
+        return lv;
+      }
+    }
+    CUS_BEUTEL=[];   /* alles im Beutel steht schon im Laden: neu mischen */
+  }
+  return offen[Math.floor(Math.random()*offen.length)];
 }
 function custFreeSlot(){
   /* Angehaengt wird immer hinten. Wer hereinkommt, laeuft nie an einem
@@ -5934,7 +5969,8 @@ function custAbgaenge(){
     var mad=(c.abgang==='mad');
     c.abgang=null;
     custLeave(c, mad);
-    c.halt = offen*1.1;      /* der zweite bricht spaeter auf als der erste */
+    c.halt = offen*1.7;                 /* spaeterer Aufbruch */
+    c.spur = offen * 1.6;                 /* jeder auf eigener Linie */
     offen++;
   });
   if(offen) CUS.t=Math.min(CUS.t, 3.0);   /* Nachschub folgt zuegig */
@@ -5958,8 +5994,22 @@ function custTick(dt){
     if(c.state==='in' || c.state==='out'){
       if(c.halt>0){ c.halt-=dt; return; }      /* versetzter Aufbruch */
       var sp=6.5*dt*(c.tempo||1);
+      /* Abstand halten. Wer jemandem zu nahe kommt, geht langsamer und
+         bleibt notfalls stehen, bis wieder Platz ist. Eine feste
+         Staffelung allein reicht nicht: der Vordere kann langsamer
+         sein als der Hintere, dann laeuft er ihm auf. */
+      var eng=99;
+      CUS.list.forEach(function(o2){
+        if(o2===c || !o2.pos) return;
+        var dd=Math.sqrt(Math.pow(o2.pos.x-c.pos.x,2)+Math.pow(o2.pos.y-c.pos.y,2));
+        if(dd<eng) eng=dd;
+      });
+      if(eng<2.3) sp=0;
+      else if(eng<2.9) sp*=0.4;
+      var vers=(c.state==='out' && c.spur) ? c.spur : 0;
       while(sp>0 && c.path.length){
-        var n=c.path[0], dx=n.x-c.pos.x, dy=n.y-c.pos.y, d=Math.sqrt(dx*dx+dy*dy);
+        var n={x:c.path[0].x+vers, y:c.path[0].y}, dx=n.x-c.pos.x, dy=n.y-c.pos.y,
+            d=Math.sqrt(dx*dx+dy*dy);
         if(d<=sp){ c.pos.x=n.x; c.pos.y=n.y; c.path.shift(); sp-=d; }
         else { c.pos.x+=dx/d*sp; c.pos.y+=dy/d*sp; sp=0;
                c.dir = Math.abs(dx)>Math.abs(dy) ? (dx>0?'right':'left') : (dy>0?'down':'up'); }
