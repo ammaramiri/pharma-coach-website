@@ -28,6 +28,23 @@ body.rtl{direction:rtl}
 .screen{display:none;min-height:100vh;min-height:100dvh}
 .screen.active{display:block;animation:fade .4s ease-out}
 @keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* ===== Bildschirmwechsel =====
+   Ein heller Vorhang, 110 ms hinein und 170 ms hinaus. Der Tausch der
+   Bildschirme geschieht dahinter, also sieht man nie einen Sprung.
+   Kurz gehalten: ein langsamer Uebergang nervt beim zehnten Mal. */
+#pcWipe{position:fixed;inset:0;background:var(--sand);opacity:0;pointer-events:none;
+  z-index:220;transition:opacity .11s ease-out}
+#pcWipe.on{opacity:1}
+.screen.active{animation:screenIn .19s ease-out}
+@keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* Raumwechsel innerhalb der Apotheke: nur die Buehne blendet kurz auf. */
+@keyframes raumIn{from{opacity:0;transform:scale(1.012)}to{opacity:1;transform:none}}
+.w-stage.raum{animation:raumIn .2s ease-out}
+@media (prefers-reduced-motion: reduce){
+  #pcWipe{transition:none}
+  .screen.active,.w-stage.raum{animation:none}
+}
 @keyframes pop{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 
 /* ============ START SCREEN ============ */
@@ -1207,6 +1224,8 @@ body.rtl .rv-nav{flex-direction:row-reverse}
 </div>
 
 <!-- Email modal -->
+<div id="pcWipe"></div>
+
 <div class="modal-bg" id="nameModal">
   <div class="modal">
     <h3 id="nmTitle"></h3>
@@ -1470,7 +1489,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-13p \u00b7 Spuren durch dieselbe Tuer" +
+var PC_BUILD = "2026-09-13q \u00b7 Weiche Uebergaenge" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5619,8 +5638,28 @@ function locName(obj){ return obj[state.lang]||obj.de; }
 /* ===================================================================== */
 /* SCREEN MANAGEMENT                                                      */
 /* ===================================================================== */
-function show(id){ document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
-  document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+function showNow(id){
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  try{ window.scrollTo(0,0); }catch(e){}
+}
+var _wipeT=null;
+function show(id){
+  var aktiv=document.querySelector('.screen.active');
+  var w=document.getElementById('pcWipe');
+  /* Ohne Vorhang, wenn der Bildschirm derselbe ist oder die Bewegung
+     abgeschaltet wurde. */
+  var still=false;
+  try{ still=window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+  if(!w || still || (aktiv && aktiv.id===id)) return showNow(id);
+  if(_wipeT) clearTimeout(_wipeT);
+  w.classList.add('on');
+  _wipeT=setTimeout(function(){
+    showNow(id);
+    w.classList.remove('on');
+    _wipeT=null;
+  }, 115);
+}
 
 /* ---------- Language ---------- */
 function applyLang(){
@@ -7081,6 +7120,8 @@ function enterRoom(id, at){
   if(img.complete && img.naturalWidth) worldLayout();
   closePanel();
   if(id==='offizin') custStart(); else custStop();
+  var buehne=document.getElementById('wStage');
+  if(buehne){ buehne.classList.remove('raum'); void buehne.offsetWidth; buehne.classList.add('raum'); }
   setTimeout(kraftPruefen, 900);
 }
 
