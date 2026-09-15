@@ -894,6 +894,29 @@ body.rtl .rx-hint{right:auto;left:14px}
 .tri-f.ok{border-color:var(--teal-dark);background:#EAF4F1}
 .tri-f.no{border-color:var(--red);background:#FDECEE}
 .tri-f.soll{border-color:var(--teal-dark);border-style:dashed}
+/* ===== Schritt überspringen ·  PLAN.md 17, Abschnitt 24 =====
+   Bewusst als kleine Zeile unter dem Schritt, nicht als Knopf. Wer sie
+   sucht, findet sie; wer arbeitet, sieht sie kaum. */
+.skip-zeile{margin:14px 0 2px;text-align:center;animation:fade .3s ease-out}
+.skip-zeile button{background:none;border:none;cursor:pointer;font-family:inherit;
+  font-size:12.5px;color:var(--soft);text-decoration:underline;text-underline-offset:3px;
+  padding:6px 10px}
+.skip-zeile button:hover{color:var(--ink)}
+.skip-frage{position:fixed;inset:0;z-index:240;display:none;align-items:center;
+  justify-content:center;padding:22px;background:rgba(16,14,18,.55)}
+.skip-frage.on{display:flex}
+.skip-box{background:#fff;border-radius:18px;padding:22px 20px;max-width:380px;width:100%;
+  box-shadow:0 20px 50px rgba(0,0,0,.3);animation:pop .25s ease-out}
+.skip-box h4{margin:0 0 8px;font-family:'Fraunces',serif;font-size:18px}
+.skip-box p{margin:0 0 16px;font-size:13.5px;line-height:1.6;color:var(--soft)}
+.skip-box .sb-acts{display:flex;gap:9px;flex-wrap:wrap}
+.skip-box button{flex:1 1 120px;padding:12px 14px;border-radius:12px;font-family:inherit;
+  font-weight:700;font-size:14px;cursor:pointer;border:2px solid var(--line);background:#fff;
+  color:var(--ink)}
+.skip-box .sb-ja{background:var(--red);border-color:var(--red);color:#fff}
+/* Im Ergebnis neutral markiert, nicht in der Farbe des Fehlers. */
+.skip-note{margin:10px 0 0;font-size:12px;color:var(--soft);background:var(--sand);
+  border-radius:10px;padding:8px 12px}
 .pts-toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);z-index:30;
   background:var(--red);color:#fff;font-family:'Fraunces',serif;font-weight:800;font-size:17px;
   padding:8px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.35);animation:pop .3s ease-out}
@@ -1253,6 +1276,17 @@ body.rtl .rv-nav{flex-direction:row-reverse}
 <!-- Email modal -->
 <div id="pcWipe"></div>
 
+<div class="skip-frage" id="skipFrage">
+  <div class="skip-box">
+    <h4 id="skipTitel"></h4>
+    <p id="skipText"></p>
+    <div class="sb-acts">
+      <button class="sb-ja" id="skipJa"></button>
+      <button id="skipNein"></button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-bg" id="nameModal">
   <div class="modal">
     <h3 id="nmTitle"></h3>
@@ -1392,6 +1426,12 @@ var I18N = {
     catDone:"Diese Arbeit ist durch",
     catDoneText:"Hier wartet gerade nichts Neues. Neue Fälle kommen mit dem nächsten Update.",
     catRepeat:"Letzten Fall wiederholen",
+    skipLink:"Diesen Schritt überspringen",
+    skipTitel:"Schritt überspringen?",
+    skipText:"Du verlierst {p} Punkte, und sie werden dir auch bei einer Wiederholung nicht gutgeschrieben. Die Lösung siehst du trotzdem.",
+    skipJa:"Überspringen", skipNein:"Weiter versuchen",
+    skipDoneH:"Übersprungen · 0 Punkte",
+    skipResult:"{n} von {g} Schritten übersprungen.",
     archivBack:"\u2190 Alle Gruppen", archivCount:"{a} von {b} abgeschlossen",
     archiv:"Archiv", archivEmpty:"Noch nichts im Archiv. Was du abschließt, sammelt sich hier.", correctIs:"Richtig wäre:", startGame:"Die Apotheke betreten",
     nmTitle:"Wie sollen dich die Kolleginnen nennen?",
@@ -1437,6 +1477,12 @@ var I18N = {
     catDone:"This work is done",
     catDoneText:"Nothing new is waiting here. New cases arrive with the next update.",
     catRepeat:"Repeat the last case",
+    skipLink:"Skip this step",
+    skipTitel:"Skip this step?",
+    skipText:"You lose {p} points, and they will not be credited on a repeat either. You will still see the solution.",
+    skipJa:"Skip", skipNein:"Keep trying",
+    skipDoneH:"Skipped · 0 points",
+    skipResult:"{n} of {g} steps skipped.",
     archivBack:"\u2190 All groups", archivCount:"{a} of {b} completed",
     archiv:"Archive", archivEmpty:"Nothing archived yet. What you finish collects here.", correctIs:"The right answer:", startGame:"Enter the pharmacy",
     nmTitle:"What should your colleagues call you?",
@@ -1482,6 +1528,12 @@ var I18N = {
     catDone:"هذا العمل منتهٍ",
     catDoneText:"لا جديد ينتظر هنا. الحالات الجديدة تأتي مع التحديث القادم.",
     catRepeat:"أعد آخر حالة",
+    skipLink:"تخطّي هذه الخطوة",
+    skipTitel:"تخطّي هذه الخطوة؟",
+    skipText:"تخسر {p} نقطة، ولن تُحتسب لك في الإعادة. ومع ذلك سترى الحلّ.",
+    skipJa:"تخطٍّ", skipNein:"أكمل المحاولة",
+    skipDoneH:"تُخطّيت · صفر نقاط",
+    skipResult:"تخطّيت {n} من {g} خطوات.",
     archivBack:"\u2190 كل المجموعات", archivCount:"{a} من {b}",
     archiv:"الأرشيف", archivEmpty:"لا شيء في الأرشيف بعد. ما تنهيه يُجمع هنا.", correctIs:"الصواب:", startGame:"ادخل الصيدلية",
     nmTitle:"ماذا يناديك زملاؤك؟",
@@ -1519,7 +1571,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-14n \u00b7 Archiv in zwei Ebenen" +
+var PC_BUILD = "2026-09-15 \u00b7 Schritt ueberspringen" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -6686,7 +6738,7 @@ function startLevel(lv){
   /* Wiederholung dient dem Nachlesen, nicht dem Punktesammeln. */
   var schonGespielt = !!state.levelBest[lv.id];
   var leerGestartet = istLeer() && !schonGespielt;
-  run = { lv:lv, topic:topic, persona:persona, steps:langSteps, stepIdx:0, score:0, replay:schonGespielt,
+  run = { lv:lv, topic:topic, persona:persona, steps:langSteps, stepIdx:0, score:0, skipped:{}, replay:schonGespielt,
     leer:leerGestartet,
           trust:persona.trustStart||60, stepScores:{}, review:[],
           office:office, docs:[], pendingReveal:null };
@@ -6712,13 +6764,162 @@ function setTrust(v,delta){
     d.textContent=(delta>0?'+':'')+delta; d.className='trust-delta '+(delta>0?'up':'down');
     setTimeout(function(){ d.textContent=''; },1700); }
 }
+/* =====================================================================
+   SCHRITT ÜBERSPRINGEN
+   Einmal hier, nicht in jedem Bauteil. Jeder Schritt, der Punkte
+   traegt, wird damit ueberspringbar - auch jeder, der noch gebaut wird.
+   Der Preis ist die ganze Stufe, und die Loesung wird trotzdem gezeigt:
+   ueberspringen ohne Erklaerung waere Vorbeigehen ohne Lernen.
+===================================================================== */
+var SKIP_NACH = 15;        /* Sekunden, bis die Zeile erscheint */
+var _skipT=null;
+
+/* Wie viele Punkte traegt dieser Schritt? */
+function schrittMax(step){
+  var d=step.data||{};
+  switch(step.mech){
+    case 'comic': return 0;
+    case 'mcq': case 'euro':
+      return (d.options||[]).reduce(function(m,o){ return Math.max(m, o.p||0); }, 0);
+    case 'truefalse':
+      return (d.items||[]).reduce(function(a,i){ return a+(i.p||5); }, 0);
+    case 'triage':
+      return (d.items||[]).length*(d.per||5);
+    case 'connect':
+      return (d.pairs||[]).length*(d.per||12);
+    case 'rezept':
+      return d.phases ? d.phases.reduce(function(a,p){ return a+(p.p||25); },0) : (d.p||0);
+    case 'shelf':
+      return (d.boxes||[]).reduce(function(m,b){ return Math.max(m, b.p||0); }, 0);
+    case 'dose':
+      return 20;                       /* Volltreffer, siehe Mech.dose */
+    case 'ask3':
+      /* Nur die besten d.pick Fragen zaehlen, mehr kann niemand holen. */
+      return (d.questions||[]).map(function(q){ return q.val||0; })
+             .sort(function(a,b){ return b-a; }).slice(0, d.pick||3)
+             .reduce(function(a,b){ return a+b; }, 0);
+    case 'sort':
+      return (d.cards||[]).length*5;
+    case 'sequence':
+      return (d.steps||d.cards||d.items||[]).length*(d.per||5);
+    default: return d.p||0;
+  }
+}
+
+/* Was war richtig? Eine Zeile, aus den Daten des Schritts. */
+function schrittLoesung(step){
+  var d=step.data||{}, L=[];
+  function s(x){ return x==null?'':String(x); }
+  switch(step.mech){
+    case 'mcq': case 'euro':
+      (d.options||[]).forEach(function(o){ if(o.ok) L.push(s(o.t)); });
+      break;
+    case 'truefalse':
+      (d.items||[]).forEach(function(i){
+        L.push((i.ok?('\u2713 '+(d.trueLabel||'')):('\u2717 '+(d.falseLabel||'')))+' \u00b7 '+s(i.t));
+      });
+      break;
+    case 'shelf':
+      if(d.right) L.push(s(d.right.n)+(d.right.s?' '+s(d.right.s):''));
+      break;
+    case 'dose':
+      if(d.answer!=null) L.push(s(d.answer)+(d.unit?' '+s(d.unit):''));
+      break;
+    case 'rezept':
+      if(d.phases) d.phases.forEach(function(p){ L.push(feldName(p.answer)); });
+      else if(d.answer) L.push(feldName(d.answer));
+      break;
+    case 'hunt':
+      if(d.answer) L.push(feldName(d.answer));
+      break;
+    case 'triage':
+      (d.items||[]).forEach(function(i){
+        L.push(s(i.n)+' \u2192 '+s((d.trays[i.tray]||{}).n));
+      });
+      break;
+  }
+  return L;
+}
+/* Die Erklaerung steht nicht ueberall an derselben Stelle: bei mcq und
+   euro haengt sie an der richtigen Antwort, sonst am Schritt. */
+function schrittErklaerung(step){
+  var d=step.data||{};
+  if(step.mech==='mcq' || step.mech==='euro'){
+    var r=(d.options||[]).filter(function(o){ return o.ok; })[0];
+    if(r && r.x) return r.x;
+  }
+  if(step.mech==='rezept' && d.phases){
+    /* Zwei Stufen, zwei Erklaerungen. Beide gehoeren dazu. */
+    return d.phases.map(function(p){ return p.expl||''; })
+                   .filter(Boolean).join('<br><br>');
+  }
+  return d.expl||'';
+}
+
+/* Feldkennung in einen lesbaren Namen, wenn Muster 16 sie kennt. */
+function feldName(k){
+  try{
+    var L=M16.L[state.lang]||M16.L.de;
+    return L[k]||k;
+  }catch(e){ return k; }
+}
+
+function skipAufraeumen(){
+  if(_skipT){ clearTimeout(_skipT); _skipT=null; }
+  var z=document.querySelector('.skip-zeile'); if(z) z.remove();
+  document.getElementById('skipFrage').classList.remove('on');
+}
+
+/* Zeigt Loesung und Erklaerung, danach geht es weiter - wie bei einer
+   falschen Antwort, nur ohne Punkte. */
+function skipAusfuehren(step, fertig){
+  skipAufraeumen();
+  stopMechTimer(); stopRx();
+  var host=document.getElementById('stageHost');
+  var body=host.querySelector('.stage-body') || host.firstChild || host;
+  /* Eingaben stilllegen, damit nach dem Ueberspringen nichts mehr zaehlt */
+  body.querySelectorAll('button:not(#nx)').forEach(function(b){ b.disabled=true; });
+  var zone=document.getElementById('fbz');
+  if(!zone){ zone=document.createElement('div'); zone.id='fbz'; body.appendChild(zone); }
+  var L=schrittLoesung(step);
+  var txt = (L.length ? '<b>'+t('correctIs')+'</b> '+L.join(' \u00b7 ')+'<br><br>' : '')
+          + schrittErklaerung(step);
+  fbBlock(zone, false, t('skipDoneH'), txt, function(){ fertig(); });
+}
+
+function skipAnbieten(step, fertig){
+  skipAufraeumen();
+  var max=schrittMax(step);
+  if(max<=0) return;                    /* comic und alles ohne Punkte */
+  _skipT=setTimeout(function(){
+    var host=document.getElementById('stageHost');
+    var body=host.querySelector('.stage-body'); if(!body) return;
+    if(body.querySelector('.fb')) return;        /* schon beantwortet */
+    var z=document.createElement('div');
+    z.className='skip-zeile';
+    z.innerHTML='<button>'+t('skipLink')+'</button>';
+    z.querySelector('button').addEventListener('click', function(){
+      var f=document.getElementById('skipFrage');
+      document.getElementById('skipTitel').textContent=t('skipTitel');
+      document.getElementById('skipText').textContent=t('skipText').replace('{p}', max);
+      var ja=document.getElementById('skipJa'), nein=document.getElementById('skipNein');
+      ja.textContent=t('skipJa'); nein.textContent=t('skipNein');
+      ja.onclick=function(){ f.classList.remove('on'); skipAusfuehren(step, fertig); };
+      nein.onclick=function(){ f.classList.remove('on'); };
+      f.classList.add('on');
+    });
+    body.appendChild(z);
+  }, SKIP_NACH*1000);
+}
+
 function runStep(){
   var host=document.getElementById('stageHost');
   if(run.stepIdx>=run.steps.length){ return finishLevel(); }
   var step=run.steps[run.stepIdx];
   var idx=run.stepIdx;
   run.pendingReveal = (step.data && step.data.reveal) || null;
-  Mech[step.mech](host, step.data, function(scoreDelta, trustDelta){
+  var _fertig=function(scoreDelta, trustDelta){
+    skipAufraeumen();
     stopMechTimer(); stopRx();
     captureReview(host, idx, scoreDelta);
     run.score+=scoreDelta; run.stepScores['step'+idx]=scoreDelta;
@@ -6728,9 +6929,16 @@ function runStep(){
     if(!run.office && run.trust<=0){ return customerLeaves(); }
     runStep();
     window.scrollTo({top:0,behavior:'smooth'});
-  });
+  };
+  Mech[step.mech](host, step.data, _fertig);
   mountDocs(host, step.data);
   mountVisual(host);
+  /* Nach fuenfzehn Sekunden erscheint die Zeile zum Ueberspringen. */
+  skipAnbieten(step, function(){
+    run.skipped = run.skipped || {};
+    run.skipped['step'+idx] = true;
+    _fertig(0, 0);
+  });
 }
 
 /* Bereits aufgedeckte Dokumente laufen in jedem folgenden Schritt mit. */
@@ -6798,6 +7006,11 @@ function finishLevel(){
     '</div>'+
     (run.replay?'<div class="replay-note">'+t('replayNote')+'</div>':'')+
     (run.leer?'<div class="replay-note tired">'+t('kraftAbzug').replace('{p}',Math.abs(KRAFT_STRAFE))+'</div>':'')+
+    (Object.keys(run.skipped||{}).length
+      ? '<div class="skip-note">'+t('skipResult')
+          .replace('{n}', Object.keys(run.skipped).length)
+          .replace('{g}', run.steps.length-1)+'</div>'
+      : '')+
     '<div class="result-actions" style="margin-top:14px">'+
       '<button class="confirm-btn" id="replay">'+t('playAgain')+'</button>'+
       (run.review.length?'<button class="hud-back" id="reviewBtn">'+ICONS.draw('lens')+' '+t('review')+'</button>':'')+
