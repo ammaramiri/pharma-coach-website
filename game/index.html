@@ -1571,7 +1571,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-15 \u00b7 Schritt ueberspringen" +
+var PC_BUILD = "2026-09-16 \u00b7 Sterne relativ, Buero ohne Kuehlschrank" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -1590,9 +1590,9 @@ var GUIDE = {
      '<h4>Krankenkassen im Spiel</h4><p>Alle Kassennamen und Logos im Spiel sind erfunden. Echte Kassen werden nur in den Erkl\u00e4rungen nach einer Antwort genannt, als Marktinformation.</p>'+
      '<h4>Hinweis</h4><p>Alle Inhalte dienen ausschlie\u00dflich der pharmazeutischen Fortbildung.</p>',
   en:'<h4>Goal</h4><p>You stand behind the counter. Every consultation is one case of eight steps. The trainee becomes the pharmacy legend.</p>'+
-     '<h4>The pharmacy</h4><p>The house has five rooms. The <b>sales floor</b> holds the counter, the front shelf, the free-choice shelves, the commissioner and the waiting area: this is where the conversations with customers happen. The <b>office</b> is the place for prescription checks, claw-backs, documentation, the narcotics cabinet and the fridge. The <b>compounding room</b> holds the balance, the ointment mixer, the capsule machine and the plausibility computer. The <b>team kitchen</b> is the break. The <b>consultation room</b> is the closed conversation: blood pressure, emergency contraception, medication review.</p>'+
+     '<h4>The pharmacy</h4><p>The house has five rooms. The <b>sales floor</b> holds the counter, the front shelf, the free-choice shelves, the commissioner and the waiting area: this is where the conversations with customers happen. The <b>office</b> is the place for prescription checks, claw-backs, documentation, and the narcotics cabinet. The <b>compounding room</b> holds the balance, the ointment mixer, the capsule machine and the plausibility computer. The <b>team kitchen</b> is the break. The <b>consultation room</b> is the closed conversation: blood pressure, emergency contraception, medication review.</p>'+
      '<h4>The cases</h4><p>Eighteen consultations wait at the counter, drawn from everyday self medication: pain, colds, stomach, skin, eye, allergy and more. In the office the claw-back series begins: one notice from the insurer, four positions, one decision per position. More series follow room by room. Every category has its own section in the case list.</p>'+
-     '<h4>Where the cases are</h4><p>Not everything waits at the counter. The <b>desk</b> in the office holds the claw-back notices, the <b>file cabinet</b> the documentation, the <b>narcotics cabinet</b> the controlled drugs and the <b>fridge</b> the cold chain. In the compounding room the <b>bench</b> and the <b>plausibility computer</b> lead to cases of their own. A point that opens cases always carries a white sign with its name. The quiet points only tell you something about the place.</p>'+
+     '<h4>Where the cases are</h4><p>Not everything waits at the counter. The <b>desk</b> in the office holds the claw-back notices, the <b>file cabinet</b> the documentation, and the <b>narcotics cabinet</b> the controlled drugs. In the compounding room the <b>bench</b> and the <b>plausibility computer</b> lead to cases of their own. A point that opens cases always carries a white sign with its name. The quiet points only tell you something about the place.</p>'+
      '<h4>Moving</h4><p>Tap the floor to walk. Step onto a marker to open it. The counter leads to the case list.</p>'+
      '<h4>Points</h4><p>Every step earns points. Mistakes can cost points and the total may go negative. A rank you have reached is never lost again.</p>'+
      '<h4>Ranks</h4><p>Points lead through eight ranks, from trainee through pre-reg pharmacist, junior pharmacist, counter pro, consultation pro, red-flag hunter and branch manager up to pharmacy legend. Every rank unlocks something.</p>'+
@@ -6806,6 +6806,11 @@ function schrittMax(step){
   }
 }
 
+/* Das Maximum einer ganzen Stufe: die Summe ihrer Schritte. */
+function stufenMax(steps){
+  return (steps||[]).reduce(function(a,st){ return a+schrittMax(st); }, 0);
+}
+
 /* Was war richtig? Eine Zeile, aus den Daten des Schritts. */
 function schrittLoesung(step){
   var d=step.data||{}, L=[];
@@ -6976,7 +6981,9 @@ function finishLevel(){
   var host=document.getElementById('stageHost');
   var s=run.score, tr=run.trust;
   // stars
-  var stars = s>=110?3 : s>=75?2 : s>=45?1 : 0;
+  var maxP = stufenMax(run.steps);
+  var q = maxP>0 ? (s/maxP) : 0;
+  var stars = q>=0.55 ? 3 : q>=0.375 ? 2 : q>=0.225 ? 1 : 0;
   // score meta for badges
   var meta={ total:s, trust:tr, step1:run.stepScores.step1||0, step2:run.stepScores.step2||0, step3:run.stepScores.step3||0, step4:run.stepScores.step4||0, step5:run.stepScores.step5||0, step6:run.stepScores.step6||0, step7:run.stepScores.step7||0 };
   var badgesHtml=(run.topic.badges||[]).map(function(b){
@@ -7097,7 +7104,6 @@ var ROOMS = {
       {id:"desk", c:[18,25], ico:"monitor", de:"Schreibtisch", en:"Desk", ar:"المكتب"},
       {id:"akten", c:[38,31], ico:"files", de:"Aktenschrank", en:"File cabinet", ar:"خزانة الملفات"},
       {id:"btm", c:[36,21], ico:"lock", de:"BtM-Schrank", en:"Narcotics cabinet", ar:"خزانة المخدرات"},
-      {id:"fridge", c:[33,12], ico:"fridge", de:"Kühlschrank", en:"Fridge", ar:"البراد"},
       {id:"door_offizin", c:[24,9], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
   rezeptur:{ img:"assets/maps/map_rezeptur_v006.jpg", mask:"rezeptur",
@@ -7532,7 +7538,6 @@ var WSPOT = {
   "buero.desk":{t_de:"Zwei Bildschirme, ein Stapel Bescheide, daneben der Prüfkorb. Hier entscheidest du, woran du arbeitest.", t_en:"Two screens, a stack of notices, the review basket beside them. Here you decide what to work on.", t_ar:"شاشتان وكومة إشعارات وبجانبها سلة المراجعة. من هنا تقرّر على ماذا تعمل."},
   "buero.akten":{t_de:"Zehn Jahre Aufbewahrung. Hier kommen die Dokumentationsfälle hin.", t_en:"Ten years of retention. The documentation cases live here.", t_ar:"حفظ عشر سنوات. هنا حالات التوثيق."},
   "buero.btm":{t_de:"Verschlossen, dokumentiert, jederzeit prüfbar. Eigene Fälle.", t_en:"Locked, documented, auditable. Cases of its own.", t_ar:"مقفلة وموثّقة وقابلة للتدقيق. ولها حالاتها."},
-  "buero.fridge":{t_de:"Zwei bis acht Grad. Kühlkette und Temperaturliste.", t_en:"Two to eight degrees. Cold chain and temperature log.", t_ar:"من درجتين إلى ثماني. سلسلة التبريد وسجل الحرارة."},
   "buero.door_offizin":{t_de:"Zurück in die Offizin oder weiter.", t_en:"Back to the floor or onward.", t_ar:"عودة إلى الصالة أو إلى غيرها."},
   "rezeptur.waage":{t_de:"Geeicht, zugfrei, vor jedem Ansatz geprüft.", t_en:"Calibrated, draught-free, checked before every batch.", t_ar:"معايَر وبعيد عن التيار ويُفحص قبل كل تحضير."},
   "rezeptur.plausi":{t_de:"Vor dem Ansetzen, nicht danach.", t_en:"Before mixing, not after.", t_ar:"قبل التحضير لا بعده."},
