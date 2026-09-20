@@ -1759,7 +1759,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-21 \u00b7 Anmeldung" +
+var PC_BUILD = "2026-09-21b \u00b7 Anmeldung mit Fehlercode" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -7541,7 +7541,11 @@ function kontoBinden(host){
         await K.senden(mail.value.trim());
         st.className='acc-status ok'; st.textContent=t('accSent');
       }catch(e){
-        st.className='acc-status bad'; st.textContent=t('accFail');
+        /* Den echten Grund zeigen. Ein blosses "hat nicht geklappt"
+           laesst den Spieler und mich im Dunkeln. */
+        var code=(e && (e.code||e.message)) || '?';
+        st.className='acc-status bad'; st.textContent=t('accFail')+'  ['+code+']';
+        try{ console.error('Konto:', e); }catch(_){}
         send.disabled=false;
       }
     });
