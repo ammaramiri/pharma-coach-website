@@ -917,6 +917,29 @@ body.rtl .rx-hint{right:auto;left:14px}
 /* Im Ergebnis neutral markiert, nicht in der Farbe des Fehlers. */
 .skip-note{margin:10px 0 0;font-size:12px;color:var(--soft);background:var(--sand);
   border-radius:10px;padding:8px 12px}
+/* ===== Anmeldung ·  PLAN.md 20, Abschnitt 27 =====
+   Die Anmeldung ist ein Angebot, keine Schranke. Sie erscheint erst,
+   wenn es etwas zu sichern gibt, und nie beim Betreten. */
+.acc-box{margin:12px 0 0;padding:14px 16px;background:var(--sand);border-radius:14px;
+  border:1px solid var(--line);text-align:start}
+.acc-h{font-family:'Fraunces',serif;font-weight:700;font-size:15px;margin-bottom:3px}
+.acc-p{font-size:12.5px;line-height:1.55;color:var(--soft);margin-bottom:10px}
+.acc-row{display:flex;gap:8px;flex-wrap:wrap}
+.acc-row input{flex:1 1 190px;min-width:0;padding:11px 13px;border-radius:11px;
+  border:2px solid var(--line);background:#fff;font-family:inherit;font-size:14px;color:var(--ink)}
+.acc-row input:focus{outline:none;border-color:var(--teal-dark)}
+.acc-row button{flex:0 0 auto;padding:11px 18px;border-radius:11px;border:none;cursor:pointer;
+  background:var(--teal-dark);color:#fff;font-family:inherit;font-weight:700;font-size:14px}
+.acc-row button:disabled{opacity:.45;cursor:not-allowed}
+.acc-note{margin-top:8px;font-size:11.5px;line-height:1.5;color:var(--soft)}
+.acc-note a{color:var(--teal-dark)}
+.acc-status{margin-top:8px;font-size:12.5px;font-weight:700;min-height:16px}
+.acc-status.ok{color:var(--teal-dark)}
+.acc-status.bad{color:var(--red)}
+.acc-zeile{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin-top:10px;font-size:12.5px;color:var(--soft)}
+.acc-zeile button{background:none;border:none;cursor:pointer;font-family:inherit;
+  font-size:12px;color:var(--red);text-decoration:underline;text-underline-offset:3px;padding:4px}
 .pts-toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);z-index:30;
   background:var(--red);color:#fff;font-family:'Fraunces',serif;font-weight:800;font-size:17px;
   padding:8px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.35);animation:pop .3s ease-out}
@@ -1276,6 +1299,135 @@ body.rtl .rv-nav{flex-direction:row-reverse}
 <!-- Email modal -->
 <div id="pcWipe"></div>
 
+<script type="module">
+/* =====================================================================
+   KONTO
+   Das Spiel laeuft vollstaendig ohne Anmeldung. Wer sich anmeldet,
+   bekommt seinen Fortschritt auf allen Geraeten und spaeter eine
+   Urkunde. Gespeichert werden nur: E-Mail, gewaehlter Name, Fortschritt.
+   Kein Passwort, keine Analyse, kein Tracking.
+===================================================================== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink,
+         signInWithEmailLink, onAuthStateChanged, signOut, deleteUser }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, deleteDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const cfg = {
+  apiKey: "AIzaSyAtekG8yu0estgUI5bSgBkBtpAGBRMwcjs",
+  authDomain: "pharma-coach-game-b1711.firebaseapp.com",
+  projectId: "pharma-coach-game-b1711",
+  storageBucket: "pharma-coach-game-b1711.firebasestorage.app",
+  messagingSenderId: "234277865497",
+  appId: "1:234277865497:web:a59e973bb5534d65ba0288"
+};
+
+let auth=null, db=null, bereit=false;
+try{
+  const app=initializeApp(cfg);
+  auth=getAuth(app); db=getFirestore(app); bereit=true;
+}catch(e){ bereit=false; }
+
+const MAIL_KEY='pc_mail_pending';
+
+/* Nur diese Felder wandern in die Wolke. Nichts sonst. */
+function fortschritt(st){
+  return {
+    name:   (st.player&&st.player.name)||null,
+    lang:   st.lang||'de',
+    total:  st.totalPts||0,
+    rank:   st.rankIdx||0,
+    kraft:  (typeof st.kraft==='number')?st.kraft:100,
+    best:   st.levelBest||{},
+    stand:  Date.now()
+  };
+}
+/* Beim Zusammenfuehren gewinnt immer die bessere Leistung, nie das
+   juengere Geraet. Sonst loescht ein frischer Browser echten Fortschritt. */
+function vereinen(lokal, fern){
+  if(!fern) return lokal;
+  const best={};
+  const alle=new Set([...Object.keys(lokal.levelBest||{}), ...Object.keys(fern.best||{})]);
+  alle.forEach(id=>{
+    const a=(lokal.levelBest||{})[id], b=(fern.best||{})[id];
+    if(!a) best[id]=b; else if(!b) best[id]=a;
+    else best[id] = (b.score>a.score) ? b : a;
+  });
+  lokal.levelBest = best;
+  lokal.totalPts  = Math.max(lokal.totalPts||0, fern.total||0);
+  lokal.rankIdx   = Math.max(lokal.rankIdx||0, fern.rank||0);
+  if(!lokal.player && fern.name) lokal.player={name:fern.name};
+  return lokal;
+}
+
+async function hochladen(){
+  if(!bereit || !auth.currentUser) return;
+  try{
+    await setDoc(doc(db,'spieler',auth.currentUser.uid), fortschritt(window.state), {merge:true});
+  }catch(e){}
+}
+
+window.PCKonto = {
+  aktiv(){ return !!(bereit && auth && auth.currentUser); },
+  mail(){ return (bereit && auth && auth.currentUser) ? auth.currentUser.email : null; },
+  bereit(){ return bereit; },
+
+  /* Rueckfrage per E-Mail: ein Link, kein Passwort. */
+  async senden(mail){
+    if(!bereit) throw new Error('offline');
+    await sendSignInLinkToEmail(auth, mail, {
+      url: location.origin + location.pathname,
+      handleCodeInApp: true
+    });
+    try{ localStorage.setItem(MAIL_KEY, mail); }catch(e){}
+  },
+
+  async abmelden(){ if(bereit){ try{ await signOut(auth); }catch(e){} } },
+
+  /* Loeschen heisst loeschen: erst der Fortschritt, dann das Konto. */
+  async loeschen(){
+    if(!bereit || !auth.currentUser) return false;
+    const uid=auth.currentUser.uid;
+    try{ await deleteDoc(doc(db,'spieler',uid)); }catch(e){}
+    try{ await deleteUser(auth.currentUser); }catch(e){ return false; }
+    return true;
+  },
+
+  sichern: hochladen
+};
+
+/* Kehrt der Spieler ueber den Link zurueck, wird er hier angemeldet. */
+(async function(){
+  if(!bereit) return;
+  try{
+    if(isSignInWithEmailLink(auth, location.href)){
+      let mail=null;
+      try{ mail=localStorage.getItem(MAIL_KEY); }catch(e){}
+      if(!mail) mail=window.prompt(window.t? window.t('accAskMail') : 'E-Mail?');
+      if(mail){
+        await signInWithEmailLink(auth, mail, location.href);
+        try{ localStorage.removeItem(MAIL_KEY); }catch(e){}
+        history.replaceState({}, '', location.origin+location.pathname);
+      }
+    }
+  }catch(e){}
+
+  onAuthStateChanged(auth, async (user)=>{
+    if(user){
+      try{
+        const snap=await getDoc(doc(db,'spieler',user.uid));
+        window.state = vereinen(window.state, snap.exists()? snap.data() : null);
+        window.save();
+        try{ window.applyLang(); window.renderRankBar&&window.renderRankBar(); }catch(e){}
+      }catch(e){}
+      hochladen();
+    }
+    try{ window.kontoZeichnen && window.kontoZeichnen(); }catch(e){}
+  });
+})();
+</script>
+
 <div class="skip-frage" id="skipFrage">
   <div class="skip-box">
     <h4 id="skipTitel"></h4>
@@ -1426,6 +1578,18 @@ var I18N = {
     catDone:"Diese Arbeit ist durch",
     catDoneText:"Hier wartet gerade nichts Neues. Neue Fälle kommen mit dem nächsten Update.",
     catRepeat:"Letzten Fall wiederholen",
+    accOffH:"Fortschritt sichern",
+    accOffP:"Mit einer E-Mail hast du deinen Stand auf jedem Gerät – und später deine Urkunde. Kein Passwort nötig.",
+    accMailPh:"Deine E-Mail", accSend:"Link senden",
+    accNote:"Gespeichert werden nur E-Mail, dein Name und dein Spielstand. Kein Passwort, keine Auswertung.",
+    accSending:"Wird gesendet…", accSent:"Schau in dein Postfach. Der Link meldet dich an.",
+    accFail:"Das hat nicht geklappt. Später noch einmal versuchen.",
+    accAskMail:"Mit welcher E-Mail hast du den Link angefordert?",
+    accOnH:"Angemeldet", accOnP:"Dein Stand wird auf {m} gesichert.",
+    accOut:"Abmelden", accDel:"Konto löschen",
+    accDelAsk:"Konto und Spielstand endgültig löschen? Das lässt sich nicht rückgängig machen.",
+    accDelDone:"Gelöscht. Auf diesem Gerät kannst du weiterspielen.",
+    accDelFail:"Zum Löschen bitte neu anmelden und es gleich danach erneut versuchen.",
     skipLink:"Diesen Schritt überspringen",
     skipTitel:"Schritt überspringen?",
     skipText:"Du verlierst {p} Punkte, und sie werden dir auch bei einer Wiederholung nicht gutgeschrieben. Die Lösung siehst du trotzdem.",
@@ -1477,6 +1641,18 @@ var I18N = {
     catDone:"This work is done",
     catDoneText:"Nothing new is waiting here. New cases arrive with the next update.",
     catRepeat:"Repeat the last case",
+    accOffH:"Save your progress",
+    accOffP:"With an e-mail your progress follows you to every device – and later your certificate. No password needed.",
+    accMailPh:"Your e-mail", accSend:"Send link",
+    accNote:"Stored are only your e-mail, your name and your progress. No password, no analytics.",
+    accSending:"Sending…", accSent:"Check your inbox. The link signs you in.",
+    accFail:"That did not work. Please try again later.",
+    accAskMail:"Which e-mail did you request the link with?",
+    accOnH:"Signed in", accOnP:"Your progress is saved to {m}.",
+    accOut:"Sign out", accDel:"Delete account",
+    accDelAsk:"Delete account and progress for good? This cannot be undone.",
+    accDelDone:"Deleted. You can keep playing on this device.",
+    accDelFail:"To delete, please sign in again and retry right away.",
     skipLink:"Skip this step",
     skipTitel:"Skip this step?",
     skipText:"You lose {p} points, and they will not be credited on a repeat either. You will still see the solution.",
@@ -1528,6 +1704,18 @@ var I18N = {
     catDone:"هذا العمل منتهٍ",
     catDoneText:"لا جديد ينتظر هنا. الحالات الجديدة تأتي مع التحديث القادم.",
     catRepeat:"أعد آخر حالة",
+    accOffH:"احفظ تقدّمك",
+    accOffP:"ببريد واحد يتبعك تقدّمك على كل أجهزتك، ولاحقاً شهادتك. بلا كلمة مرور.",
+    accMailPh:"بريدك", accSend:"أرسل الرابط",
+    accNote:"يُحفظ البريد والاسم والتقدّم فقط. بلا كلمة مرور وبلا تتبّع.",
+    accSending:"جارٍ الإرسال…", accSent:"انظر في بريدك. الرابط يفتح حسابك.",
+    accFail:"لم ينجح الإرسال. جرّب لاحقاً.",
+    accAskMail:"بأي بريد طلبت الرابط؟",
+    accOnH:"مُسجّل", accOnP:"يُحفظ تقدّمك على {m}.",
+    accOut:"خروج", accDel:"حذف الحساب",
+    accDelAsk:"حذف الحساب والتقدّم نهائياً؟ لا رجعة في ذلك.",
+    accDelDone:"حُذف. يمكنك متابعة اللعب على هذا الجهاز.",
+    accDelFail:"للحذف سجّل دخولك من جديد ثم أعد المحاولة فوراً.",
     skipLink:"تخطّي هذه الخطوة",
     skipTitel:"تخطّي هذه الخطوة؟",
     skipText:"تخسر {p} نقطة، ولن تُحتسب لك في الإعادة. ومع ذلك سترى الحلّ.",
@@ -1571,7 +1759,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-16 \u00b7 Sterne relativ, Buero ohne Kuehlschrank" +
+var PC_BUILD = "2026-09-21 \u00b7 Anmeldung" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5711,7 +5899,9 @@ function kraftAendern(v){
 function istMuede(){ return (state.kraft||0) <= KRAFT_MUEDE; }
 function istLeer(){  return (state.kraft||0) <= KRAFT_LEER; }
 
-function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }catch(e){} }
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }catch(e){}
+  window.state=state; }
+window.save=save;
 function load(){ try{ return JSON.parse(localStorage.getItem(SAVE_KEY)); }catch(e){ return null; } }
 
 function t(k){ return (I18N[state.lang]&&I18N[state.lang][k])||I18N.de[k]||k; }
@@ -7018,6 +7208,7 @@ function finishLevel(){
           .replace('{n}', Object.keys(run.skipped).length)
           .replace('{g}', run.steps.length-1)+'</div>'
       : '')+
+    '<div data-konto></div>'+
     '<div class="result-actions" style="margin-top:14px">'+
       '<button class="confirm-btn" id="replay">'+t('playAgain')+'</button>'+
       (run.review.length?'<button class="hud-back" id="reviewBtn">'+ICONS.draw('lens')+' '+t('review')+'</button>':'')+
@@ -7026,6 +7217,9 @@ function finishLevel(){
 
   var _rvb=document.getElementById('reviewBtn');
   if(_rvb) _rvb.addEventListener('click', openReview);
+  try{ kontoZeichnen(); }catch(e){}
+  /* Fortschritt sichern, sobald ein Fall abgeschlossen ist. */
+  try{ window.PCKonto && window.PCKonto.sichern(); }catch(e){}
   /* Erst jetzt nach dem Namen fragen: der Fall ist vorbei, der Spieler
      hat gesehen, worum es geht, und der Ablauf steht ohnehin still. */
   if(!state.player && !run.replay) setTimeout(function(){ openName(null); }, 900);
@@ -7307,6 +7501,74 @@ function openWorkPicker(raum){
   c.addEventListener('click', closePanel); host.appendChild(c);
   document.getElementById('wPanel').classList.add('up');
 }
+
+/* =====================================================================
+   KONTO · Oberflaeche
+   Erscheint im Ergebnis eines Falls, wenn es etwas zu sichern gibt,
+   und in der Anleitung. Nie beim Start.
+===================================================================== */
+function kontoHTML(){
+  var K=window.PCKonto;
+  if(!K || !K.bereit()) return '';
+  if(K.aktiv()){
+    return '<div class="acc-box"><div class="acc-h">'+t('accOnH')+'</div>'+
+      '<div class="acc-p">'+t('accOnP').replace('{m}', K.mail())+'</div>'+
+      '<div class="acc-zeile"><span></span>'+
+        '<span><button id="accOut">'+t('accOut')+'</button>'+
+        '<button id="accDel">'+t('accDel')+'</button></span></div></div>';
+  }
+  return '<div class="acc-box"><div class="acc-h">'+t('accOffH')+'</div>'+
+    '<div class="acc-p">'+t('accOffP')+'</div>'+
+    '<div class="acc-row"><input type="email" id="accMail" placeholder="'+t('accMailPh')+
+      '" autocomplete="email" inputmode="email">'+
+      '<button id="accSend" disabled>'+t('accSend')+'</button></div>'+
+    '<div class="acc-note">'+t('accNote')+'</div>'+
+    '<div class="acc-status" id="accStatus"></div></div>';
+}
+
+function kontoBinden(host){
+  var K=window.PCKonto; if(!K||!K.bereit()||!host) return;
+  var mail=host.querySelector('#accMail'), send=host.querySelector('#accSend'),
+      st=host.querySelector('#accStatus');
+  if(mail && send){
+    function gueltig(){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((mail.value||'').trim()); }
+    function pruefen(){ send.disabled=!gueltig(); }
+    mail.addEventListener('input', pruefen);
+    send.addEventListener('click', async function(){
+      if(!gueltig()) return;
+      send.disabled=true; st.className='acc-status'; st.textContent=t('accSending');
+      try{
+        await K.senden(mail.value.trim());
+        st.className='acc-status ok'; st.textContent=t('accSent');
+      }catch(e){
+        st.className='acc-status bad'; st.textContent=t('accFail');
+        send.disabled=false;
+      }
+    });
+    mail.addEventListener('keydown', function(e){ if(e.key==='Enter' && !send.disabled) send.click(); });
+  }
+  var out=host.querySelector('#accOut');
+  if(out) out.addEventListener('click', async function(){
+    await K.abmelden(); kontoZeichnen();
+  });
+  var del=host.querySelector('#accDel');
+  if(del) del.addEventListener('click', function(){
+    if(!window.confirm(t('accDelAsk'))) return;
+    K.loeschen().then(function(ok){
+      if(ok){ window.alert(t('accDelDone')); kontoZeichnen(); }
+      else   { window.alert(t('accDelFail')); }
+    });
+  });
+}
+
+/* Nach jeder Aenderung die sichtbaren Kontoblöcke neu zeichnen. */
+function kontoZeichnen(){
+  document.querySelectorAll('[data-konto]').forEach(function(h){
+    h.innerHTML=kontoHTML();
+    kontoBinden(h);
+  });
+}
+window.kontoZeichnen = kontoZeichnen;
 
 /* Der Satz haengt ueber dem Apotheker und verschwindet von selbst. */
 var _sayT=null;
@@ -7769,7 +8031,9 @@ function openGuide(then){
   var kb = CUS_LOAD.ok+'/'+CUS_LOAD.total;
   if(CUS_LOAD.ersterFehler) kb += ' · '+CUS_LOAD.ersterFehler;
   document.getElementById('gdBody').innerHTML=(GUIDE[state.lang]||GUIDE.de)+
+    '<div data-konto></div>'+
     '<p class="gd-build">Build '+PC_BUILD+'<br>Kunden '+kb+'</p>';
+  try{ kontoZeichnen(); }catch(e){}
   document.getElementById('gdClose').textContent=t('weiter');
   document.getElementById('guideModal').classList.add('show');
   state.guideSeen=true; save();
