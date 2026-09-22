@@ -926,6 +926,11 @@ body.rtl .rx-hint{right:auto;left:14px}
 .acc-p{font-size:12.5px;line-height:1.55;color:var(--soft);margin-bottom:10px}
 .acc-row{display:flex;gap:8px;flex-wrap:wrap}
 .acc-row+.acc-row{margin-top:8px}
+.acc-oder{display:flex;align-items:center;gap:10px;margin:12px 0 8px;font-size:12px;color:var(--soft)}
+.acc-oder::before,.acc-oder::after{content:'';flex:1;height:1px;background:var(--line)}
+.acc-google{width:100%;padding:11px 18px;border-radius:11px;border:2px solid var(--line);background:#fff;
+  color:var(--ink);font-family:inherit;font-weight:700;font-size:14px;cursor:pointer}
+.acc-google:disabled{opacity:.45;cursor:not-allowed}
 .acc-row input{flex:1 1 190px;min-width:0;padding:11px 13px;border-radius:11px;
   border:2px solid var(--line);background:#fff;font-family:inherit;font-size:14px;color:var(--ink)}
 .acc-row input:focus{outline:none;border-color:var(--teal-dark)}
@@ -1301,6 +1306,7 @@ body.rtl .rv-nav{flex-direction:row-reverse}
 ===================================================================== */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink,
+         GoogleAuthProvider, signInWithPopup,
          signInWithEmailLink, onAuthStateChanged, signOut, deleteUser }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, deleteDoc }
@@ -1400,6 +1406,16 @@ window.PCKonto = {
   /* Rueckfrage per E-Mail: ein Link, kein Passwort. */
   async senden(mail){ return linkSenden(mail); },
 
+  /* Ein Tipp, kein Postfach. Popup statt Umleitung: die Umleitung
+     braucht auf GitHub Pages Speicher eines fremden Hosts und bricht
+     in Browsern, die den sperren. */
+  async google(){
+    if(!bereit) throw new Error('offline');
+    const p=new GoogleAuthProvider();
+    p.setCustomParameters({prompt:'select_account'});
+    await signInWithPopup(auth, p);
+  },
+
   async abmelden(){ if(bereit){ try{ await signOut(auth); }catch(e){} } },
 
   /* Loeschen heisst loeschen: erst der Fortschritt, dann das Konto. */
@@ -1438,9 +1454,18 @@ window.PCKonto = {
       }
     }
   }catch(e){
-    /* Hier lag der blinde Fleck: schlug die Anmeldung ueber den Link
-       fehl, sah der Spieler gar nichts. */
-    pcFehler('Anmeldung: '+fehlerCode(e));
+    /* Den Link in jedem Fall aus der Adresse nehmen. Blieb er stehen,
+       lief bei jedem Neuladen derselbe tote Code wieder los und der
+       rote Balken kam immer wieder. */
+    try{ history.replaceState({}, '', location.origin+location.pathname); }catch(_){}
+    const code=fehlerCode(e);
+    /* Schon angemeldet (derselbe Link zum zweiten Mal): kein Fehler. */
+    try{ if(auth.authStateReady) await auth.authStateReady(); }catch(_){}
+    if(!auth.currentUser){
+      const alt=(code==='auth/expired-action-code'||code==='auth/invalid-action-code');
+      const txt=(alt && window.t) ? window.t('accLinkAlt') : 'Anmeldung';
+      pcFehler(txt+'  ['+code+']');
+    }
   }
 
   onAuthStateChanged(auth, async (user)=>{
@@ -1585,7 +1610,9 @@ var I18N = {
     accNamePh:"Dein Name (optional)",
     accMailPh:"Deine E-Mail", accSend:"Link senden",
     accNote:"Gespeichert werden nur E-Mail, dein Name und dein Spielstand. Kein Passwort, keine Auswertung.",
-    accSending:"Wird gesendet…", accSent:"Schau in dein Postfach. Der Link meldet dich an.",
+    accSending:"Wird gesendet…", accSent:"Schau in dein Postfach. Der Link meldet dich an. Nichts da nach einer Minute? Dann im Junk Mail-Ordner nachsehen.",
+    accLinkAlt:"Dieser Link ist abgelaufen oder wurde schon benutzt. Fordere einfach einen neuen an.",
+    accOder:"oder", accGoogle:"Mit Google anmelden", accGFail:"Anmeldung mit Google fehlgeschlagen.",
     accFail:"Das hat nicht geklappt. Später noch einmal versuchen.",
     accAskMail:"Mit welcher E-Mail hast du den Link angefordert?",
     accOnH:"Angemeldet", accOnP:"Dein Stand wird auf {m} gesichert.",
@@ -1650,7 +1677,9 @@ var I18N = {
     accNamePh:"Your name (optional)",
     accMailPh:"Your e-mail", accSend:"Send link",
     accNote:"Stored are only your e-mail, your name and your progress. No password, no analytics.",
-    accSending:"Sending…", accSent:"Check your inbox. The link signs you in.",
+    accSending:"Sending…", accSent:"Check your inbox. The link signs you in. Nothing after a minute? Look in your Junk Mail folder.",
+    accLinkAlt:"This link has expired or was already used. Just request a new one.",
+    accOder:"or", accGoogle:"Sign in with Google", accGFail:"Google sign-in failed.",
     accFail:"That did not work. Please try again later.",
     accAskMail:"Which e-mail did you request the link with?",
     accOnH:"Signed in", accOnP:"Your progress is saved to {m}.",
@@ -1715,7 +1744,9 @@ var I18N = {
     accNamePh:"اسمك (اختياري)",
     accMailPh:"بريدك", accSend:"أرسل الرابط",
     accNote:"يُحفظ البريد والاسم والتقدّم فقط. بلا كلمة مرور وبلا تتبّع.",
-    accSending:"جارٍ الإرسال…", accSent:"انظر في بريدك. الرابط يفتح حسابك.",
+    accSending:"جارٍ الإرسال…", accSent:"انظر في بريدك. الرابط يفتح حسابك. لم يصل خلال دقيقة؟ انظر في مجلد Junk Mail.",
+    accLinkAlt:"هذا الرابط انتهت صلاحيته أو استُخدم من قبل. اطلب رابطاً جديداً فقط.",
+    accOder:"أو", accGoogle:"الدخول بحساب Google", accGFail:"فشل الدخول بحساب Google.",
     accFail:"لم ينجح الإرسال. جرّب لاحقاً.",
     accAskMail:"بأي بريد طلبت الرابط؟",
     accOnH:"مُسجّل", accOnP:"يُحفظ تقدّمك على {m}.",
@@ -1767,7 +1798,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-21c \u00b7 nur eine Anmeldung, Schlange ohne Doppel" +
+var PC_BUILD = "2026-09-22b \u00b7 alter Link ohne Dauerbalken" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -6098,8 +6129,16 @@ function custPreload(){
       CUS_LOAD.total++;
       var url=custSrc(id);
       var im=new Image();
-      im.onload =function(){ CUS_IMG[id]=url; CUS_LOAD.ok++; };
+      im.onload =function(){ CUS_IMG[id]=im.src; CUS_LOAD.ok++; };
+      var versuch=0;
       im.onerror=function(){
+        /* Ein Wackler im Netz liess die Kunden bis zum Neuladen grau.
+           Drei neue Versuche, jeweils laenger gewartet. */
+        if(versuch<3){
+          versuch++;
+          setTimeout(function(){ im.src=url+'?r='+versuch; }, 1500*Math.pow(2,versuch-1));
+          return;
+        }
         CUS_LOAD.fail++;
         if(!CUS_LOAD.ersterFehler){
           CUS_LOAD.ersterFehler=im.src;
@@ -7526,6 +7565,8 @@ function kontoHTML(){
     '<div class="acc-row"><input type="email" id="accMail" placeholder="'+t('accMailPh')+
       '" autocomplete="email" inputmode="email">'+
       '<button id="accSend" disabled>'+t('accSend')+'</button></div>'+
+    '<div class="acc-oder">'+t('accOder')+'</div>'+
+    '<button class="acc-google" id="accGoogle">'+t('accGoogle')+'</button>'+
     '<div class="acc-note">'+t('accNote')+'</div>'+
     '<div class="acc-status" id="accStatus"></div></div>';
 }
@@ -7559,6 +7600,23 @@ function kontoBinden(host){
     });
     mail.addEventListener('keydown', function(e){ if(e.key==='Enter' && !send.disabled) send.click(); });
   }
+  var gg=host.querySelector('#accGoogle');
+  if(gg && K.google) gg.addEventListener('click', async function(){
+    var nf=host.querySelector('#accName');
+    if(nf && nf.value.trim()) nameSetzen(nf.value);
+    gg.disabled=true; if(st){ st.className='acc-status'; st.textContent=''; }
+    try{
+      await K.google();          /* onAuthStateChanged zeichnet den Kasten neu */
+    }catch(e){
+      var code=(e && (e.code||e.message)) || '?';
+      /* Fenster selbst geschlossen: kein Fehler, nur zurueck. */
+      if(code!=='auth/popup-closed-by-user' && code!=='auth/cancelled-popup-request' && st){
+        st.className='acc-status bad'; st.textContent=t('accGFail')+'  ['+code+']';
+      }
+      try{ console.error('Konto:', e); }catch(_){}
+      gg.disabled=false;
+    }
+  });
   var out=host.querySelector('#accOut');
   if(out) out.addEventListener('click', async function(){
     await K.abmelden(); kontoZeichnen();
