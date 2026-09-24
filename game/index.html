@@ -1112,6 +1112,12 @@ body.rtl .rv-nav{flex-direction:row-reverse}
   .arch-g img{width:96px;height:86px}
   .ag-name{font-size:15px}
 }
+
+/* 2026-09-24: case feedback and resume controls */
+.pc-summary{text-align:start;margin:20px auto;max-width:680px;padding:18px;border:1px solid #d5c7b8;border-radius:16px;background:#fff9ef;color:#322b26}
+.pc-summary h3{margin:0 0 12px}.pc-summary p{margin:9px 0;line-height:1.65}.pc-summary .pc-metrics{font-size:14px;border-bottom:1px solid #d5c7b8;padding-bottom:12px}
+.pc-resume{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:15px auto;max-width:640px}.pc-resume p{flex-basis:100%;text-align:center}
+.pc-save-warning{position:fixed;bottom:12px;left:5%;right:5%;z-index:10000;background:#fff1e1;color:#652c14;padding:14px;border:2px solid #a75c35;border-radius:10px}
 </style>
 </head>
 <body>
@@ -1378,7 +1384,11 @@ function vereinen(lokal, fern){
   alle.forEach(id=>{
     const a=(lokal.levelBest||{})[id], b=(fern.best||{})[id];
     if(!a) best[id]=b; else if(!b) best[id]=a;
-    else best[id] = (b.score>a.score) ? b : a;
+    else {
+      const winner=(b.score>a.score)?b:a;
+      const latest=(b.lastAt||0)>(a.lastAt||0)?b:a;
+      best[id]=Object.assign({},winner,{lastScore:latest.lastScore==null?latest.score:latest.lastScore,lastStars:latest.lastStars==null?latest.stars:latest.lastStars,lastAt:latest.lastAt||0,attempts:Math.max(a.attempts||1,b.attempts||1)});
+    }
   });
   lokal.levelBest = best;
   lokal.totalPts  = Math.max(lokal.totalPts||0, fern.total||0);
@@ -1795,7 +1805,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-22e \u00b7 kein Stufensystem" +
+var PC_BUILD = "2026-09-24f \u00b7 Speichern & Fortsetzen" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -2088,9 +2098,12 @@ Mech.comic = function(host, d, done){
     '<div class="stage-title">'+d.title+'</div></div><div class="stage-body comicbody"><div class="panel'+(d.img?'':' panel-plain')+'" id="cpanel">'+
     visual+bubbles+
     '<button class="panel-next hidden" id="pnext">'+d.cta+'</button></div></div></div>';
+  var comicPanel=document.getElementById('cpanel');
+  if(window._typeInt)clearInterval(window._typeInt);
   var idx=0, CH=34; window._typeInt=null;
-  function showNext(){ var n=document.getElementById('pnext'); if(n)n.classList.remove('hidden'); }
+  function showNext(){ if(!document.body.contains(comicPanel))return;var n=document.getElementById('pnext'); if(n)n.classList.remove('hidden'); }
   function typeBubble(i){
+    if(!document.body.contains(comicPanel))return;
     var el=document.getElementById('bb'+i); if(!el){ showNext(); return; }
     el.classList.add('show');
     var span=el.querySelector('.btext'), raw=d.bubbles[i].txt, plain=raw.replace(/<[^>]+>/g,''), ci=0;
@@ -2152,7 +2165,7 @@ Mech.triage = function(host, d, done){
         if(richtig){ punkte+=(d.per||5); vertrauen+=2; }
         fbNote(host, (richtig?'\u2713 ':'\u2717 ')+it.why+
           (richtig?'  +'+(d.per||5):'  '+t('correctIs')+' '+d.trays[it.tray].n));
-        setTimeout(function(){ idx++; zeigen(); }, richtig?1100:2100);
+        setTimeout(function(){ if(!document.body.contains(kEl))return;idx++; zeigen(); }, richtig?1100:2100);
       });
     });
   }
@@ -2164,28 +2177,17 @@ Mech.mcq = function(host, d, done){
   var timed = !!d.seconds;
   host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
     '<div class="stage-title">'+d.title+'</div></div><div class="stage-body">'+sceneStrip(d)+
-    (timed?'<div class="timer-track"><div class="timer-fill" id="tf"></div></div>':'')+
+    (timed?'<div id="mtz"></div>':'')+
     '<div class="opts" id="opts"></div><div id="fbz"></div></div></div>';
   var box=document.getElementById('opts'), L=['A','B','C','D','E'], fin=false, timer=null;
   var OPTS=shuffled(d.options);
-  if(timed){
-    /* Reading grace: bar stays full while the player reads question + options,
-       then drains slowly. Total = grace + seconds. */
-    var GRACE=4;
-    var tf=document.getElementById('tf');
-    window._mechGrace=setTimeout(function(){
-      if(fin) return;
-      tf.classList.add('run'); tf.style.transitionDuration=d.seconds+'s'; tf.style.width='0%';
-    }, GRACE*1000);
-    timer=setTimeout(function(){ if(!fin){ fin=true; reveal(null); } }, (d.seconds+GRACE)*1000);
-    window._mechTimer=timer;
-  }
+  var started=!timed;
+  if(timed) timedStart(document.getElementById('mtz'),60,function(){if(!fin){fin=true;reveal(null);}},function(){started=true;});
   OPTS.forEach(function(o,i){
     var b=document.createElement('button'); b.className='opt';
     b.innerHTML='<div class="ltr">'+L[i]+'</div><div>'+o.t+'</div>';
-    b.addEventListener('click',function(){ if(fin)return; fin=true; if(timer)clearTimeout(timer);
+    b.addEventListener('click',function(){ if(fin || !started)return; fin=true; stopMechTimer(); if(timer)clearTimeout(timer);
       if(window._mechGrace){clearTimeout(window._mechGrace);window._mechGrace=null;}
-      if(timed){ var tf=document.getElementById('tf'); tf.style.transitionDuration='0s'; tf.style.width=getComputedStyle(tf).width; }
       reveal({o:o,btn:b}); });
     box.appendChild(b);
   });
@@ -2656,6 +2658,7 @@ function docHTML(doc){
 /* Sekundenzähler. setTimeout-Kette, damit das bestehende clearTimeout greift. */
 function stopMechTimer(){
   if(window._mechTimer){ clearTimeout(window._mechTimer); window._mechTimer=null; }
+  if(window._mechGrace){clearTimeout(window._mechGrace);window._mechGrace=null;}
 }
 /* Jede Uhr im Spiel laeuft sechzig Sekunden. Sie startet erst auf Tippen,
    damit langsames Lesen nicht bestraft wird. */
@@ -2663,7 +2666,7 @@ var TIMER_SECONDS = 60;
 
 function timedStart(host, seconds, onEnd, onStart){
   if(!host) return;
-  var secs = (seconds===true || !seconds) ? TIMER_SECONDS : seconds;
+  var secs = TIMER_SECONDS;
   var body = host.closest ? host.closest('.stage-body') : null;
   if(body) body.classList.add('gated');
   host.innerHTML='<div class="tg"><button class="tg-btn" id="tgBtn">'+t('startTimer')+'</button>'+
@@ -2672,9 +2675,10 @@ function timedStart(host, seconds, onEnd, onStart){
   b.addEventListener('click', function(){
     if(body) body.classList.remove('gated');
     host.innerHTML='';
-    mechTimer(host, secs, onEnd);
     if(onStart) onStart();
+    mechTimer(host, secs, onEnd);
   });
+  if(run && run.timerDeadline) setTimeout(function(){if(document.body.contains(b))b.click();},0);
 }
 
 function mechTimer(host, seconds, onEnd){
@@ -2682,7 +2686,9 @@ function mechTimer(host, seconds, onEnd){
   host.innerHTML='<div class="mtimer"><div class="mt-bar"><div class="mt-fill"></div></div>'+
                  '<div class="mt-num"></div></div>';
   var fill=host.querySelector('.mt-fill'), num=host.querySelector('.mt-num');
-  var left=seconds;
+  var deadline=(run && run.timerDeadline) || (Date.now()+seconds*1000);
+  if(run){run.timerDeadline=deadline;pcCheckpoint();}
+  var left=Math.max(0,Math.ceil((deadline-Date.now())/1000));
   function paint(){
     if(!fill) return;
     fill.style.width=Math.max(0,Math.round(left/seconds*100))+'%';
@@ -2691,10 +2697,11 @@ function mechTimer(host, seconds, onEnd){
   }
   paint();
   stopMechTimer();
+  if(left<=0){onEnd();return;}
   (function step(){
     window._mechTimer=setTimeout(function(){
       if(!document.body.contains(host)) { stopMechTimer(); return; }
-      left--; paint();
+      left=Math.max(0,Math.ceil((deadline-Date.now())/1000)); paint();
       if(left<=0){ stopMechTimer(); onEnd(); }
       else step();
     },1000);
@@ -2791,6 +2798,7 @@ function rezeptStrafe(host, d, done){
         felder.forEach(function(x){ x.disabled=true; });
         b.classList.add('hit');
         M16.ring(b, function(){
+          if(!document.body.contains(wrap))return;
           M16.teach(wrap, ph.answer);
           punkte += stufe; vertrauen += (stufe>0?8:2);
           fbBlock(document.getElementById('fbz'), true, ph.okH+' \u00b7 +'+stufe, ph.expl,
@@ -5935,8 +5943,12 @@ function kraftAendern(v){
 function istMuede(){ return (state.kraft||0) <= KRAFT_MUEDE; }
 function istLeer(){  return (state.kraft||0) <= KRAFT_LEER; }
 
-function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }catch(e){}
-  window.state=state; }
+function save(){
+  window.state=state;
+  try{ localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }catch(e){
+    if(typeof pcSaveWarning==='function') pcSaveWarning();
+  }
+}
 window.save=save;
 function load(){ try{ return JSON.parse(localStorage.getItem(SAVE_KEY)); }catch(e){ return null; } }
 
@@ -6119,7 +6131,9 @@ var CUS_STRAFE = -20;   /* Punkte, wenn er veraergert geht */
 var CUS_IMG = {};
 var CUS_LOAD = { ok:0, fail:0, total:0, ersterFehler:null };
 function custSrc(id){ return 'assets/cust/cus_'+id+'.png'; }
+var pcCustomersLoaded=false;
 function custPreload(){
+  if(pcCustomersLoaded) return; pcCustomersLoaded=true;
   CUS_IMG={}; CUS_LOAD={ ok:0, fail:0, total:0, ersterFehler:null };
   for(var k in PERSONAS){
     (function(id){
@@ -6150,7 +6164,6 @@ function custPreload(){
       (CUS_LOAD.ersterFehler?' · erster Fehler: '+CUS_LOAD.ersterFehler:'')); }catch(e){}
   }, 4000);
 }
-custPreload();
 var CUS_BLANK = '<svg viewBox="0 0 40 96" xmlns="http://www.w3.org/2000/svg">'+
   '<path d="M20 20c-9 0-14 6-14 15v28c0 4 2 6 5 6h18c3 0 5-2 5-6V35c0-9-5-15-14-15Z" fill="#5A6B7A"/>'+
   '<path d="M13 69h6v22h-6zM21 69h6v22h-6z" fill="#3E4A56"/>'+
@@ -6158,6 +6171,7 @@ var CUS_BLANK = '<svg viewBox="0 0 40 96" xmlns="http://www.w3.org/2000/svg">'+
 var CUS_BLANK_MAD = CUS_BLANK.replace('#5A6B7A','#8C4A45').replace('#3E4A56','#5E2F2C');
 
 function custStart(){
+  custPreload();
   if(W.room!=='offizin'){ custStop(); return; }
   CUS.on=true;
   custAbgaenge();
@@ -6461,7 +6475,7 @@ TOPICS.buero_formfehler_01 = {
   de:"Drei Rezepte, drei Fallen", en:"Three Prescriptions, Three Traps",
   ar:"ثلاث وصفات، ثلاثة فخاخ",
   tag:"Rezeptprüfung",
-  banner:"assets/Rezeptpruefung/pruef_card_b2.webp",
+  banner:"assets/Retax/retax_scene_lupe.webp",
   sub:{de:"Büro · Rezeptprüfung", en:"Office · Prescription review", ar:"المكتب · تدقيق الوصفات"},
   badges:[],
   reqRank:0,
@@ -6851,7 +6865,7 @@ function levelKarte(lv, nr, reihe){
     (best?'<div class="lc-stars">'+starStr(best.stars)+'</div>':'')+'</div>'+
     '<div class="lc-body"><div class="lc-topic">'+locName(topic)+'</div>'+
     '<div class="lc-persona"><span class="dot"></span>'+unter+'</div>'+
-    (best?'<div class="lc-best">Best: '+best.score+' P</div>':'')+'</div>';
+    (best?'<div class="lc-best">'+pcText('best')+': '+best.score+' P'+(best.lastScore!=null?' · '+pcText('last')+': '+best.lastScore+' P':'')+'</div>':'')+'</div>';
   card.addEventListener('click',function(){ startLevel(lv); });
   return card;
 }
@@ -6923,11 +6937,12 @@ function preloadLevel(steps, persona){
     if(!s.data) return;
     if(s.data.img)   urls.push(s.data.img);
     if(s.data.scene) urls.push(s.data.scene);
+    if(s.data.panels) s.data.panels.forEach(function(p){if(p.img)urls.push(p.img);});
     if(s.data.boxes) s.data.boxes.forEach(function(b){ if(b.img) urls.push(b.img); });
   });
   if(persona && persona.img)
     ['entrance','neutral','talking','happy','upset','worried'].forEach(function(k){
-      if(persona.img[k]) urls.push(persona.img[k]);
+      if(k==='neutral' && persona.img[k]) urls.push(persona.img[k]);
     });
   urls.forEach(function(u){
     if(!u || _preloaded[u]) return;
@@ -6937,8 +6952,68 @@ function preloadLevel(steps, persona){
     im.src = u;
   });
 }
+/* Additive save schema: old pc_sim_v1 progress remains valid. */
+var PC_SAVE_VERSION=1;
+var PC_TEXT={
+ de:{best:'Bestleistung',last:'Letzter Versuch',first:'Erster Versuch',earned:'Neu gutgeschriebene Punkte',summary:'Mein Lernrückblick',strong:'Das gelang mir',weak:'Das übe ich noch',rule:'Das merke ich mir',none:'Noch kein vollständig gelöster Bewertungsschritt.',perfect:'Alle Bewertungsschritte mit voller Punktzahl abgeschlossen.',resume:'Fall fortsetzen',restart:'Von vorne beginnen',back:'Zur Apotheke',saved:'Mein Fortschritt ist gespeichert. Ich setze nach dem letzten abgeschlossenen Schritt fort.',timer:'Eine gestartete Uhr läuft bei einer Unterbrechung weiter.',step:'Schritt',saveError:'Der Browser konnte meinen Fortschritt nicht speichern. Ich halte diese Seite offen und prüfe den verfügbaren Browserspeicher.',quit:'Mein Fortschritt bleibt gespeichert. Zur Apotheke zurückkehren?'},
+ en:{best:'Best result',last:'Last attempt',first:'First attempt',earned:'New progress points',summary:'My learning review',strong:'What I did well',weak:'What I need to practise',rule:'What I will remember',none:'No scored step was completed with full points yet.',perfect:'All scored steps completed with full points.',resume:'Resume case',restart:'Start from the beginning',back:'Back to the pharmacy',saved:'My progress is saved. I continue after the last completed step.',timer:'A started timer keeps running during an interruption.',step:'Step',saveError:'The browser could not save my progress. I keep this page open and check available browser storage.',quit:'My progress stays saved. Return to the pharmacy?'},
+ ar:{best:'أفضل نتيجة',last:'آخر محاولة',first:'المحاولة الأولى',earned:'نقاط التقدم التي أضفتها الآن',summary:'مراجعتي التعليمية',strong:'ما أحسنتُ فيه',weak:'ما أحتاج إلى مراجعته',rule:'ما أتذكره في عملي',none:'لم أُكمل بعد خطوة تقييم بكامل نقاطها.',perfect:'أكملتُ جميع خطوات التقييم بكامل نقاطها.',resume:'أستأنف الحالة',restart:'أبدأ من جديد',back:'أعود إلى الصيدلية',saved:'أحتفظ بتقدمي وأستأنف بعد آخر خطوة أكملتُها.',timer:'إذا بدأتُ المؤقّت فإنه يستمر أثناء الانقطاع.',step:'الخطوة',saveError:'لم أتمكّن من حفظ تقدمي في المتصفح. أُبقي الصفحة مفتوحة وأتحقق من المساحة المتاحة للمتصفح.',quit:'أحتفظ بتقدمي. هل أعود إلى الصيدلية؟'}
+};
+function pcText(k){return (PC_TEXT[state.lang]||PC_TEXT.de)[k]||k;}
+function pcEscape(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function pcPlain(s){var el=document.createElement('div');el.innerHTML=s||'';return el.textContent||'';}
+function pcSaveWarning(){
+ var el=document.getElementById('pcSaveWarning');
+ if(!el){el=document.createElement('div');el.id='pcSaveWarning';el.className='pc-save-warning';el.setAttribute('role','alert');document.body.appendChild(el);}
+ el.textContent=pcText('saveError');
+}
+function pcSync(){try{if(window.PCKonto)Promise.resolve(window.PCKonto.sichern()).catch(function(){});}catch(e){}}
+function pcCheckpoint(){
+ if(!run || run.committed)return;
+ state.checkpoints=state.checkpoints||{};
+ state.checkpoints[run.lv.id]={version:PC_SAVE_VERSION,id:run.lv.id,lang:state.lang,stepIdx:run.stepIdx,score:run.score,trust:run.trust,stepScores:run.stepScores,skipped:run.skipped,docs:run.docs,review:run.review,leer:run.leer,timerDeadline:run.timerDeadline,attemptId:run.attemptId,at:Date.now()};
+ save();
+}
+function pcClearCheckpoint(){
+ if(run && state.checkpoints)delete state.checkpoints[run.lv.id];
+ save();
+}
+function pcResumeChoice(lv, cp){
+ stopMechTimer();stopRx();skipAufraeumen();CUS.on=false;run=null;
+ show('gameScreen');
+ var host=document.getElementById('stageHost');
+ host.innerHTML='<div class="stage"><div class="stage-body"><div class="pc-resume"><h2>'+pcEscape(locName(TOPICS[lv.topic]))+'</h2><p>'+pcText('saved')+' '+pcText('step')+' '+(cp.stepIdx+1)+'.<br>'+pcText('timer')+'</p><button class="confirm-btn" id="pcResume">'+pcText('resume')+'</button><button class="hud-back" id="pcRestart">'+pcText('restart')+'</button><button class="hud-back" id="pcBack">'+pcText('back')+'</button></div></div></div>';
+ document.getElementById('pcResume').onclick=function(){state.lang=cp.lang;applyLang();startLevel(lv,true);};
+ document.getElementById('pcRestart').onclick=function(){delete state.checkpoints[lv.id];save();startLevel(lv);};
+ document.getElementById('pcBack').onclick=zurueckInDenRaum;
+}
+function pcContinueOrWorld(){
+ var cps=Object.values(state.checkpoints||{}).filter(function(c){return c.version===PC_SAVE_VERSION;}).sort(function(a,b){return b.at-a.at;});
+ var lv=cps.length && LEVELS.concat(OFFICE_LEVELS).filter(function(l){return l.id===cps[0].id;})[0];
+ if(lv)pcResumeChoice(lv,cps[0]);else openWorld();
+}
+function pcResultSummary(){
+ var record=state.levelBest[run.lv.id]||{}, strong=null, weak=null;
+ run.steps.forEach(function(step,i){
+   var max=schrittMax(step);if(max<=0)return;
+   var score=run.stepScores['step'+i]||0,ratio=score/max;
+   var item={step:step,i:i,ratio:ratio};
+   if(ratio>=1 && !strong)strong=item;
+   if(ratio<1 && (!weak || ratio<weak.ratio))weak=item;
+ });
+ function title(item){return pcEscape(pcPlain(item.step.data.title||item.step.data.kicker||pcText('step')+' '+(item.i+1)));}
+ var rule=weak||strong;
+ var explanation=rule?schrittErklaerung(rule.step):'';
+ if(!explanation && rule)explanation=schrittLoesung(rule.step).join(' · ');
+ return '<section class="pc-summary"><h3>'+pcText('summary')+'</h3><p class="pc-metrics">'+pcText('first')+': '+record.firstScore+' P · '+pcText('best')+': '+record.score+' P · '+pcText('last')+': '+record.lastScore+' P<br>'+pcText('earned')+': '+(run.earned||0)+' P</p><p><b>'+pcText('strong')+':</b> '+(strong?title(strong):pcText('none'))+'</p><p><b>'+pcText('weak')+':</b> '+(weak?title(weak):pcText('perfect'))+'</p>'+(explanation?'<p><b>'+pcText('rule')+':</b> '+pcEscape(pcPlain(explanation))+'</p>':'')+'</section>';
+}
+
 var run = null;
-function startLevel(lv){
+function startLevel(lv, resume){
+  var checkpoint=(state.checkpoints||{})[lv.id];
+  if(checkpoint && checkpoint.version===PC_SAVE_VERSION && !resume){
+    return pcResumeChoice(lv, checkpoint);
+  }
   var topic=TOPICS[lv.topic];
   var office=!!lv.office;
   var persona=office ? {de:"Büro",en:"Office",ar:"المكتب",trustStart:100,img:{}}
@@ -6952,7 +7027,7 @@ function startLevel(lv){
   });
   /* Hybrid loading: fetch every image this level needs, in the background,
      while the player is still reading the opening comic panel. */
-  preloadLevel(langSteps, persona);
+  preloadLevel(langSteps.slice(0,2), persona);
   /* Waehrend der Beratung laeuft die Zeit der Wartenden nicht weiter.
      Niemand soll aus Geduldsmangel gehen, waehrend der Spieler gar
      nicht im Raum ist. */
@@ -6964,13 +7039,21 @@ function startLevel(lv){
     leer:leerGestartet,
           trust:persona.trustStart||60, stepScores:{}, review:[],
           office:office, docs:[], pendingReveal:null };
-  stopMechTimer(); stopRx();
+  if(resume && checkpoint){
+    run.stepIdx=checkpoint.stepIdx; run.score=checkpoint.score; run.trust=checkpoint.trust;
+    run.stepScores=checkpoint.stepScores||{}; run.skipped=checkpoint.skipped||{};
+    run.docs=checkpoint.docs||[]; run.review=checkpoint.review||[];
+    run.leer=checkpoint.leer; run.timerDeadline=checkpoint.timerDeadline||null;
+    run.attemptId=checkpoint.attemptId;
+  }
+  run.attemptId=run.attemptId || (Date.now().toString(36)+'-'+Math.random().toString(36).slice(2));
+  stopMechTimer(); stopRx(); skipAufraeumen();
   document.getElementById('gameScreen').classList.toggle('no-trust', office);
   if(!office){
     var timg=persona.img&&(persona.img.neutral||persona.img.worried) ? (persona.img.neutral||persona.img.worried) : 'assets/vater_worried.jpg';
     document.getElementById('trustImg').src=timg;
   }
-  document.getElementById('score').textContent='0';
+  document.getElementById('score').textContent=run.score;
   if(!office) setTrust(run.trust,0);
   show('gameScreen');
   runStep();
@@ -7001,7 +7084,8 @@ function schrittMax(step){
   var d=step.data||{};
   switch(step.mech){
     case 'comic': return 0;
-    case 'mcq': case 'euro':
+    case 'euro': if(!d.options) return d.p||25;
+    case 'mcq':
       return (d.options||[]).reduce(function(m,o){ return Math.max(m, o.p||0); }, 0);
     case 'truefalse':
       return (d.items||[]).reduce(function(a,i){ return a+(i.p||5); }, 0);
@@ -7009,8 +7093,10 @@ function schrittMax(step){
       return (d.items||[]).length*(d.per||5);
     case 'connect':
       return (d.pairs||[]).length*(d.per||12);
+    case 'sentence': return 25;
+    case 'hunt': return d.p||25;
     case 'rezept':
-      return d.phases ? d.phases.reduce(function(a,p){ return a+(p.p||25); },0) : (d.p||0);
+      return d.phases ? d.phases.reduce(function(a,p){ return a+(p.p==null?25:p.p); },0) : (d.p||25);
     case 'shelf':
       return (d.boxes||[]).reduce(function(m,b){ return Math.max(m, b.p||0); }, 0);
     case 'dose':
@@ -7021,9 +7107,9 @@ function schrittMax(step){
              .sort(function(a,b){ return b-a; }).slice(0, d.pick||3)
              .reduce(function(a,b){ return a+b; }, 0);
     case 'sort':
-      return (d.cards||[]).length*5;
+      return d.pts || (d.cards||[]).length*5;
     case 'sequence':
-      return (d.steps||d.cards||d.items||[]).length*(d.per||5);
+      return (d.steps||[]).length*5;
     default: return d.p||0;
   }
 }
@@ -7047,15 +7133,22 @@ function schrittLoesung(step){
       });
       break;
     case 'shelf':
-      if(d.right) L.push(s(d.right.n)+(d.right.s?' '+s(d.right.s):''));
+      (d.boxes||[]).forEach(function(b){ if(b.ok) L.push(s(b.n)+(b.s?' '+s(b.s):'')); });
       break;
     case 'dose':
-      if(d.answer!=null) L.push(s(d.answer)+(d.unit?' '+s(d.unit):''));
+      if(d.target!=null) L.push(s(d.target)+(d.unit?' '+s(d.unit):''));
       break;
     case 'rezept':
       if(d.phases) d.phases.forEach(function(p){ L.push(feldName(p.answer)); });
       else if(d.answer) L.push(feldName(d.answer));
       break;
+    case 'ask3':
+      L=(d.questions||[]).slice().sort(function(a,b){return (b.val||0)-(a.val||0);}).slice(0,d.pick||3).map(function(q){return s(q.q);}); break;
+    case 'sort':
+      L=(d.cards||[]).map(function(c){return s(c.t)+' → '+s(c.flag?d.flagLabel:d.safeLabel);}); break;
+    case 'sequence': L=(d.steps||[]).map(s); break;
+    case 'sentence': L=[(d.target||[]).map(function(i){return d.chips[i];}).join(' ')]; break;
+    case 'connect': L=(d.pairs||[]).map(function(p){return s(d.items[p[0]].n)+' ↔ '+s(d.items[p[1]].n);}); break;
     case 'hunt':
       if(d.answer) L.push(feldName(d.answer));
       break;
@@ -7080,6 +7173,8 @@ function schrittErklaerung(step){
     return d.phases.map(function(p){ return p.expl||''; })
                    .filter(Boolean).join('<br><br>');
   }
+  if(step.mech==='shelf'){ var b=(d.boxes||[]).filter(function(x){return x.ok;})[0]; if(b) return b.x||''; }
+  if(step.mech==='dose') return d.exactX||'';
   return d.expl||'';
 }
 
@@ -7105,9 +7200,11 @@ function skipAusfuehren(step, fertig){
   var host=document.getElementById('stageHost');
   var body=host.querySelector('.stage-body') || host.firstChild || host;
   /* Eingaben stilllegen, damit nach dem Ueberspringen nichts mehr zaehlt */
-  body.querySelectorAll('button:not(#nx)').forEach(function(b){ b.disabled=true; });
-  var zone=document.getElementById('fbz');
-  if(!zone){ zone=document.createElement('div'); zone.id='fbz'; body.appendChild(zone); }
+  body.querySelectorAll('button,input,select').forEach(function(b){ b.disabled=true; });
+  body.querySelectorAll('.chip,.bin').forEach(function(b){b.style.pointerEvents='none';});
+  var oldBody=body;body=oldBody.cloneNode(false);oldBody.parentNode.replaceChild(body,oldBody);
+  body.classList.remove('gated');
+  var zone=document.createElement('div');zone.id='fbz';body.appendChild(zone);
   var L=schrittLoesung(step);
   var txt = (L.length ? '<b>'+t('correctIs')+'</b> '+L.join(' \u00b7 ')+'<br><br>' : '')
           + schrittErklaerung(step);
@@ -7144,8 +7241,13 @@ function runStep(){
   if(run.stepIdx>=run.steps.length){ return finishLevel(); }
   var step=run.steps[run.stepIdx];
   var idx=run.stepIdx;
+  pcCheckpoint();
+  preloadLevel(run.steps.slice(idx,idx+2));
+  var finished=false, thisRun=run;
   run.pendingReveal = (step.data && step.data.reveal) || null;
   var _fertig=function(scoreDelta, trustDelta){
+    if(finished || run!==thisRun || run.stepIdx!==idx) return;
+    finished=true; run.timerDeadline=null;
     skipAufraeumen();
     stopMechTimer(); stopRx();
     captureReview(host, idx, scoreDelta);
@@ -7184,6 +7286,7 @@ function mountDocs(host, data){
 }
 
 function customerLeaves(){
+  pcClearCheckpoint();
   var host=document.getElementById('stageHost');
   host.innerHTML='<div class="stage"><div class="result">'+
     '<div class="result-doc">'+ICONS.draw('door')+'</div>'+
@@ -7206,6 +7309,7 @@ function finishLevel(){
   var maxP = stufenMax(run.steps);
   var q = maxP>0 ? (s/maxP) : 0;
   var stars = q>=0.55 ? 3 : q>=0.375 ? 2 : q>=0.225 ? 1 : 0;
+  commitScore(s, stars);
   // score meta for badges
   var meta={ total:s, trust:tr, step1:run.stepScores.step1||0, step2:run.stepScores.step2||0, step3:run.stepScores.step3||0, step4:run.stepScores.step4||0, step5:run.stepScores.step5||0, step6:run.stepScores.step6||0, step7:run.stepScores.step7||0 };
   var badgesHtml=(run.topic.badges||[]).map(function(b){
@@ -7228,10 +7332,11 @@ function finishLevel(){
     '<h2>'+t('result')+'</h2>'+
     '<div class="stars-earned">'+starStr(stars)+'</div>'+
     '<div class="big-score">'+s+' <small style="font-size:22px;color:var(--soft)">P</small></div>'+
+    pcResultSummary()+
     '<div class="badges">'+badgesHtml+'</div>'+
     '<p><b>'+trustLine+'</b></p>'+
     '<div class="result-actions">'+
-      '<a class="course-cta" href="'+LINKS.course+'" target="_blank" rel="noopener">'+ICONS.draw('book')+' '+t('courseHint')+'</a>'+
+      ''+
     '</div>'+
     (run.replay?'<div class="replay-note">'+t('replayNote')+'</div>':'')+
     (run.leer?'<div class="replay-note tired">'+t('kraftAbzug').replace('{p}',Math.abs(KRAFT_STRAFE))+'</div>':'')+
@@ -7250,37 +7355,40 @@ function finishLevel(){
   var _rvb=document.getElementById('reviewBtn');
   if(_rvb) _rvb.addEventListener('click', openReview);
   try{ kontoZeichnen(); }catch(e){}
-  /* Fortschritt sichern, sobald ein Fall abgeschlossen ist. */
-  try{ window.PCKonto && window.PCKonto.sichern(); }catch(e){}
+  /* Ergebnis wurde bereits atomar gespeichert. */
   /* Erst jetzt nach dem Namen fragen: der Fall ist vorbei, der Spieler
      hat gesehen, worum es geht, und der Ablauf steht ohnehin still. */
   document.getElementById('replay').addEventListener('click',function(){ startLevel(run.lv); });
   document.getElementById('toMap').addEventListener('click',function(){ afterLevel(s,stars); });
 
-  // persist best + points (points only added once per improvement handled in afterLevel on exit)
-  commitScore(s, stars);
+  // Navigation vergibt keine weiteren Punkte.
 }
 
-var _committed=false;
 function commitScore(s, stars){
-  _committed=false;
-  run._pendingScore=s; run._pendingStars=stars;
+  if(run.committed) return;
+  var id=run.lv.id, best=state.levelBest[id], now=Date.now();
+  run.prevRank=state.rankIdx;
+  var earned=0;
+  if(!best){
+    earned=Math.max(0,s+(run.leer?KRAFT_STRAFE:0));
+    state.totalPts+=earned;
+    state.kraft=Math.max(0,state.kraft-KRAFT_PRO_FALL);
+  }
+  var record=Object.assign({},best||{});
+  if(!best || s>best.score){record.score=s;record.stars=stars;}
+  record.firstScore=best && best.firstScore!=null ? best.firstScore : (best?best.score:s);
+  record.earned=best && best.earned!=null ? best.earned : (best?best.score:earned);
+  record.lastScore=s; record.lastStars=stars; record.lastAt=now;
+  record.attempts=(record.attempts|| (best?1:0))+1;
+  state.levelBest[id]=record;
+  state.rankIdx=Math.max(state.rankIdx,rankForPts(state.totalPts));
+  run.committed=true;run.earned=earned;
+  pcClearCheckpoint();
+  pcSync();
 }
 function afterLevel(s, stars){
-  // add points (award full score each play to reward replay, but cap contribution)
-  var prevRank=state.rankIdx;
-  if(!run.replay){
-    kraftAendern(-KRAFT_PRO_FALL);
-    if(run.leer){ s += KRAFT_STRAFE; if(s<0) s=0; }
-    state.totalPts += s;
-    var best=state.levelBest[run.lv.id];
-    if(!best || s>best.score) state.levelBest[run.lv.id]={score:s,stars:stars};
-  }
-  /* Punkte dürfen negativ werden, der Rang fällt nie zurück. */
-  var newRank=Math.max(state.rankIdx, rankForPts(state.totalPts));
-  save();
-  // email prompt after first successful level
-  maybeRankup(prevRank,newRank);
+  commitScore(s,stars);
+  maybeRankup(run.prevRank==null?state.rankIdx:run.prevRank,state.rankIdx);
 }
 /* Nach einem Fall steht man wieder im Raum, aus dem man kam. */
 /* Der Knopf heisst nach dem Raum, nicht immer nach dem HV-Tisch. */
@@ -7361,8 +7469,9 @@ var PHAR = { down:"assets/phar_down.png", up:"assets/phar_up.png",
 
 /* Gehzyklus: assets/phar_<richtung>_a.png und _b.png. Fehlen sie, bleibt
    der Avatar beim einen Standbild. Erst hochladen, dann laeuft er. */
-var PHAR_FRAMES = {};
-(function(){
+var PHAR_FRAMES = {}, pcPharLoaded=false;
+function pcLoadPhar(){
+  if(pcPharLoaded)return;pcPharLoaded=true;
   ['down','up','left','right'].forEach(function(dir){
     var slots=[PHAR[dir], null, null];
     PHAR_FRAMES[dir]=slots;
@@ -7374,7 +7483,7 @@ var PHAR_FRAMES = {};
       im.src=src;
     });
   });
-})();
+}
 function pharFrame(dir, phase){
   var f=(PHAR_FRAMES[dir]||[]).filter(Boolean);
   if(!f.length) return PHAR[dir];
@@ -7773,6 +7882,7 @@ function goTo(cx,cy){
   W.path=s; SND.click(); return true;
 }
 function enterRoom(id, at){
+  pcLoadPhar();
   W.room=id; W.mask=WORLD_MASKS[ROOMS[id].mask];
   var r=ROOMS[id];
   W.pos={x:(at||r.start)[0], y:(at||r.start)[1]}; W.path=[]; W.dir='down'; W.near=null;
@@ -8112,17 +8222,17 @@ document.getElementById('cfNo').addEventListener('click',function(){
 /* WIRING                                                                */
 /* ===================================================================== */
 document.getElementById('playBtn').addEventListener('click',function(){
-  if(!state.guideSeen) openGuide(function(){ openWorld(); });
-  else openWorld();
+  if(!state.guideSeen) openGuide(function(){ pcContinueOrWorld(); });
+  else pcContinueOrWorld();
 });
 /* Aus einem laufenden Fall geht es zurueck in die Apotheke, nicht in
    eine Liste aller Faelle. Die gibt es nicht mehr. */
 document.getElementById('gameBack').addEventListener('click',function(){
-  uiConfirm(t('quitConfirm'), function(){
+  uiConfirm(pcText('quit'), function(){
     if(window._mechTimer){clearTimeout(window._mechTimer);window._mechTimer=null;}
     if(window._mechGrace){clearTimeout(window._mechGrace);window._mechGrace=null;}
     if(window._typeInt){clearInterval(window._typeInt);window._typeInt=null;}
-    stopRx();
+    stopRx(); skipAufraeumen(); pcCheckpoint(); run=null;
     zurueckInDenRaum();
   });
 });
