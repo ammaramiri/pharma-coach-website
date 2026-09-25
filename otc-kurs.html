@@ -115,7 +115,6 @@ h2.sec:hover::after{width:180px;}
 .step-num{transition:transform .3s cubic-bezier(.34,1.4,.64,1);}
 .step:hover .step-num{transform:scale(1.15);}
 
-section:hover section:hover 
 .hero-orb.tap .av-a{opacity:0;}
 .hero-orb.tap .av-b{opacity:1;}
 </style>
@@ -412,10 +411,10 @@ section:hover section:hover
   </h2>
   <p style="font-size:15.5px;color:rgba(255,255,255,.7);margin-bottom:8px;">
     <span class="de-content">80&nbsp;€ / Jahr: alle OTC-Inhalte plus alle neuen Kurse, jederzeit kündbar.</span>
-    <span class="en-content">€80 / year: all OTC content plus every new course, cancel anytime.</span>
+    <span class="en-content">€85 / year: all OTC content plus every new course, cancel anytime.</span>
   </p>
   <p style="font-size:13.5px;color:rgba(255,255,255,.45);margin-bottom:26px;">
-    <span class="de-content">Weniger als 7&nbsp;€ pro Monat.</span><span class="en-content">Less than €7 per month.</span>
+    <span class="de-content">Weniger als 7&nbsp;€ pro Monat.</span><span class="en-content">Around €7 per month.</span>
   </p>
   <a href="https://pharma-coach-amiri.de" target="_blank" rel="noopener" class="btn-red"><span class="de-content">Zur Plattform →</span><span class="en-content">To the platform →</span></a>
 </section>
@@ -462,14 +461,6 @@ function playGratis(id){var d=document.getElementById(id);d.innerHTML='<iframe s
 (function(){
   var noHover = !window.matchMedia || !window.matchMedia('(hover: hover)').matches;
   if(!noHover) return;
-  if('IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(es){
-      es.forEach(function(e){
-        if(e.isIntersecting){ setTimeout(function(){ e.target.classList.add('swap'); }, 500); }
-        else { e.target.classList.remove('swap'); }
-      });
-    },{threshold:0.55});
-    document.querySelectorAll('  }
   document.querySelectorAll('.hero-orb').forEach(function(o){
     o.addEventListener('click', function(){ o.classList.toggle('tap'); });
     setInterval(function(){
