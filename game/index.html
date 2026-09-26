@@ -1810,7 +1810,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-26i \u00b7 Apotheker-Animation" +
+var PC_BUILD = "2026-09-26j \u00b7 Offizin-Wege" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -6129,9 +6129,9 @@ var CUS = { on:false, list:[], t:2.0, next:0 };
    Herein laeuft man rechts davon, hinaus links davon.
    Die Schlange steht drei Felder vor dem Tresen, nicht an seiner Kante,
    und endet weit genug unterhalb der Tuer zu den anderen Raeumen. */
-var CUS_IN = [[25,48],[25,39],[21,34]];          /* Eingangsspur rechts */
-var CUS_SLOT = [[21,13],[21,19],[21,25]];          /* Schlange, Abstand zum Tresen */
-var CUS_OUT = [[19,29],[19,37],[22,43],[22,49]];  /* Ausgangsspur links */
+var CUS_IN = [[27,48],[27,37],[27,34]];          /* Eingangsspur rechts */
+var CUS_SLOT = [[27,13],[27,22],[27,31]];          /* Schlange, Abstand zum Tresen */
+var CUS_OUT = [[21,38],[22,44],[22,49]];  /* Ausgangsspur links */
 var CUS_MAX  = 3;
 var CUS_GEDULD = 95;    /* Sekunden, bis einer von selbst geht */
 var CUS_STRAFE = -20;   /* Punkte, wenn er veraergert geht */
@@ -6285,7 +6285,7 @@ function custArrive(){
 function custLeave(c, mad){
   c.state = mad ? 'mad' : 'out';
   c.madT = mad ? 2.2 : 0;
-  c.path = CUS_OUT.map(function(q){ return {x:q[0],y:q[1]}; });
+  c.path = [[21,c.pos.y]].concat(CUS_OUT).map(function(q){ return {x:q[0],y:q[1]}; });
 }
 function custById(id){
   for(var i=0;i<CUS.list.length;i++) if(CUS.list[i].id===id) return CUS.list[i];
@@ -6320,7 +6320,7 @@ function custAbgaenge(){
     c.abgang=null;
     custLeave(c, mad);
     c.halt = offen*2.0;                 /* spaeterer Aufbruch */
-    c.spur = offen * 1.9;                 /* jeder auf eigener Linie */
+    c.spur = 0;                 /* jeder auf eigener Linie */
     offen++;
   });
   if(offen) CUS.t=Math.min(CUS.t, 3.0);   /* Nachschub folgt zuegig */
@@ -6358,10 +6358,18 @@ function custTick(dt){
          bleibt notfalls stehen, bis wieder Platz ist. Eine feste
          Staffelung allein reicht nicht: der Vordere kann langsamer
          sein als der Hintere, dann laeuft er ihm auf. */
-      var vers=(c.state==='out' && c.spur) ? c.spur : 0;
+      var vers=0;
       while(sp>0 && c.path.length){
         var n={x:c.path[0].x+vers, y:c.path[0].y}, dx=n.x-c.pos.x, dy=n.y-c.pos.y,
             d=Math.sqrt(dx*dx+dy*dy);
+        var step=Math.min(d,sp), nx=c.pos.x+(d?dx/d*step:0), ny=c.pos.y+(d?dy/d*step:0);
+        var blocked=CUS.list.some(function(o){
+          if(o===c)return false;
+          var before=Math.hypot((c.pos.x-o.pos.x)/3.2,(c.pos.y-o.pos.y)/5.5);
+          var after=Math.hypot((nx-o.pos.x)/3.2,(ny-o.pos.y)/5.5);
+          return after<1 && after<before-0.00001;
+        });
+        if(blocked){sp=0;break;}
         if(d<=sp){ c.pos.x=n.x; c.pos.y=n.y; c.path.shift(); sp-=d; }
         else { c.pos.x+=dx/d*sp; c.pos.y+=dy/d*sp; sp=0;
                c.dir = Math.abs(dx)>Math.abs(dy) ? (dx>0?'right':'left') : (dy>0?'down':'up'); }
@@ -6843,7 +6851,7 @@ function archivGruppen(){
   var g=[];
   g.push({ id:'hv',
     de:'Am HV-Tisch', en:'At the counter', ar:'عند الطاولة',
-    bild:'assets/maps/map_offizin_v007.webp',
+    bild:'assets/maps/map_offizin_v008.webp',
     faelle:LEVELS.slice() });
   if(typeof OFFICE_LEVELS!=='undefined'){
     [{id:'retax', de:'Retax-Bescheide', en:'Clawback notices', ar:'إشعارات الريتاكس',
@@ -7425,7 +7433,7 @@ function maybeRankup(prevRank,newRank){
 ===================================================================== */
 var WORLD_G = 48;
 var WORLD_MASKS = {
-  "offizin": "000000000000000000000000000000000000000000000000000000000000000000000000000ffffff00000000003f00000000003f00000000001f80000000001f80000000001f80000000001fc0000000001fc0000000001fc0000000001fe0000000001fe0000000001fe0000000001ff0000000000ff0000000000ff0000000000ff8000000000ff8000000000ff8000000000ffc000000000ffc000000000ffc000000000ffe000000000ffe0000000007fe0000000007ff0000000007ff0000000007ff0000000007ff8000000007ff8000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "offizin": "000000000000000000000000000000000000000000000000000000000000000000000000000ffffffc00000000000c00000000000c000000000004000000000006000000000006000000000006000000000007000000000007000000000003000000000003800000000003800000000003800000000003c00000000003c00000000001c00000000001c00000000001e00000000001e00000000001e00000000001f00000000000f00000000000f00000000000f80000000000f80000000000f800000000007c00000000007c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
   "buero": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000001ffffff000001ffffff000001ffffff0000007fffff0000007fffff0000007fffff0000007fffff0000007fffff8000007fffff8000007fffff8000007fffff8000007fffff8000007fffff8000007fffff8000007fffff80001fffffff80000000003fc0000000003fc0000000003fc0002000003fc0002000003fc0002000003fc0006000003fc0006000003fc0006000003ffe006000003ffe00e000003ffe00e000003fff00e000003fff00ffffffffff01ffffffffff01ffffffffff81ffffffffff81ffffffffff83ffffffffffc3ffffffffffc3ffffffffffc7ffffffffffc000000000000000000000000000000000000",
   "rezeptur": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000007ffff80000007ffff80000007ffff8000000fffff8000000fffff8000000fffff8000000fffff8000000fffffc000000fffffc000000fffffc000000fffffc000001fffffc000001fffffc000001fffffc000001fffffc000001fffffe0000000007fe0000000007fe0000000007fe0000000007fe0000000007fe0000000007fe0000400007fe0000400007fe0000400007ff0000400007ff0000c00007ff0000c00007ff0000ffffffffff00ffffffffff01ffffffffff01ffffffffff81ffffffffff81ffffffffff83ffffffffffc3ffffffffffc3ffffffffffc7ffffffffffc000000000000000000000000000000000000",
   "kueche": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000007fff800000007fff800000007fff800000007fff800000007fffc00000007fffc00000007fffc00000007fffc00000007fffc000007fffffc000007fffffe00000ffffffe00000ffffffe0000000001fe0000000001fe0000000001fe0000000001fe0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001fffc00000001fffe00000001fffe00000001fffe00000001ffff00000001ffff00000001ffff01ffffffffff01ffffffffff81ffffffffff81ffffffffff83ffffffffffc3ffffffffffc3ffffffffffc7ffffffffffc000000000000000000000000000000000000",
@@ -7433,9 +7441,9 @@ var WORLD_MASKS = {
 };
 
 var ROOMS = {
-  offizin:{ img:"assets/maps/map_offizin_v007.webp", mask:"offizin",
+  offizin:{ img:"assets/maps/map_offizin_v008.webp", mask:"offizin",
     de:"Offizin", en:"Sales floor", ar:"الصالة",
-    start:[36, 24],
+    start:[40, 24],
     spots:[
       {id:"door_buero", c:[26, 5], approach:[26, 6], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
