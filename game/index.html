@@ -178,7 +178,7 @@ body.rtl .lc-stars{right:auto;left:10px}
 /* ============ WORLD ============ */
 #worldScreen{background:#12131A;height:100vh;height:100dvh;max-height:100dvh;overflow:hidden;display:none;flex-direction:column}
 #worldScreen.active{display:flex}
-.w-top{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#1A1B24;color:#fff;flex:0 0 auto}
+.w-top{display:flex;align-items:center;gap:12px;padding:6px 10px;background:#1A1B24;color:#fff;flex:0 0 auto}
 .w-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;
   width:36px;height:34px;border-radius:10px;font-size:18px;cursor:pointer;font-family:inherit}
 .w-room{flex:1;font-family:'Fraunces',serif;font-weight:700;font-size:16px;
@@ -190,7 +190,7 @@ body.rtl .lc-stars{right:auto;left:10px}
 .w-rank{display:flex;align-items:center;gap:8px;font-size:12px;opacity:.9}
 .w-rank b{font-family:'Fraunces',serif;font-size:16px;color:var(--teal)}
 .w-stage{position:relative;flex:1 1 auto;min-height:0;overflow:hidden;display:block;
-  background:#0D0E13;touch-action:manipulation}
+  background:#e9e2d3;touch-action:manipulation}
 /* Die alten Karten waren quadratisch, daher die schwarzen Raender links
    und rechts. Die neuen sind 1920x1080. Sobald eine Karte 16:9 ist, legt
    sich die Buehne auf dasselbe Verhaeltnis und der Rand verschwindet. */
@@ -199,8 +199,8 @@ body.rtl .lc-stars{right:auto;left:10px}
    Stattdessen fuellt die Karte die Hoehe und schwenkt seitlich mit. */
 /* Die neuen Karten sind hochkant 3:4. Damit fuellt der Raum auf dem
    Telefon vier Fuenftel der Hoehe statt einem Drittel. */
-.w-stage.w-hoch{aspect-ratio:3/4;flex:1 1 auto;align-self:stretch;width:100%;
-  max-height:100%;background:transparent}
+.w-stage.w-hoch{aspect-ratio:9/16;flex:1 1 auto;align-self:stretch;width:100%;
+  max-height:100%;background:#e9e2d3}
 .w-map{position:absolute;left:0;top:0;display:block;user-select:none;-webkit-user-drag:none;
   object-fit:fill;transition:left .18s linear}
 .w-hot{position:absolute;inset:0;pointer-events:none}
@@ -253,7 +253,7 @@ body.rtl .lc-stars{right:auto;left:10px}
   font-weight:700;font-size:13.5px;cursor:pointer;background:var(--ink);color:#fff}
 .w-p-acts button.main{background:var(--red)}
 .w-p-acts button.ghost{background:var(--bg);color:var(--soft)}
-.w-hint{position:absolute;left:0;right:0;bottom:14px;text-align:center;color:rgba(255,255,255,.75);
+.w-hint{position:absolute;left:0;right:0;bottom:14px;text-align:center;color:#554c3e;
   font-size:11.5px;pointer-events:none;transition:opacity .4s}
 .w-hint.hide{opacity:0}
 
@@ -1810,7 +1810,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-24g \u00b7 Bewegung & Leistung" +
+var PC_BUILD = "2026-09-26h \u00b7 Neue Raumkarten" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -6129,9 +6129,9 @@ var CUS = { on:false, list:[], t:2.0, next:0 };
    Herein laeuft man rechts davon, hinaus links davon.
    Die Schlange steht drei Felder vor dem Tresen, nicht an seiner Kante,
    und endet weit genug unterhalb der Tuer zu den anderen Raeumen. */
-var CUS_IN   = [[27,48],[26,40],[23,34]];          /* Eingangsspur rechts */
-var CUS_SLOT = [[21,16],[21,22],[21,28]];          /* Schlange, Abstand zum Tresen */
-var CUS_OUT  = [[18,19],[18,34],[20,44],[20,49]];  /* Ausgangsspur links */
+var CUS_IN = [[25,48],[25,39],[21,34]];          /* Eingangsspur rechts */
+var CUS_SLOT = [[21,13],[21,19],[21,25]];          /* Schlange, Abstand zum Tresen */
+var CUS_OUT = [[19,29],[19,37],[22,43],[22,49]];  /* Ausgangsspur links */
 var CUS_MAX  = 3;
 var CUS_GEDULD = 95;    /* Sekunden, bis einer von selbst geht */
 var CUS_STRAFE = -20;   /* Punkte, wenn er veraergert geht */
@@ -6401,7 +6401,7 @@ function custDraw(){
       layer.appendChild(el);
     }
     var depth = 0.85 + 0.45*(c.pos.y/WORLD_G);
-    var h = W.cellY*6.6*depth, w = h*(400/700);
+    var h = W.cell*8.8*depth, w = h*(400/700);
     var px = W.ox+(c.pos.x+0.5)*W.cell, py = W.oy+(c.pos.y+0.9)*W.cellY;
     var bob = (c.state==='in'||c.state==='out') ? Math.abs(Math.sin(performance.now()/165))*h*0.022 : 0;
     var src = CUS_IMG[c.p];
@@ -6843,7 +6843,7 @@ function archivGruppen(){
   var g=[];
   g.push({ id:'hv',
     de:'Am HV-Tisch', en:'At the counter', ar:'عند الطاولة',
-    bild:'assets/maps/map_offizin_v005.jpg',
+    bild:'assets/maps/map_offizin_v007.webp',
     faelle:LEVELS.slice() });
   if(typeof OFFICE_LEVELS!=='undefined'){
     [{id:'retax', de:'Retax-Bescheide', en:'Clawback notices', ar:'إشعارات الريتاكس',
@@ -7425,52 +7425,52 @@ function maybeRankup(prevRank,newRank){
 ===================================================================== */
 var WORLD_G = 48;
 var WORLD_MASKS = {
-  offizin:"00000000000000000000000000000000000000000000000000001ffff80000001ffff80000001ffff80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f80000000000f800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-  buero:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001ffffff80000007ffff80000007ffff80000007ffff80000007ffff80000007ffff80000003ffff80000003ffff80000003ffff80000003ffff80000003ffff80000003fffff0000003fffff0000003fffff0000003fffff0000003fffff0000003fffff00000000007f00000000007f00000000007f00000000007fc0000000007fc0006000007fc0006000007fc0006000007fc0006000007fc0007f0003ffc0007f0007ffc0007f0007ffc0007f0007ffc0007f0007ffc0007f0007ffc0007f0007fff8007f0007fff8007ffffffff8007ffffffff8007ffffffff8007ffffffff80000000000000000000000000",
-  rezeptur:"000000000000000000000000000000000000000000000000000000000000000000000000000000000000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000007ffffe0000000003fe0000000003fe0000000003fe0000000003fe0000000003fe0000000003fe0000000003fe0000000003fe000000000ffe000000001ffe000003801ffe000003801ffe000003801ffe000003801ffe000003801ffe000003801ffe000003fffffe000003fffffff00003fffffff00003fffffff000000000000000000000000000",
-  kueche:"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000007ff8000000007ff8000000007ff8000000007ff8000000007ff8000000007ff8000000007ff8000000007fff000000007fff000000007fff000000007fff000000ffffff000001ffffff000001ffffff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001fff000000001fff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff00007fffffff000000000000000000000000000",
-  beratung:"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001fffffc000001fffffc000001fffffc000001fffffc000001fffffc000001fffffc000001fffffc000001ffffc0000001ffffc0000001ffffc000007fffffc000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  "offizin": "000000000000000000000000000000000000000000000000000000000000000000000000000ffffff00000000003f00000000003f00000000001f80000000001f80000000001f80000000001fc0000000001fc0000000001fc0000000001fe0000000001fe0000000001fe0000000001ff0000000000ff0000000000ff0000000000ff8000000000ff8000000000ff8000000000ffc000000000ffc000000000ffc000000000ffe000000000ffe0000000007fe0000000007ff0000000007ff0000000007ff0000000007ff8000000007ff8000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "buero": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000001ffffff000001ffffff000001ffffff0000007fffff0000007fffff0000007fffff0000007fffff0000007fffff8000007fffff8000007fffff8000007fffff8000007fffff8000007fffff8000007fffff8000007fffff80001fffffff80000000003fc0000000003fc0000000003fc0002000003fc0002000003fc0002000003fc0006000003fc0006000003fc0006000003ffe006000003ffe00e000003ffe00e000003fff00e000003fff00ffffffffff01ffffffffff01ffffffffff81ffffffffff81ffffffffff83ffffffffffc3ffffffffffc3ffffffffffc7ffffffffffc000000000000000000000000000000000000",
+  "rezeptur": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000007ffff80000007ffff80000007ffff8000000fffff8000000fffff8000000fffff8000000fffff8000000fffffc000000fffffc000000fffffc000000fffffc000001fffffc000001fffffc000001fffffc000001fffffc000001fffffe0000000007fe0000000007fe0000000007fe0000000007fe0000000007fe0000000007fe0000400007fe0000400007fe0000400007ff0000400007ff0000c00007ff0000c00007ff0000ffffffffff00ffffffffff01ffffffffff01ffffffffff81ffffffffff81ffffffffff83ffffffffffc3ffffffffffc3ffffffffffc7ffffffffffc000000000000000000000000000000000000",
+  "kueche": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000007fff800000007fff800000007fff800000007fff800000007fffc00000007fffc00000007fffc00000007fffc00000007fffc000007fffffc000007fffffe00000ffffffe00000ffffffe0000000001fe0000000001fe0000000001fe0000000001fe0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001fffc00000001fffe00000001fffe00000001fffe00000001ffff00000001ffff00000001ffff01ffffffffff01ffffffffff81ffffffffff81ffffffffff83ffffffffffc3ffffffffffc3ffffffffffc7ffffffffffc000000000000000000000000000000000000",
+  "beratung": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001fffff8000001fffff8000001fffff8000001fffff8000001fffffc00003ffffffc00003ffffffc00003ffffffc00003ffffffc00007ffffffc00007ffffffc000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000200000000000200000000200600000000200600000000200600000000200e00000000300e00000000300ffffffffff00ffffffffff81ffffffffff81ffffffffff81ffffffffff83ffffffffffc3ffffffffffc3ffffffffffc3ffffffffffc000000000000000000000000000000000000"
 };
 
 var ROOMS = {
-  offizin:{ img:"assets/maps/map_offizin_v005.jpg", mask:"offizin",
+  offizin:{ img:"assets/maps/map_offizin_v007.webp", mask:"offizin",
     de:"Offizin", en:"Sales floor", ar:"الصالة",
-    start:[34,30],
+    start:[36, 24],
     spots:[
-      {id:"door_buero", c:[24,5], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
+      {id:"door_buero", c:[26, 5], approach:[26, 6], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
-  buero:{ img:"assets/maps/map_buero_v005.jpg", mask:"buero",
+  buero:{ img:"assets/maps/map_buero_v007.webp", mask:"buero",
     de:"Büro", en:"Office", ar:"المكتب",
-    start:[24,20],
+    start:[25, 17],
     spots:[
-      {id:"desk", c:[18,25], ico:"monitor", de:"Schreibtisch", en:"Desk", ar:"المكتب"},
-      {id:"akten", c:[38,31], ico:"files", de:"Aktenschrank", en:"File cabinet", ar:"خزانة الملفات"},
-      {id:"btm", c:[36,21], ico:"lock", de:"BtM-Schrank", en:"Narcotics cabinet", ar:"خزانة المخدرات"},
-      {id:"door_offizin", c:[24,9], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
+      {id:"desk", c:[18, 27], approach:[18, 22], ico:"monitor", de:"Schreibtisch", en:"Desk", ar:"المكتب"},
+      {id:"akten", c:[44, 23], approach:[35, 23], ico:"files", de:"Aktenschrank", en:"File cabinet", ar:"خزانة الملفات"},
+      {id:"btm", c:[42, 15], approach:[34, 15], ico:"lock", de:"BtM-Schrank", en:"Narcotics cabinet", ar:"خزانة المخدرات"},
+      {id:"door_offizin", c:[25, 5], approach:[25, 7], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
-  rezeptur:{ img:"assets/maps/map_rezeptur_v006.jpg", mask:"rezeptur",
+  rezeptur:{ img:"assets/maps/map_rezeptur_v007.webp", mask:"rezeptur",
     de:"Rezeptur", en:"Compounding room", ar:"غرفة التحضير",
-    start:[24,20],
+    start:[25, 18],
     spots:[
-      {id:"waage", c:[32,28], ico:"balance", de:"Waage und Topitec", en:"Balance and mixer", ar:"الميزان والتوبيتك"},
-      {id:"plausi", c:[14,26], ico:"monitor", de:"Plausibilitätsprüfung", en:"Plausibility check", ar:"فحص المعقولية"},
-      {id:"door_buero", c:[24,8], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
+      {id:"waage", c:[43, 25], approach:[34, 25], ico:"balance", de:"Waage und Topitec", en:"Balance and mixer", ar:"الميزان والتوبيتك"},
+      {id:"plausi", c:[16, 27], approach:[16, 22], ico:"monitor", de:"Plausibilitätsprüfung", en:"Plausibility check", ar:"فحص المعقولية"},
+      {id:"door_buero", c:[25, 5], approach:[25, 7], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
-  kueche:{ img:"assets/maps/map_kueche_v006.jpg", mask:"kueche",
+  kueche:{ img:"assets/maps/map_kueche_v007.webp", mask:"kueche",
     de:"Teamküche", en:"Team kitchen", ar:"مطبخ الفريق",
-    start:[26,20],
+    start:[25, 17],
     spots:[
-      {id:"kaffee", c:[33,24], ico:"coffee", de:"Kaffeemaschine", en:"Coffee machine", ar:"ماكينة القهوة"},
-      {id:"tisch", c:[22,29], ico:"table", de:"Esstisch", en:"Dining table", ar:"طاولة الطعام"},
-      {id:"sofa", c:[16,13], ico:"sofa", de:"Sofa", en:"Sofa", ar:"الكنبة"},
-      {id:"kalender", c:[8,17], ico:"calendar", de:"Dienstplan", en:"Duty roster", ar:"جدول المناوبات"},
-      {id:"door_buero", c:[24,8], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
+      {id:"kaffee", c:[44, 21], approach:[34, 21], ico:"coffee", de:"Kaffeemaschine", en:"Coffee machine", ar:"ماكينة القهوة"},
+      {id:"tisch", c:[16, 27], approach:[28, 29], ico:"table", de:"Esstisch", en:"Dining table", ar:"طاولة الطعام"},
+      {id:"sofa", c:[13, 12], approach:[17, 12], ico:"sofa", de:"Sofa", en:"Sofa", ar:"الكنبة"},
+      {id:"kalender", c:[8, 15], approach:[9, 17], ico:"calendar", de:"Dienstplan", en:"Duty roster", ar:"جدول المناوبات"},
+      {id:"door_buero", c:[25, 5], approach:[25, 7], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
-  beratung:{ img:"assets/maps/map_beratung_v006.jpg", mask:"beratung",
+  beratung:{ img:"assets/maps/map_beratung_v007.webp", mask:"beratung",
     de:"Beratungsraum", en:"Consultation room", ar:"غرفة الاستشارة",
-    start:[24,14],
+    start:[25, 16],
     spots:[
-      {id:"door_offizin", c:[24,9], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
+      {id:"door_offizin", c:[26, 8], approach:[26, 9], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]}
 };
 
@@ -7590,7 +7590,7 @@ function worldLayout(){
   /* Am Mobiliar der neuen Karten gemessen: hinter dem Tresen etwa 6,6
      Zellen hoch, vorn im Bild etwas mehr, weil naeher an der Kamera. */
   var depth = 0.85 + 0.45*(W.pos.y/WORLD_G);
-  var h=W.cellY*6.6*depth; ch.style.height=h+'px'; ch.style.width='auto';
+  var h=W.cell*8.8*depth; ch.style.height=h+'px'; ch.style.width='auto';
   drawSpots(); placeChar();
 }
 /* =====================================================================
@@ -7804,7 +7804,7 @@ function drawDock(){
     b.className='d-btn'+(sp.key?' key':'');
     b.innerHTML=ICONS.draw(sp.ico||'target')+'<span>'+locName(sp)+'</span>';
     b.addEventListener('click',function(){
-      var t=nearCell(sp.c[0], sp.c[1]);
+      var ac=sp.approach||sp.c; var t=nearCell(ac[0], ac[1]);
       if(t && (Math.abs(W.pos.x-sp.c[0])>1.5 || Math.abs(W.pos.y-sp.c[1])>1.5)) goTo(t.x,t.y);
       openSpot(sp);
     });
@@ -7843,7 +7843,7 @@ function drawSpots(){
 function nearestSpot(){
   var best=null,bd=9;
   ROOMS[W.room].spots.forEach(function(sp){
-    var d=Math.hypot(sp.c[0]-W.pos.x, sp.c[1]-W.pos.y);
+    var ac=sp.approach||sp.c; var d=Math.hypot(ac[0]-W.pos.x, ac[1]-W.pos.y);
     if(d<bd){bd=d;best=sp;}
   });
   return bd<=3.6 ? best : null;
@@ -8093,7 +8093,9 @@ document.getElementById('wCustLayer').addEventListener('click', function(e){
     var hit=null;
     ROOMS[W.room].spots.forEach(function(sp){
       if(Math.hypot(sp.c[0]-cx, sp.c[1]-cy)<2.2) hit=sp; });
-    var tgt = hit ? {x:hit.c[0], y:hit.c[1]+(hit.id.indexOf('door')===0?0:2)} : {x:cx,y:cy};
+    var ac=hit&&(hit.approach||hit.c);
+    var tgt = hit ? {x:ac[0], y:ac[1]} : {x:cx,y:cy};
+    if(hit && Math.hypot(W.pos.x-tgt.x,W.pos.y-tgt.y)<1){openSpot(hit);return;}
     if(goTo(tgt.x,tgt.y)){
       var tp=document.getElementById('wTap');
       var s=document.getElementById('wStage').getBoundingClientRect();
