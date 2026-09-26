@@ -1175,7 +1175,7 @@ body.rtl .rv-nav{flex-direction:row-reverse}
     <img class="w-map" id="wMap" src="" alt="">
     <div class="w-hot" id="wHot"></div>
     <div class="w-shadow" id="wShadow"></div>
-    <img class="w-char" id="wChar" src="" alt="">
+    <canvas class="w-char" id="wChar" width="1" height="1" aria-label="Pharmacist"></canvas>
     <div class="w-custlayer" id="wCustLayer"></div>
     <div class="ph-say" id="wSay" style="display:none"></div>
     <div class="w-tap" id="wTap"></div>
@@ -1810,7 +1810,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-26h \u00b7 Neue Raumkarten" +
+var PC_BUILD = "2026-09-26i \u00b7 Apotheker-Animation" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -7479,37 +7479,47 @@ var PHAR = { down:"assets/phar_down.png", up:"assets/phar_up.png",
 
 /* Gehzyklus: assets/phar_<richtung>_a.png und _b.png. Fehlen sie, bleibt
    der Avatar beim einen Standbild. Erst hochladen, dann laeuft er. */
-var PHAR_FRAMES = {}, pcPharLoaded=false;
+var PHAR_ATLAS = {"down":{"src":"assets/phar_down_v002.webp","frames":[[86,48,209,436,192.0],[409,49,204,442,510.0],[731,48,214,443,843.0],[84,543,203,444,191.5],[403,543,210,444,511.0],[743,544,203,443,837.0],[88,1037,211,445,189.5],[412,1037,206,441,511.0],[740,1037,207,445,839.0]]},"side":{"src":"assets/phar_side_v002.webp","frames":[[98,40,176,472,182.0],[387,40,254,472,502.0],[746,40,199,472,846.0],[61,512,258,493,183.5],[423,512,182,493,507.5],[714,512,277,496,845.5],[94,1029,188,470,185.0],[389,1029,247,463,505.5],[760,1029,174,472,845.5]]},"up":{"src":"assets/phar_up_v002.webp","frames":[[92,46,199,447,193.0],[408,46,203,455,512.5],[734,46,204,455,835.5],[89,539,199,449,192.0],[411,539,202,446,513.5],[738,540,196,449,835.0],[90,1032,204,447,191.5],[414,1031,197,450,512.5],[734,1031,200,448,834.5]]}};
+var PHAR_FRAMES={}, pcPharLoaded=false, pcPharFallback={};
 function pcLoadPhar(){
   if(pcPharLoaded)return;pcPharLoaded=true;
-  ['down','up','left','right'].forEach(function(dir){
-    var slots=[PHAR[dir], null, null];
-    PHAR_FRAMES[dir]=slots;
-    var i0=new Image(); i0.src=PHAR[dir];
-    ['a','b'].forEach(function(suf, k){
-      var src='assets/phar_'+dir+'_'+suf+'.png';
-      var im=new Image();
-      im.onload=function(){ slots[k+1]=src; };
-      im.src=src;
-    });
+  Object.keys(PHAR_ATLAS).forEach(function(key){
+    var atlas=PHAR_ATLAS[key],im=new Image(); im.decoding='async';
+    im.onload=function(){
+      var ready=function(){atlas.image=im;atlas.ready=true;if(W.room)placeChar();};
+      if(im.decode)im.decode().then(ready,ready);else ready();
+    };
+    im.onerror=function(){
+      (key==='side'?['left','right']:[key]).forEach(function(dir){
+        var old=new Image();old.onload=function(){pcPharFallback[dir]=old;if(W.room)placeChar();};old.src=PHAR[dir];
+      });
+    };
+    im.src=atlas.src;
   });
 }
-function pharFrame(dir, phase){
-  var f=(PHAR_FRAMES[dir]||[]).filter(Boolean);
-  if(!f.length) return PHAR[dir];
-  return f[phase % f.length];
-}
-/* Im Stehen das Standbild, im Gehen nur die beiden Schrittbilder im
-   Wechsel. Fehlen sie, bleibt es beim Standbild. */
-function pharWalk(dir, phase){
-  var f=(PHAR_FRAMES[dir]||[]).filter(Boolean);
-  if(f.length<2) return f[0]||PHAR[dir];
-  var w=f.slice(1);
-  return w[phase % w.length];
+function pcDrawPhar(h){
+  var el=document.getElementById('wChar'),dir=W.dir,atlas=PHAR_ATLAS[dir==='left'||dir==='right'?'side':dir];
+  var frame=W.moving?1+(Math.floor(W.walkPhase||0)%8):0;
+  var width=h*.9,dpr=Math.min(window.devicePixelRatio||1,2);
+  var sig=dir+'|'+frame+'|'+h.toFixed(2)+'|'+dpr+'|'+!!atlas.ready+'|'+!!pcPharFallback[dir];
+  if(el._frameSig===sig)return;el._frameSig=sig;
+  pcStyle(el,'height',h.toFixed(2)+'px');pcStyle(el,'width',width.toFixed(2)+'px');
+  var pw=Math.max(1,Math.ceil(width*dpr)),ph=Math.max(1,Math.ceil(h*dpr));
+  if(el.width!==pw||el.height!==ph){el.width=pw;el.height=ph;}
+  var ctx=el.getContext('2d');if(!ctx)return;
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,width,h);
+  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+  if(atlas.ready){
+    var f=atlas.frames[frame],scale=h/f[3];ctx.save();
+    if(dir==='right'){ctx.translate(width,0);ctx.scale(-1,1);}
+    ctx.drawImage(atlas.image,f[0],f[1],f[2],f[3],width/2-(f[4]-f[0])*scale,0,f[2]*scale,h);ctx.restore();
+  }else if(pcPharFallback[dir]){
+    var old=pcPharFallback[dir],ow=h*old.naturalWidth/old.naturalHeight;ctx.drawImage(old,(width-ow)/2,0,ow,h);
+  }
 }
 
 var W = { room:null, mask:null, pos:{x:22,y:34}, path:[], dir:"down",
-          moving:false, raf:null, last:0, near:null, cell:0, ox:0, oy:0 };
+          moving:false, walkPhase:0, raf:null, last:0, near:null, cell:0, ox:0, oy:0 };
 
 function maskAt(m,x,y){
   if(x<0||y<0||x>=WORLD_G||y>=WORLD_G) return false;
@@ -7590,7 +7600,7 @@ function worldLayout(){
   /* Am Mobiliar der neuen Karten gemessen: hinter dem Tresen etwa 6,6
      Zellen hoch, vorn im Bild etwas mehr, weil naeher an der Kamera. */
   var depth = 0.85 + 0.45*(W.pos.y/WORLD_G);
-  var h=W.cell*8.8*depth; ch.style.height=h+'px'; ch.style.width='auto';
+  var h=W.cell*9.68*depth; pcDrawPhar(h);
   drawSpots(); placeChar();
 }
 /* =====================================================================
@@ -7781,15 +7791,15 @@ function kraftPruefen(){
 function placeChar(){
   cameraFollow();
   var ch=document.getElementById('wChar'), sh=document.getElementById('wShadow');
-  var src = W.moving ? pharWalk(W.dir, Math.floor(performance.now()/165))
-                     : pharFrame(W.dir, 0);
-  if(ch.getAttribute('src')!==src) ch.setAttribute('src', src);
+  var depth=0.85+0.45*(W.pos.y/WORLD_G);
+  pcDrawPhar(W.cell*9.68*depth);
   var px=W.ox+(W.pos.x+0.5)*W.cell, py=W.oy+(W.pos.y+0.9)*W.cellY;
   pcStyle(ch,'left','0px');pcStyle(ch,'top','0px');
   platziereSpruch();
-  var ph=W.moving?Math.sin(performance.now()/105):0;
-  var bob=-Math.abs(ph)*(W.cellY*0.42);
-  pcStyle(ch,'transform','translate3d('+px.toFixed(2)+'px,'+(py+bob).toFixed(2)+'px,0) translate(-50%,-100%)');
+  var ph=W.moving?Math.sin((W.walkPhase||0)*Math.PI/4):0;
+  var bob=-Math.abs(ph)*(W.cell*0.10);
+  var sway=W.moving?ph*0.65:0;
+  pcStyle(ch,'transform','translate3d('+px.toFixed(2)+'px,'+(py+bob).toFixed(2)+'px,0) translate(-50%,-100%) rotate('+sway.toFixed(2)+'deg)');
   var sw=W.cell*2.6*(1-Math.abs(ph)*0.16);
   pcStyle(sh,'width',sw.toFixed(2)+'px');pcStyle(sh,'height',(sw*0.42).toFixed(2)+'px');
   pcStyle(sh,'left','0px');pcStyle(sh,'top','0px');
@@ -7876,6 +7886,7 @@ function tick(t){
   if(!W.last) W.last=t;
   var dt=Math.min(0.05,(t-W.last)/1000); W.last=t;
   if(W.path.length){
+    if(!W.moving)W.walkPhase=0;
     W.moving=true;
     var n=W.path[0], dx=n.x-W.pos.x, dy=n.y-W.pos.y, d=Math.hypot(dx,dy);
     var sp=9.5*dt;
@@ -7885,6 +7896,7 @@ function tick(t){
     var lx=look.x-W.pos.x, ly=look.y-W.pos.y;
     if(Math.abs(lx)>Math.abs(ly)*1.3) W.dir=(lx>0?'right':'left');
     else if(Math.abs(ly)>Math.abs(lx)*1.3) W.dir=(ly>0?'down':'up');
+    W.walkPhase=((W.walkPhase||0)+Math.min(d,sp)*8/9.6)%8;
     if(d<=sp){ W.pos.x=n.x; W.pos.y=n.y; W.path.shift(); }
     else { W.pos.x+=dx/d*sp; W.pos.y+=dy/d*sp; }
     placeChar();
@@ -7920,7 +7932,7 @@ function enterRoom(id, at){
   pcLoadPhar();
   W.room=id; W.mask=WORLD_MASKS[ROOMS[id].mask];
   var r=ROOMS[id];
-  W.pos={x:(at||r.start)[0], y:(at||r.start)[1]}; W.path=[]; W.moving=false; W.dir='down'; W.near=null;
+  W.pos={x:(at||r.start)[0], y:(at||r.start)[1]}; W.path=[]; W.moving=false; W.walkPhase=0; W.dir='down'; W.near=null;
   var rn=document.getElementById('wRoomName');
   rn.textContent=locName(r);
   rn.title = t('roomSwitch');
