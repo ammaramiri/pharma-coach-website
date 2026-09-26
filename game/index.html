@@ -1118,6 +1118,10 @@ body.rtl .rv-nav{flex-direction:row-reverse}
 .pc-summary h3{margin:0 0 12px}.pc-summary p{margin:9px 0;line-height:1.65}.pc-summary .pc-metrics{font-size:14px;border-bottom:1px solid #d5c7b8;padding-bottom:12px}
 .pc-resume{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:15px auto;max-width:640px}.pc-resume p{flex-basis:100%;text-align:center}
 .pc-save-warning{position:fixed;bottom:12px;left:5%;right:5%;z-index:10000;background:#fff1e1;color:#652c14;padding:14px;border:2px solid #a75c35;border-radius:10px}
+/* Reduce mobile paint cost; the scene artwork and floor shadow stay intact. */
+.w-char,.w-cust{will-change:transform}
+.pc-customer-notice{text-align:center;font-size:13px;padding:6px 12px;color:var(--soft)}
+@media(max-width:900px){.w-char,.w-cust,.w-cust.mad{filter:none}}
 </style>
 </head>
 <body>
@@ -1183,6 +1187,7 @@ body.rtl .rv-nav{flex-direction:row-reverse}
     <div class="w-p-acts" id="wpActs"></div>
   </div>
   <div class="w-hint" id="wHint"></div>
+  <div id="pcCustomerNotice" class="pc-customer-notice" role="status" hidden></div>
 </div>
 
 <!-- ============ MAP SCREEN ============ -->
@@ -1805,7 +1810,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-24f \u00b7 Speichern & Fortsetzen" +
+var PC_BUILD = "2026-09-24g \u00b7 Bewegung & Leistung" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5961,16 +5966,19 @@ function locName(obj){ return obj[state.lang]||obj.de; }
 function showNow(id){
   document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
+  if(id!=='worldScreen') pcWorldStop();
   try{ window.scrollTo(0,0); }catch(e){}
   if(id==='worldScreen'){
     /* Erst jetzt hat die Buehne eine Groesse. Zweimal, weil manche
        Browser die Masse im selben Einzelbild noch nicht kennen. */
-    try{ worldLayout(); }catch(e){}
+    try{ worldLayout(); pcWorldStart(); }catch(e){}
     try{ requestAnimationFrame(function(){ try{ worldLayout(); }catch(e){} }); }catch(e){}
   }
 }
 var _wipeT=null;
 function show(id){
+  if(_wipeT){clearTimeout(_wipeT);_wipeT=null;}
+  document.querySelectorAll('.screen.leaving').forEach(function(s){s.classList.remove('leaving');});
   var aktiv=document.querySelector('.screen.active');
   var still=false;
   try{ still=window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
@@ -6131,38 +6139,31 @@ var CUS_STRAFE = -20;   /* Punkte, wenn er veraergert geht */
 var CUS_IMG = {};
 var CUS_LOAD = { ok:0, fail:0, total:0, ersterFehler:null };
 function custSrc(id){ return 'assets/cust/cus_'+id+'.png'; }
-var pcCustomersLoaded=false;
-function custPreload(){
-  if(pcCustomersLoaded) return; pcCustomersLoaded=true;
-  CUS_IMG={}; CUS_LOAD={ ok:0, fail:0, total:0, ersterFehler:null };
-  for(var k in PERSONAS){
-    (function(id){
-      CUS_LOAD.total++;
-      var url=custSrc(id);
-      var im=new Image();
-      im.onload =function(){ CUS_IMG[id]=im.src; CUS_LOAD.ok++; };
-      var versuch=0;
-      im.onerror=function(){
-        /* Ein Wackler im Netz liess die Kunden bis zum Neuladen grau.
-           Drei neue Versuche, jeweils laenger gewartet. */
-        if(versuch<3){
-          versuch++;
-          setTimeout(function(){ im.src=url+'?r='+versuch; }, 1500*Math.pow(2,versuch-1));
-          return;
-        }
-        CUS_LOAD.fail++;
-        if(!CUS_LOAD.ersterFehler){
-          CUS_LOAD.ersterFehler=im.src;
-          try{ console.warn('Kundenbild fehlt: '+im.src); }catch(e){}
-        }
-      };
-      im.src=url;
-    })(k);
+var pcCustomersLoaded=false, pcCustomerLoads={};
+function pcCustomerNotice(waiting, failed){
+  var el=document.getElementById('pcCustomerNotice');if(!el)return;
+  el.hidden=!waiting;
+  if(waiting)el.textContent=state.lang==='ar'?(failed?'أنتظر اكتمال تحميل صورة الزبون؛ أُعيد المحاولة تلقائيًا.':'أحمّل صورة الزبون…'):
+    state.lang==='en'?(failed?'Waiting for the customer image; retrying automatically.':'Loading the customer image…'):
+    (failed?'Kundenbild wird erneut geladen.':'Kundenbild wird geladen…');
+}
+function custPreload(id){
+  if(!id || CUS_IMG[id])return;
+  var old=pcCustomerLoads[id];
+  if(old && (old.loading || Date.now()<old.retryAt))return;
+  pcCustomersLoaded=true; CUS_LOAD.total++;
+  var record={loading:true,retryAt:0,img:new Image()};pcCustomerLoads[id]=record;
+  var im=record.img;im.decoding='async';
+  var settled=false, watchdog=setTimeout(fail,15000);
+  function fail(){
+    if(settled)return;settled=true;clearTimeout(watchdog);record.loading=false;record.retryAt=Date.now()+5000;
+    CUS_LOAD.fail++;if(!CUS_LOAD.ersterFehler)CUS_LOAD.ersterFehler=custSrc(id);
   }
-  setTimeout(function(){
-    try{ console.log('Kundenbilder: '+CUS_LOAD.ok+' geladen, '+CUS_LOAD.fail+' fehlgeschlagen'+
-      (CUS_LOAD.ersterFehler?' · erster Fehler: '+CUS_LOAD.ersterFehler:'')); }catch(e){}
-  }, 4000);
+  function ready(){
+    if(settled)return;settled=true;clearTimeout(watchdog);record.loading=false;CUS_IMG[id]=im.src;CUS_LOAD.ok++;
+  }
+  im.onload=function(){if(im.decode)im.decode().then(ready,fail);else ready();};
+  im.onerror=fail;im.src=custSrc(id);
 }
 var CUS_BLANK = '<svg viewBox="0 0 40 96" xmlns="http://www.w3.org/2000/svg">'+
   '<path d="M20 20c-9 0-14 6-14 15v28c0 4 2 6 5 6h18c3 0 5-2 5-6V35c0-9-5-15-14-15Z" fill="#5A6B7A"/>'+
@@ -6175,10 +6176,10 @@ function custStart(){
   if(W.room!=='offizin'){ custStop(); return; }
   CUS.on=true;
   custAbgaenge();
-  if(!CUS.list.length){ custArrive(); CUS.t=4; }   /* schon jemand da beim Betreten */
+  if(!CUS.list.length){ CUS.t=4; custArrive(); }   /* schon jemand da beim Betreten */
 }
 function custStop(){
-  CUS.on=false;
+  CUS.on=false;pcCustomerNotice(false);
   var l=document.getElementById('wCustLayer'); if(l) l.innerHTML='';
 }
 /* Reihum in Runden. Jeder Fall zaehlt, wie oft er schon da war. Herein
@@ -6269,7 +6270,12 @@ function custArrive(){
      steht. Sonst stehen zwei auf demselben Feld. */
   var besetzt=CUS.list.some(function(c){ return c.state==='in' && c.pos && c.pos.y>36; });
   if(besetzt){ CUS.t=Math.max(CUS.t, 3); return; }
-  var lv=custPickLevel(); if(!lv) return;
+  var lv=CUS.pendingLv || custPickLevel(); if(!lv) return;
+  CUS.pendingLv=lv;custPreload(lv.persona);
+  if(!CUS_IMG[lv.persona]){
+    CUS.t=0.3;pcCustomerNotice(true,!!(pcCustomerLoads[lv.persona] && pcCustomerLoads[lv.persona].retryAt));return;
+  }
+  CUS.pendingLv=null;pcCustomerNotice(false);
   var path=CUS_IN.concat([CUS_SLOT[slot]]).map(function(c){ return {x:c[0],y:c[1]}; });
   CUS.list.push({ id:'c'+(++CUS.next), p:lv.persona, lv:lv, slot:slot,
     pos:{x:CUS_IN[0][0], y:CUS_IN[0][1]}, path:path.slice(1),
@@ -6381,6 +6387,10 @@ function toastPts(v){
   document.getElementById('worldScreen').appendChild(t);
   setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 2600);
 }
+function pcStyle(el,key,value){
+  if(!el._pcStyle)el._pcStyle={};
+  if(el._pcStyle[key]!==value){el.style[key]=value;el._pcStyle[key]=value;}
+}
 function custDraw(){
   var layer=document.getElementById('wCustLayer'); if(!layer) return;
   if(!CUS.on){ layer.innerHTML=''; return; }
@@ -6396,28 +6406,29 @@ function custDraw(){
     var bob = (c.state==='in'||c.state==='out') ? Math.abs(Math.sin(performance.now()/165))*h*0.022 : 0;
     var src = CUS_IMG[c.p];
     var mad = (c.state==='mad');
+    /* Nur neu zeichnen, wenn sich wirklich etwas geaendert hat. Sonst
+       verschwindet das Antippziel zwischen Druck und Loslassen. */
+    var sig = c.state+'|'+(src||'-')+'|'+state.lang+'|'+(c.uebergangen>0?'u':'z');
+    if(el.dataset.sig !== sig){
+      el.dataset.sig = sig;
     var inner = src ? '<img src="'+src+'" style="width:100%;height:100%">'
                     : (mad?CUS_BLANK_MAD:CUS_BLANK);
     var mark = (c.state==='wait')
       ? '<span class="cu-tag">'+ICONS.draw('speak')+'</span>'
       : (mad ? '<span class="cu-tag mad">'+
           (c.uebergangen>0 ? t('custMad') : t('custMadTime'))+'</span>' : '');
-    /* Nur neu zeichnen, wenn sich wirklich etwas geaendert hat. Sonst
-       verschwindet das Antippziel zwischen Druck und Loslassen. */
-    var sig = c.state+'|'+(src||'-')+'|'+state.lang+'|'+(c.uebergangen>0?'u':'z');
-    if(el.dataset.sig !== sig){
-      el.dataset.sig = sig;
       el.innerHTML='<div class="cu-body">'+inner+'</div>'+mark;
+      el._body=el.querySelector('.cu-body');
     }
-    el.style.height=h+'px'; el.style.width=w+'px';
-    el.style.left=px+'px'; el.style.top=(py-bob)+'px';
-    el.style.transform='translate(-50%,-100%)';
-    var body=el.querySelector('.cu-body');
-    if(body) body.style.transform = (c.dir==='right'?'scaleX(-1)':'none');
-    el.style.zIndex = mad ? 60 : (10 + Math.round(c.pos.y));
-    el.classList.toggle('mad', mad);
-    el.classList.toggle('tapp', c.state==='wait');
-    el.dataset.cid=c.id;
+    pcStyle(el,'height',h.toFixed(2)+'px'); pcStyle(el,'width',w.toFixed(2)+'px');
+    pcStyle(el,'left','0px');pcStyle(el,'top','0px');
+    pcStyle(el,'transform','translate3d('+px.toFixed(2)+'px,'+(py-bob).toFixed(2)+'px,0) translate(-50%,-100%)');
+    if(el._body)pcStyle(el._body,'transform',c.dir==='right'?'scaleX(-1)':'none');
+    pcStyle(el,'zIndex',String(mad ? 60 : (10 + Math.round(c.pos.y))));
+    if(el._state!==c.state){
+      el.classList.toggle('mad', mad);el.classList.toggle('tapp',c.state==='wait');el._state=c.state;
+    }
+    if(el.dataset.cid!==c.id)el.dataset.cid=c.id;
   });
   Array.prototype.slice.call(layer.children).forEach(function(el){
     if(!custById(el.dataset.cid)) el.remove();
@@ -7401,8 +7412,7 @@ function zurueckInDenRaum(){
      show blieb der Spieler auf dem Ergebnisbildschirm stehen und der
      Knopf sah aus, als taete er nichts. */
   enterRoom(W.room && ROOMS[W.room] ? W.room : 'offizin');
-  show('worldScreen');
-  worldLayout();
+  openWorld();
 }
 function maybeRankup(prevRank,newRank){
   if(newRank>prevRank){ state.rankIdx=newRank; save(); showRankup(newRank); }
@@ -7775,14 +7785,15 @@ function placeChar(){
                      : pharFrame(W.dir, 0);
   if(ch.getAttribute('src')!==src) ch.setAttribute('src', src);
   var px=W.ox+(W.pos.x+0.5)*W.cell, py=W.oy+(W.pos.y+0.9)*W.cellY;
-  ch.style.left=px+'px'; ch.style.top=py+'px';
+  pcStyle(ch,'left','0px');pcStyle(ch,'top','0px');
   platziereSpruch();
   var ph=W.moving?Math.sin(performance.now()/105):0;
   var bob=-Math.abs(ph)*(W.cellY*0.42);
-  ch.style.transform='translate(-50%,-100%) translateY('+bob.toFixed(2)+'px)';
+  pcStyle(ch,'transform','translate3d('+px.toFixed(2)+'px,'+(py+bob).toFixed(2)+'px,0) translate(-50%,-100%)');
   var sw=W.cell*2.6*(1-Math.abs(ph)*0.16);
-  sh.style.width=sw+'px'; sh.style.height=(sw*0.42)+'px';
-  sh.style.left=px+'px'; sh.style.top=py+'px';
+  pcStyle(sh,'width',sw.toFixed(2)+'px');pcStyle(sh,'height',(sw*0.42).toFixed(2)+'px');
+  pcStyle(sh,'left','0px');pcStyle(sh,'top','0px');
+  pcStyle(sh,'transform','translate3d('+px.toFixed(2)+'px,'+py.toFixed(2)+'px,0) translate(-50%,-50%)');
 }
 /* Die Leiste unter der Karte: jeder Punkt des Raumes als Knopf. */
 function drawDock(){
@@ -7837,7 +7848,31 @@ function nearestSpot(){
   });
   return bd<=3.6 ? best : null;
 }
+/* One animation loop, owned by the visible pharmacy screen. */
+function pcWorldVisible(){
+  return typeof W!=='undefined' && W && W.room && !document.hidden && document.getElementById('worldScreen').classList.contains('active');
+}
+function pcWorldStop(){
+  if(typeof W==='undefined' || !W)return;
+  if(W.raf!=null)cancelAnimationFrame(W.raf);
+  W.raf=null; W.last=0;
+  if(typeof CUS!=='undefined')CUS.on=false;
+}
+function pcWorldStart(){
+  if(!pcWorldVisible())return;
+  if(W.room==='offizin' && !CUS.on)custStart();
+  if(W.raf==null){W.last=0;W.raf=requestAnimationFrame(tick);}
+}
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden)pcWorldStop();else pcWorldStart();
+});
+window.addEventListener('pagehide',pcWorldStop);
+window.addEventListener('pageshow',pcWorldStart);
+
 function tick(t){
+  W.raf=null;
+  if(!pcWorldVisible()) { W.last=0; return; }
+  if(W.last && t-W.last<32){W.raf=requestAnimationFrame(tick);return;}
   if(!W.last) W.last=t;
   var dt=Math.min(0.05,(t-W.last)/1000); W.last=t;
   if(W.path.length){
@@ -7865,7 +7900,7 @@ function tick(t){
     document.querySelectorAll('.w-spot').forEach(function(e){
       e.classList.toggle('near', !!(nr&&e.dataset.id===nr.id)); });
   }
-  W.raf=requestAnimationFrame(tick);
+  if(pcWorldVisible()) W.raf=requestAnimationFrame(tick);
 }
 function arrive(){ var sp=nearestSpot(); if(sp) openSpot(sp); }
 
@@ -7885,7 +7920,7 @@ function enterRoom(id, at){
   pcLoadPhar();
   W.room=id; W.mask=WORLD_MASKS[ROOMS[id].mask];
   var r=ROOMS[id];
-  W.pos={x:(at||r.start)[0], y:(at||r.start)[1]}; W.path=[]; W.dir='down'; W.near=null;
+  W.pos={x:(at||r.start)[0], y:(at||r.start)[1]}; W.path=[]; W.moving=false; W.dir='down'; W.near=null;
   var rn=document.getElementById('wRoomName');
   rn.textContent=locName(r);
   rn.title = t('roomSwitch');
@@ -7909,6 +7944,7 @@ function enterRoom(id, at){
   if(id==='offizin') custStart(); else custStop();
   var buehne=document.getElementById('wStage');
   if(buehne){ buehne.classList.remove('raum'); void buehne.offsetWidth; buehne.classList.add('raum'); }
+  pcWorldStart();
   setTimeout(kraftPruefen, 900);
 }
 
@@ -8041,7 +8077,7 @@ document.getElementById('wCustLayer').addEventListener('click', function(e){
   if(e.preventDefault) e.preventDefault();
   openPanel(t('custHere'), t('custHint'), [
     {t:t('serveNow'), cls:'main', fn:function(){
-      var k=custServe(c); startLevel(k.lv); run.fromCustomer=true; }},
+      var k=custServe(c); startLevel(k.lv); if(run) run.fromCustomer=true; }},
     {t:t('closeBtn'), fn:closePanel}
   ]);
 });
@@ -8079,7 +8115,7 @@ document.getElementById('wCustLayer').addEventListener('click', function(e){
 })();
 document.getElementById('wBack').addEventListener('click',function(){
   if(W.room!=='offizin'){ enterRoom('offizin',[36,13]); return; }
-  cancelAnimationFrame(W.raf); W.raf=null; show('startScreen');
+  pcWorldStop(); show('startScreen');
 });
 /* =====================================================================
    NAME DES SPIELERS
@@ -8108,7 +8144,7 @@ function openWorld(){
     : 'Auf den Boden tippen zum Gehen · an einen Marker treten zum Interagieren';
   document.getElementById('wHint').classList.remove('hide');
   if(!W.room) enterRoom('offizin'); else worldLayout();
-  if(!W.raf){ W.last=0; W.raf=requestAnimationFrame(tick); }
+  pcWorldStart();
 }
 
 /* ---------- Rank-up overlay ---------- */
