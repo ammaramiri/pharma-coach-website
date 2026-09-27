@@ -1807,7 +1807,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-27m \u00b7 Kundenpilot" +
+var PC_BUILD = "2026-09-27n \u00b7 Kundenfluss" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -6037,7 +6037,7 @@ var ICONS = (function(){
    in ein Moebel geraten. Die Uhr der Kunden laeuft unabhaengig vom
    Spieler weiter, auch wenn er stillsteht.
 ===================================================================== */
-var CUS = { on:false, list:[], t:2.0, next:0 };
+var CUS = { on:false, list:[], t:2.0, next:0, exitId:null };
 
 /* Wegpunkte in Rasterfeldern */
 /* Zwei getrennte Spuren durch dieselbe Tuer.
@@ -6171,7 +6171,11 @@ function custBelegt(){
   CUS.list.forEach(function(c){ if(c.slot!=null && c.slot>=0) b[c.slot]=true; });
   return b;
 }
+function custDeparting(){
+  return CUS.list.some(function(c){return c.state==='out'||c.state==='mad'||c.state==='served';});
+}
 function custFreeSlot(){
+  if(custDeparting()) return -1;
   /* Der Neue stellt sich ans Ende der bestehenden Schlange. Weil Platz 0
      am Tresen liegt und Platz 2 an der Tuer, erreicht er sein Ende
      zuerst und geht an niemandem vorbei. Ist der Platz noch von einem
@@ -6184,6 +6188,7 @@ function custFreeSlot(){
 /* Geht einer, ruecken die anderen einen Platz vor - aber nur auf
    Plaetze, die niemand mehr besetzt. */
 function custRuecken(){
+  if(custDeparting()) return;
   var geht={};
   CUS.list.forEach(function(c){
     if(c.state==='out'||c.state==='mad'||c.state==='served') geht[c.slot]=true;
@@ -6282,6 +6287,26 @@ function custAbgaenge(){
 }
 function custTick(dt){
   if(!CUS.on) return;
+  /* Resolve departures before moving anyone. One customer owns the exit
+     until reaching the door; others cannot merge across that customer's
+     path. Queue movement and arrivals resume after the exit is clear. */
+  CUS.list.forEach(function(c){
+    if(c.state==='wait'){
+      c.geduld-=dt;
+      if(c.geduld<=0) custLeave(c,true);
+    }
+    if(c.state==='mad'){
+      c.madT=Math.max(0,(c.madT||0)-dt);
+      if(!c.madT)c.state='out';
+    }
+  });
+  var exiting=custById(CUS.exitId);
+  if(!exiting || exiting.state!=='out'){
+    exiting=CUS.list.filter(function(c){return c.state==='out';})
+      .sort(function(a,b){return b.pos.y-a.pos.y;})[0] || null;
+    CUS.exitId=exiting?exiting.id:null;
+  }
+  var departures=custDeparting();
   CUS.t -= dt;
   if(CUS.t<=0){
     CUS.t = 11 + Math.random()*9;
@@ -6290,11 +6315,8 @@ function custTick(dt){
   var raus=[];
   CUS.list.forEach(function(c){
     c.animMoving=false;
-    if(c.state==='wait'){
-      c.geduld -= dt;
-      if(c.geduld<=0) custLeave(c, true);
-    }
-    if(c.state==='mad' && c.madT>0){ c.madT-=dt; if(c.madT<=0) c.state='out'; return; }
+    if(c.state==='in' && departures) return;
+    if(c.state==='out' && c.id!==CUS.exitId) return;
     if(c.state==='in' || c.state==='out'){
       if(c.halt>0){ c.halt-=dt; return; }      /* versetzter Aufbruch */
       var sp=6.5*dt*(c.state==='out' ? 1 : (c.tempo||1));
