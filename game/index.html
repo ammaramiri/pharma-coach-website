@@ -1807,7 +1807,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-27n \u00b7 Kundenfluss" +
+var PC_BUILD = "2026-09-27o \u00b7 Kundenfluss" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -6285,6 +6285,19 @@ function custAbgaenge(){
   });
   return offen;
 }
+/* Recover a queue already wedged mid-merge. The frontmost departing
+   customer first walks forward, away from those behind, then joins the
+   door lane. Never teleport, remove early, or disable collision checks. */
+function custUnblockExit(){
+  var front=CUS.list.filter(function(c){return c.state==='out';})
+    .sort(function(a,b){return b.pos.y-a.pos.y;})[0];
+  if(!front)return;
+  var joinY=Math.min(49,Math.max(38,front.pos.y+6));
+  front.path=[{x:front.pos.x,y:joinY},{x:22,y:Math.max(44,joinY)},{x:22,y:49}];
+  front.halt=0;
+  CUS.exitId=front.id;
+  CUS.list.forEach(function(c){c.blockedFor=0;});
+}
 function custTick(dt){
   if(!CUS.on) return;
   /* Resolve departures before moving anyone. One customer owns the exit
@@ -6312,7 +6325,7 @@ function custTick(dt){
     CUS.t = 11 + Math.random()*9;
     if(CUS.list.length<CUS_MAX) custArrive();
   }
-  var raus=[];
+  var raus=[], exitBlocked=false;
   CUS.list.forEach(function(c){
     c.animMoving=false;
     if(c.state==='in' && departures) return;
@@ -6335,7 +6348,12 @@ function custTick(dt){
           var after=Math.hypot((nx-o.pos.x)/3.2,(ny-o.pos.y)/5.5);
           return after<1 && after<before-0.00001;
         });
-        if(blocked){sp=0;break;}
+        if(blocked){
+          c.blockedFor=(c.blockedFor||0)+dt;
+          if(c.state==='out' && c.blockedFor>=0.5)exitBlocked=true;
+          sp=0;break;
+        }
+        c.blockedFor=0;
         if(step>0){c.animMoving=true;c.walkPhase=((c.walkPhase||0)+step*8/9.6)%8;c.dir=Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up');}
         if(d<=sp){ c.pos.x=n.x; c.pos.y=n.y; c.path.shift(); sp-=d; }
         else { c.pos.x+=dx/d*sp; c.pos.y+=dy/d*sp; sp=0;
@@ -6347,6 +6365,7 @@ function custTick(dt){
       }
     }
   });
+  if(exitBlocked)custUnblockExit();
   if(raus.length){
     var strafe=0;
     raus.forEach(function(c){ if(c.uebergangen>0 || c.geduld<=0) strafe+=CUS_STRAFE; });
