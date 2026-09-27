@@ -1807,7 +1807,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-27l \u00b7 Ohne Aufgaben-Timer" +
+var PC_BUILD = "2026-09-27o \u00b7 Kundenfluss" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -6037,7 +6037,7 @@ var ICONS = (function(){
    in ein Moebel geraten. Die Uhr der Kunden laeuft unabhaengig vom
    Spieler weiter, auch wenn er stillsteht.
 ===================================================================== */
-var CUS = { on:false, list:[], t:2.0, next:0 };
+var CUS = { on:false, list:[], t:2.0, next:0, exitId:null };
 
 /* Wegpunkte in Rasterfeldern */
 /* Zwei getrennte Spuren durch dieselbe Tuer.
@@ -6053,6 +6053,30 @@ var CUS_MAX  = 3;
 var CUS_GEDULD = 95;    /* Sekunden, bis einer von selbst geht */
 var CUS_STRAFE = -20;   /* Punkte, wenn er veraergert geht */
 
+var PC_CUSTOMER_ATLASES={selbst:{"down":{"src":"assets/cust/cus_selbst_down_v002.webp","frames":[[60,22,204,473,163.0],[406,22,205,475,509.5],[760,22,204,471,861.5],[60,526,204,476,163.5],[412,525,202,467,509.5],[763,524,203,478,862.0],[63,1030,202,481,164.0],[411,1030,199,482,510.0],[763,1030,203,465,862.0]]},"side":{"src":"assets/cust/cus_selbst_side_v002.webp","frames":[[81,18,180,479,170.5],[380,17,263,483,510.5],[754,16,202,482,858.5],[43,520,260,481,171.5],[406,520,206,478,511.5],[733,518,256,484,859.0],[53,1024,234,477,171.5],[383,1024,259,486,510.5],[766,1024,192,481,860.0]]},"up":{"src":"assets/cust/cus_selbst_up_v002.webp","frames":[[69,16,208,481,174.0],[398,16,212,481,512.5],[748,16,216,482,860.0],[58,518,219,506,171.0],[401,517,222,507,511.0],[747,517,220,507,862.0],[61,1024,211,488,173.5],[411,1024,217,482,512.0],[749,1024,213,482,862.0]]}}};
+function pcLoadCustAtlas(id){
+ var set=PC_CUSTOMER_ATLASES[id];if(!set||set.started)return;
+ set.started=true;set.pending=3;
+ var watchdog=setTimeout(function(){if(!set.ready)set.failed=true;},12000);
+ ['down','side','up'].forEach(function(key){
+  var a=set[key],im=new Image();im.decoding='async';
+  im.onerror=function(){set.failed=true;clearTimeout(watchdog);};
+  im.onload=function(){var ready=function(){a.image=im;if(--set.pending===0){set.ready=true;clearTimeout(watchdog);}};if(im.decode)im.decode().then(ready,ready);else ready();};
+  im.src=a.src;
+ });
+}
+function pcDrawCustomer(canvas,c,h){
+ var set=PC_CUSTOMER_ATLASES[c.p],dir=c.dir||'down',a=set[dir==='left'||dir==='right'?'side':dir];
+ var frame=c.animMoving?1+Math.floor(c.walkPhase||0)%8:0;
+ var dpr=Math.min(window.devicePixelRatio||1,2),width=h*.9;
+ var sig=dir+'|'+frame+'|'+h.toFixed(2)+'|'+dpr;if(canvas._sig===sig)return;canvas._sig=sig;
+ canvas.style.width='100%';canvas.style.height='100%';
+ var pw=Math.ceil(width*dpr),ph=Math.ceil(h*dpr);if(canvas.width!==pw||canvas.height!==ph){canvas.width=pw;canvas.height=ph;}
+ var ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,width,h);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+ var f=a.frames[frame],scale=h/f[3];ctx.save();if(dir==='right'){ctx.translate(width,0);ctx.scale(-1,1);}
+ ctx.drawImage(a.image,f[0],f[1],f[2],f[3],width/2-(f[4]-f[0])*scale,0,f[2]*scale,h);ctx.restore();
+}
+
 var CUS_IMG = {};
 var CUS_LOAD = { ok:0, fail:0, total:0, ersterFehler:null };
 function custSrc(id){ return 'assets/cust/cus_'+id+'.png'; }
@@ -6065,6 +6089,7 @@ function pcCustomerNotice(waiting, failed){
     (failed?'Kundenbild wird erneut geladen.':'Kundenbild wird geladen…');
 }
 function custPreload(id){
+  pcLoadCustAtlas(id);
   if(!id || CUS_IMG[id])return;
   var old=pcCustomerLoads[id];
   if(old && (old.loading || Date.now()<old.retryAt))return;
@@ -6146,7 +6171,11 @@ function custBelegt(){
   CUS.list.forEach(function(c){ if(c.slot!=null && c.slot>=0) b[c.slot]=true; });
   return b;
 }
+function custDeparting(){
+  return CUS.list.some(function(c){return c.state==='out'||c.state==='mad'||c.state==='served';});
+}
 function custFreeSlot(){
+  if(custDeparting()) return -1;
   /* Der Neue stellt sich ans Ende der bestehenden Schlange. Weil Platz 0
      am Tresen liegt und Platz 2 an der Tuer, erreicht er sein Ende
      zuerst und geht an niemandem vorbei. Ist der Platz noch von einem
@@ -6159,6 +6188,7 @@ function custFreeSlot(){
 /* Geht einer, ruecken die anderen einen Platz vor - aber nur auf
    Plaetze, die niemand mehr besetzt. */
 function custRuecken(){
+  if(custDeparting()) return;
   var geht={};
   CUS.list.forEach(function(c){
     if(c.state==='out'||c.state==='mad'||c.state==='served') geht[c.slot]=true;
@@ -6189,7 +6219,8 @@ function custArrive(){
   if(besetzt){ CUS.t=Math.max(CUS.t, 3); return; }
   var lv=CUS.pendingLv || custPickLevel(); if(!lv) return;
   CUS.pendingLv=lv;custPreload(lv.persona);
-  if(!CUS_IMG[lv.persona]){
+  var aset=PC_CUSTOMER_ATLASES[lv.persona];
+  if(!CUS_IMG[lv.persona] || (aset&&!aset.ready&&!aset.failed)){
     CUS.t=0.3;pcCustomerNotice(true,!!(pcCustomerLoads[lv.persona] && pcCustomerLoads[lv.persona].retryAt));return;
   }
   CUS.pendingLv=null;pcCustomerNotice(false);
@@ -6254,20 +6285,51 @@ function custAbgaenge(){
   });
   return offen;
 }
+/* Recover a queue already wedged mid-merge. The frontmost departing
+   customer first walks forward, away from those behind, then joins the
+   door lane. Never teleport, remove early, or disable collision checks. */
+function custUnblockExit(){
+  var front=CUS.list.filter(function(c){return c.state==='out';})
+    .sort(function(a,b){return b.pos.y-a.pos.y;})[0];
+  if(!front)return;
+  var joinY=Math.min(49,Math.max(38,front.pos.y+6));
+  front.path=[{x:front.pos.x,y:joinY},{x:22,y:Math.max(44,joinY)},{x:22,y:49}];
+  front.halt=0;
+  CUS.exitId=front.id;
+  CUS.list.forEach(function(c){c.blockedFor=0;});
+}
 function custTick(dt){
   if(!CUS.on) return;
+  /* Resolve departures before moving anyone. One customer owns the exit
+     until reaching the door; others cannot merge across that customer's
+     path. Queue movement and arrivals resume after the exit is clear. */
+  CUS.list.forEach(function(c){
+    if(c.state==='wait'){
+      c.geduld-=dt;
+      if(c.geduld<=0) custLeave(c,true);
+    }
+    if(c.state==='mad'){
+      c.madT=Math.max(0,(c.madT||0)-dt);
+      if(!c.madT)c.state='out';
+    }
+  });
+  var exiting=custById(CUS.exitId);
+  if(!exiting || exiting.state!=='out'){
+    exiting=CUS.list.filter(function(c){return c.state==='out';})
+      .sort(function(a,b){return b.pos.y-a.pos.y;})[0] || null;
+    CUS.exitId=exiting?exiting.id:null;
+  }
+  var departures=custDeparting();
   CUS.t -= dt;
   if(CUS.t<=0){
     CUS.t = 11 + Math.random()*9;
     if(CUS.list.length<CUS_MAX) custArrive();
   }
-  var raus=[];
+  var raus=[], exitBlocked=false;
   CUS.list.forEach(function(c){
-    if(c.state==='wait'){
-      c.geduld -= dt;
-      if(c.geduld<=0) custLeave(c, true);
-    }
-    if(c.state==='mad' && c.madT>0){ c.madT-=dt; if(c.madT<=0) c.state='out'; return; }
+    c.animMoving=false;
+    if(c.state==='in' && departures) return;
+    if(c.state==='out' && c.id!==CUS.exitId) return;
     if(c.state==='in' || c.state==='out'){
       if(c.halt>0){ c.halt-=dt; return; }      /* versetzter Aufbruch */
       var sp=6.5*dt*(c.state==='out' ? 1 : (c.tempo||1));
@@ -6286,17 +6348,24 @@ function custTick(dt){
           var after=Math.hypot((nx-o.pos.x)/3.2,(ny-o.pos.y)/5.5);
           return after<1 && after<before-0.00001;
         });
-        if(blocked){sp=0;break;}
+        if(blocked){
+          c.blockedFor=(c.blockedFor||0)+dt;
+          if(c.state==='out' && c.blockedFor>=0.5)exitBlocked=true;
+          sp=0;break;
+        }
+        c.blockedFor=0;
+        if(step>0){c.animMoving=true;c.walkPhase=((c.walkPhase||0)+step*8/9.6)%8;c.dir=Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up');}
         if(d<=sp){ c.pos.x=n.x; c.pos.y=n.y; c.path.shift(); sp-=d; }
         else { c.pos.x+=dx/d*sp; c.pos.y+=dy/d*sp; sp=0;
                c.dir = Math.abs(dx)>Math.abs(dy) ? (dx>0?'right':'left') : (dy>0?'down':'up'); }
       }
       if(!c.path.length){
-        if(c.state==='in'){ c.state='wait'; c.dir='right'; c.seit=performance.now(); }
+        if(c.state==='in'){ c.animMoving=false;c.state='wait'; c.dir='right'; c.seit=performance.now(); }
         else raus.push(c);
       }
     }
   });
+  if(exitBlocked)custUnblockExit();
   if(raus.length){
     var strafe=0;
     raus.forEach(function(c){ if(c.uebergangen>0 || c.geduld<=0) strafe+=CUS_STRAFE; });
@@ -6326,17 +6395,18 @@ function custDraw(){
       layer.appendChild(el);
     }
     var depth = 0.85 + 0.45*(c.pos.y/WORLD_G);
-    var h = W.cell*9.68*depth, w = h*(400/700);
+    var animated=!!(PC_CUSTOMER_ATLASES[c.p]&&PC_CUSTOMER_ATLASES[c.p].ready);
+    var h = W.cell*9.68*depth, w = h*(animated?.9:(400/700));
     var px = W.ox+(c.pos.x+0.5)*W.cell, py = W.oy+(c.pos.y+0.9)*W.cellY;
-    var bob = (c.state==='in'||c.state==='out') ? Math.abs(Math.sin(performance.now()/165))*h*0.022 : 0;
+    var bob = animated ? 0 : (c.state==='in'||c.state==='out') ? Math.abs(Math.sin(performance.now()/165))*h*0.022 : 0;
     var src = CUS_IMG[c.p];
     var mad = (c.state==='mad');
     /* Nur neu zeichnen, wenn sich wirklich etwas geaendert hat. Sonst
        verschwindet das Antippziel zwischen Druck und Loslassen. */
-    var sig = c.state+'|'+(src||'-')+'|'+state.lang+'|'+(c.uebergangen>0?'u':'z');
+    var sig = animated+'|'+c.state+'|'+(src||'-')+'|'+state.lang+'|'+(c.uebergangen>0?'u':'z');
     if(el.dataset.sig !== sig){
       el.dataset.sig = sig;
-    var inner = src ? '<img src="'+src+'" style="width:100%;height:100%">'
+    var inner = animated ? '<canvas class="cu-sprite"></canvas>' : src ? '<img src="'+src+'" style="width:100%;height:100%">'
                     : (mad?CUS_BLANK_MAD:CUS_BLANK);
     var mark = (c.state==='wait')
       ? '<span class="cu-tag">'+ICONS.draw('speak')+'</span>'
@@ -6348,7 +6418,8 @@ function custDraw(){
     pcStyle(el,'height',h.toFixed(2)+'px'); pcStyle(el,'width',w.toFixed(2)+'px');
     pcStyle(el,'left','0px');pcStyle(el,'top','0px');
     pcStyle(el,'transform','translate3d('+px.toFixed(2)+'px,'+(py-bob).toFixed(2)+'px,0) translate(-50%,-100%)');
-    if(el._body)pcStyle(el._body,'transform',c.dir==='right'?'scaleX(-1)':'none');
+    if(el._body)pcStyle(el._body,'transform',!animated&&c.dir==='right'?'scaleX(-1)':'none');
+    if(animated)pcDrawCustomer(el.querySelector('canvas'),c,h);
     pcStyle(el,'zIndex',String(mad ? 60 : (10 + Math.round(c.pos.y))));
     if(el._state!==c.state){
       el.classList.toggle('mad', mad);el.classList.toggle('tapp',c.state==='wait');el._state=c.state;
