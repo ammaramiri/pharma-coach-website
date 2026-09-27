@@ -1608,7 +1608,6 @@ var I18N = {
     fileLabel:"Akte", officeDone:"Der Vorgang ist bearbeitet. Der Bescheid liegt entschieden auf dem Tisch.",
     review:"Beratung durchsehen", reviewNote:"Nur Ansicht · Antworten lassen sich hier nicht ändern.",
     step:"Schritt", closeBtn:"Schließen", lockedPrev:"Erst den vorherigen Fall abschließen",
-    startTimer:"Uhr starten", startNote:"In Ruhe lesen. Die {s} Sekunden laufen erst ab dem Tippen.",
     roomSwitch:"Raum wechseln", roomSwitchHint:"Direkt hinübergehen, ohne zu laufen.",
     serveNow:"Beraten", backShop:"Zurück an den HV-Tisch", backTo:"Zurück · {r}",
     custHere:"Jemand steht am Tisch", custHint:"Der Fall zeigt sich im Gespräch.",
@@ -1675,7 +1674,6 @@ var I18N = {
     fileLabel:"File", officeDone:"The case is processed. The notice lies decided on the desk.",
     review:"Review consultation", reviewNote:"View only · answers cannot be changed here.",
     step:"Step", closeBtn:"Close", lockedPrev:"Finish the previous case first",
-    startTimer:"Start the clock", startNote:"Read in peace. The {s} seconds only run from the tap.",
     roomSwitch:"Change room", roomSwitchHint:"Go straight over, without walking.",
     serveNow:"Advise", backShop:"Back to the counter", backTo:"Back · {r}",
     custHere:"Someone is at the counter", custHint:"The case shows itself in the conversation.",
@@ -1742,7 +1740,6 @@ var I18N = {
     fileLabel:"\u0627\u0644\u0645\u0644\u0641", officeDone:"\u0627\u0646\u062a\u0647\u062a \u0645\u0639\u0627\u0644\u062c\u0629 \u0627\u0644\u0645\u0639\u0627\u0645\u0644\u0629. \u0627\u0644\u0625\u0634\u0639\u0627\u0631 \u0635\u0627\u0631 \u0645\u062d\u0633\u0648\u0645\u0627\u064b \u0639\u0644\u0649 \u0627\u0644\u0637\u0627\u0648\u0644\u0629.",
     review:"مراجعة الاستشارة", reviewNote:"مشاهدة فقط · لا يمكن تغيير الإجابات هنا.",
     step:"خطوة", closeBtn:"إغلاق", lockedPrev:"أنهِ الحالة السابقة أولاً",
-    startTimer:"شغّل الساعة", startNote:"اقرأ على مهلك. الـ{s} ثانية تبدأ عند الضغط فقط.",
     roomSwitch:"تغيير الغرفة", roomSwitchHint:"انتقل مباشرة بلا مشي.",
     serveNow:"ابدأ الاستشارة", backShop:"عودة إلى الطاولة", backTo:"عودة · {r}",
     custHere:"أحدهم عند الطاولة", custHint:"الحالة تنكشف في أثناء الحديث.",
@@ -1810,7 +1807,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-09-27k \u00b7 Kundengroesse & Abstand" +
+var PC_BUILD = "2026-09-27m \u00b7 Kundenpilot" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -2177,17 +2174,14 @@ Mech.triage = function(host, d, done){
   zeigen();
 };
 
-/* MCQ (optionally timed) */
+/* MCQ: unrestricted answer time. */
 Mech.mcq = function(host, d, done){
-  var timed = !!d.seconds;
   host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
     '<div class="stage-title">'+d.title+'</div></div><div class="stage-body">'+sceneStrip(d)+
-    (timed?'<div id="mtz"></div>':'')+
     '<div class="opts" id="opts"></div><div id="fbz"></div></div></div>';
   var box=document.getElementById('opts'), L=['A','B','C','D','E'], fin=false, timer=null;
   var OPTS=shuffled(d.options);
-  var started=!timed;
-  if(timed) timedStart(document.getElementById('mtz'),60,function(){if(!fin){fin=true;reveal(null);}},function(){started=true;});
+  var started=true;
   OPTS.forEach(function(o,i){
     var b=document.createElement('button'); b.className='opt';
     b.innerHTML='<div class="ltr">'+L[i]+'</div><div>'+o.t+'</div>';
@@ -2213,17 +2207,14 @@ Mech.mcq = function(host, d, done){
 Mech.sort = function(host, d, done){
   host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
     '<div class="stage-title">'+d.title+'</div></div><div class="stage-body">'+sceneStrip(d)+
-    (d.seconds?'<div id="mtz"></div>':'')+
     '<div class="sort-hint">'+d.hint+'</div><div class="sort-pool" id="pool"></div>'+
     '<div class="bins"><div class="bin flag" id="bF"><h4>'+ICONS.draw('flag')+' '+d.flagLabel+'</h4><div class="chips"></div></div>'+
     '<div class="bin safe" id="bS"><h4>'+ICONS.draw('check')+' '+d.safeLabel+'</h4><div class="chips"></div></div></div>'+
     '<div id="fbz"></div></div></div>';
   var pool=document.getElementById('pool'), sel=null, placed=0, mistakes=0, score=0, closed=false;
-  var started=!d.seconds;
+  var started=true;
   var CARDS=shuffled(d.cards.map(function(c,i){return {c:c,i:i};}));
   var right=0;
-  if(d.seconds) timedStart(document.getElementById('mtz'), d.seconds,
-    function(){ if(!closed) settle(true); }, function(){ started=true; });
   CARDS.forEach(function(o){
     var c=o.c, i=o.i;
     var ch=document.createElement('div'); ch.className='chip'; ch.innerHTML=c.t; ch.dataset.i=i;
@@ -2665,54 +2656,6 @@ function stopMechTimer(){
   if(window._mechTimer){ clearTimeout(window._mechTimer); window._mechTimer=null; }
   if(window._mechGrace){clearTimeout(window._mechGrace);window._mechGrace=null;}
 }
-/* Jede Uhr im Spiel laeuft sechzig Sekunden. Sie startet erst auf Tippen,
-   damit langsames Lesen nicht bestraft wird. */
-var TIMER_SECONDS = 60;
-
-function timedStart(host, seconds, onEnd, onStart){
-  if(!host) return;
-  var secs = TIMER_SECONDS;
-  var body = host.closest ? host.closest('.stage-body') : null;
-  if(body) body.classList.add('gated');
-  host.innerHTML='<div class="tg"><button class="tg-btn" id="tgBtn">'+t('startTimer')+'</button>'+
-    '<span class="tg-note">'+t('startNote').replace('{s}', secs)+'</span></div>';
-  var b=document.getElementById('tgBtn');
-  b.addEventListener('click', function(){
-    if(body) body.classList.remove('gated');
-    host.innerHTML='';
-    if(onStart) onStart();
-    mechTimer(host, secs, onEnd);
-  });
-  if(run && run.timerDeadline) setTimeout(function(){if(document.body.contains(b))b.click();},0);
-}
-
-function mechTimer(host, seconds, onEnd){
-  if(!host) return;
-  host.innerHTML='<div class="mtimer"><div class="mt-bar"><div class="mt-fill"></div></div>'+
-                 '<div class="mt-num"></div></div>';
-  var fill=host.querySelector('.mt-fill'), num=host.querySelector('.mt-num');
-  var deadline=(run && run.timerDeadline) || (Date.now()+seconds*1000);
-  if(run){run.timerDeadline=deadline;pcCheckpoint();}
-  var left=Math.max(0,Math.ceil((deadline-Date.now())/1000));
-  function paint(){
-    if(!fill) return;
-    fill.style.width=Math.max(0,Math.round(left/seconds*100))+'%';
-    if(left<=Math.max(5,Math.round(seconds*0.25))) fill.classList.add('warn');
-    num.textContent=left+'s';
-  }
-  paint();
-  stopMechTimer();
-  if(left<=0){onEnd();return;}
-  (function step(){
-    window._mechTimer=setTimeout(function(){
-      if(!document.body.contains(host)) { stopMechTimer(); return; }
-      left=Math.max(0,Math.ceil((deadline-Date.now())/1000)); paint();
-      if(left<=0){ stopMechTimer(); onEnd(); }
-      else step();
-    },1000);
-  })();
-}
-
 /* Aufgedecktes Dokument in die Akte legen. */
 function revealDoc(r){
   if(!r || typeof run==='undefined' || !run) return '';
@@ -2822,14 +2765,13 @@ function rezeptStrafe(host, d, done){
   phaseStarten();
 }
 
-/* hunt: Fehlersuche unter Zeitdruck im selben Dokument. */
+/* hunt: document search without a time limit. */
 Mech.hunt = function(host, d, done){
   host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
     '<div class="stage-title">'+d.title+'</div></div><div class="stage-body">'+
-    '<div id="mtz"></div>'+(d.hint?'<div class="a3-hint">'+d.hint+'</div>':'')+
+    (d.hint?'<div class="a3-hint">'+d.hint+'</div>':'')+
     docHTML(d.doc)+'<div id="fbz"></div></div></div>';
-  var fin=false, started=false, fields=host.querySelectorAll('.doc-f[data-k]');
-  var secs=d.seconds||TIMER_SECONDS;
+  var fin=false, started=true, fields=host.querySelectorAll('.doc-f[data-k]');
   var stufe=(d.p||25);
   function fehlgriff(k){
     /* Mit Strafe laeuft die Suche weiter: fuenf Punkte weg, Boden null. */
@@ -2851,7 +2793,6 @@ Mech.hunt = function(host, d, done){
     fbBlock(document.getElementById('fbz'), ok, head,
       (!k&&d.timeoutX?d.timeoutX+' ':'')+d.expl, function(){ done(p, ok?8:-6); });
   }
-  timedStart(document.getElementById('mtz'), secs, function(){ close(null); }, function(){ started=true; });
   fields.forEach(function(b){ b.addEventListener('click',function(){ close(b.dataset.k); }); });
 };
 
@@ -3215,8 +3156,7 @@ var TOPICS = {
       { mech:"comic", data:{ kicker:"Szene 1 · Der Kunde kommt", title:"Ein Vater betritt mit seinem Sohn die Apotheke", img:"assets/PCG_SCN_CUS001_A_ENTRANCE_v003.jpg", cta:"Reagieren →",
         bubbles:[ {who:"Vater",txt:"Guten Tag! Mein Sohn hat seit gestern Nachmittag Kopfschmerzen."},
                   {who:"Vater",txt:"Geben Sie mir bitte eine Packung <b>Aspirin</b> – das hilft bei mir immer!"} ] } },
-      { mech:"mcq", data:{ scene:"assets/PCG_SCN_CUS001_B_COUNTER_v003.jpg", kicker:"Entscheidung · 45 Sekunden", title:"Aspirin für einen 8-Jährigen?", seconds:45,
-        timeoutH:"Zeit abgelaufen", timeoutX:"Der Vater wird ungeduldig. Richtig wäre gewesen: erst korrigieren, dann fragen.",
+      { mech:"mcq", data:{ scene:"assets/PCG_SCN_CUS001_B_COUNTER_v003.jpg", kicker:"Entscheidung", title:"Aspirin für einen 8-Jährigen?", timeoutH:"Zeit abgelaufen", timeoutX:"Der Vater wird ungeduldig. Richtig wäre gewesen: erst korrigieren, dann fragen.",
         options:[
           {t:"Klar, eine Packung Aspirin. Kommt sofort.",p:0,tr:-15,h:"Gefährlicher Fehler",x:"ASS ist bei Kindern unter 12 mit fieberhaften Infekten kontraindiziert (Reye-Syndrom: seltene, lebensbedrohliche Leber- und Hirnschädigung). Rezeptfrei heißt nicht risikofrei."},
           {t:"Aspirin ist für Kinder unter 12 nicht geeignet. Darf ich Ihnen ein paar kurze Fragen stellen?",p:25,tr:10,ok:true,h:"Falle erkannt",x:"Sachliche Korrektur (Reye-Syndrom) ohne Belehrung, sofort in die strukturierte Anamnese. Genau so."},
@@ -3285,8 +3225,7 @@ TOPICS.halsschmerzen_selbst = {
       { mech:"comic", data:{ kicker:"Szene 1 · Der Kunde kommt", title:"Ein Herr betritt zielstrebig die Apotheke", img:"assets/PCG_SCN_CUS002_A_ENTRANCE_v003.jpg", cta:"Reagieren →",
         bubbles:[ {who:"Kunde",txt:"Guten Tag! Ich habe seit gestern starke Halsschmerzen. Ich habe im Internet recherchiert – das ist sicher eine <b>Streptokokken-Infektion</b>."},
                   {who:"Kunde",txt:"Geben Sie mir bitte <b>Amoxicillin</b>. Ich weiß, was ich brauche."} ] } },
-      { mech:"mcq", data:{ scene:"assets/PCG_SCN_CUS002_B_COUNTER_v003.jpg", kicker:"Entscheidung · 45 Sekunden", title:"Der Selbstdiagnostiker verlangt ein Antibiotikum. Ihre Reaktion?", seconds:45,
-        timeoutH:"Zeit abgelaufen", timeoutX:"Der Kunde trommelt mit den Fingern. Richtig wäre gewesen: Eigeninitiative würdigen, dann die Führung übernehmen.",
+      { mech:"mcq", data:{ scene:"assets/PCG_SCN_CUS002_B_COUNTER_v003.jpg", kicker:"Entscheidung", title:"Der Selbstdiagnostiker verlangt ein Antibiotikum. Ihre Reaktion?", timeoutH:"Zeit abgelaufen", timeoutX:"Der Kunde trommelt mit den Fingern. Richtig wäre gewesen: Eigeninitiative würdigen, dann die Führung übernehmen.",
         options:[
           {t:"Antibiotika gibt es nur auf Rezept. Da kann ich nichts machen – gehen Sie zum Arzt.",p:5,tr:-8,h:"Korrekt, aber verschenkt",x:"Sachlich richtig, kommunikativ schwach. Sie beenden das Gespräch, statt zu beraten – der Selbstdiagnostiker fühlt sich abgewiesen und geht in die nächste Apotheke."},
           {t:"Interessant, dass Sie schon recherchiert haben. Damit ich Ihnen wirklich helfen kann – darf ich kurz ein paar Fragen stellen?",p:25,tr:10,ok:true,h:"Meisterhaft",x:"Sie würdigen die Eigeninitiative, ohne die Selbstdiagnose zu bestätigen, und übernehmen die professionelle Führung. Genau so öffnet sich dieser Kundentyp."},
@@ -3342,15 +3281,13 @@ TOPICS.sodbrennen_eilig = {
   steps:[
    {mech:"comic",data:{kicker:"Szene 1 · Der Kunde kommt",title:"Ein Mann eilt herein – Jacke offen, Blick zur Tür zurück",img:"assets/PCG_SCN_CUS003_A_ENTRANCE_v003.jpg",cta:"Reagieren →",
     bubbles:[{who:"Kunde",txt:"Schnell bitte – <b>Sodbrennen</b>, seit Tagen jeden Abend. Ich muss in fünf Minuten weiter."},{who:"Kunde",txt:"Geben Sie mir einfach <b>das Stärkste</b>, was Sie haben."}]}},
-   {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS003_B_COUNTER_v003.jpg",kicker:"Entscheidung · 35 Sekunden",title:"Der Eilige will das Stärkste – sofort. Ihre Reaktion?",seconds:35,
-    timeoutH:"Zeit abgelaufen",timeoutX:"Er dreht sich demonstrativ zur Tür. Richtig wäre gewesen: Tempo zusagen, Führung behalten.",
+   {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS003_B_COUNTER_v003.jpg",kicker:"Entscheidung",title:"Der Eilige will das Stärkste – sofort. Ihre Reaktion?",timeoutH:"Zeit abgelaufen",timeoutX:"Er dreht sich demonstrativ zur Tür. Richtig wäre gewesen: Tempo zusagen, Führung behalten.",
     options:[
      {t:"Kommt sofort – hier, ein Protonenpumpenhemmer.",p:5,tr:-3,h:"Schnell, aber blind",x:"Tempo ersetzt keine Triage. Ohne eine einzige Frage wissen Sie nicht, ob Selbstmedikation überhaupt vertretbar ist."},
      {t:"Geht ganz schnell: Zwei gezielte Fragen, dann haben Sie in einer Minute genau das Richtige.",p:25,tr:10,ok:true,h:"Führung + Tempo",x:"Sie nehmen sein Zeitlimit ernst UND behalten die fachliche Kontrolle. Genau die Sprache, die dieser Kundentyp versteht."},
      {t:"Dafür brauche ich erst eine ausführliche Anamnese – etwa zehn Minuten.",p:5,tr:-12,h:"Kunde verloren",x:"Fachlich gemeint, kommunikativ tödlich. Der Eilige ist zur Tür raus, bevor Sie zu Ende gesprochen haben."},
      {t:"Dann nehmen Sie irgendein Antazidum aus dem Regal da drüben.",p:0,tr:-8,h:"Beratung abgegeben",x:"Sie delegieren Ihre Kernaufgabe an ein Regal. Das ist Abverkauf, keine Beratung."}]}},
-   {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS003_C_OTS_v003.jpg",kicker:"Turbo-Anamnese · 40 Sekunden",title:"Zeit für EINE Frage zuerst. Welche?",seconds:40,
-    timeoutH:"Zeit abgelaufen",timeoutX:"Zu langsam für den Eiligen. Richtig wäre gewesen: vier Alarmzeichen in einer Frage.",
+   {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS003_C_OTS_v003.jpg",kicker:"Turbo-Anamnese",title:"Zeit für EINE Frage zuerst. Welche?",timeoutH:"Zeit abgelaufen",timeoutX:"Zu langsam für den Eiligen. Richtig wäre gewesen: vier Alarmzeichen in einer Frage.",
     options:[
      {t:"Haben Sie Schluckbeschwerden, Blut im Stuhl, ungewollten Gewichtsverlust – oder die Beschwerden seit mehr als zwei Wochen täglich?",p:25,tr:10,ok:true,h:"Red Flags im Paket",x:"Eine Frage, vier Alarmzeichen – maximale Sicherheit pro Sekunde. Er verneint alles: seit fünf Tagen, nach späten Geschäftsessen, viel Kaffee, Stress. Selbstmedikation vertretbar."},
      {t:"Was genau haben Sie zuletzt gegessen?",p:5,tr:0,h:"Nebenschauplatz",x:"Auslöser sind interessant – aber erst NACH dem Ausschluss der Alarmzeichen."},
@@ -3584,8 +3521,7 @@ TOPICS.rueckenschmerzen_handwerk = {
   steps:[
    {mech:"comic",data:{kicker:"Szene 1 · Der Kunde kommt",title:"Ein Handwerker kommt herein – in Arbeitskleidung, direkt von der Baustelle",img:"assets/PCG_SCN_CUS009_A_ENTRANCE_v003.jpg",cta:"Reagieren →",
     bubbles:[{who:"Kunde",txt:"Tach. Mein <b>Kreuz</b> macht seit Montag Ärger – ich hab schwer gehoben und seitdem zieht das."},{who:"Kunde",txt:"Geben Sie mir was Starkes, ich muss morgen wieder auf die Baustelle. <b>Krankschreiben lassen geht nicht.</b>"}]}},
-   {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS009_B_COUNTER_v003.jpg",kicker:"Entscheidung · 40 Sekunden",title:"Er will „was Starkes“ und muss morgen arbeiten. Ihre erste Reaktion?",seconds:40,
-    timeoutH:"Zeit abgelaufen",timeoutX:"Er wird ungeduldig. Richtig wäre gewesen: die gefährlichen Verläufe ausschließen, bevor Sie irgendetwas abgeben.",
+   {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS009_B_COUNTER_v003.jpg",kicker:"Entscheidung",title:"Er will „was Starkes“ und muss morgen arbeiten. Ihre erste Reaktion?",timeoutH:"Zeit abgelaufen",timeoutX:"Er wird ungeduldig. Richtig wäre gewesen: die gefährlichen Verläufe ausschließen, bevor Sie irgendetwas abgeben.",
     options:[
      {t:"Bevor ich Ihnen etwas gebe, zwei kurze Fragen: Strahlt der Schmerz ins Bein aus, ist irgendwo etwas taub oder kribbelig – und haben Sie Probleme beim Wasserlassen?",p:25,tr:10,ok:true,h:"Die entscheidenden Red Flags",x:"Ausstrahlung ins Bein, Taubheit und Blasenstörung sind die Warnzeichen, die einen unkomplizierten Kreuzschmerz von einem Notfall trennen. Beim Cauda-equina-Syndrom zählen Stunden. Diese drei Fragen kosten zwanzig Sekunden und sind nicht verhandelbar."},
      {t:"Klar, hier – Ibuprofen 600, das ist das Stärkste ohne Rezept.",p:0,tr:-10,h:"Falsch in zwei Punkten",x:"Ibuprofen 600 ist verschreibungspflichtig, rezeptfrei sind maximal 400 mg. Und Sie geben ein Schmerzmittel ab, ohne eine einzige Warnfrage gestellt zu haben."},
@@ -3634,8 +3570,7 @@ TOPICS.insektenstich_panisch = {
   steps:[
    {mech:"comic",data:{kicker:"Szene 1 · Der Kunde kommt",title:"Ein junger Vater stürmt herein – die Tochter an der Hand",img:"assets/PCG_SCN_CUS010_A_ENTRANCE_v003.jpg",cta:"Reagieren →",
     bubbles:[{who:"Vater",txt:"Meine Tochter, fünf Jahre – eine <b>Wespe</b> hat sie am Arm gestochen, vor zehn Minuten im Garten! Es ist schon ganz rot und geschwollen!"},{who:"Vater",txt:"Meine Frau ist bei ihr. Was mache ich denn jetzt?! <b>Kann das gefährlich werden?</b>"}]}},
-   {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS010_B_COUNTER_v003.jpg",kicker:"Entscheidung · 35 Sekunden",title:"Der Vater ist in Panik. Ihre erste Reaktion?",seconds:35,
-    timeoutH:"Zeit abgelaufen",timeoutX:"Der Vater dreht sich schon zur Tür. Richtig wäre gewesen: erst beruhigen, dann sofort die Notfallzeichen abfragen.",
+   {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS010_B_COUNTER_v003.jpg",kicker:"Entscheidung",title:"Der Vater ist in Panik. Ihre erste Reaktion?",timeoutH:"Zeit abgelaufen",timeoutX:"Der Vater dreht sich schon zur Tür. Richtig wäre gewesen: erst beruhigen, dann sofort die Notfallzeichen abfragen.",
     options:[
      {t:"Ich helfe Ihnen sofort. Ganz wichtig zuerst: Bekommt sie normal Luft, ist ihr schwindelig oder übel, hat sie Quaddeln am ganzen Körper oder eine Schwellung im Gesicht?",p:25,tr:12,ok:true,h:"Beruhigen und gleichzeitig triagieren",x:"Sie senken das Tempo mit einem Satz und stellen sofort die einzige Frage, die zählt: allgemeine Reaktion oder lokale Reaktion? Atemnot, generalisierte Quaddeln, Schwindel oder Gesichtsschwellung bedeuten Notruf 112, nicht Apothekenberatung."},
      {t:"Ganz ruhig, ein Wespenstich ist harmlos. Hier ist ein Gel.",p:0,tr:-12,h:"Gefährlich beruhigt",x:"Sie schließen eine anaphylaktische Reaktion aus, ohne eine einzige Frage gestellt zu haben. Bei etwa 3 Prozent der Bevölkerung besteht eine Insektengiftallergie – und die ersten Minuten entscheiden."},
@@ -3733,8 +3668,7 @@ TOPICS.augenroetung_screen = {
   steps:[
    {mech:"comic",data:{kicker:"Szene 1 · Der Kunde kommt",title:"Ein Büroangestellter kommt herein – Kaffeebecher in der Hand",img:"assets/PCG_SCN_CUS012_A_ENTRANCE_v003.jpg",cta:"Reagieren →",
     bubbles:[{who:"Kunde",txt:"Hallo! Mein <b>rechtes Auge</b> ist seit gestern rot und fühlt sich an wie Sandpapier."},{who:"Kunde",txt:"Ich sitze zwölf Stunden am Bildschirm, das ist bestimmt nur trocken. Haben Sie was <b>zum Abschwellen</b>? Sieht unangenehm aus im Meeting."}]}},
-   {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS012_B_COUNTER_v003.jpg",kicker:"Entscheidung · 40 Sekunden",title:"Ein rotes Auge – die riskanteste Blickdiagnose der Offizin. Was fragen Sie?",seconds:40,
-    timeoutH:"Zeit abgelaufen",timeoutX:"Er schaut auf die Uhr. Richtig wäre gewesen: Schmerz, Sehverschlechterung und Kontaktlinsen entscheiden alles.",
+   {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS012_B_COUNTER_v003.jpg",kicker:"Entscheidung",title:"Ein rotes Auge – die riskanteste Blickdiagnose der Offizin. Was fragen Sie?",timeoutH:"Zeit abgelaufen",timeoutX:"Er schaut auf die Uhr. Richtig wäre gewesen: Schmerz, Sehverschlechterung und Kontaktlinsen entscheiden alles.",
     options:[
      {t:"Haben Sie Schmerzen im Auge, sehen Sie schlechter oder verschwommen, sind Sie lichtempfindlich – und tragen Sie Kontaktlinsen?",p:25,tr:12,ok:true,h:"Die vier Schlüsselfragen",x:"Schmerz, Visusminderung, Photophobie und Kontaktlinsen sind die vier Punkte, die ein harmloses rotes Auge von Keratitis, Iritis oder Glaukomanfall trennen. Beim Kontaktlinsenträger gilt: rotes Auge plus Linse bedeutet Augenarzt, bis das Gegenteil bewiesen ist."},
      {t:"Trockene Augen bei Bildschirmarbeit, klar – hier sind abschwellende Tropfen.",p:0,tr:-12,h:"Gefährliche Blickdiagnose",x:"Sie übernehmen seine Selbstdiagnose bei einem einseitig roten Auge. Und abschwellende Vasokonstriktoren maskieren die Rötung, ohne die Ursache zu behandeln – bei einer Keratitis kostet das Sehkraft."},
@@ -3783,8 +3717,7 @@ TOPICS.heuschnupfen_fahrer = {
   steps:[
    {mech:"comic",data:{kicker:"Szene 1 · Der Kunde kommt",title:"Ein Berufskraftfahrer kommt herein – die LKW-Schlüssel in der Hand",img:"assets/PCG_SCN_CUS013_A_ENTRANCE_v004.jpg",cta:"Reagieren →",
     bubbles:[{who:"Kunde",txt:"Moin. Seit zwei Wochen läuft mir die Nase und die Augen jucken wie verrückt – <b>Heuschnupfen</b>, wie jedes Jahr."},{who:"Kunde",txt:"Geben Sie mir was Starkes. Am besten was, wovon ich <b>gut schlafen</b> kann, ich bin nachts oft wach davon."}]}},
-   {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS013_B_COUNTER_v004.jpg",kicker:"Entscheidung · 40 Sekunden",title:"Er will „was Starkes zum Schlafen“. Ihre erste Reaktion?",seconds:40,
-    timeoutH:"Zeit abgelaufen",timeoutX:"Er trommelt auf den Tresen. Richtig wäre gewesen: der Beruf entscheidet hier über die Wirkstoffwahl.",
+   {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS013_B_COUNTER_v004.jpg",kicker:"Entscheidung",title:"Er will „was Starkes zum Schlafen“. Ihre erste Reaktion?",timeoutH:"Zeit abgelaufen",timeoutX:"Er trommelt auf den Tresen. Richtig wäre gewesen: der Beruf entscheidet hier über die Wirkstoffwahl.",
     options:[
      {t:"Eine wichtige Frage vorweg: Sie fahren beruflich – wann sitzen Sie das nächste Mal am Steuer? Das entscheidet, welches Präparat für Sie überhaupt in Frage kommt.",p:25,tr:12,ok:true,h:"Der Beruf ist hier die Schlüsselinformation",x:"Sedierende Antihistaminika der ersten Generation beeinträchtigen die Fahrtüchtigkeit erheblich – bei einem Berufskraftfahrer ist das nicht nur eine Nebenwirkung, sondern eine Frage von Arbeitsplatz und Haftung. Die Schlüssel in seiner Hand waren der Hinweis."},
      {t:"Klar, hier ist ein Antihistaminikum der ersten Generation, das macht schön müde.",p:0,tr:-15,h:"Gefährlicher Fehler",x:"Sie geben einem Berufskraftfahrer bewusst ein sedierendes Präparat. Fahruntüchtigkeit im Berufsverkehr, Unfallrisiko und im Schadensfall eine Beratungshaftung, die auf Sie zurückfällt."},
@@ -4121,8 +4054,7 @@ TOPICS.sonnenschutz_urlaub = {
 TOPICS.kopfschmerzen_kind.steps_en=[
  {mech:"comic",data:{kicker:"Scene 1 · The customer arrives",title:"A father enters the pharmacy with his son",img:"assets/PCG_SCN_CUS001_A_ENTRANCE_v003.jpg",cta:"React →",
   bubbles:[{who:"Father",txt:"Hello! My son has had a headache since yesterday."},{who:"Father",txt:"Please give me a pack of <b>aspirin</b> - it always works for me!"}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS001_B_COUNTER_v003.jpg",kicker:"Decision · 45 seconds",title:"Aspirin for an 8-year-old?",seconds:45,
-  timeoutH:"Time's up",timeoutX:"The father grows impatient. The right move: correct first, then ask.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS001_B_COUNTER_v003.jpg",kicker:"Decision",title:"Aspirin for an 8-year-old?",timeoutH:"Time's up",timeoutX:"The father grows impatient. The right move: correct first, then ask.",
   options:[
    {t:"Sure, one pack of aspirin. Right away.",p:0,tr:-15,h:"Dangerous mistake",x:"ASA is contraindicated in children under 12 with febrile infections (Reye's syndrome: rare, life-threatening liver and brain damage). Over-the-counter does not mean risk-free."},
    {t:"Aspirin isn't suitable for children under 12. May I ask you a few quick questions?",p:25,tr:10,ok:true,h:"Trap spotted",x:"Factual correction (Reye's syndrome) without lecturing, straight into a structured history. Exactly right."},
@@ -4175,8 +4107,7 @@ TOPICS.kopfschmerzen_kind.steps_en=[
 TOPICS.halsschmerzen_selbst.steps_en=[
  {mech:"comic",data:{kicker:"Scene 1 · The customer arrives",title:"A gentleman walks in with determination",img:"assets/PCG_SCN_CUS002_A_ENTRANCE_v003.jpg",cta:"React →",
   bubbles:[{who:"Customer",txt:"Hello! Severe sore throat since yesterday. I researched online – it is definitely a <b>strep infection</b>."},{who:"Customer",txt:"Please give me <b>amoxicillin</b>. I know what I need."}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS002_B_COUNTER_v003.jpg",kicker:"Decision · 45 seconds",title:"The self-diagnoser demands an antibiotic. Your reaction?",seconds:45,
-  timeoutH:"Time's up",timeoutX:"He drums his fingers. The right move: honor initiative, then take the lead.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS002_B_COUNTER_v003.jpg",kicker:"Decision",title:"The self-diagnoser demands an antibiotic. Your reaction?",timeoutH:"Time's up",timeoutX:"He drums his fingers. The right move: honor initiative, then take the lead.",
   options:[
    {t:"Antibiotics need a prescription. Nothing I can do – see a doctor.",p:5,tr:-8,h:"Correct but wasted",x:"Factually right, communicatively weak. You end the conversation instead of advising – he walks to the next pharmacy."},
    {t:"Interesting that you researched already. So I can really help – may I ask a few quick questions?",p:25,tr:10,ok:true,h:"Masterful",x:"You honor the initiative without confirming the self-diagnosis and take professional lead. Exactly how this type opens up."},
@@ -4218,8 +4149,7 @@ TOPICS.halsschmerzen_selbst.steps_en=[
 TOPICS.kopfschmerzen_kind.steps_ar=[
  {mech:"comic",data:{kicker:"المشهد 1 · وصول الزبون",title:"أب يدخل الصيدلية مع ابنه",img:"assets/PCG_SCN_CUS001_A_ENTRANCE_v003.jpg",cta:"تصرّف ←",
   bubbles:[{who:"الأب",txt:"مرحباً! ابني يعاني من صداع منذ الأمس."},{who:"الأب",txt:"أعطني من فضلك علبة <b>أسبرين</b> – دائماً ينفع معي!"}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS001_B_COUNTER_v003.jpg",kicker:"قرار · 45 ثانية",title:"أسبرين لطفل عمره 8 سنوات؟",seconds:45,
-  timeoutH:"انتهى الوقت",timeoutX:"نفد صبر الأب. الصحيح كان: صحّح أولاً ثم اسأل.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS001_B_COUNTER_v003.jpg",kicker:"قرار",title:"أسبرين لطفل عمره 8 سنوات؟",timeoutH:"انتهى الوقت",timeoutX:"نفد صبر الأب. الصحيح كان: صحّح أولاً ثم اسأل.",
   options:[
    {t:"طبعاً، علبة أسبرين. حالاً.",p:0,tr:-15,h:"خطأ خطير",x:"الأسبرين ممنوع لمن هم دون 12 سنة مع العدوى الحُمّية (متلازمة راي: تلف نادر مهدد للحياة في الكبد والدماغ). بدون وصفة لا يعني بدون خطر."},
    {t:"الأسبرين غير مناسب للأطفال دون 12 سنة. هل تسمح لي بأسئلة سريعة؟",p:25,tr:10,ok:true,h:"اكتشفت الفخ",x:"تصحيح علمي (متلازمة راي) بلا استعلاء، ثم مباشرة إلى الأنامنيزه المنظمة. هكذا بالضبط."},
@@ -4272,8 +4202,7 @@ TOPICS.kopfschmerzen_kind.steps_ar=[
 TOPICS.halsschmerzen_selbst.steps_ar=[
  {mech:"comic",data:{kicker:"المشهد 1 · وصول الزبون",title:"رجل يدخل الصيدلية بخطى واثقة",img:"assets/PCG_SCN_CUS002_A_ENTRANCE_v003.jpg",cta:"تصرّف ←",
   bubbles:[{who:"الزبون",txt:"مرحباً! التهاب حاد في الحلق منذ الأمس. بحثت في الإنترنت – إنها حتماً <b>عدوى بكتيرية عقدية</b>."},{who:"الزبون",txt:"أعطني <b>أموكسيسيلين</b> من فضلك. أنا أعرف ما أحتاج."}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS002_B_COUNTER_v003.jpg",kicker:"قرار · 45 ثانية",title:"صاحب التشخيص الذاتي يطلب مضاداً حيوياً. ردّك؟",seconds:45,
-  timeoutH:"انتهى الوقت",timeoutX:"يقرع بأصابعه. الصحيح كان: قدّر مبادرته ثم تولَّ القيادة.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS002_B_COUNTER_v003.jpg",kicker:"قرار",title:"صاحب التشخيص الذاتي يطلب مضاداً حيوياً. ردّك؟",timeoutH:"انتهى الوقت",timeoutX:"يقرع بأصابعه. الصحيح كان: قدّر مبادرته ثم تولَّ القيادة.",
   options:[
    {t:"المضادات الحيوية بوصفة فقط. لا أستطيع فعل شيء – راجع الطبيب.",p:5,tr:-8,h:"صحيح لكنه مُهدَر",x:"صحيح علمياً، ضعيف تواصلياً. أنهيت الحوار بدل أن تستشير – سيذهب إلى الصيدلية المجاورة."},
    {t:"جميل أنك بحثت مسبقاً. لأساعدك فعلاً – هل تسمح لي بأسئلة سريعة؟",p:25,tr:10,ok:true,h:"ببراعة",x:"قدّرت المبادرة دون تأكيد التشخيص الذاتي وتوليت القيادة المهنية. هكذا ينفتح هذا النمط."},
@@ -4315,15 +4244,13 @@ TOPICS.halsschmerzen_selbst.steps_ar=[
 TOPICS.sodbrennen_eilig.steps_en=[
  {mech:"comic",data:{kicker:"Scene 1 · The customer arrives",title:"A man rushes in - jacket open, glancing back at the door",img:"assets/PCG_SCN_CUS003_A_ENTRANCE_v003.jpg",cta:"React →",
   bubbles:[{who:"Customer",txt:"Quick please - <b>heartburn</b>, every evening for days. I have to leave in five minutes."},{who:"Customer",txt:"Just give me <b>the strongest thing</b> you have."}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS003_B_COUNTER_v003.jpg",kicker:"Decision · 35 seconds",title:"He wants the strongest - now. Your reaction?",seconds:35,
-  timeoutH:"Time's up",timeoutX:"He turns pointedly towards the door. The right move: promise speed, keep the lead.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS003_B_COUNTER_v003.jpg",kicker:"Decision",title:"He wants the strongest - now. Your reaction?",timeoutH:"Time's up",timeoutX:"He turns pointedly towards the door. The right move: promise speed, keep the lead.",
   options:[
    {t:"Coming right up - here, a proton pump inhibitor.",p:5,tr:-3,h:"Fast but blind",x:"Speed is no substitute for triage. Without a single question you don't even know if self-medication is acceptable."},
    {t:"Super quick: two targeted questions, and in one minute you'll have exactly the right thing.",p:25,tr:10,ok:true,h:"Lead + speed",x:"You take his time limit seriously AND keep professional control. Exactly the language this type understands."},
    {t:"First I need a thorough history - about ten minutes.",p:5,tr:-12,h:"Customer lost",x:"Professionally meant, communicatively fatal. He's out the door before you finish the sentence."},
    {t:"Then just grab any antacid from that shelf over there.",p:0,tr:-8,h:"Counselling abandoned",x:"You delegate your core duty to a shelf. That's selling, not pharmacy."}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS003_C_OTS_v003.jpg",kicker:"Turbo history · 40 seconds",title:"Time for ONE question first. Which?",seconds:40,
-  timeoutH:"Time's up",timeoutX:"Too slow for this one. The right move: four alarm signs in one question.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS003_C_OTS_v003.jpg",kicker:"Turbo history",title:"Time for ONE question first. Which?",timeoutH:"Time's up",timeoutX:"Too slow for this one. The right move: four alarm signs in one question.",
   options:[
    {t:"Any trouble swallowing, blood in the stool, unintended weight loss - or daily symptoms for more than two weeks?",p:25,tr:10,ok:true,h:"Red flags bundled",x:"One question, four alarm signs - maximum safety per second. He denies all: five days, late business dinners, lots of coffee, stress. Self-medication acceptable."},
    {t:"What exactly did you eat last?",p:5,tr:0,h:"Side issue",x:"Triggers are interesting - but only AFTER ruling out the alarm signs."},
@@ -4349,15 +4276,13 @@ TOPICS.sodbrennen_eilig.steps_en=[
 TOPICS.sodbrennen_eilig.steps_ar=[
  {mech:"comic",data:{kicker:"المشهد 1 · وصول الزبون",title:"رجل يدخل مسرعاً - سترته مفتوحة وعينه على الباب",img:"assets/PCG_SCN_CUS003_A_ENTRANCE_v003.jpg",cta:"تصرّف ←",
   bubbles:[{who:"الزبون",txt:"بسرعة من فضلك - <b>حرقة معدة</b> كل مساء منذ أيام. عليّ المغادرة خلال خمس دقائق."},{who:"الزبون",txt:"أعطني <b>أقوى ما عندك</b> وحسب."}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS003_B_COUNTER_v003.jpg",kicker:"قرار · 35 ثانية",title:"يريد الأقوى - فوراً. ردّك؟",seconds:35,
-  timeoutH:"انتهى الوقت",timeoutX:"يلتفت إلى الباب باستعراض. الصحيح كان: عِد بالسرعة واحتفظ بالقيادة.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS003_B_COUNTER_v003.jpg",kicker:"قرار",title:"يريد الأقوى - فوراً. ردّك؟",timeoutH:"انتهى الوقت",timeoutX:"يلتفت إلى الباب باستعراض. الصحيح كان: عِد بالسرعة واحتفظ بالقيادة.",
   options:[
    {t:"حاضر فوراً - تفضل، مثبط مضخة البروتون.",p:5,tr:-3,h:"سريع لكنه أعمى",x:"السرعة لا تعوّض الفرز. بلا سؤال واحد لا تعرف حتى إن كان العلاج الذاتي مقبولاً."},
    {t:"بسرعة تامة: سؤالان محددان، وخلال دقيقة يكون معك الصحيح تماماً.",p:25,tr:10,ok:true,h:"قيادة + سرعة",x:"أخذت وقته على محمل الجد واحتفظت بالسيطرة المهنية. هذه بالضبط اللغة التي يفهمها هذا النمط."},
    {t:"أحتاج أولاً أنامنيزه مفصلة - نحو عشر دقائق.",p:5,tr:-12,h:"خسرت الزبون",x:"صحيح مهنياً، قاتل تواصلياً. سيخرج من الباب قبل أن تُنهي جملتك."},
    {t:"خذ أي مضاد حموضة من ذاك الرف هناك.",p:0,tr:-8,h:"تخلٍّ عن الاستشارة",x:"فوّضت مهمتك الجوهرية إلى رف. هذا بيع، لا صيدلة."}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS003_C_OTS_v003.jpg",kicker:"أنامنيزه سريعة · 40 ثانية",title:"وقتك يتسع لسؤال واحد أولاً. أيّها؟",seconds:40,
-  timeoutH:"انتهى الوقت",timeoutX:"أبطأ من إيقاعه. الصحيح كان: أربع علامات إنذار في سؤال واحد.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS003_C_OTS_v003.jpg",kicker:"أنامنيزه سريعة",title:"وقتك يتسع لسؤال واحد أولاً. أيّها؟",timeoutH:"انتهى الوقت",timeoutX:"أبطأ من إيقاعه. الصحيح كان: أربع علامات إنذار في سؤال واحد.",
   options:[
    {t:"هل لديك صعوبة بلع، دم في البراز، نقصان وزن غير مقصود - أو الأعراض يومية منذ أكثر من أسبوعين؟",p:25,tr:10,ok:true,h:"العلامات الحمراء في حزمة",x:"سؤال واحد، أربع علامات إنذار - أقصى أمان في الثانية. ينفي كل شيء: خمسة أيام، عشاءات عمل متأخرة، قهوة كثيرة، توتر. العلاج الذاتي مقبول."},
    {t:"ماذا أكلت آخر مرة بالضبط؟",p:5,tr:0,h:"موضوع جانبي",x:"المحفزات مهمة - لكن بعد استبعاد علامات الإنذار."},
@@ -4682,8 +4607,7 @@ TOPICS.fusspilz_sportler.steps_ar=[
 TOPICS.rueckenschmerzen_handwerk.steps_en=[
  {mech:"comic",data:{kicker:"Scene 1 · The customer arrives",title:"A craftsman walks in - work clothes, straight from the site",img:"assets/PCG_SCN_CUS009_A_ENTRANCE_v003.jpg",cta:"React →",
   bubbles:[{who:"Customer",txt:"Morning. My <b>lower back</b> has been playing up since Monday - I lifted something heavy and it's been pulling ever since."},{who:"Customer",txt:"Give me something strong, I have to be back on site tomorrow. <b>Taking sick leave isn't an option.</b>"}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS009_B_COUNTER_v003.jpg",kicker:"Decision · 40 seconds",title:"He wants \u201csomething strong\u201d and must work tomorrow. Your first move?",seconds:40,
-  timeoutH:"Time's up",timeoutX:"He gets impatient. The right move: exclude the dangerous courses before dispensing anything.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS009_B_COUNTER_v003.jpg",kicker:"Decision",title:"He wants \u201csomething strong\u201d and must work tomorrow. Your first move?",timeoutH:"Time's up",timeoutX:"He gets impatient. The right move: exclude the dangerous courses before dispensing anything.",
   options:[
    {t:"Before I give you anything, two quick questions: does the pain radiate into your leg, is anything numb or tingling - and any trouble passing urine?",p:25,tr:10,ok:true,h:"The decisive red flags",x:"Radiation into the leg, numbness and bladder dysfunction separate ordinary back pain from an emergency. In cauda equina syndrome hours count. These three questions cost twenty seconds and are non-negotiable."},
    {t:"Sure, here - ibuprofen 600, strongest without a prescription.",p:0,tr:-10,h:"Wrong on two counts",x:"Ibuprofen 600 is prescription-only; over the counter goes up to 400 mg. And you dispensed an analgesic without a single safety question."},
@@ -4720,8 +4644,7 @@ TOPICS.rueckenschmerzen_handwerk.steps_en=[
 TOPICS.insektenstich_panisch.steps_en=[
  {mech:"comic",data:{kicker:"Scene 1 · The customer arrives",title:"A young father rushes in - his daughter by the hand",img:"assets/PCG_SCN_CUS010_A_ENTRANCE_v003.jpg",cta:"React →",
   bubbles:[{who:"Father",txt:"My daughter, five years old - a <b>wasp</b> stung her on the arm, ten minutes ago in the garden! It's already red and swollen!"},{who:"Father",txt:"My wife is with her. What do I do?! <b>Can this get dangerous?</b>"}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS010_B_COUNTER_v003.jpg",kicker:"Decision · 35 seconds",title:"The father is panicking. Your first response?",seconds:35,
-  timeoutH:"Time's up",timeoutX:"The father is already turning to the door. The right move: calm him and immediately ask the emergency questions.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS010_B_COUNTER_v003.jpg",kicker:"Decision",title:"The father is panicking. Your first response?",timeoutH:"Time's up",timeoutX:"The father is already turning to the door. The right move: calm him and immediately ask the emergency questions.",
   options:[
    {t:"I'll help you right now. Most important first: is she breathing normally, is she dizzy or nauseous, does she have hives all over her body or swelling in the face?",p:25,tr:12,ok:true,h:"Calm and triage at once",x:"You slow the pace with one sentence and ask the only question that matters: systemic or local reaction? Breathlessness, generalized hives, dizziness or facial swelling mean calling emergency services, not pharmacy counselling."},
    {t:"Calm down, a wasp sting is harmless. Here's a gel.",p:0,tr:-12,h:"Dangerously reassuring",x:"You rule out anaphylaxis without asking a single question. Around 3 percent of the population has an insect-venom allergy - and the first minutes decide."},
@@ -4758,8 +4681,7 @@ TOPICS.insektenstich_panisch.steps_en=[
 TOPICS.rueckenschmerzen_handwerk.steps_ar=[
  {mech:"comic",data:{kicker:"المشهد 1 · وصول الزبون",title:"حرفي يدخل بملابس العمل قادماً من الورشة مباشرة",img:"assets/PCG_SCN_CUS009_A_ENTRANCE_v003.jpg",cta:"تصرّف ←",
   bubbles:[{who:"الزبون",txt:"صباح الخير. <b>أسفل ظهري</b> يزعجني منذ الاثنين - رفعت شيئاً ثقيلاً ومنذها والألم يشدّ."},{who:"الزبون",txt:"أعطني شيئاً قوياً، عليّ العودة للورشة غداً. <b>الإجازة المرضية ليست خياراً.</b>"}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS009_B_COUNTER_v003.jpg",kicker:"قرار · 40 ثانية",title:"يريد «شيئاً قوياً» وعليه العمل غداً. أول تصرف؟",seconds:40,
-  timeoutH:"انتهى الوقت",timeoutX:"نفد صبره. الصحيح كان: استبعد المسارات الخطرة قبل صرف أي شيء.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS009_B_COUNTER_v003.jpg",kicker:"قرار",title:"يريد «شيئاً قوياً» وعليه العمل غداً. أول تصرف؟",timeoutH:"انتهى الوقت",timeoutX:"نفد صبره. الصحيح كان: استبعد المسارات الخطرة قبل صرف أي شيء.",
   options:[
    {t:"قبل أن أعطيك شيئاً، سؤالان سريعان: هل ينتشر الألم إلى الساق، هل هناك خدر أو تنميل - وهل تجد صعوبة في التبول؟",p:25,tr:10,ok:true,h:"العلامات الحمراء الحاسمة",x:"الانتشار إلى الساق والخدر واضطراب المثانة هي ما يفصل ألم الظهر العادي عن الطوارئ. في متلازمة ذيل الفرس تُحسب الساعات. هذه الأسئلة الثلاثة تكلف عشرين ثانية وغير قابلة للتفاوض."},
    {t:"طبعاً، تفضل - إيبوبروفين 600، أقوى ما يُصرف بلا وصفة.",p:0,tr:-10,h:"خطأ من وجهين",x:"إيبوبروفين 600 بوصفة طبية؛ المتاح بلا وصفة حتى 400 ملغ. وقد صرفت مسكّناً دون سؤال أمان واحد."},
@@ -4796,8 +4718,7 @@ TOPICS.rueckenschmerzen_handwerk.steps_ar=[
 TOPICS.insektenstich_panisch.steps_ar=[
  {mech:"comic",data:{kicker:"المشهد 1 · وصول الزبون",title:"أب شاب يندفع داخلاً وابنته بيده",img:"assets/PCG_SCN_CUS010_A_ENTRANCE_v003.jpg",cta:"تصرّف ←",
   bubbles:[{who:"الأب",txt:"ابنتي، خمس سنوات - <b>دبور</b> لدغها في ذراعها قبل عشر دقائق في الحديقة! المكان أحمر ومتورم!"},{who:"الأب",txt:"زوجتي معها. ماذا أفعل الآن؟! <b>هل يمكن أن يصبح الأمر خطيراً؟</b>"}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS010_B_COUNTER_v003.jpg",kicker:"قرار · 35 ثانية",title:"الأب في ذعر. أول ردّ منك؟",seconds:35,
-  timeoutH:"انتهى الوقت",timeoutX:"الأب يستدير نحو الباب. الصحيح كان: طمئنه واسأل فوراً عن علامات الطوارئ.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS010_B_COUNTER_v003.jpg",kicker:"قرار",title:"الأب في ذعر. أول ردّ منك؟",timeoutH:"انتهى الوقت",timeoutX:"الأب يستدير نحو الباب. الصحيح كان: طمئنه واسأل فوراً عن علامات الطوارئ.",
   options:[
    {t:"سأساعدك حالاً. الأهم أولاً: هل تتنفس بشكل طبيعي، هل تشعر بدوار أو غثيان، هل ظهر شرى في كل جسمها أو تورّم في الوجه؟",p:25,tr:12,ok:true,h:"تهدئة وفرز في آن",x:"خفّضت الإيقاع بجملة واحدة وسألت السؤال الوحيد المهم: تفاعل جهازي أم موضعي؟ ضيق النفس والشرى المعمم والدوار وتورّم الوجه تعني الاتصال بالإسعاف لا استشارة صيدلية."},
    {t:"اهدأ، لدغة الدبور غير مؤذية. تفضل هذا الجل.",p:0,tr:-12,h:"طمأنة خطرة",x:"استبعدت التأق دون سؤال واحد. نحو 3% من السكان لديهم حساسية لسم الحشرات - والدقائق الأولى حاسمة."},
@@ -4871,8 +4792,7 @@ TOPICS.verstopfung_senior.steps_en=[
 TOPICS.augenroetung_screen.steps_en=[
  {mech:"comic",data:{kicker:"Scene 1 · The customer arrives",title:"An office worker walks in - coffee cup in hand",img:"assets/PCG_SCN_CUS012_A_ENTRANCE_v003.jpg",cta:"React →",
   bubbles:[{who:"Customer",txt:"Hi! My <b>right eye</b> has been red since yesterday and feels like sandpaper."},{who:"Customer",txt:"I sit at a screen twelve hours a day, it's surely just dry. Do you have something <b>to take the redness out</b>? It looks bad in meetings."}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS012_B_COUNTER_v003.jpg",kicker:"Decision · 40 seconds",title:"A red eye - the riskiest snap diagnosis in the pharmacy. What do you ask?",seconds:40,
-  timeoutH:"Time's up",timeoutX:"He checks his watch. The right move: pain, vision loss and contact lenses decide everything.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS012_B_COUNTER_v003.jpg",kicker:"Decision",title:"A red eye - the riskiest snap diagnosis in the pharmacy. What do you ask?",timeoutH:"Time's up",timeoutX:"He checks his watch. The right move: pain, vision loss and contact lenses decide everything.",
   options:[
    {t:"Do you have pain in the eye, is your vision worse or blurred, are you sensitive to light - and do you wear contact lenses?",p:25,tr:12,ok:true,h:"The four key questions",x:"Pain, reduced vision, photophobia and contact lenses are the four points separating a harmless red eye from keratitis, iritis or acute glaucoma. In a lens wearer: red eye plus lens means ophthalmologist until proven otherwise."},
    {t:"Dry eyes from screen work, sure - here are decongestant drops.",p:0,tr:-12,h:"Dangerous snap diagnosis",x:"You adopt his self-diagnosis in a unilaterally red eye. And vasoconstrictors mask the redness without treating the cause - in keratitis that costs vision."},
@@ -4946,8 +4866,7 @@ TOPICS.verstopfung_senior.steps_ar=[
 TOPICS.augenroetung_screen.steps_ar=[
  {mech:"comic",data:{kicker:"المشهد 1 · وصول الزبون",title:"موظف مكتبي يدخل وكوب قهوته بيده",img:"assets/PCG_SCN_CUS012_A_ENTRANCE_v003.jpg",cta:"تصرّف ←",
   bubbles:[{who:"الزبون",txt:"مرحباً! <b>عيني اليمنى</b> حمراء منذ الأمس وأشعر فيها بشيء كورق الصنفرة."},{who:"الزبون",txt:"أجلس اثنتي عشرة ساعة أمام الشاشة، حتماً مجرد جفاف. هل عندك شيء <b>يُذهب الاحمرار</b>؟ منظرها سيئ في الاجتماعات."}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS012_B_COUNTER_v003.jpg",kicker:"قرار · 40 ثانية",title:"العين الحمراء أخطر تشخيص بالنظر في الصيدلية. عمّ تسأل؟",seconds:40,
-  timeoutH:"انتهى الوقت",timeoutX:"ينظر إلى ساعته. الصحيح كان: الألم وتراجع الرؤية والعدسات تحسم كل شيء.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS012_B_COUNTER_v003.jpg",kicker:"قرار",title:"العين الحمراء أخطر تشخيص بالنظر في الصيدلية. عمّ تسأل؟",timeoutH:"انتهى الوقت",timeoutX:"ينظر إلى ساعته. الصحيح كان: الألم وتراجع الرؤية والعدسات تحسم كل شيء.",
   options:[
    {t:"هل تشعر بألم في العين، هل الرؤية أسوأ أو مشوّشة، هل تتحسس من الضوء - وهل ترتدي عدسات لاصقة؟",p:25,tr:12,ok:true,h:"الأسئلة المفتاحية الأربعة",x:"الألم وتراجع الرؤية ورهاب الضوء والعدسات هي النقاط الأربع التي تفصل العين الحمراء الحميدة عن التهاب القرنية أو القزحية أو نوبة الزرق. ومع مرتدي العدسات: عين حمراء مع عدسة تعني طبيب عيون حتى يثبت العكس."},
    {t:"جفاف من عمل الشاشة، واضح - تفضل قطرات مزيلة للاحمرار.",p:0,tr:-12,h:"تشخيص بالنظر خطر",x:"تبنّيت تشخيصه الذاتي مع احمرار في عين واحدة. والقطرات المقبّضة للأوعية تُخفي الاحمرار دون علاج السبب - وفي التهاب القرنية يكلّف ذلك البصر."},
@@ -4984,8 +4903,7 @@ TOPICS.augenroetung_screen.steps_ar=[
 TOPICS.heuschnupfen_fahrer.steps_en=[
  {mech:"comic",data:{kicker:"Scene 1 · The customer arrives",title:"A professional driver walks in - truck keys in hand",img:"assets/PCG_SCN_CUS013_A_ENTRANCE_v004.jpg",cta:"React →",
   bubbles:[{who:"Customer",txt:"Morning. Two weeks of runny nose and my eyes itch like mad - <b>hay fever</b>, same as every year."},{who:"Customer",txt:"Give me something strong. Ideally something that lets me <b>sleep well</b>, it keeps me awake at night."}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS013_B_COUNTER_v004.jpg",kicker:"Decision · 40 seconds",title:"He wants \u201csomething strong to sleep\u201d. Your first response?",seconds:40,
-  timeoutH:"Time's up",timeoutX:"He drums on the counter. The right move: his job decides the choice of substance here.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS013_B_COUNTER_v004.jpg",kicker:"Decision",title:"He wants \u201csomething strong to sleep\u201d. Your first response?",timeoutH:"Time's up",timeoutX:"He drums on the counter. The right move: his job decides the choice of substance here.",
   options:[
    {t:"One important question first: you drive professionally - when are you next behind the wheel? That decides which product is even an option for you.",p:25,tr:12,ok:true,h:"His job is the key information",x:"First-generation sedating antihistamines substantially impair fitness to drive - in a professional driver that is not merely a side effect but a matter of livelihood and liability. The keys in his hand were the clue."},
    {t:"Sure, here's a first-generation antihistamine, it makes you nicely drowsy.",p:0,tr:-15,h:"Dangerous error",x:"You knowingly give a professional driver a sedating product. Impaired driving at work, accident risk, and in the event of harm a counselling liability that comes back to you."},
@@ -5058,8 +4976,7 @@ TOPICS.rauchstopp_entschl.steps_en=[
 TOPICS.heuschnupfen_fahrer.steps_ar=[
  {mech:"comic",data:{kicker:"المشهد 1 · وصول الزبون",title:"سائق مهني يدخل ومفاتيح الشاحنة بيده",img:"assets/PCG_SCN_CUS013_A_ENTRANCE_v004.jpg",cta:"تصرّف ←",
   bubbles:[{who:"الزبون",txt:"صباح الخير. منذ أسبوعين أنفي يسيل وعيناي تحكّان بجنون - <b>حمى القش</b> كعادتها كل سنة."},{who:"الزبون",txt:"أعطني شيئاً قوياً. ويُفضَّل شيء يجعلني <b>أنام جيداً</b>، فهي تُوقظني ليلاً."}]}},
- {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS013_B_COUNTER_v004.jpg",kicker:"قرار · 40 ثانية",title:"يريد «شيئاً قوياً للنوم». أول ردّ منك؟",seconds:40,
-  timeoutH:"انتهى الوقت",timeoutX:"يقرع على الطاولة. الصحيح كان: مهنته هي التي تحسم اختيار المادة هنا.",
+ {mech:"mcq",data:{scene:"assets/PCG_SCN_CUS013_B_COUNTER_v004.jpg",kicker:"قرار",title:"يريد «شيئاً قوياً للنوم». أول ردّ منك؟",timeoutH:"انتهى الوقت",timeoutX:"يقرع على الطاولة. الصحيح كان: مهنته هي التي تحسم اختيار المادة هنا.",
   options:[
    {t:"سؤال مهم أولاً: أنت تقود مهنياً - متى موعد قيادتك القادم؟ هذا يحدد أي مستحضر يصلح لك أصلاً.",p:25,tr:12,ok:true,h:"مهنته هي المعلومة المفتاح",x:"مضادات الهيستامين من الجيل الأول تضعف أهلية القيادة بوضوح - وعند سائق مهني ليست مجرد أثر جانبي بل مسألة رزق ومسؤولية قانونية. والمفاتيح في يده كانت الإشارة."},
    {t:"طبعاً، تفضل مضاد هيستامين من الجيل الأول، يجلب النعاس جيداً.",p:0,tr:-15,h:"خطأ خطير",x:"تعطي سائقاً مهنياً مستحضراً مُنوِّماً عن قصد. عدم أهلية للقيادة في العمل، وخطر حادث، وفي حال الضرر مسؤولية استشارية ترتد عليك."},
@@ -5608,7 +5525,7 @@ TOPICS.retax_rabatt_klein = {
 
  {mech:"sort",data:{kicker:"Sortierung · auf Zeit", title:"Welche Positionen sind angreifbar?",
   visual:{img:"assets/Retax/retax_scene_karte_in_fach.webp", bg:true},
-  hint:"Maßstab ist die Begründung, nicht der Betrag.", seconds:60, pts:25,
+  hint:"Maßstab ist die Begründung, nicht der Betrag.", pts:25,
   flagLabel:"Angreifbar", safeLabel:"Nicht angreifbar",
   cards:[
    {t:"Macrogol AbZ Pulver 50 Beutel<small>PZN 10398914 · Code 63 · −1,86 €</small>",flag:false},
@@ -5707,7 +5624,7 @@ TOPICS.retax_rabatt_klein = {
 
  {mech:"sort",data:{kicker:"Sorting · against the clock", title:"Which positions are attackable?",
   visual:{img:"assets/Retax/retax_scene_karte_in_fach.webp", bg:true},
-  hint:"The criterion is the reason, not the amount.", seconds:60, pts:25,
+  hint:"The criterion is the reason, not the amount.", pts:25,
   flagLabel:"Attackable", safeLabel:"Not attackable",
   cards:[
    {t:"Macrogol AbZ Pulver 50 Beutel<small>PZN 10398914 · code 63 · −1.86 €</small>",flag:false},
@@ -5806,7 +5723,7 @@ TOPICS.retax_rabatt_klein = {
 
  {mech:"sort",data:{kicker:"فرز · على الوقت", title:"أي المواضع قابلة للطعن؟",
   visual:{img:"assets/Retax/retax_scene_karte_in_fach.webp", bg:true},
-  hint:"المعيار الحجة، لا المبلغ.", seconds:60, pts:25,
+  hint:"المعيار الحجة، لا المبلغ.", pts:25,
   flagLabel:"أستطيع الطعن", safeLabel:"لا أستطيع الطعن",
   cards:[
    {t:"Macrogol AbZ Pulver 50 Beutel<small>PZN 10398914 · كود 63 · −1,86 €</small>",flag:false},
@@ -6136,6 +6053,30 @@ var CUS_MAX  = 3;
 var CUS_GEDULD = 95;    /* Sekunden, bis einer von selbst geht */
 var CUS_STRAFE = -20;   /* Punkte, wenn er veraergert geht */
 
+var PC_CUSTOMER_ATLASES={selbst:{"down":{"src":"assets/cust/cus_selbst_down_v002.webp","frames":[[60,22,204,473,163.0],[406,22,205,475,509.5],[760,22,204,471,861.5],[60,526,204,476,163.5],[412,525,202,467,509.5],[763,524,203,478,862.0],[63,1030,202,481,164.0],[411,1030,199,482,510.0],[763,1030,203,465,862.0]]},"side":{"src":"assets/cust/cus_selbst_side_v002.webp","frames":[[81,18,180,479,170.5],[380,17,263,483,510.5],[754,16,202,482,858.5],[43,520,260,481,171.5],[406,520,206,478,511.5],[733,518,256,484,859.0],[53,1024,234,477,171.5],[383,1024,259,486,510.5],[766,1024,192,481,860.0]]},"up":{"src":"assets/cust/cus_selbst_up_v002.webp","frames":[[69,16,208,481,174.0],[398,16,212,481,512.5],[748,16,216,482,860.0],[58,518,219,506,171.0],[401,517,222,507,511.0],[747,517,220,507,862.0],[61,1024,211,488,173.5],[411,1024,217,482,512.0],[749,1024,213,482,862.0]]}}};
+function pcLoadCustAtlas(id){
+ var set=PC_CUSTOMER_ATLASES[id];if(!set||set.started)return;
+ set.started=true;set.pending=3;
+ var watchdog=setTimeout(function(){if(!set.ready)set.failed=true;},12000);
+ ['down','side','up'].forEach(function(key){
+  var a=set[key],im=new Image();im.decoding='async';
+  im.onerror=function(){set.failed=true;clearTimeout(watchdog);};
+  im.onload=function(){var ready=function(){a.image=im;if(--set.pending===0){set.ready=true;clearTimeout(watchdog);}};if(im.decode)im.decode().then(ready,ready);else ready();};
+  im.src=a.src;
+ });
+}
+function pcDrawCustomer(canvas,c,h){
+ var set=PC_CUSTOMER_ATLASES[c.p],dir=c.dir||'down',a=set[dir==='left'||dir==='right'?'side':dir];
+ var frame=c.animMoving?1+Math.floor(c.walkPhase||0)%8:0;
+ var dpr=Math.min(window.devicePixelRatio||1,2),width=h*.9;
+ var sig=dir+'|'+frame+'|'+h.toFixed(2)+'|'+dpr;if(canvas._sig===sig)return;canvas._sig=sig;
+ canvas.style.width='100%';canvas.style.height='100%';
+ var pw=Math.ceil(width*dpr),ph=Math.ceil(h*dpr);if(canvas.width!==pw||canvas.height!==ph){canvas.width=pw;canvas.height=ph;}
+ var ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,width,h);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+ var f=a.frames[frame],scale=h/f[3];ctx.save();if(dir==='right'){ctx.translate(width,0);ctx.scale(-1,1);}
+ ctx.drawImage(a.image,f[0],f[1],f[2],f[3],width/2-(f[4]-f[0])*scale,0,f[2]*scale,h);ctx.restore();
+}
+
 var CUS_IMG = {};
 var CUS_LOAD = { ok:0, fail:0, total:0, ersterFehler:null };
 function custSrc(id){ return 'assets/cust/cus_'+id+'.png'; }
@@ -6148,6 +6089,7 @@ function pcCustomerNotice(waiting, failed){
     (failed?'Kundenbild wird erneut geladen.':'Kundenbild wird geladen…');
 }
 function custPreload(id){
+  pcLoadCustAtlas(id);
   if(!id || CUS_IMG[id])return;
   var old=pcCustomerLoads[id];
   if(old && (old.loading || Date.now()<old.retryAt))return;
@@ -6272,7 +6214,8 @@ function custArrive(){
   if(besetzt){ CUS.t=Math.max(CUS.t, 3); return; }
   var lv=CUS.pendingLv || custPickLevel(); if(!lv) return;
   CUS.pendingLv=lv;custPreload(lv.persona);
-  if(!CUS_IMG[lv.persona]){
+  var aset=PC_CUSTOMER_ATLASES[lv.persona];
+  if(!CUS_IMG[lv.persona] || (aset&&!aset.ready&&!aset.failed)){
     CUS.t=0.3;pcCustomerNotice(true,!!(pcCustomerLoads[lv.persona] && pcCustomerLoads[lv.persona].retryAt));return;
   }
   CUS.pendingLv=null;pcCustomerNotice(false);
@@ -6346,6 +6289,7 @@ function custTick(dt){
   }
   var raus=[];
   CUS.list.forEach(function(c){
+    c.animMoving=false;
     if(c.state==='wait'){
       c.geduld -= dt;
       if(c.geduld<=0) custLeave(c, true);
@@ -6370,12 +6314,13 @@ function custTick(dt){
           return after<1 && after<before-0.00001;
         });
         if(blocked){sp=0;break;}
+        if(step>0){c.animMoving=true;c.walkPhase=((c.walkPhase||0)+step*8/9.6)%8;c.dir=Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up');}
         if(d<=sp){ c.pos.x=n.x; c.pos.y=n.y; c.path.shift(); sp-=d; }
         else { c.pos.x+=dx/d*sp; c.pos.y+=dy/d*sp; sp=0;
                c.dir = Math.abs(dx)>Math.abs(dy) ? (dx>0?'right':'left') : (dy>0?'down':'up'); }
       }
       if(!c.path.length){
-        if(c.state==='in'){ c.state='wait'; c.dir='right'; c.seit=performance.now(); }
+        if(c.state==='in'){ c.animMoving=false;c.state='wait'; c.dir='right'; c.seit=performance.now(); }
         else raus.push(c);
       }
     }
@@ -6409,17 +6354,18 @@ function custDraw(){
       layer.appendChild(el);
     }
     var depth = 0.85 + 0.45*(c.pos.y/WORLD_G);
-    var h = W.cell*9.68*depth, w = h*(400/700);
+    var animated=!!(PC_CUSTOMER_ATLASES[c.p]&&PC_CUSTOMER_ATLASES[c.p].ready);
+    var h = W.cell*9.68*depth, w = h*(animated?.9:(400/700));
     var px = W.ox+(c.pos.x+0.5)*W.cell, py = W.oy+(c.pos.y+0.9)*W.cellY;
-    var bob = (c.state==='in'||c.state==='out') ? Math.abs(Math.sin(performance.now()/165))*h*0.022 : 0;
+    var bob = animated ? 0 : (c.state==='in'||c.state==='out') ? Math.abs(Math.sin(performance.now()/165))*h*0.022 : 0;
     var src = CUS_IMG[c.p];
     var mad = (c.state==='mad');
     /* Nur neu zeichnen, wenn sich wirklich etwas geaendert hat. Sonst
        verschwindet das Antippziel zwischen Druck und Loslassen. */
-    var sig = c.state+'|'+(src||'-')+'|'+state.lang+'|'+(c.uebergangen>0?'u':'z');
+    var sig = animated+'|'+c.state+'|'+(src||'-')+'|'+state.lang+'|'+(c.uebergangen>0?'u':'z');
     if(el.dataset.sig !== sig){
       el.dataset.sig = sig;
-    var inner = src ? '<img src="'+src+'" style="width:100%;height:100%">'
+    var inner = animated ? '<canvas class="cu-sprite"></canvas>' : src ? '<img src="'+src+'" style="width:100%;height:100%">'
                     : (mad?CUS_BLANK_MAD:CUS_BLANK);
     var mark = (c.state==='wait')
       ? '<span class="cu-tag">'+ICONS.draw('speak')+'</span>'
@@ -6431,7 +6377,8 @@ function custDraw(){
     pcStyle(el,'height',h.toFixed(2)+'px'); pcStyle(el,'width',w.toFixed(2)+'px');
     pcStyle(el,'left','0px');pcStyle(el,'top','0px');
     pcStyle(el,'transform','translate3d('+px.toFixed(2)+'px,'+(py-bob).toFixed(2)+'px,0) translate(-50%,-100%)');
-    if(el._body)pcStyle(el._body,'transform',c.dir==='right'?'scaleX(-1)':'none');
+    if(el._body)pcStyle(el._body,'transform',!animated&&c.dir==='right'?'scaleX(-1)':'none');
+    if(animated)pcDrawCustomer(el.querySelector('canvas'),c,h);
     pcStyle(el,'zIndex',String(mad ? 60 : (10 + Math.round(c.pos.y))));
     if(el._state!==c.state){
       el.classList.toggle('mad', mad);el.classList.toggle('tapp',c.state==='wait');el._state=c.state;
@@ -6566,8 +6513,7 @@ TOPICS.buero_formfehler_01 = {
       {l:"Zum Vergleich · Abweichung von der Abgaberangfolge ohne Dokumentation", v:"Erstattung = Einkaufspreis"}],
     expl:"Zwei verschiedene Schweregrade. Die fehlende Unterschrift lässt den gesamten Erstattungsanspruch verfallen. Weicht die Apotheke dagegen ohne Dokumentation von der Abgaberangfolge ab, wird seit § 129 Abs. 4d nicht mehr auf null retaxiert, sondern nur noch der Einkaufspreis erstattet: Die Marge ist weg, die Ware nicht."}},
 
-  {mech:"hunt",data:{kicker:"Rezept C · Spektrion", penalty:true, p:25, seconds:45,
-    title:"Formal ist alles korrekt. Finde trotzdem das Problem. 45 Sekunden.",
+  {mech:"hunt",data:{kicker:"Rezept C · Spektrion", penalty:true, p:25, title:"Formal ist alles korrekt. Finde trotzdem das Problem. 45 Sekunden.",
     doc:{type:"m16", r:REZ_C, kartei:karteiC(),
          open:["marcumar","panto","inr","abgabe","datum","verordnung","dosis","unterschrift"]},
     answer:"marcumar", okH:"Die Wechselwirkung gefunden", badH:"Nicht gefunden",
@@ -6669,8 +6615,7 @@ TOPICS.buero_formfehler_01.steps_en = [
       {l:"For comparison · undocumented departure from the dispensing hierarchy", v:"reimbursement = cost price"}],
     expl:"Two different severities. A missing signature forfeits the entire reimbursement claim. Departing from the dispensing hierarchy without documentation, by contrast, no longer permits a zero clawback under § 129 (4d), only reimbursement at cost price: the margin is gone, the goods are not."}},
 
-  {mech:"hunt",data:{kicker:"Prescription C · Spektrion", penalty:true, p:25, seconds:45,
-    title:"Formally everything is correct. Find the problem anyway. 45 seconds.",
+  {mech:"hunt",data:{kicker:"Prescription C · Spektrion", penalty:true, p:25, title:"Formally everything is correct. Find the problem anyway. 45 seconds.",
     doc:{type:"m16", r:REZ_C, kartei:karteiC(),
          open:["marcumar","panto","inr","abgabe","datum","verordnung","dosis","unterschrift"]},
     answer:"marcumar", okH:"Interaction found", badH:"Not found",
@@ -6770,8 +6715,7 @@ TOPICS.buero_formfehler_01.steps_ar = [
       {l:"للمقارنة · الخروج عن ترتيب الصرف بلا توثيق", v:"التعويض = سعر الشراء"}],
     expl:"درجتان مختلفتان. نقص التوقيع يُسقط حق المطالبة كله. أما الخروج عن ترتيب الصرف بلا توثيق فلم يعد يُصفَّر منذ §129 Abs. 4d، بل يُدفع سعر الشراء فقط: الهامش يضيع والبضاعة لا."}},
 
-  {mech:"hunt",data:{kicker:"الوصفة C · Spektrion", penalty:true, p:25, seconds:45,
-    title:"كل شيء سليم شكلياً. جد المشكلة رغم ذلك. 45 ثانية.",
+  {mech:"hunt",data:{kicker:"الوصفة C · Spektrion", penalty:true, p:25, title:"كل شيء سليم شكلياً. جد المشكلة رغم ذلك. 45 ثانية.",
     doc:{type:"m16", r:REZ_C, kartei:karteiC(),
          open:["marcumar","panto","inr","abgabe","datum","verordnung","dosis","unterschrift"]},
     answer:"marcumar", okH:"وجدت التداخل", badH:"لم تُوجد",
@@ -6990,7 +6934,7 @@ function pcSync(){try{if(window.PCKonto)Promise.resolve(window.PCKonto.sichern()
 function pcCheckpoint(){
  if(!run || run.committed)return;
  state.checkpoints=state.checkpoints||{};
- state.checkpoints[run.lv.id]={version:PC_SAVE_VERSION,id:run.lv.id,lang:state.lang,stepIdx:run.stepIdx,score:run.score,trust:run.trust,stepScores:run.stepScores,skipped:run.skipped,docs:run.docs,review:run.review,leer:run.leer,timerDeadline:run.timerDeadline,attemptId:run.attemptId,at:Date.now()};
+ state.checkpoints[run.lv.id]={version:PC_SAVE_VERSION,id:run.lv.id,lang:state.lang,stepIdx:run.stepIdx,score:run.score,trust:run.trust,stepScores:run.stepScores,skipped:run.skipped,docs:run.docs,review:run.review,leer:run.leer,attemptId:run.attemptId,at:Date.now()};
  save();
 }
 function pcClearCheckpoint(){
@@ -7001,7 +6945,7 @@ function pcResumeChoice(lv, cp){
  stopMechTimer();stopRx();skipAufraeumen();CUS.on=false;run=null;
  show('gameScreen');
  var host=document.getElementById('stageHost');
- host.innerHTML='<div class="stage"><div class="stage-body"><div class="pc-resume"><h2>'+pcEscape(locName(TOPICS[lv.topic]))+'</h2><p>'+pcText('saved')+' '+pcText('step')+' '+(cp.stepIdx+1)+'.<br>'+pcText('timer')+'</p><button class="confirm-btn" id="pcResume">'+pcText('resume')+'</button><button class="hud-back" id="pcRestart">'+pcText('restart')+'</button><button class="hud-back" id="pcBack">'+pcText('back')+'</button></div></div></div>';
+ host.innerHTML='<div class="stage"><div class="stage-body"><div class="pc-resume"><h2>'+pcEscape(locName(TOPICS[lv.topic]))+'</h2><p>'+pcText('saved')+' '+pcText('step')+' '+(cp.stepIdx+1)+'.</p><button class="confirm-btn" id="pcResume">'+pcText('resume')+'</button><button class="hud-back" id="pcRestart">'+pcText('restart')+'</button><button class="hud-back" id="pcBack">'+pcText('back')+'</button></div></div></div>';
  document.getElementById('pcResume').onclick=function(){state.lang=cp.lang;applyLang();startLevel(lv,true);};
  document.getElementById('pcRestart').onclick=function(){delete state.checkpoints[lv.id];save();startLevel(lv);};
  document.getElementById('pcBack').onclick=zurueckInDenRaum;
@@ -7062,7 +7006,7 @@ function startLevel(lv, resume){
     run.stepIdx=checkpoint.stepIdx; run.score=checkpoint.score; run.trust=checkpoint.trust;
     run.stepScores=checkpoint.stepScores||{}; run.skipped=checkpoint.skipped||{};
     run.docs=checkpoint.docs||[]; run.review=checkpoint.review||[];
-    run.leer=checkpoint.leer; run.timerDeadline=checkpoint.timerDeadline||null;
+    run.leer=checkpoint.leer; run.timerDeadline=null;
     run.attemptId=checkpoint.attemptId;
   }
   run.attemptId=run.attemptId || (Date.now().toString(36)+'-'+Math.random().toString(36).slice(2));
@@ -8160,11 +8104,8 @@ function openWorld(){
   show('worldScreen');
   document.getElementById('wRankName').textContent=locName(RANKS[state.rankIdx]);
   document.getElementById('wPts').textContent=state.totalPts;
-  document.getElementById('wHint').textContent =
-    state.lang==='ar' ? 'انقر على الأرض للمشي · اقترب من علامة للتفاعل'
-    : state.lang==='en' ? 'Tap the floor to walk · step onto a marker to interact'
-    : 'Auf den Boden tippen zum Gehen · an einen Marker treten zum Interagieren';
-  document.getElementById('wHint').classList.remove('hide');
+  document.getElementById('wHint').textContent='';
+  document.getElementById('wHint').classList.add('hide');
   if(!W.room) enterRoom('offizin'); else worldLayout();
   pcWorldStart();
 }
