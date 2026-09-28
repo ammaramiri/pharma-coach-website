@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+
+<title>AR: كورس OTC | Pharma-Coach</title>
+<meta name="description" content="Der OTC-Beratungskurs von Pharma-Coach: rund 50 Indikationen in 8 Themengebieten, jede in 6 klaren Schritten: praxisnah, kompakt, direkt aus der Offizin.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Montserrat:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:#2A2E35;background:#fff;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{text-decoration:none;}
+.ltbtn{font-family:Montserrat,sans-serif;font-weight:800;font-size:13px;padding:6px 12px;border-radius:9px;border:none;cursor:pointer;}
+.ltbtn.active{background:#23272E;color:#fff;}
+.ltbtn.inactive{background:transparent;color:#8A8F98;}
+.de-content{display:block;}
+span.de-content{display:inline;}
+.en-content,span.en-content{display:none;}
+body.en .de-content,body.en span.de-content{display:none;}
+body.en .en-content{display:block;}
+body.en span.en-content{display:inline;}
+h2.sec{font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(24px,3.5vw,38px);color:#23272E;text-align:center;margin-bottom:14px;}
+p.sub{font-size:16px;color:#5A5F68;max-width:620px;margin:0 auto 44px;text-align:center;line-height:1.7;}
+.kicker{font-size:13.5px;font-weight:600;color:#E8192B;margin-bottom:10px;text-align:center;}
+/* importance cards */
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:960px;margin:0 auto;}
+.diff-card{background:#fff;border:1.5px solid #F0E8E5;border-radius:12px;padding:28px 22px;transition:transform .22s,box-shadow .22s,border-color .22s;}
+.diff-card:hover{transform:translateY(-5px);box-shadow:0 18px 36px rgba(20,30,40,.11);border-color:transparent;}
+.diff-icon{width:72px;height:72px;border-radius:18px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
+.diff-card h3{font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;margin:0 0 7px;}
+.diff-card p{font-size:14px;line-height:1.55;color:#5A5F68;margin:0;}
+/* counters */
+.count-strip{display:flex;justify-content:center;gap:56px;flex-wrap:wrap;padding:34px 24px;background:#23272E;}
+.count-item{text-align:center;}
+.count-num{font-family:Montserrat,sans-serif;font-weight:900;font-size:44px;color:#2DDDC4;line-height:1;}
+.count-lbl{font-size:13px;color:rgba(255,255,255,.65);margin-top:6px;}
+/* book comparison */
+.cmp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;margin:0 auto;}
+.cmp{border-radius:12px;padding:26px 22px;border:1.5px solid #EDE7E3;background:#FBF9F8;}
+.cmp.hl{background:#23272E;border-color:#23272E;}
+.cmp h3{font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;margin-bottom:12px;color:#23272E;}
+.cmp.hl h3{color:#2DDDC4;}
+.cmp li{font-size:13.8px;line-height:1.6;color:#5A5F68;margin:0 0 8px 0;list-style:none;display:flex;gap:8px;}
+.cmp.hl li{color:rgba(255,255,255,.85);}
+.cmp li:before{content:"·";color:#C9BEB8;flex-shrink:0;}
+.cmp.hl li:before{content:"✓";color:#2DDDC4;}
+/* steps */
+.step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:960px;margin:0 auto;}
+.step{background:#fff;border:1.5px solid #F0E8E5;border-radius:12px;padding:22px 20px;position:relative;}
+.step-num{width:34px;height:34px;border-radius:50%;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.step h3{font-family:Montserrat,sans-serif;font-weight:800;font-size:14.5px;color:#23272E;margin-bottom:6px;}
+.step p{font-size:13.5px;line-height:1.55;color:#5A5F68;}
+
+
+
+
+
+
+/* catalog */
+.cat-block{max-width:960px;margin:0 auto 22px;background:#fff;border:1.5px solid #F0E8E5;border-radius:14px;padding:24px;}
+.cat-head{display:flex;align-items:center;gap:16px;margin-bottom:16px;}
+.cat-icon{width:58px;height:58px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cat-title{font-family:Montserrat,sans-serif;font-weight:800;font-size:17px;color:#23272E;}
+.cat-count{font-size:13px;color:#8A8F98;margin-top:2px;}
+.cat-chips{display:flex;flex-wrap:wrap;gap:9px;}
+.ind-chip{display:inline-flex;align-items:center;gap:7px;background:#FBF9F8;border:1px solid #EDE7E3;border-radius:999px;padding:7px 14px 7px 10px;font-size:13.5px;font-weight:600;color:#3B4250;}
+/* CTA */
+.btn-red{display:inline-flex;align-items:center;gap:9px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;padding:14px 26px;border-radius:13px;box-shadow:0 4px 0 #B30F1E;}
+.browser{border-radius:12px;overflow:hidden;box-shadow:0 30px 60px rgba(20,30,40,.22);border:1px solid #E8E2DD;background:#fff;}
+.browser-bar{display:flex;align-items:center;gap:8px;background:#F1ECE9;padding:9px 14px;}
+.b-dot{width:10px;height:10px;border-radius:50%;}
+.b-url{flex:1;background:#fff;border-radius:7px;font-size:11.5px;color:#8A8F98;padding:4px 12px;font-weight:500;}
+.browser img{width:100%;display:block;}
+.hero-grid2{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1fr 1.05fr;gap:52px;align-items:center;}
+.peek-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:1020px;margin:0 auto;}
+.peek .browser{box-shadow:0 14px 34px rgba(20,30,40,.14);}
+.peek-cap{font-size:13px;color:#5A5F68;margin-top:10px;text-align:center;}
+.peek-cap b{font-family:Montserrat,sans-serif;font-weight:800;color:#23272E;font-size:13.5px;}
+@media(max-width:860px){.hero-grid2{grid-template-columns:1fr;gap:34px;}.peek-grid{grid-template-columns:1fr;}}
+@media(max-width:860px){.why-grid,.cmp-grid,.step-grid{grid-template-columns:1fr;}.count-strip{gap:30px;}}
+
+/* ===== Micro-Interactions (Hover) ===== */
+a,button{transition:color .18s ease,background-color .18s ease,transform .18s ease,box-shadow .18s ease,border-color .18s ease;}
+a[style*="B30F1E"]:hover,.btn-red:hover{transform:translateY(-3px);box-shadow:0 8px 0 #B30F1E,0 14px 26px rgba(232,25,43,.3)!important;}
+a[style*="B30F1E"]:active,.btn-red:active{transform:translateY(1px);box-shadow:0 2px 0 #B30F1E!important;}
+.cat-block{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;}
+.cat-block:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(20,30,40,.10);border-color:#E4DCD8;}
+.ind-chip{transition:transform .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease;}
+.ind-chip:hover{transform:translateY(-2px);background:#fff;border-color:#2DDDC4;box-shadow:0 6px 14px rgba(20,30,40,.09);}
+.step{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;}
+.step:hover{transform:translateY(-5px);box-shadow:0 16px 32px rgba(20,30,40,.11);border-color:transparent;}
+.cmp{transition:transform .22s ease,box-shadow .22s ease;}
+.cmp:hover{transform:translateY(-5px);box-shadow:0 18px 36px rgba(20,30,40,.12);}
+.peek .browser{transition:transform .3s ease,box-shadow .3s ease;}
+.peek .browser:hover{transform:translateY(-5px);box-shadow:0 22px 46px rgba(20,30,40,.2)!important;}
+.card-link{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;}
+.card-link:hover{transform:translateY(-3px);border-color:#2DDDC4;}
+footer a{transition:color .18s ease,transform .18s ease;display:inline-block;}
+footer a:hover{color:#fff!important;transform:translateY(-1px);}
+.ltbtn:hover{opacity:.85;}
+
+h2.sec{position:relative;padding-bottom:9px;transition:color .22s ease;}
+h2.sec::after{content:"";position:absolute;left:50%;bottom:0;height:2.5px;width:0;background:linear-gradient(90deg,#2DDDC4,#E8192B);border-radius:2px;transform:translateX(-50%);transition:width .35s cubic-bezier(.4,0,.2,1);}
+h2.sec:hover::after{width:180px;}
+.diff-icon{transition:transform .3s cubic-bezier(.34,1.4,.64,1);}
+.diff-card:hover .diff-icon{transform:scale(1.1) rotate(-6deg);}
+.cat-icon{transition:transform .3s cubic-bezier(.34,1.4,.64,1);}
+.cat-block:hover .cat-icon{transform:scale(1.1) rotate(-6deg);}
+.step-num{transition:transform .3s cubic-bezier(.34,1.4,.64,1);}
+.step:hover .step-num{transform:scale(1.15);}
+
+.hero-orb.tap .av-a{opacity:0;}
+.hero-orb.tap .av-b{opacity:1;}
+</style>
+<style>
+body{font-family:"Plus Jakarta Sans","Cairo",system-ui,sans-serif;}
+[style*="Montserrat"]{font-family:Montserrat,"Cairo",sans-serif!important;}
+body *{letter-spacing:0!important;}
+h1,h2,h3,.tl-title,.cat-title{line-height:1.45!important;}
+p,li,.tl-item p{line-height:1.9!important;}
+a.ltbtn{text-decoration:none;display:inline-block;line-height:1.6;}
+.nav-links a::after{right:0;left:auto;}
+.tl{padding-left:0;padding-right:34px;}
+.tl:before{left:auto;right:9px;}
+.tl-dot{left:auto;right:-34px;}
+.tl-item:hover{transform:translateX(-6px);}
+h2.sec::after{left:auto;right:50%;transform:translateX(50%);}
+bdi,[dir="ltr"]{unicode-bidi:isolate;}
+@media(max-width:400px){nav{padding:12px 12px!important;gap:8px!important;}.ltbtn{padding:6px 9px!important;font-size:12px!important;}}
+</style>
+<link rel="canonical" href="https://pharma-coach-amiri.de/ar/otc-kurs.html">
+<link rel="alternate" hreflang="de" href="https://pharma-coach-amiri.de/otc-kurs.html">
+<link rel="alternate" hreflang="ar" href="https://pharma-coach-amiri.de/ar/otc-kurs.html">
+<link rel="alternate" hreflang="x-default" href="https://pharma-coach-amiri.de/otc-kurs.html">
+</head>
+<body id="body">
+
+<!-- NAV -->
+<header style="position:sticky;top:0;z-index:80;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid #F0EAE6;">
+  <nav style="max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;">
+    <a href="index.html" style="display:flex;align-items:center;gap:11px;">
+      <svg viewBox="0 0 120 64" width="42" height="23"><rect x="6" y="14" width="64" height="36" rx="18" fill="#E8192B"/><rect x="50" y="14" width="64" height="36" rx="18" fill="#2DDDC4"/><rect x="33" y="7" width="54" height="50" rx="25" fill="#383D45"/><path d="M53 21 L74 32 L53 43 Z" fill="#fff"/></svg>
+      <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:19px;color:#23272E;white-space:nowrap;">PHARMA<span style="color:#E8192B;">-</span>COACH</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="display:flex;background:#F1ECE9;border-radius:11px;padding:3px;gap:2px;"><a class="ltbtn inactive" href="../otc-kurs.html">DE</a><a class="ltbtn inactive" href="../otc-kurs.html?lang=en">EN</a><button class="ltbtn active" type="button">AR</button></div>
+      <a href="index.html" style="display:inline-flex;align-items:center;gap:7px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:13px;padding:10px 16px;border-radius:12px;box-shadow:0 3px 0 #B30F1E;white-space:nowrap;">
+        → الرئيسية</a>
+    </div>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section style="padding:64px 24px 64px;background:linear-gradient(180deg,#FFFCFB 0%,#fff 100%);overflow:hidden;">
+  <div class="hero-grid2">
+    <div>
+      <div class="kicker" style="text-align:right;">اللبنة الأولى في Pharma-Coach</div>
+      <h1 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(28px,4vw,44px);color:#23272E;margin-bottom:16px;">
+        كورس استشارات OTC</h1>
+      <p style="font-size:16.5px;color:#5A5F68;line-height:1.75;margin-bottom:26px;">
+        نحو 50 استطباباً، و8 مجالات، ونظام واحد: كل موضوع في 6 خطوات واضحة، من جملة الزبون الأولى حتى التوصية المبنية على أساس علمي مع البيع الإضافي.
+        </p>
+      <a href="#gratis" class="btn-red">→ شاهد الدرس المجاني ←</a>
+    </div>
+    <div style="transform:rotate(1.2deg);">
+      <div class="browser">
+        <div class="browser-bar"><span class="b-dot" style="background:#FF5F57;"></span><span class="b-dot" style="background:#FEBC2E;"></span><span class="b-dot" style="background:#28C840;"></span><span class="b-url">unverändert</span></div>
+        <img src="../kurs-akne.jpg" alt="Pharma-Coach Video-Lektion: Beratungsfragen bei Akne" loading="eager">
+      </div>
+      <div class="peek-cap"><b>حبّ الشباب</b> حبّ الشباب · الخطوة 5: أسئلة الاستشارة</div>
+    </div>
+  </div>
+</section>
+
+<!-- COUNTERS -->
+<section class="count-strip">
+  <div class="count-item"><div class="count-num" data-target="8">0</div><div class="count-lbl">مجالات</div></div>
+  <div class="count-item"><div class="count-num" data-target="50">0</div><div class="count-lbl">استطبابات</div></div>
+  <div class="count-item"><div class="count-num" data-target="6">0</div><div class="count-lbl">خطوات لكل موضوع</div></div>
+  <div class="count-item"><div class="count-num" data-target="15" data-prefix="10–">0</div><div class="count-lbl">دقيقة لكل درس</div></div>
+</section>
+
+<!-- WARUM -->
+<section style="padding:80px 24px;background:#fff;">
+  <h2 class="sec">لماذا الكفاءة الاستشارية؟</h2>
+  <p class="sub">المعرفة التخصصية لديك. لكنّ الحوار عند طاولة البيع (HV-Tisch) هو ما يحدّد إن كانت ستتحوّل إلى استشارة جيدة.</p>
+  <div class="why-grid">
+    <div class="diff-card"><div class="diff-icon" style="background:#FFEAEC;color:#E8192B;box-shadow:0 0 0 7px #FFEAEC55;"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20V8l5-4v16M16 20V4l5 4v12"/><path d="M8 12h2.5M13.5 12H16" stroke-dasharray="2.5 2.5"/><path d="M3 20h18"/></svg></div>
+      <h3>الفجوة</h3>
+      <p>بين الدراسة الجامعية وطاولة البيع فجوة: المعرفة موجودة، لكنّ أحداً لم يتدرّب على حوار الاستشارة نفسه بشكل منظَّم.</p></div>
+    <div class="diff-card"><div class="diff-icon" style="background:#E2FAF4;color:#16B8A6;box-shadow:0 0 0 7px #E2FAF455;"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4.5"/><path d="M4.5 8h9M9 3.5v9M6 5l6 6M12 5l-6 6" stroke-width="1"/><path d="M15.5 15.5 21 21M13 12.5l2.5 3"/><path d="M17 8.5c1.5-.5 3-.3 4 .5"/></svg></div>
+      <h3>أن تعرف كثيراً وتقول قليلاً</h3>
+      <p>من يعرف كثيراً يستطيع أن يقول للزبون القليل الذي يهمّ: بدقة، وبوضوح، وفي صلب الموضوع. وهذا بالضبط ما يدرّبك عليه هذا الكورس.</p></div>
+    <div class="diff-card"><div class="diff-icon" style="background:#FEF3DD;color:#F2A50C;box-shadow:0 0 0 7px #FEF3DD55;"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-9M21 20H3"/><path d="M14 7l4-4M18 3h-3.5M18 3v3.5"/></svg></div>
+      <h3>المنافسة تزداد</h3>
+      <p>صيدليات البيع عبر الإنترنت (Versandhandel)، وسلاسل الفروع، ونقص الكوادر المتخصصة: ما يجعل صيدليتك فريدة هو جودة الاستشارة، لا تشكيلة المنتجات.</p></div>
+    <div class="diff-card"><div class="diff-icon" style="background:#ECEFF5;color:#4A5058;box-shadow:0 0 0 7px #ECEFF555;"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3h9A2.5 2.5 0 0 1 17 5.5v5a2.5 2.5 0 0 1-2.5 2.5H9l-4 3.5V13h-.5A2.5 2.5 0 0 1 3 10.5z"/><path d="M8.5 6.7c.4-1 1.8-1.2 2.5-.5.8.7.6 1.7-.3 2.3-.5.3-.7.6-.7 1.1"/><circle cx="10" cy="11" r=".6" fill="currentColor" stroke="none"/><path d="M21 12a2.5 2.5 0 0 0-2.5-2.5"/><path d="M13.5 16v.5A2.5 2.5 0 0 0 16 19h2l3 2.5V19h.1v-4"/></svg></div>
+      <h3>الأسئلة الصحيحة</h3>
+      <p>بضعة أسئلة موجَّهة توضّح الصورة: ما الحالة؟ هل يكفي العلاج الذاتي، أم يجب أن يراجع الزبون الطبيب؟ ثقة بدلاً من الحدس.</p></div>
+    <div class="diff-card"><div class="diff-icon" style="background:#E3F5EB;color:#1F9D61;box-shadow:0 0 0 7px #E3F5EB55;"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h13l-1.4 8.2a2 2 0 0 1-2 1.8H7.4a2 2 0 0 1-2-1.8z"/><path d="M8.7 9.5 11.5 4M14.7 9.5 11.9 4" transform="translate(.5 0)"/><path d="M8.5 13v3.5M12.5 13v3.5"/><circle cx="18.7" cy="6.3" r="3.8" fill="#fff"/><path d="M18.7 4.6v3.4M17 6.3h3.4"/></svg></div>
+      <h3>التفكير الاقتصادي</h3>
+      <p>البيع الإضافي المبرَّر علمياً ليس حيلة تسويقية. فهو يغطّي حاجة الزبون بالكامل، ويعزّز في الوقت نفسه نتائج الصيدلية.</p></div>
+    <div class="diff-card" style="background:#23272E;border-color:#23272E;"><div class="diff-icon" style="background:#2E333B;color:#2DDDC4;box-shadow:0 0 0 7px #2E333B88;"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M8.8 12l2.2 2.2 4.2-4.4"/></svg></div>
+      <h3 style="color:#fff;">ثقة، كل يوم</h3>
+      <p style="color:rgba(255,255,255,.75);">الهدف بسيط: تقف عند طاولة البيع وتعرف في كل استطباب ماذا تسأل، وبماذا توصي، ولماذا.</p></div>
+  </div>
+</section>
+
+<!-- BUCH-VERGLEICH -->
+<section style="position:relative;overflow:hidden;padding:80px 24px;background:#FBF9F8;">
+  <h2 class="sec">لماذا لا يكفي كتاب ببساطة؟</h2>
+  <p class="sub">المعرفة موجودة، لكنها موزّعة بين الكتب والدورات والمقالات التخصصية. ما ينقص هو مكان يرتّبها.</p>
+  <div class="cmp-grid">
+    <div class="cmp"><h3>الكتب التخصصية</h3><ul>
+      <li>مئات الصفحات، ونادراً ما تُقرأ حتى النهاية</li>
+      <li>النظرية في المقدمة، والحوار في الخلفية</li>
+      <li>يصعب الاستمرار فيها بعد يوم العمل</li></ul></div>
+    <div class="cmp"><h3>دورات تدريبية منفردة</h3><ul>
+      <li>كلٌّ منها يغطّي موضوعاً واحداً فقط</li>
+      <li>تمرّ سنوات قبل أن تُغطّى كل الاستطبابات</li>
+      <li>مرتبطة بمواعيد محددة، لا متاحة في أي وقت</li></ul></div>
+    <div class="cmp hl"><h3>Pharma-Coach</h3><ul>
+      <li>استطبابات OTC الخمسون تقريباً في مكان واحد</li>
+      <li>فيديو بدلاً من صحراء من النصوص: 10–15 دقيقة لكل موضوع</li>
+      <li>البنية ذاتها من 6 خطوات دائماً، ومتاحة في أي وقت</li></ul></div>
+  </div>
+</section>
+
+<!-- 6 SCHRITTE -->
+<section style="position:relative;overflow:hidden;padding:80px 24px;background:#fff;">
+  <h2 class="sec">كل موضوع في 6 خطوات</h2>
+  <p class="sub">البنية نفسها دائماً. بعد بضعة مواضيع ستفكّر تلقائياً وفق هذا الإطار، حتى عند طاولة البيع.</p>
+  <div class="step-grid">
+    <div class="step"><div class="step-num" style="background:#E8192B;">1</div><h3>مقدمة</h3><p>ما هي الحالة المرضية، مع تصنيفها باختصار ووضوح.</p></div>
+    <div class="step"><div class="step-num" style="background:#16B8A6;">2</div><h3>الأعراض</h3><p>كيف تتعرّف عليها، وما الذي قد تُخلط به.</p></div>
+    <div class="step"><div class="step-num" style="background:#F2A50C;">3</div><h3>الأسباب</h3><p>لماذا تنشأ: الأساس للتوصية الصحيحة.</p></div>
+    <div class="step"><div class="step-num" style="background:#23272E;">4</div><h3>متى إلى الطبيب</h3><p>العلامات التحذيرية (Red Flags): أين ينتهي العلاج الذاتي، وأين تبدأ مراجعة الطبيب.</p></div>
+    <div class="step"><div class="step-num" style="background:#E8192B;">5</div><h3>أسئلة الاستشارة</h3><p>الأسئلة التي توضّح الصورة، مع السبب وراء كل سؤال.</p></div>
+    <div class="step"><div class="step-num" style="background:#16B8A6;">6</div><h3>العلاج</h3><p>المستحضرات، والجرعات، والحدود، إضافةً إلى توصيات إضافية مفيدة.</p></div>
+  </div>
+</section>
+
+<!-- GRATIS-LEKTION -->
+<section id="gratis" style="padding:80px 24px;background:#23272E;">
+  <h2 class="sec" style="color:#fff;">الدرس المجاني: نزلة البرد</h2>
+  <p class="sub" style="color:rgba(255,255,255,.65);">موضوع كامل بطوله. شاهد بنفسك كيف يعمل Pharma-Coach. دون أي اشتراك.</p>
+  <div id="gv-otc" onclick="playGratis('gv-otc')" role="button" aria-label="Gratis-Lektion abspielen" style="aspect-ratio:16/9;max-width:720px;margin:0 auto;border-radius:10px;overflow:hidden;background:#000;position:relative;cursor:pointer;box-shadow:0 18px 44px rgba(0,0,0,.35);">
+      <img src="../gratis-thumbnail.jpg" alt="Gratis-Lektion: Erkältung: Beratung in der Apotheke" style="width:100%;height:100%;object-fit:cover;display:block;">
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.08);">
+        <div style="width:76px;height:76px;border-radius:50%;background:#E8192B;box-shadow:0 8px 26px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" width="30" height="30"><path d="M8 5.5 19 12 8 18.5 Z" fill="#fff"/></svg>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:11.5px;color:rgba(255,255,255,.4);margin:9px auto 22px;max-width:720px;text-align:center;">عند التشغيل يتمّ الاتصال بـ YouTube (Google).</div>
+</section>
+
+<!-- BLICK IN DEN KURS -->
+<section style="padding:80px 24px;background:#FBF9F8;">
+  <h2 class="sec">نظرة داخل الكورس</h2>
+  <p class="sub">مقاطع حقيقية من دروس حقيقية. هكذا تبدو الفيديوهات التي ستتعلّم بها.</p>
+  <div class="peek-grid">
+    <div class="peek"><div class="browser"><div class="browser-bar"><span class="b-dot" style="background:#FF5F57;"></span><span class="b-dot" style="background:#FEBC2E;"></span><span class="b-dot" style="background:#28C840;"></span></div><img src="../kurs-durchfall.jpg" alt="Lektion Durchfall: Ursachen" loading="lazy"></div>
+      <div class="peek-cap"><b>الإسهال</b> · الخطوة 3: الأسباب</div></div>
+    <div class="peek"><div class="browser"><div class="browser-bar"><span class="b-dot" style="background:#FF5F57;"></span><span class="b-dot" style="background:#FEBC2E;"></span><span class="b-dot" style="background:#28C840;"></span></div><img src="../kurs-husten.jpg" alt="Lektion Husten: Behandlung" loading="lazy"></div>
+      <div class="peek-cap"><b>السعال</b> السعال · الخطوة 6: العلاج</div></div>
+    <div class="peek"><div class="browser"><div class="browser-bar"><span class="b-dot" style="background:#FF5F57;"></span><span class="b-dot" style="background:#FEBC2E;"></span><span class="b-dot" style="background:#28C840;"></span></div><img src="../kurs-verstopfung.jpg" alt="Lektion Verstopfung: nicht-medikamentöse Behandlung" loading="lazy"></div>
+      <div class="peek-cap"><b>الإمساك</b> السعال · الخطوة 6: العلاج</div></div>
+  </div>
+</section>
+
+<!-- KATALOG -->
+<section style="padding:80px 24px;background:#fff;">
+  <h2 class="sec">كل المواضيع في لمحة</h2>
+  <p class="sub">ثمانية مجالات، ونحو 50 استطباباً، مرتّبة حسب أجهزة الجسم. كل موضوع درس فيديو منظَّم.</p>
+<div class="cat-block">
+  <div class="cat-head">
+    <div class="cat-icon" style="background:#FFEAEC;color:#E8192B;"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v6"/><path d="M12 9c-3.2 0-4.8 2.2-5.4 5.5-.5 2.6-.2 5.5 1.7 5.5 1.9 0 2.7-1.6 3.7-3.8"/><path d="M12 9c3.2 0 4.8 2.2 5.4 5.5.5 2.6.2 5.5-1.7 5.5-1.9 0-2.7-1.6-3.7-3.8"/></svg></div>
+    <div>
+      <div class="cat-title">الجهاز التنفسي</div>
+      <div class="cat-count">50 استطباباً</div>
+    </div>
+  </div>
+  <div class="cat-chips">
+<span class="ind-chip"><span style="color:#E8192B;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg></span>نزلة البرد</span>
+<span class="ind-chip"><span style="color:#E8192B;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v5"/><path d="M12 9c-3 0-4.5 2-5 5-.4 2.4-.2 5 1.5 5s2.5-1.5 3.5-3.5"/><path d="M12 9c3 0 4.5 2 5 5 .4 2.4.2 5-1.5 5S13 17.5 12 15.5"/></svg></span>السعال</span>
+<span class="ind-chip"><span style="color:#E8192B;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4c-3 4.2-5 6.8-5 9.5a5 5 0 0 0 10 0C17 10.8 15 8.2 12 4z"/><path d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5"/></svg></span>الزكام</span>
+<span class="ind-chip"><span style="color:#E8192B;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12.8 7.5 10 12.5h3l-2.3 4"/></svg></span>ألم الحلق</span>
+<span class="ind-chip"><span style="color:#E8192B;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h3l4 3.5v-11L7 10z"/><path d="M15 10.5c.8.8.8 2.2 0 3M17.8 8.5c1.7 1.9 1.7 5.1 0 7" stroke-dasharray="2 2.2"/></svg></span>بحّة الصوت</span>
+  </div>
+</div>
+<div class="cat-block">
+  <div class="cat-head">
+    <div class="cat-icon" style="background:#E2FAF4;color:#16B8A6;"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 6 12 6s9.5 6 9.5 6-3.5 6-9.5 6S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></svg></div>
+    <div>
+      <div class="cat-title">العيون</div>
+      <div class="cat-count">استطبابات</div>
+    </div>
+  </div>
+  <div class="cat-chips">
+<span class="ind-chip"><span style="color:#16B8A6;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 6.5 12 6.5 21.5 12 21.5 12 18 17.5 12 17.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.6"/><path d="M12 2.8v1.7M6 4.4l.9 1.5M18 4.4l-.9 1.5"/></svg></span>التهاب الملتحمة</span>
+<span class="ind-chip"><span style="color:#16B8A6;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11S6 5.5 12 5.5 21.5 11 21.5 11 18 16.5 12 16.5 2.5 11 2.5 11z"/><circle cx="12" cy="11" r="2.4"/><circle cx="14.8" cy="16.8" r="1.7"/></svg></span>شعيرة العين</span>
+<span class="ind-chip"><span style="color:#16B8A6;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 10.5S6 5 12 5s9.5 5.5 9.5 5.5S18 16 12 16 2.5 10.5 2.5 10.5z"/><circle cx="12" cy="10.5" r="2.4"/><path d="M12 18.2v.1M9.5 20h5" stroke-dasharray="1.5 2"/></svg></span>جفاف العين</span>
+  </div>
+</div>
+<div class="cat-block">
+  <div class="cat-head">
+    <div class="cat-icon" style="background:#FEF3DD;color:#F2A50C;"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11V6a1.6 1.6 0 0 1 3.2 0v4M11.2 10V4.5a1.6 1.6 0 0 1 3.2 0V10M14.4 10.5V6a1.6 1.6 0 0 1 3.2 0v7.5a7 7 0 0 1-7 7c-2.6 0-4.3-1.2-5.8-3.4L5 13.6c-.8-1.2.8-2.6 2-1.7l1 1.1"/></svg></div>
+    <div>
+      <div class="cat-title">الجلد والأظافر والشعر</div>
+      <div class="cat-count">50 استطباباً</div>
+    </div>
+  </div>
+  <div class="cat-chips">
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="9" cy="10" r=".7" fill="currentColor" stroke="none"/><circle cx="14.5" cy="9" r=".7" fill="currentColor" stroke="none"/><circle cx="10.5" cy="14.5" r=".7" fill="currentColor" stroke="none"/><circle cx="15" cy="13.8" r=".7" fill="currentColor" stroke="none"/></svg></span>حبّ الشباب</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="12" r="7.5"/><path d="M8.5 11h.01M13.5 11h.01"/><path d="M9.5 14.5c.8.8 2.2.8 3 0"/><path d="M19.5 4.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6z" fill="currentColor" stroke="none"/></svg></span>العناية بالوجه</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3.4"/><path d="M9 2.8v1.7M9 13.5v1.7M2.8 9h1.7M13.5 9h1.7M4.6 4.6l1.2 1.2M12.2 12.2l.6.6M13.4 4.6l-1.2 1.2"/><path d="M14.5 13.5c2.5 0 4.5.8 4.5 2.2 0 2.8-2 5-4.5 5.8-2.5-.8-4.5-3-4.5-5.8 0-1.4 2-2.2 4.5-2.2z"/></svg></span>الحماية من الشمس</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8 9l1.5 1.5M13 8l2 2M9 14l2 2M14.5 13.5l1.5 1.5" stroke-dasharray="2.5 2"/></svg></span>الصدفية</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5c2.8 0 4 2 4 5 0 2.5-1 4-1 6.5a4 4 0 1 1-8 0C4 10 5.5 3.5 9 3.5z"/><circle cx="8" cy="8" r=".7" fill="currentColor" stroke="none"/><circle cx="10" cy="11.5" r=".7" fill="currentColor" stroke="none"/><path d="M15.5 6h.01M17.5 9h.01M16.5 12h.01"/></svg></span>فطريات القدم</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="4" width="10" height="14" rx="5"/><path d="M7 12c1.5-1 3-1 5 0s3.5 1 5 0"/><circle cx="11" cy="8" r=".7" fill="currentColor" stroke="none"/><circle cx="14" cy="9.5" r=".7" fill="currentColor" stroke="none"/></svg></span>فطريات الأظافر</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18"/><path d="M7 18c0-3 2-5 5-5s5 2 5 5"/><circle cx="12" cy="15.5" r="1" fill="currentColor" stroke="none"/><path d="M10 10.5c.5-1.2 1.2-2 2-2.5M14.5 11c-.3-1-.8-1.8-1.5-2.5" stroke-dasharray="2 2"/></svg></span>الثآليل</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg></span>مسامير القدم</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8c0-2.8 3.1-4.5 7-4.5s7 1.7 7 4.5"/><path d="M6.5 3.5v5M9.5 2.8v5.7M12.5 2.5v6M15.5 2.8v5.7"/><path d="M8 13l-1 3M12 13v3.2M16 13l1 3" stroke-dasharray="2 2"/></svg></span>تساقط الشعر</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="13" rx="4.5" ry="6"/><path d="M8 9.5 5.5 8M8 13H5M8 16.5 5.5 18M16 9.5 18.5 8M16 13h3M16 16.5l2.5 1.5"/><circle cx="12" cy="10.5" r=".7" fill="currentColor" stroke="none"/></svg></span>قمل الرأس</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="14" rx="3.2" ry="4.6"/><path d="M9.5 11 5 6.5M14.5 11 19 6.5"/><path d="M8.8 14H5.5M15.2 14h3.3M9.5 17l-2.5 2M14.5 17l2.5 2"/></svg></span>لدغات الحشرات</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="4.2"/><circle cx="12" cy="7.8" r="1.8"/><path d="M8.4 11 5 9M8 14H4.5M8.4 16.5 5 18.5M15.6 11 19 9M16 14h3.5M15.6 16.5l3.4 2"/></svg></span>لدغة القراد</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.8" y="9" width="18.4" height="6" rx="3" transform="rotate(-35 12 12)"/><circle cx="10.8" cy="11.2" r=".55" fill="currentColor" stroke="none"/><circle cx="13.2" cy="12.8" r=".55" fill="currentColor" stroke="none"/><circle cx="11.4" cy="13.4" r=".55" fill="currentColor" stroke="none"/><circle cx="12.6" cy="10.6" r=".55" fill="currentColor" stroke="none"/></svg></span>العناية بالجروح</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5c-1.8 2.5-3 4-3 5.6a3 3 0 0 0 6 0c0-1.6-1.2-3.1-3-5.6z"/></svg></span>الكدمات</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5c-1.6 2.2-2.6 3.6-2.6 5a2.6 2.6 0 0 0 5.2 0C9.6 8.6 8.6 7.2 7 5z"/><path d="M17 5c-1.6 2.2-2.6 3.6-2.6 5a2.6 2.6 0 0 0 5.2 0C19.6 8.6 18.6 7.2 17 5z"/><path d="M12 13c-1.6 2.2-2.6 3.6-2.6 5a2.6 2.6 0 0 0 5.2 0c0-1.4-1-2.8-2.6-5z"/></svg></span>فرط التعرّق</span>
+  </div>
+</div>
+<div class="cat-block">
+  <div class="cat-head">
+    <div class="cat-icon" style="background:#ECEFF5;color:#4A5058;"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5c4.5 0 8.5 1.8 8.5 5.5s-3.2 4.3-6.5 4.3 6.5.7 6.5 4.4-4 5-8.5 5"/><path d="M9 3.5H7M9 22.7H7" stroke-dasharray="2 2"/></svg></div>
+    <div>
+      <div class="cat-title">الجهاز الهضمي</div>
+      <div class="cat-count">استطبابات</div>
+    </div>
+  </div>
+  <div class="cat-chips">
+<span class="ind-chip"><span style="color:#4A5058;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-3.5 4.5-3.5 8a5.5 5.5 0 0 0 11 0c0-2-1-3.5-2-4.5.2 1.5-.5 2.5-1.5 3 .5-2.5-1-5.5-4-6.5z"/><path d="M4 17v4M4 15v.1"/></svg></span>حرقة المعدة</span>
+<span class="ind-chip"><span style="color:#4A5058;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4c4 0 8 1.5 8 5s-3 4-6 4 6 .5 6 4-4 4-8 4" transform="translate(1 -.5)"/><path d="M5 8l-2 2 2 2M5 15l-2 2 2 2" stroke-dasharray="2 2"/></svg></span>الإسهال</span>
+<span class="ind-chip"><span style="color:#4A5058;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4c4 0 8 1.5 8 5s-3 4-6 4 6 .5 6 4-4 4-8 4"/><path d="M4 10.5h3M4 13.5h3"/><path d="M5.5 9v6"/></svg></span>الإمساك</span>
+<span class="ind-chip"><span style="color:#4A5058;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4c4 0 8 1.5 8 5s-3 4-6 4 6 .5 6 4-4 4-8 4"/><circle cx="5.5" cy="8" r="1.3"/><circle cx="4.5" cy="13" r="1"/><circle cx="6" cy="17.5" r="1.3"/></svg></span>انتفاخ البطن</span>
+<span class="ind-chip"><span style="color:#4A5058;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5a8.5 8.5 0 1 0 8.5 8.5"/><path d="M20.5 12A8.5 8.5 0 0 0 12 3.5" stroke-dasharray="2.5 2.5"/><path d="M12 12c-1.5 0-2.5-1-2.5-2.5S10.5 7 12 7s2.5 1 2.5 2.5S13.5 12 12 12z" transform="translate(0 2.5)"/></svg></span>الإقياء والغثيان</span>
+<span class="ind-chip"><span style="color:#4A5058;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9a4 4 0 0 1 0 8H8a3.5 3.5 0 0 0 0 7h8"/><path d="M17.5 4.5l1 2 2 .5-2 .5-1 2-.5-2-2-.5 2-.5z" fill="currentColor" stroke="none"/></svg></span>متلازمة القولون العصبي</span>
+<span class="ind-chip"><span style="color:#4A5058;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/><path d="M12 4v2.5M12 17.5V20M4 12h2.5M17.5 12H20" stroke-dasharray="1.8 2.4"/></svg></span>البواسير</span>
+  </div>
+</div>
+<div class="cat-block">
+  <div class="cat-head">
+    <div class="cat-icon" style="background:#E3F5EB;color:#1F9D61;"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4C9 4 7 6 7 9c0 2 .7 3 1.2 5 .4 1.6.5 6 2 6 1.2 0 .8-3.5 1.8-3.5S13 20 14.2 20c1.5 0 1.6-4.4 2-6 .5-2 1.2-3 1.2-5 0-3-2.4-5-5.4-5z"/></svg></div>
+    <div>
+      <div class="cat-title">صحة الفم</div>
+      <div class="cat-count">استطبابات</div>
+    </div>
+  </div>
+  <div class="cat-chips">
+<span class="ind-chip"><span style="color:#1F9D61;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10c0 5.5 3.5 9 8 9s8-3.5 8-9c-2.5 0-4-1-5.5-2.5C13 9 11 9 9.5 7.5 8 9 6.5 10 4 10z"/><circle cx="12" cy="14" r="1.4"/></svg></span>القُلاع (التقرّحات الفموية)</span>
+<span class="ind-chip"><span style="color:#1F9D61;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4C9 4 7 6 7 9c0 2 .7 3 1.2 5 .4 1.6.5 6 2 6 1.2 0 .8-3.5 1.8-3.5S13 20 14.2 20c1.5 0 1.5-4.4 1.9-6 .5-2 1.2-3 1.2-5 0-3-2.3-5-5.3-5z"/><path d="M5 7l1.5 1.2M19 7l-1.5 1.2" stroke-dasharray="2 2"/></svg></span>التهاب اللثة</span>
+<span class="ind-chip"><span style="color:#1F9D61;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12c3-3.5 5.5-4 8.5-2 3-2 5.5-1.5 8.5 2-3 3.5-5.5 4.5-8.5 4.5S6.5 15.5 3.5 12z"/><circle cx="15.5" cy="15" r="1.5"/></svg></span>هربس الشفاه</span>
+  </div>
+</div>
+<div class="cat-block">
+  <div class="cat-head">
+    <div class="cat-icon" style="background:#FFEAEC;color:#E8192B;"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a4 4 0 0 0-4 4 3.5 3.5 0 0 0-2 6 3.5 3.5 0 0 0 2.5 5.7A3.3 3.3 0 0 0 12 21a3.3 3.3 0 0 0 3.5-1.3A3.5 3.5 0 0 0 18 14a3.5 3.5 0 0 0-2-6 4 4 0 0 0-4-4z"/><path d="M12 4v17M8.5 9.5c1 .8 2.3 1 3.5.5M15.5 13.5c-1-.8-2.3-1-3.5-.5"/></svg></div>
+    <div>
+      <div class="cat-title">الجهاز العصبي</div>
+      <div class="cat-count">استطبابات</div>
+    </div>
+  </div>
+  <div class="cat-chips">
+<span class="ind-chip"><span style="color:#E8192B;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="11" r="7"/><path d="M12 18v3.5"/><path d="M12.8 7.5 10 11.5h3l-2.3 3.5"/></svg></span>الصداع</span>
+<span class="ind-chip"><span style="color:#E8192B;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="11" r="7"/><path d="M12 18v3.5"/><path d="M12 11c0-1.4 1-2.4 2.2-2.4M12 11c0 1.2-1 2.2-2 2.2" stroke-dasharray="2 1.6"/><path d="M4 4l1.6 1.6M20 4l-1.6 1.6"/></svg></span>الشقيقة</span>
+<span class="ind-chip"><span style="color:#E8192B;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 13.5A7.5 7.5 0 0 1 10.5 5 7.5 7.5 0 1 0 19 13.5z"/><path d="M15 4h4l-4 4h4" transform="scale(.75) translate(8 0)"/></svg></span>اضطرابات النوم</span>
+<span class="ind-chip"><span style="color:#E8192B;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13a4.5 4.5 0 0 1 .5-9 5.5 5.5 0 0 1 10.4 1.6A3.5 3.5 0 0 1 17.5 13z"/><path d="M8 16l-1 2.5M12 16l-1 2.5M16 16l-1 2.5"/></svg></span>المزاج الاكتئابي</span>
+  </div>
+</div>
+<div class="cat-block">
+  <div class="cat-head">
+    <div class="cat-icon" style="background:#E2FAF4;color:#16B8A6;"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S3.5 15 3.5 9.2A4.7 4.7 0 0 1 12 6.4a4.7 4.7 0 0 1 8.5 2.8C20.5 15 12 20.5 12 20.5z"/></svg></div>
+    <div>
+      <div class="cat-title">الصحة الجنسية</div>
+      <div class="cat-count">استطبابات</div>
+    </div>
+  </div>
+  <div class="cat-chips">
+<span class="ind-chip"><span style="color:#16B8A6;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="14.5" r="5.5"/><path d="M13.5 10.5 20 4M20 4h-5M20 4v5"/></svg></span>ضعف الانتصاب</span>
+<span class="ind-chip"><span style="color:#16B8A6;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="13" height="7" rx="3.5" transform="rotate(-20 9 11)"/><path d="M8.2 12.7l4.6-3.4" transform="rotate(-20 9 11) translate(1 -1)"/><circle cx="17.5" cy="16.5" r="4"/><path d="M17.5 14.8v1.7l1.2 1"/></svg></span>منع الحمل الطارئ</span>
+<span class="ind-chip"><span style="color:#16B8A6;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M12 14.5V21M9 18h6"/></svg></span>الفطريات المهبلية</span>
+  </div>
+</div>
+<div class="cat-block">
+  <div class="cat-head">
+    <div class="cat-icon" style="background:#FEF3DD;color:#F2A50C;"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v8M8 12h8"/></svg></div>
+    <div>
+      <div class="cat-title">أخرى</div>
+      <div class="cat-count">استطبابات</div>
+    </div>
+  </div>
+  <div class="cat-chips">
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 2.5 5 13.5h5.5L9 21.5l9.5-11.5h-5.5z"/></svg></span>الألم</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a2.5 2.5 0 0 1 5 0v9.3a4.5 4.5 0 1 1-5 0z" transform="translate(-1.5 0)"/><path d="M12 8v7" transform="translate(0 0)"/><circle cx="12" cy="17" r="1.6" fill="currentColor" stroke="none"/><path d="M17.5 5h3M17.5 8h2"/></svg></span>الحمّى</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="2.2"/><path d="M10 4.5V2.8M10 17.2v-1.7M4.5 10H2.8M17.2 10h-1.7M6.1 6.1 4.9 4.9M15.1 15.1l-1.2-1.2M13.9 6.1l1.2-1.2M6.1 13.9l-1.2 1.2"/><circle cx="18.5" cy="17.5" r=".8" fill="currentColor" stroke="none"/><circle cx="20.5" cy="13.5" r=".7" fill="currentColor" stroke="none"/><circle cx="16" cy="20.5" r=".7" fill="currentColor" stroke="none"/></svg></span>الحساسية</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h12l2 5H4z"/><path d="M4 8.5h16v9a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z"/><path d="M12 12v3.5M10.3 13.8 12 15.5l1.7-1.7"/></svg></span>السمنة</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15h13v3H3z"/><path d="M18.5 15v3M18 9c1.5 1 1.5 2.5.5 3.5M20.5 7.5c2 1.5 2 3.8.5 5.5" stroke-dasharray="2 2"/><path d="M4 20 20 4"/></svg></span>الإقلاع عن التدخين</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3c0 4-2 5.5-2 9a5 5 0 0 0 10 0c0-2-.8-3.5-1.5-5" transform="translate(0 1)"/><path d="M11 6l2 2.5-2 2.5 2 2.5-2 2.5"/></svg></span>القصور الوريدي</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c-3 4.2-5 6.8-5 9.5a5 5 0 0 0 10 0c0-2.7-2-5.3-5-9.5z"/><path d="M4 20c1.3-1 2.7-1 4 0s2.7 1 4 0 2.7-1 4-1 2.7 0 4 1" transform="scale(.9) translate(1.2 1.5)"/></svg></span>سلس البول</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8.5" width="17" height="7" rx="3.5" transform="rotate(-30 12 12)"/><path d="M9.4 13.5l5.2-3" transform="rotate(-30 12 12)"/><circle cx="12" cy="12" r="0" /><path d="M18.5 18.5l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5z" fill="currentColor" stroke="none"/></svg></span>نقص الفيتامينات والمعادن</span>
+<span class="ind-chip"><span style="color:#F2A50C;display:inline-flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16c1-2.5 2.5-3.5 4-2.5s3.5 1 4.5-1.5"/><path d="M7 11c1-2.5 2.5-3.5 4-2.5s3.5 1 4.5-1.5"/><path d="M9 21c1-2.5 2.5-3.5 4-2.5s3.5 1 4.5-1.5"/><circle cx="18.5" cy="6.5" r="2.2"/></svg></span>أعراض انقطاع الطمث</span>
+  </div>
+</div>
+</section>
+
+<!-- PREIS CTA -->
+<section style="padding:70px 24px;background:#23272E;text-align:center;">
+  <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(22px,3.5vw,34px);color:#fff;margin-bottom:10px;">
+    الكورس كاملاً. اشتراك واحد.</h2>
+  <p style="font-size:15.5px;color:rgba(255,255,255,.7);margin-bottom:8px;">
+    85 € سنوياً: كل محتوى OTC إضافةً إلى جميع الكورسات الجديدة، مع إمكانية الإلغاء في أي وقت.
+    </p>
+  <p style="font-size:13.5px;color:rgba(255,255,255,.45);margin-bottom:26px;">
+    نحو 7 € شهرياً.</p>
+  <a href="index.html#preis-de" class="btn-red">اطّلع على السعر والمحتويات ←</a>
+</section>
+
+<footer style="background:#1C2026;padding:28px 24px;">
+  <div style="max-width:960px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+    <span style="font-size:13px;color:#71767F;">© 2026 Pharma-Coach · عمّار أميري</span>
+    <div style="display:flex;gap:20px;">
+      <a href="index.html" style="font-size:13px;color:#71767F;font-weight:500;">الرئيسية</a>
+      <a href="../impressum.html" style="font-size:13px;color:#71767F;font-weight:500;">بيانات الناشر (Impressum)</a>
+      <a href="../datenschutz.html" style="font-size:13px;color:#71767F;font-weight:500;">سياسة الخصوصية (Datenschutz)</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// animated counters
+(function(){
+  var done=false;
+  function animate(el){
+    var target=+el.dataset.target, prefix=el.dataset.prefix||'', start=null;
+    function tick(t){ if(!start)start=t; var p=Math.min((t-start)/900,1);
+      el.textContent=prefix+Math.round(target*(0.2+0.8*p*p));
+      if(p<1)requestAnimationFrame(tick); else el.textContent=prefix+target; }
+    requestAnimationFrame(tick);
+  }
+  var obs=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting&&!done){ done=true;
+      document.querySelectorAll('.count-num').forEach(animate); }});
+  },{threshold:.4});
+  var s=document.querySelector('.count-strip'); if(s)obs.observe(s);
+})();
+
+function playGratis(id){var d=document.getElementById(id);d.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/6HAqN36258E?autoplay=1&rel=0" style="width:100%;height:100%;border:0;position:absolute;inset:0;" title="Gratis-Lektion Erkältung" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';d.onclick=null;d.style.cursor='default';}
+
+/* Touch-Geräte: Posenwechsel ohne Hover */
+(function(){
+  var noHover = !window.matchMedia || !window.matchMedia('(hover: hover)').matches;
+  if(!noHover) return;
+  document.querySelectorAll('.hero-orb').forEach(function(o){
+    o.addEventListener('click', function(){ o.classList.toggle('tap'); });
+    setInterval(function(){
+      o.classList.add('tap');
+      setTimeout(function(){ o.classList.remove('tap'); }, 2200);
+    }, 7000);
+  });
+})();
+</script>
+</body>
+</html>

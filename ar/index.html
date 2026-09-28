@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+
+<title>Pharma-Coach | Sicher beraten. Bei jeder Indikation.</title>
+<meta name="description" content="OTC-Beratung sicher meistern: 50 Indikationen in je 6 klaren Schritten: praxisnah, kompakt, direkt aus der Offizin. Jetzt Gratis-Lektion ansehen.">
+<meta property="og:title" content="Pharma-Coach | Sicher beraten. Bei jeder Indikation.">
+<meta property="og:description" content="Die digitale Lernplattform für Beratungskompetenz in der Apotheke: 50 OTC-Indikationen, je 6 klare Schritte, 10–15 Minuten pro Lektion.">
+<meta property="og:url" content="https://pharma-coach-amiri.de/ar/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:image" content="https://pharma-coach-amiri.de/share-image.webp">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="1200">
+<meta property="og:image:type" content="image/webp">
+<meta name="twitter:image" content="https://pharma-coach-amiri.de/share-image.webp">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"Pharma-Coach","url":"https://pharma-coach-amiri.de"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"Pharma-Coach","url":"https://pharma-coach-amiri.de","logo":"https://pharma-coach-amiri.de/share-image.webp","founder":{"@type":"Person","name":"Ammar Amiri"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Montserrat:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:#2A2E35;background:#fff;-webkit-font-smoothing:antialiased;overflow-x:hidden;max-width:100vw;}
+@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-12px) scale(1.03)}}@keyframes shine{0%{transform:translate(-18%,-18%) scale(1)}50%{transform:translate(14%,10%) scale(1.15)}100%{transform:translate(-18%,-18%) scale(1)}}
+@keyframes ring{0%{transform:scale(.9);opacity:.6}100%{transform:scale(1.65);opacity:0}}
+.ltbtn{font-family:Montserrat,sans-serif;font-weight:800;font-size:13px;padding:6px 12px;border-radius:9px;border:none;cursor:pointer;transition:all .15s;}
+.ltbtn.active{background:#fff;color:#23272E;box-shadow:0 1px 4px rgba(0,0,0,.12);}
+.ltbtn.inactive{background:transparent;color:#8A8F98;}
+.diff-card{background:#fff;border:1.5px solid #F0E8E5;border-radius:12px;padding:28px 22px;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;}.diff-card:hover{transform:translateY(-5px);box-shadow:0 18px 36px rgba(20,30,40,.11);border-color:transparent;}.diff-icon{width:72px;height:72px;border-radius:18px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
+@media(max-width:860px){.four-col{grid-template-columns:1fr 1fr!important;}.game-grid{grid-template-columns:1fr!important;gap:34px!important;}}@media(max-width:520px){.four-col{grid-template-columns:1fr!important;}}
+@media(max-width:900px){.nav-links{display:none!important;}}
+@media(max-width:768px){
+  .hero-grid,.about-grid{grid-template-columns:1fr!important;}
+  .two-col{grid-template-columns:1fr!important;}
+  .four-col{grid-template-columns:repeat(2,1fr)!important;}
+  .three-col{grid-template-columns:1fr!important;}
+  .otc-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .fg{grid-template-columns:1fr 1fr!important;}
+}
+@media(max-width:480px){
+  .four-col,.otc-grid{grid-template-columns:1fr!important;}
+  .sp{padding-left:16px!important;padding-right:16px!important;}
+}
+@media(max-width:600px){
+  .footer-social a{width:36px!important;height:36px!important;}
+  .footer-social a svg{width:17px!important;height:17px!important;}
+  .nav-cta{display:none!important;}
+  .nav-logo-text{font-size:15px!important;}
+}
+@media(max-width:768px){
+  .fg{grid-template-columns:1fr!important;}
+  .footer-email-link{font-size:11px!important;padding:7px 10px!important;word-break:break-all!important;}
+}
+
+/* ===== Micro-Interactions (Hover) ===== */
+a,button{transition:color .18s ease,background-color .18s ease,transform .18s ease,box-shadow .18s ease,border-color .18s ease,opacity .18s ease;}
+.nav-links a{position:relative;padding-bottom:2px;}
+.nav-links a:hover{color:#E8192B!important;}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:-5px;height:2px;width:0;background:#E8192B;border-radius:2px;transition:width .25s cubic-bezier(.4,0,.2,1);}
+.nav-links a:hover::after{width:100%;}
+a[style*="B30F1E"]:hover{transform:translateY(-3px);box-shadow:0 8px 0 #B30F1E,0 14px 26px rgba(232,25,43,.3)!important;}
+a[style*="B30F1E"]:active{transform:translateY(1px);box-shadow:0 2px 0 #B30F1E!important;}
+a[style*="#ECE6E4"]:hover{transform:translateY(-3px);border-color:#2DDDC4!important;box-shadow:0 8px 0 #DFF6F2,0 14px 26px rgba(20,30,40,.10)!important;}
+a[style*="#ECE6E4"]:active{transform:translateY(1px);}
+footer ul a{display:inline-block;}
+footer ul a:hover{color:#fff!important;transform:translateX(5px);}
+.footer-social a:hover{transform:translateY(-4px) scale(1.05);box-shadow:0 10px 22px rgba(0,0,0,.42);}
+.footer-email-link:hover{background:rgba(255,255,255,.17)!important;border-color:rgba(45,221,196,.5)!important;transform:translateY(-2px);}
+.footer-legal a:hover{color:#fff!important;}
+.stat-card{transition:transform .24s ease,box-shadow .24s ease,border-color .24s ease,background .24s ease;}
+.stat-card:hover{transform:translateY(-6px);border-color:rgba(45,221,196,.55)!important;background:rgba(255,255,255,.09)!important;box-shadow:0 18px 34px rgba(0,0,0,.34);}
+.hero-orb{transition:transform .35s cubic-bezier(.34,1.4,.64,1);}
+.hero-orb:hover{transform:scale(1.035);}
+.game-shot{transition:transform .35s cubic-bezier(.34,1.4,.64,1),box-shadow .35s ease;}
+.game-shot:hover{transform:translateY(-6px) scale(1.015);box-shadow:0 34px 70px rgba(0,0,0,.58)!important;}
+.game-shot img{transition:transform .5s ease;}
+.game-shot:hover img{transform:scale(1.05);}
+.av-a,.av-b{transition:opacity .32s ease;}
+.av-b{opacity:0;}
+.hero-orb:hover .av-a{opacity:0;}
+.hero-orb:hover .av-b{opacity:1;}
+.hero-orb{cursor:pointer;}
+
+/* ===== Section hovers (Demnächst, FSP, FAQ, About) ===== */
+.hcard{transition:transform .24s ease,box-shadow .24s ease,border-color .24s ease;}
+.hcard:hover{transform:translateY(-6px);box-shadow:0 18px 36px rgba(20,30,40,.12);border-color:#2DDDC4!important;}
+.hcard .hicon{transition:transform .3s cubic-bezier(.34,1.4,.64,1);}
+.hcard:hover .hicon{transform:scale(1.12) rotate(-6deg);}
+.faq-card{transition:box-shadow .22s ease,border-color .22s ease,transform .22s ease;}
+.faq-card:hover{border-color:#2DDDC4!important;box-shadow:0 10px 24px rgba(20,30,40,.09);transform:translateY(-2px);}
+.faq-card button:hover span:first-child{color:#E8192B!important;}
+.faq-card button span:last-child{transition:transform .25s ease,background .25s ease;}
+.faq-card:hover button span:last-child{background:#E8192B!important;transform:rotate(90deg);}
+.chip-link{transition:transform .18s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease;}
+.chip-link:hover{transform:translateY(-3px);background:#fff!important;border-color:#E8192B!important;box-shadow:0 8px 18px rgba(232,25,43,.16);}
+.about-chip{transition:transform .18s ease,background .18s ease;}
+.about-chip:hover{transform:translateY(-2px);background:#EFEAE6!important;}
+
+.fspcard{transition:transform .24s ease,background .24s ease,box-shadow .24s ease,border-color .24s ease;}
+.fspcard:hover{transform:translateY(-6px);background:rgba(255,255,255,.2)!important;box-shadow:0 18px 34px rgba(0,0,0,.22);}
+#fsp-de h2,#fsp-en h2,#preis-de h2,#preis-en h2{transition:transform .3s ease;}
+#fsp-de:hover h2,#fsp-en:hover h2{transform:scale(1.015);}
+.hero-orb.tap .av-a{opacity:0;}
+.hero-orb.tap .av-b{opacity:1;}
+</style>
+<style>
+/* Eine einzige Aufnahme, auf jedem Schirm vollstaendig. Der hochkante
+   Ausschnitt hat dem Apotheker die Haende abgeschnitten. */
+
+</style>
+<link rel="canonical" href="https://pharma-coach-amiri.de/ar/">
+<link rel="alternate" hreflang="de" href="https://pharma-coach-amiri.de/">
+<link rel="alternate" hreflang="ar" href="https://pharma-coach-amiri.de/ar/">
+<link rel="alternate" hreflang="x-default" href="https://pharma-coach-amiri.de/">
+<style>
+/* ===== Arabisch / RTL ===== */
+body,.ar-body{font-family:"Plus Jakarta Sans","Cairo",system-ui,sans-serif;}
+[style*="Montserrat"]{font-family:Montserrat,"Cairo",sans-serif!important;}
+body *{letter-spacing:0!important;}
+h1,h2,h3,.tl-title,.cat-title{line-height:1.45!important;}
+p,li,.tl-item p,.cat-count{line-height:1.9!important;}
+[style*="text-align:left"]{text-align:right!important;}
+.nav-links a::after{right:0;left:auto;}
+footer ul a:hover{transform:translateX(-5px);}
+.ltbtn{font-family:Montserrat,sans-serif;}
+a.ltbtn{text-decoration:none;display:inline-block;line-height:1.6;}
+bdi,[dir="ltr"]{unicode-bidi:isolate;}
+@media(max-width:400px){
+  nav{padding:12px 12px!important;gap:8px!important;}
+  .ltbtn{padding:6px 9px!important;font-size:12px!important;}
+}
+</style>
+
+</head>
+<body>
+
+
+<!-- NAV -->
+<header style="position:sticky;top:0;z-index:80;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid #F0EAE8;">
+<nav style="max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+  <a href="#top-de" style="display:flex;align-items:center;gap:11px;text-decoration:none;">
+    <svg viewBox="0 0 120 64" width="46" height="25"><rect x="6" y="14" width="64" height="36" rx="18" fill="#E8192B"/><rect x="50" y="14" width="64" height="36" rx="18" fill="#2DDDC4"/><rect x="33" y="7" width="54" height="50" rx="25" fill="#383D45"/><path d="M53 21 L74 32 L53 43 Z" fill="#fff"/></svg>
+    <span class="nav-logo-text" style="font-family:Montserrat,sans-serif;font-weight:800;font-size:18px;color:#2A2E35;white-space:nowrap;">PHARMA<span style="color:#E8192B;">-</span>COACH</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:18px;">
+    <div style="display:flex;gap:18px;" class="nav-links">
+      <a href="/game/" style="font-weight:600;font-size:14.5px;color:#4A4F58;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">اللعبة<span style="background:#16B8A6;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:9.5px;letter-spacing:.04em;padding:2px 6px;border-radius:5px;line-height:1.4;">مجاناً</span></a>
+      <a href="otc-kurs.html" target="_blank" rel="noopener" style="font-weight:600;font-size:14.5px;color:#4A4F58;text-decoration:none;">كورس OTC</a>
+      <a href="#preis-de" style="font-weight:600;font-size:14.5px;color:#4A4F58;text-decoration:none;">السعر</a>
+      <a href="#about-de" style="font-weight:600;font-size:14.5px;color:#4A4F58;text-decoration:none;">عنّي</a>
+      </div>
+    <div style="display:flex;background:#F2EDEB;border-radius:11px;padding:3px;gap:2px;"><a class="ltbtn inactive" href="../index.html">DE</a><a class="ltbtn inactive" href="../index.html?lang=en">EN</a><button class="ltbtn active" type="button">AR</button></div>
+    <a href="#preis-de" class="nav-cta" style="display:inline-flex;align-items:center;gap:7px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:14px;padding:11px 18px;border-radius:13px;box-shadow:0 4px 0 #B30F1E;text-decoration:none;white-space:nowrap;">السعر ←</a>
+  </div>
+</nav>
+</header>
+<a id="top-de"></a>
+
+<!-- HERO -->
+<section style="position:relative;overflow:hidden;background:#FFFCFB;">
+  <div style="position:absolute;top:-160px;right:-120px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(232,25,43,.18),transparent 68%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:-200px;left:-140px;width:580px;height:580px;border-radius:50%;background:radial-gradient(circle,rgba(45,221,196,.26),transparent 66%);pointer-events:none;"></div>
+  <div style="max-width:1200px;margin:0 auto;padding:72px 24px 44px;display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center;position:relative;" class="hero-grid sp">
+    <div>
+      <div style="font-size:12.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#9AA0AA;margin-bottom:18px;">
+        منصة التعلّم الرقمية لفرق الصيدليات
+      </div>
+      <h1 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(38px,5vw,64px);line-height:1.03;letter-spacing:-.02em;color:#23272E;margin-bottom:20px;">
+        قدّم الاستشارة بثقة.<br><span style="color:#E8192B;">في كل استطباب.</span>
+      </h1>
+      <p style="font-size:18px;line-height:1.65;color:#5A5F68;max-width:500px;margin-bottom:28px;">
+        تعلّم في 10–15 دقيقة ما تحتاجه بالضبط عند طاولة البيع (HV-Tisch).
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
+        <a href="#preis-de" style="display:inline-flex;align-items:center;gap:9px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:16px;padding:16px 26px;border-radius:15px;box-shadow:0 5px 0 #B30F1E;text-decoration:none;">اطّلع على السعر والمحتويات ←</a>
+        <a href="otc-kurs.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:9px;background:#fff;color:#2A2E35;font-family:Montserrat,sans-serif;font-weight:800;font-size:16px;padding:16px 22px;border:2px solid #ECE6E4;border-radius:15px;box-shadow:0 5px 0 #ECE6E4;text-decoration:none;">
+          شاهد كورس OTC
+        </a>
+      </div>
+      <div style="font-size:12.5px;color:#9AA0AA;">
+        التسجيل وحجز الكورس مباشرةً على المنصة اعتباراً من نيسان (أبريل) 2027
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;padding:20px 0;">
+      <div class="hero-orb" style="position:relative;width:min(390px,90vw);height:min(390px,90vw);">
+        <div style="position:absolute;inset:0;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 32% 28%,#8FF3E2 0%,#2DDDC4 38%,#16B8A6 72%,#0D8F81 100%);box-shadow:inset -8px -12px 24px rgba(9,110,99,.45), inset 6px 8px 18px rgba(255,255,255,.35);animation:float 5s ease-in-out infinite;"><div style="position:absolute;top:8%;left:10%;width:55%;height:55%;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.55) 0%,rgba(255,255,255,0) 65%);animation:shine 7s ease-in-out infinite;"></div></div>
+        <div style="position:absolute;inset:-18px;border-radius:50%;border:2px solid rgba(45,221,196,.3);animation:ring 2.5s ease-out infinite;"></div>
+        <img class="av-a" src="../avatar.webp" alt="Pharma-Coach" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;"><img class="av-b" src="../avatar-hover.webp" alt="" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;">
+        <div style="position:absolute;top:14px;right:-14px;background:#fff;border-radius:13px;padding:10px 15px;box-shadow:0 8px 26px rgba(20,30,40,.13);display:flex;align-items:center;gap:9px;white-space:nowrap;">
+          <span style="display:inline-flex;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="color:#E8192B;"><path d="M3 5.5A2 2 0 0 1 5 3.5h5v15H5a2 2 0 0 0-2 2z"/><path d="M21 5.5a2 2 0 0 0-2-2h-5v15h5a2 2 0 0 1 2 2z"/><path d="M10 3.5v15M14 3.5v15"/></svg></span>
+          <div><div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:12.5px;color:#23272E;">50 فيديو</div><div style="font-size:11.5px;color:#9AA0AA;">كورس OTC</div></div>
+        </div>
+        <div style="position:absolute;bottom:18px;left:-16px;background:#fff;border-radius:13px;padding:10px 15px;box-shadow:0 8px 26px rgba(20,30,40,.13);display:flex;align-items:center;gap:9px;white-space:nowrap;">
+          <span style="display:inline-flex;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="color:#F2A50C;"><path d="M12 3.2l2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.6l6-.8z"/></svg></span>
+          <div><div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:12.5px;color:#23272E;">8 مجالات</div><div style="font-size:11.5px;color:#9AA0AA;">50 استطباباً</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+
+<!-- INTRO VIDEO -->
+<section style="padding:52px 24px;background:#FFFCFB;" class="sp">
+  <div style="max-width:780px;margin:0 auto;">
+    <div style="display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:16px;">
+      <span style="height:1px;width:36px;background:#E3D8D3;display:inline-block;"></span>
+      <span style="font-size:12.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:#9AA0AA;">نظرة عامة على المشروع</span>
+      <span style="height:1px;width:36px;background:#E3D8D3;display:inline-block;"></span>
+    </div>
+    <div style="aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,#2B2F36,#1C1F24);box-shadow:0 22px 48px rgba(20,30,40,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;">
+      <div style="position:absolute;top:14px;left:16px;display:flex;align-items:center;gap:7px;">
+        <span style="width:9px;height:9px;border-radius:50%;background:#E8192B;display:inline-block;"></span>
+        <span style="color:rgba(255,255,255,.7);font-size:12px;font-weight:700;letter-spacing:.05em;">Pharma-Coach</span>
+      </div>
+      <div style="position:relative;">
+        <span style="position:absolute;inset:0;border-radius:50%;border:2px solid #E8192B;animation:ring 2.4s ease-out infinite;"></span>
+        <div style="width:76px;height:76px;border-radius:50%;background:#E8192B;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 28px rgba(232,25,43,.5);">
+          <span style="width:0;height:0;border-left:22px solid #fff;border-top:13px solid transparent;border-bottom:13px solid transparent;margin-left:5px;display:inline-block;"></span>
+        </div>
+      </div>
+      <div style="position:absolute;bottom:14px;left:18px;right:18px;display:flex;align-items:center;justify-content:space-between;">
+        <span style="color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:14px;">Pharma-Coach في لمحة</span>
+        <span style="color:rgba(255,255,255,.6);font-size:12px;font-weight:700;"><bdi>02:10</bdi></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="position:relative;overflow:hidden;background:#23272E;padding:80px 24px;" class="sp">
+  <div style="max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:44px;align-items:center;" class="two-col">
+    <div>
+      <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(28px,4vw,46px);line-height:1.1;color:#fff;margin-bottom:18px;">
+        المنافسة تزداد.<br><span style="color:#2DDDC4;">معرفتك هي تفوّقك.</span>
+      </h2>
+      <p style="font-size:16.5px;line-height:1.7;color:rgba(255,255,255,.7);max-width:560px;">
+        المنافسة بين الصيدليات في ألمانيا تشتدّ باستمرار. ولهذا صار ما تُتقنه فعلاً في الاستشارة أهمّ من أي وقت مضى. فمن يعرف الكثير يستطيع أن يقول للمريض الأهمّ بإيجاز ووضوح.
+      </p>
+    </div>
+    <div style="text-align:center;padding:30px 26px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;min-width:170px;">
+      <div style="font-family:Montserrat,sans-serif;font-weight:900;font-size:50px;color:#E8192B;line-height:1;"><bdi>#1</bdi></div>
+      <div style="font-size:13px;line-height:1.4;color:rgba(255,255,255,.6);margin-top:8px;max-width:150px;">
+        سببٌ لعودة الزبائن: الاستشارة الكفؤة.
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- GRATIS VIDEO -->
+<section style="background:#FFFCFB;padding:76px 24px;" class="sp">
+  <div style="max-width:840px;margin:0 auto;text-align:center;">
+    <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(22px,3.5vw,38px);color:#23272E;margin-bottom:13px;">
+      موضوع OTC كامل: شاهده مجاناً
+    </h2>
+    <p style="font-size:15.5px;line-height:1.7;color:#5A5F68;max-width:560px;margin:0 auto 28px;">
+      شاهد استطباباً كاملاً بخطواته الست كلّها، دون أي اشتراك.
+    </p>
+    <div id="gv-de" onclick="playGratis('gv-de')" role="button" aria-label="Gratis-Lektion abspielen" style="aspect-ratio:16/9;max-width:720px;margin:0 auto;border-radius:10px;overflow:hidden;background:#000;position:relative;cursor:pointer;box-shadow:0 18px 44px rgba(0,0,0,.35);">
+      <img src="../gratis-thumbnail.jpg" alt="Gratis-Lektion: Erkältung: Beratung in der Apotheke" style="width:100%;height:100%;object-fit:cover;display:block;">
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.08);">
+        <div style="width:76px;height:76px;border-radius:50%;background:#E8192B;box-shadow:0 8px 26px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" width="30" height="30"><path d="M8 5.5 19 12 8 18.5 Z" fill="#fff"/></svg>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:11.5px;color:#9AA0AA;margin:9px auto 22px;max-width:720px;text-align:center;">عند التشغيل يتمّ الاتصال بـ YouTube (Google).</div>
+    <a href="https://youtu.be/6HAqN36258E" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:9px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;padding:14px 24px;border-radius:13px;box-shadow:0 4px 0 #B30F1E;text-decoration:none;">→ شاهد الدرس المجاني ←</a>
+    <a href="otc-kurs.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:9px;background:#fff;color:#23272E;font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;padding:14px 24px;border-radius:13px;border:2px solid #ECE6E4;box-shadow:0 4px 0 #ECE6E4;text-decoration:none;margin-left:10px;">→ اطّلع على المواضيع الخمسين كلّها ←</a>
+  </div>
+</section>
+
+<!-- GAME PROMO -->
+<section style="position:relative;overflow:hidden;background:#1C2026;padding:84px 24px;overflow:hidden;" class="sp">
+  <div style="max-width:1080px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1.12fr;gap:48px;align-items:center;" class="game-grid">
+      <div>
+        <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:13px;">
+          <span style="font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#2DDDC4;">Pharma-Coach: The Game</span>
+          <span style="background:#16B8A6;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:9.5px;letter-spacing:.05em;padding:3px 7px;border-radius:5px;">مجاناً</span>
+        </div>
+        <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(24px,3.2vw,37px);color:#fff;line-height:1.18;margin-bottom:9px;">تدرّب على مواقف حقيقية عند طاولة البيع.</h2>
+        <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:clamp(15px,1.7vw,19px);color:rgba(255,255,255,.5);margin-bottom:18px;">مجاناً. كتطبيق أو مباشرةً في المتصفح.</div>
+        <p style="font-size:15.5px;line-height:1.75;color:rgba(255,255,255,.62);margin-bottom:28px;">زبون يقف أمام طاولة البيع. تسأل، وتكتشف العلامات الحمراء (Red Flags)، وتوصي. ومؤشّر الثقة يُظهر لك فوراً مستوى أدائك. ومع حسابك المجاني يبقى كل تقدّم محفوظاً، على أي جهاز.</p>
+        <a href="/game/" style="display:inline-flex;align-items:center;gap:9px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:16px;padding:16px 30px;border-radius:14px;box-shadow:0 4px 0 #B30F1E;text-decoration:none;">→ العب الآن مجاناً ←</a>
+        <div style="font-size:12.5px;color:rgba(255,255,255,.45);margin-top:12px;">تُلعب في المتصفح، أو تُثبَّت كتطبيق على الشاشة الرئيسية بنقرة واحدة.</div>
+      </div>
+      <div style="position:relative;">
+        <div style="position:absolute;inset:-14px;border-radius:22px;background:radial-gradient(circle at 50% 50%,rgba(45,221,196,.22),rgba(45,221,196,0) 70%);"></div>
+        <div class="game-shot" style="position:relative;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.14);box-shadow:0 26px 60px rgba(0,0,0,.5);aspect-ratio:16/9;background:#23272E;">
+          <picture>
+            <source srcset="game-preview.webp" width="1600" height="900">
+            <img src="../game-preview.jpg" alt="Pharma-Coach: The Game" loading="lazy" decoding="async" width="1600" height="900" style="width:100%;height:100%;object-fit:cover;display:block;">
+          </picture>
+        </div>
+      </div>
+      </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:44px;" class="four-col">
+<div class="stat-card" style="background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px 18px;"><div style="margin-bottom:11px;min-height:36px;display:flex;align-items:center;"><span style="font-family:Montserrat,sans-serif;font-weight:900;font-size:34px;color:#2DDDC4;line-height:1;"><bdi>0&nbsp;€</bdi></span></div><div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:14.5px;color:#fff;margin-bottom:4px;">مجانية بالكامل</div><div style="font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.55);">بلا اشتراك، والتسجيل مجاني</div></div>
+<div class="stat-card" style="background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px 18px;"><div style="margin-bottom:11px;min-height:36px;display:flex;align-items:center;"><span style="font-family:Montserrat,sans-serif;font-weight:900;font-size:34px;color:#2DDDC4;line-height:1;">3</span></div><div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:14.5px;color:#fff;margin-bottom:4px;">3 / لغات</div><div style="font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.55);">الألمانية · الإنجليزية · العربية</div></div>
+<div class="stat-card" style="background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px 18px;"><div style="margin-bottom:11px;min-height:36px;display:flex;align-items:center;"><span style="font-family:Montserrat,sans-serif;font-weight:900;font-size:34px;color:#2DDDC4;line-height:1;">8</span></div><div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:14.5px;color:#fff;margin-bottom:4px;">رُتَب</div><div style="font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.55);">من متدرّب إلى أسطورة</div></div>
+<div class="stat-card" style="background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px 18px;"><div style="margin-bottom:11px;min-height:36px;display:flex;align-items:center;"><span style="display:inline-flex;width:34px;height:34px;border-radius:10px;background:rgba(45,221,196,.16);align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#2DDDC4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg></span></div><div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:14.5px;color:#fff;margin-bottom:4px;">حالات حقيقية من طاولة البيع</div><div style="font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.55);">العلامات التحذيرية والجرعات</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WAS MACHT ANDERS -->
+<section style="padding:76px 24px;background:#fff;" class="sp">
+  <div style="max-width:1040px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:44px;">
+      <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(24px,3.5vw,40px);color:#23272E;">
+        ما الذي يميّز Pharma-Coach؟
+      </h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:900px;margin:0 auto;" class="three-col">
+<div class="diff-card"><div class="diff-icon" style="background:#FFEAEC;color:#E8192B;box-shadow:0 0 0 7px #FFEAEC55;"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 21h4v-3.5h4V14h4v-3.5h4V7h3"/><circle cx="4.5" cy="18.5" r="1" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="12.5" cy="11.5" r="1" fill="currentColor" stroke="none"/><circle cx="16.5" cy="8" r="1" fill="currentColor" stroke="none"/><path d="M19.5 2.5v3M18 4h3"/></svg></div><h3 style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;margin:0 0 7px;">منظَّم</h3><p style="font-size:14px;line-height:1.55;color:#5A5F68;margin:0;">كل استطباب في 6 خطوات واضحة.</p></div>
+<div class="diff-card"><div class="diff-icon" style="background:#E2FAF4;color:#16B8A6;box-shadow:0 0 0 7px #E2FAF455;"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 15h19"/><path d="M4 15v6M20 15v6M2.5 21h19"/><circle cx="8" cy="8.2" r="2.4"/><path d="M4.6 15v-.8a3.4 3.4 0 0 1 6.8 0v.8"/><rect x="14.5" y="9.5" width="5.5" height="5.5" rx="1"/><path d="M17.25 11v2.5M16 12.25h2.5"/></svg></div><h3 style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;margin:0 0 7px;">قريب من الممارسة</h3><p style="font-size:14px;line-height:1.55;color:#5A5F68;margin:0;">مباشرةً من الصيدلية (Offizin)، لا من الكتب الدراسية.</p></div>
+<div class="diff-card"><div class="diff-icon" style="background:#FEF3DD;color:#F2A50C;box-shadow:0 0 0 7px #FEF3DD55;"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8.2"/><path d="M9.5 2.5h5"/><path d="M12 4.8v-2.3"/><path d="M10.4 10.2 15.2 13l-4.8 2.8z" fill="currentColor" stroke="currentColor" stroke-width="1.2"/><path d="M19.5 5.5l1.3 1.3M4.5 5.5 3.2 6.8"/></svg></div><h3 style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;margin:0 0 7px;">مكثّف</h3><p style="font-size:14px;line-height:1.55;color:#5A5F68;margin:0;">10–15 دقيقة لكل درس.</p></div>
+<div class="diff-card"><div class="diff-icon" style="background:#ECEFF5;color:#4A5058;box-shadow:0 0 0 7px #ECEFF555;"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3h8A2.5 2.5 0 0 1 16 5.5v4a2.5 2.5 0 0 1-2.5 2.5H8l-3.5 3v-3H5.5A2.5 2.5 0 0 1 3 9.5z"/><path d="M8 6.4c.4-.9 1.6-1.1 2.3-.5.7.6.6 1.6-.2 2.1-.5.3-.6.5-.6 1"/><circle cx="9.5" cy="10.4" r=".55" fill="currentColor" stroke="none"/><path d="M21 11.5a2.5 2.5 0 0 0-2.5-2.5h-1"/><path d="M12.5 15.5v.5a2.5 2.5 0 0 0 2.5 2.5h2.5l3 2.5v-2.5h.5v-5"/><path d="M15.6 16.2l1.3 1.3 2.4-2.5"/></svg></div><h3 style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;margin:0 0 7px;">استشارة لا محاضرة</h3><p style="font-size:14px;line-height:1.55;color:#5A5F68;margin:0;">التركيز على الحوار عند طاولة البيع، لا على نظريات علم الأدوية.</p></div>
+<div class="diff-card"><div class="diff-icon" style="background:#E3F5EB;color:#1F9D61;box-shadow:0 0 0 7px #E3F5EB55;"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h13l-1.4 8.2a2 2 0 0 1-2 1.8H7.4a2 2 0 0 1-2-1.8z"/><path d="M8.7 9.5 11.5 4M14.7 9.5 11.9 4"/><path d="M8.5 13v3.5M12.5 13v3.5"/><circle cx="18.7" cy="6.3" r="3.8" fill="#fff"/><path d="M18.7 4.6v3.4M17 6.3h3.4"/></svg></div><h3 style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;margin:0 0 7px;">البيع الإضافي مدمج</h3><p style="font-size:14px;line-height:1.55;color:#5A5F68;margin:0;">كل استطباب مع توصيات إضافية مبرَّرة علمياً.</p></div>
+<div class="diff-card"><div class="diff-icon" style="background:#FFEAEC;color:#E8192B;box-shadow:0 0 0 7px #FFEAEC55;"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="7.2" r="3.2"/><path d="M3.5 20.5v-1.2a6.5 6.5 0 0 1 11.4-4.3"/><path d="M8.5 13.9 10 16l1.5-2.1"/><rect x="14.8" y="14.2" width="7" height="7" rx="1.6" fill="#fff"/><path d="M18.3 15.9v3.6M16.5 17.7h3.6"/></svg></div><h3 style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;margin:0 0 7px;">من الممارسة، للممارسة</h3><p style="font-size:14px;line-height:1.55;color:#5A5F68;margin:0;">من إعداد صيدلاني مرخَّص (approbiert) ومدير فرع، من قلب العمل اليومي في الصيدلية.</p></div>
+</div>
+  </div>
+</section>
+
+<!-- PREIS -->
+<section id="preis-de" style="position:relative;overflow:hidden;padding:90px 24px;background:#23272E;" class="sp">
+  <div style="max-width:700px;margin:0 auto;text-align:center;">
+    <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(24px,3.5vw,40px);color:#23272E;margin-bottom:12px;">
+      اشتراك واحد، ومحتوى جديد باستمرار
+    </h2>
+    <p style="font-size:16.5px;color:rgba(255,255,255,.72);max-width:480px;margin:0 auto 10px;">
+      اشتراك سنوي واحد: كل محتوى OTC، إضافةً إلى جميع الكورسات الجديدة التي تُضاف تباعاً.
+    </p>
+    <div style="font-size:13.5px;color:rgba(255,255,255,.45);margin-bottom:34px;">
+      نحو 7 € شهرياً · قابل للإلغاء في أي وقت
+    </div>
+    <div style="position:relative;background:#fff;border:2px solid #F0E8E5;border-radius:16px;padding:38px 36px;box-shadow:0 12px 40px rgba(20,30,40,.08);">
+      <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:11.5px;padding:5px 14px;border-radius:6px;white-space:nowrap;">
+        محتوى جديد باستمرار
+      </div>
+      <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:16px;color:#23272E;margin-bottom:8px;">
+        اشتراك Pharma-Coach السنوي
+      </div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;gap:4px;margin:14px 0;">
+        <span style="font-family:Montserrat,sans-serif;font-weight:900;font-size:66px;line-height:1;color:#E8192B;">85€</span>
+        <span style="font-size:17px;color:#9AA0AA;padding-bottom:11px;">/ سنوياً</span>
+      </div>
+      <div style="font-size:13.5px;color:#9AA0AA;margin-bottom:24px;">
+        يُضاف محتوى جديد باستمرار، دون أي تكلفة إضافية.
+      </div>
+      <ul style="list-style:none;text-align:right;margin-bottom:28px;"><li style="display:flex;align-items:center;gap:9px;font-size:14.5px;color:#2A2E35;padding:3px 0;"><span style="color:#16B8A6;font-weight:700;font-size:16px;">✓</span>كورس OTC كامل (نحو 50 استطباباً)</li>
+<li style="display:flex;align-items:center;gap:9px;font-size:14.5px;color:#2A2E35;padding:3px 0;"><span style="color:#16B8A6;font-weight:700;font-size:16px;">✓</span>جميع الكورسات الجديدة مشمولة تلقائياً</li>
+<li style="display:flex;align-items:center;gap:9px;font-size:14.5px;color:#2A2E35;padding:3px 0;"><span style="color:#16B8A6;font-weight:700;font-size:16px;">✓</span>اختبارات ذاتية وإثبات تعلّم</li>
+<li style="display:flex;align-items:center;gap:9px;font-size:14.5px;color:#2A2E35;padding:3px 0;"><span style="color:#16B8A6;font-weight:700;font-size:16px;">✓</span>تحديثات مستمرة وفيديوهات جديدة</li>
+</ul>
+      <a href="#preis-de" style="display:block;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:16px;padding:17px;border-radius:13px;box-shadow:0 5px 0 #B30F1E;text-decoration:none;text-align:center;">اطّلع على السعر والمحتويات ←</a>
+      <div style="font-size:12.5px;color:#9AA0AA;margin-top:11px;">
+        قابل للإلغاء في أي وقت · FSP و Kenntnisprüfung بشكل منفصل
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMNÄCHST -->
+<section id="demnaechst-de" style="position:relative;overflow:hidden;padding:90px 24px;background:#fff;" class="sp">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:44px;">
+      <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(24px,3.5vw,40px);color:#23272E;margin-bottom:12px;">
+        ما القادم
+      </h2>
+      <p style="font-size:16px;color:#5A5F68;max-width:480px;margin:0 auto;">
+        اشتراكك ينمو معك: هذه الكورسات قيد الإعداد فعلاً، وهي مشمولة في السعر.
+      </p>
+    </div>
+    <div style="background:linear-gradient(135deg,#23272E,#3B4250);border-radius:12px;padding:32px 36px;margin-bottom:20px;display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center;" class="two-col">
+      <div>
+        <span style="display:inline-flex;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:12px;font-weight:700;padding:3px 9px;border-radius:5px;margin-bottom:11px;">
+          مشمول في الاشتراك
+        </span>
+        <h3 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(20px,3vw,32px);color:#fff;margin-bottom:11px;">
+          استشارات أدوية الوصفة (Rx)
+        </h3>
+        <p style="font-size:15px;line-height:1.65;color:rgba(255,255,255,.7);max-width:520px;">
+          الاستشارة في الأدوية الخاضعة للوصفة الطبية: التأثير، وطريقة التناول، والتداخلات الدوائية، والكلمات المناسبة عند طاولة البيع.
+        </p>
+      </div>
+      <div style="text-align:center;padding:20px 22px;background:rgba(255,255,255,.06);border-radius:11px;min-width:110px;">
+        <div style="font-family:Montserrat,sans-serif;font-weight:900;font-size:42px;color:#2DDDC4;line-height:1;">Rx</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.45);margin-top:6px;">قيد الإعداد</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;" class="three-col"><div class="hcard" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;padding:22px 20px;"><div class="hicon" style="width:48px;height:48px;border-radius:12px;background:#E2FAF4;color:#16B8A6;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2l6.6 2.9v5.4c0 4.4-2.8 7.9-6.6 9.6-3.8-1.7-6.6-5.2-6.6-9.6V6.1z"/><path d="M12 8.2v6M9 11.2h6"/></svg></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;"><h3 style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;color:#23272E;margin:0;">التدريبات الإلزامية (Pflichtschulungen)</h3><span style="font-size:11px;font-weight:700;color:#9AA0AA;background:#F0EDEB;border-radius:4px;padding:2px 7px;">مُخطَّط</span></div><p style="font-size:13.5px;line-height:1.5;color:#5A5F68;margin:0;">نظام إدارة الجودة (QMS)، وحماية البيانات، والنظافة الصحية، والسلامة المهنية، والإسعافات الأولية.</p></div>
+<div class="hcard" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;padding:22px 20px;"><div class="hicon" style="width:48px;height:48px;border-radius:12px;background:#FEF3DD;color:#F2A50C;display:flex;align-items:center;justify-content:center;margin-bottom:12px;"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.2"/><path d="M15.2 15.2 20.5 20.5"/><path d="M8 10.5h5M10.5 8v5"/></svg></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;"><h3 style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;color:#23272E;margin:0;">تحليل الأدوية (Medikationsanalyse)</h3><span style="font-size:11px;font-weight:700;color:#9AA0AA;background:#F0EDEB;border-radius:4px;padding:2px 7px;">مُخطَّط</span></div><p style="font-size:13.5px;line-height:1.5;color:#5A5F68;margin:0;">تحليل منظَّم لمجمل الأدوية التي يتناولها المريض.</p></div>
+<div class="hcard" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;padding:22px 20px;"><div class="hicon" style="width:48px;height:48px;border-radius:12px;background:#EDEFF2;color:#3B4250;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px;">◷</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;"><h3 style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;color:#23272E;margin:0;">أمثلة حالات</h3><span style="font-size:11px;font-weight:700;color:#9AA0AA;background:#F0EDEB;border-radius:4px;padding:2px 7px;">مُخطَّط</span></div><p style="font-size:13.5px;line-height:1.5;color:#5A5F68;margin:0;">مواقف استشارية نموذجية من العمل اليومي في الصيدلية.</p></div>
+</div>
+  </div>
+</section>
+
+<!-- FSP -->
+<section id="fsp-de" style="background:linear-gradient(135deg,#E8192B,#B30F1E);padding:90px 24px;" class="sp">
+  <div style="max-width:1040px;margin:0 auto;">
+    <div style="max-width:680px;margin:0 auto 44px;text-align:center;">
+      <span style="display:inline-flex;background:rgba(255,255,255,.15);color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:11px;letter-spacing:.1em;padding:5px 12px;border-radius:6px;margin-bottom:14px;">
+        قيد التحضير
+      </span>
+      <div style="font-size:12px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:13px;">
+        للصيادلة القادمين من الخارج
+      </div>
+      <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(22px,3.5vw,38px);color:#fff;margin-bottom:18px;line-height:1.15;">
+        FSP و Kenntnisprüfung: تحضيرك للحصول على الترخيص (Approbation)
+      </h2>
+      <p style="font-size:15.5px;line-height:1.7;color:rgba(255,255,255,.82);">
+        هل أنت في مسار معادلة الشهادة كصيدلاني في ألمانيا؟ يُعدّك Pharma-Coach بشكل موجَّه لامتحان اللغة التخصصي (Fachsprachprüfung) وامتحان المعرفة (Kenntnisprüfung)، مع التركيز على اللغة والمعرفة التي تهمّ فعلاً في الامتحان وعند طاولة البيع.
+      </p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;" class="two-col"><div class="fspcard" style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);border-radius:8px;padding:22px 20px;"><div style="font-family:Montserrat,sans-serif;font-weight:900;font-size:26px;color:#fff;margin-bottom:9px;">FSP</div><h3 style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;color:#fff;margin:0 0 8px;">امتحان اللغة التخصصية (Fachsprachprüfung)</h3><p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.8);margin:0;">التواصل الطبي، والمصطلحات التخصصية، ومواقف الامتحان النموذجية، بتدريب قريب من الواقع العملي.</p></div>
+<div class="fspcard" style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);border-radius:8px;padding:22px 20px;"><div style="font-family:Montserrat,sans-serif;font-weight:900;font-size:26px;color:#fff;margin-bottom:9px;">KP</div><h3 style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;color:#fff;margin:0 0 8px;">امتحان المعرفة (Kenntnisprüfung)</h3><p style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.8);margin:0;">علم الأدوية، والقانون، والممارسة: تحضير منظَّم وموجَّه للامتحان.</p></div>
+</div>
+  </div>
+</section>
+
+<!-- ÜBER AMMAR -->
+<section id="about-de" style="padding:90px 24px;background:#FFFCFB;" class="sp">
+  <div style="max-width:1040px;margin:0 auto;display:grid;grid-template-columns:.8fr 1.2fr;gap:52px;align-items:center;" class="about-grid">
+    <div style="position:relative;">
+      <div style="position:absolute;inset:16px -16px -16px 16px;border-radius:8px;background:linear-gradient(150deg,#E8192B,#B30F1E);"></div>
+      <div style="position:relative;border-radius:8px;overflow:hidden;background:#EEF0F3;box-shadow:0 22px 48px rgba(20,30,40,.15);aspect-ratio:319/480;">
+        <img src="../ammar.webp" alt="Ammar Amiri" style="width:100%;height:100%;object-fit:cover;object-position:top;">
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:#9AA0AA;margin-bottom:11px;">
+        عن عمّار
+      </div>
+      <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(24px,3.5vw,38px);color:#23272E;margin-bottom:6px;">عمّار أميري</h2>
+      <div style="font-size:14.5px;font-weight:600;color:#E8192B;margin-bottom:18px;">
+        صيدلاني ومدير فرع · Engel-Apotheke في Harsewinkel
+      </div>
+      <p style="font-size:15.5px;line-height:1.7;color:#5A5F68;margin-bottom:20px;">
+        حاصل على الترخيص (Approbation) منذ 2020، بخبرة تزيد على 17 عاماً في العمل الصيدلاني والتسويق الدوائي. درس MBA لمدة سنتين، وهو المؤلف الرئيسي لكتاب «دليلك إلى الترخيص الألماني كصيدلاني»، ومؤسّس قناة يوتيوب <strong>Pharma-Coach</strong>.
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:26px;"><span class="about-chip" style="display:inline-flex;align-items:center;gap:5px;background:#F4F1EE;border-radius:999px;padding:6px 13px;font-size:13px;font-weight:600;color:#4A4F58;"><span style="color:#E8192B;">✓</span>مرخَّص منذ 2020</span>
+<span class="about-chip" style="display:inline-flex;align-items:center;gap:5px;background:#F4F1EE;border-radius:999px;padding:6px 13px;font-size:13px;font-weight:600;color:#4A4F58;"><span style="color:#E8192B;">✓</span>أكثر من 17 عاماً من الخبرة</span>
+<span class="about-chip" style="display:inline-flex;align-items:center;gap:5px;background:#F4F1EE;border-radius:999px;padding:6px 13px;font-size:13px;font-weight:600;color:#4A4F58;"><span style="color:#E8192B;">✓</span>مدير فرع</span>
+<span class="about-chip" style="display:inline-flex;align-items:center;gap:5px;background:#F4F1EE;border-radius:999px;padding:6px 13px;font-size:13px;font-weight:600;color:#4A4F58;"><span style="color:#E8192B;">✓</span>2 J. MBA-Studium</span>
+<a href="https://drive.google.com/file/d/1qvnX19-AhdvVPPuatpF1K0VIWWKgZUl_/view?usp=drivesdk" target="_blank" rel="noopener" class="chip-link" style="display:inline-flex;align-items:center;gap:6px;background:#FFF0F0;border:1.5px solid #F4C8C8;border-radius:999px;padding:6px 13px;font-size:13px;font-weight:700;color:#E8192B;text-decoration:none;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M7.5 10.5 12 15l4.5-4.5"/><path d="M4 19.5h16"/></svg>مؤلف: دليل الترخيص (Approbation)<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#E8192B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+<a href="https://youtube.com/@pharma-coach-2018?si=45FRAsxpbxjdZHI_" target="_blank" rel="noopener" class="chip-link" style="display:inline-flex;align-items:center;gap:6px;background:#FFF0F0;border:1.5px solid #F4C8C8;border-radius:999px;padding:6px 13px;font-size:13px;font-weight:700;color:#E8192B;text-decoration:none;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7.5 17 12l-8 4.5z"/></svg>قناة YouTube<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#E8192B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+</div>
+      <a href="ueber-ammar.html" style="display:inline-flex;align-items:center;gap:8px;background:#23272E;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:14px;padding:13px 22px;border-radius:12px;box-shadow:0 3px 0 #0e1114;text-decoration:none;" target="_blank" rel="noopener">→ المزيد عن عمّار ←</a>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section style="padding:76px 24px;background:#23272E;" class="sp">
+  <div style="max-width:760px;margin:0 auto;text-align:center;">
+    <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(22px,3.5vw,38px);color:#23272E;margin-bottom:28px;">
+      ماذا يقول الصيادلة
+    </h2>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:36px;">
+      <div style="display:flex;gap:5px;margin-bottom:13px;"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#F2A50C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2l2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.6l6-.8z"/></svg><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#F2A50C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2l2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.6l6-.8z"/></svg><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#F2A50C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2l2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.6l6-.8z"/></svg><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#F2A50C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2l2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.6l6-.8z"/></svg><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#F2A50C" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2l2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.6l6-.8z"/></svg></div>
+      <p style="font-size:16.5px;color:rgba(255,255,255,.72);font-style:italic;">
+        التقييمات قريباً. تنطلق المنصة في نيسان (أبريل) 2027.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq-de" style="position:relative;overflow:hidden;padding:90px 24px;background:#FFFCFB;" class="sp">
+  <div style="max-width:720px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:44px;">
+      <h2 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(24px,3.5vw,40px);color:#23272E;">
+        الأسئلة الشائعة
+      </h2>
+    </div>
+    <div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de0')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">لمن صُمّم Pharma-Coach؟</span><span id="fide0" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade0" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">يستهدف Pharma-Coach الصيادلة والمساعدين الصيدلانيين (PTA) في ألمانيا، وخصوصاً الزملاء الذين يريدون أن تكون استشارتهم عند طاولة البيع أكثر ثقة وتنظيماً. ويستفيد من المحتوى العملي أيضاً الصيادلة القادمون من الخارج خلال مرحلة المعادلة.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de1')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">كيف تُبنى الكورسات؟</span><span id="fide1" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade1" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">يتبع كل درس البنية الواضحة نفسها: مقدمة · الأعراض · الأسباب · متى يجب مراجعة الطبيب؟ · أسئلة الاستشارة · العلاج. وهكذا تجد طريقك في كل موضوع فوراً.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de2')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">كم يستغرق الدرس؟</span><span id="fide2" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade2" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">تستغرق معظم الدروس بين 10 و15 دقيقة، وتركّز على الجوهري للممارسة العملية.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de3')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">هل يمكنني مشاهدة المحتوى في أي وقت؟</span><span id="fide3" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade3" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">نعم. يمكنك مشاهدة الكورسات في أي وقت وبقدر ما تشاء، على الكمبيوتر أو الجهاز اللوحي أو الهاتف الذكي.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de4')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">هل توجد شهادة؟</span><span id="fide4" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade4" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">بعد إتمام الكورس تحصل على شهادة مشاركة أو إثبات تعلّم. أما نقاط التعليم المستمر الرسمية (Fortbildungspunkte) فمخطَّط لها في مراحل التطوير القادمة.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de5')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">كم تكلفة الاشتراك؟</span><span id="fide5" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade5" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">يكلّف الاشتراك السنوي 85 €، ويشمل جميع كورسات OTC المتاحة حالياً، وكل المحتوى الجديد الذي يُنشر خلال مدة اشتراكك.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de6')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">هل أحتاج إلى معرفة صيدلانية مسبقة؟</span><span id="fide6" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade6" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">نعم. Pharma-Coach ليس بوابة صحية للمرضى، بل طُوّر خصيصاً للعاملين في الصيدليات.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de7')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">هل يُنشر محتوى جديد بانتظام؟</span><span id="fide7" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade7" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">نعم. تتوسّع المنصة باستمرار. ومن المخطَّط له، على سبيل المثال: استشارات أدوية الوصفة (Rx)، والتداخلات الدوائية، والتدريبات الإلزامية (Pflichtschulungen)، وأمثلة الحالات.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de8')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">هل يُعدّ Pharma-Coach للحصول على الترخيص (Approbation)؟</span><span id="fide8" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade8" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">تركّز المنصة الحالية على الاستشارة العملية في الصيدلية. أما الكورسات المتخصصة لامتحان اللغة التخصصية (Fachsprachprüfung) وامتحان المعرفة (Kenntnisprüfung) فهي قيد التحضير فعلاً.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de9')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">هل يناسب Pharma-Coach الصيادلة ذوي الخبرة أيضاً؟</span><span id="fide9" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade9" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">نعم. كثير من المحتوى لا يهدف إلى بناء المعرفة فحسب، بل أيضاً إلى تنظيم خطوات الاستشارة وتجديدها في العمل اليومي بالصيدلية.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de10')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">بمَ يختلف Pharma-Coach عن الكتب؟</span><span id="fide10" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade10" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">الكتب تنقل المعرفة. أما Pharma-Coach فيُريك كيف تُطبَّق هذه المعرفة عملياً في الاستشارة عند طاولة البيع: بشكل مكثّف ومنظَّم وقابل للتطبيق فوراً.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de11')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">هل يمكنني إلغاء اشتراكي؟</span><span id="fide11" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade11" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">نعم. يمكن إلغاء الاشتراك في أي وقت، ويسري الإلغاء بنهاية مدة الاشتراك. لا يوجد أي التزام طويل الأمد.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de12')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">هل يمكنني تجربة Pharma-Coach قبل الشراء؟</span><span id="fide12" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade12" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">نعم. يتوفّر درس نموذجي مجاني لتتعرّف مسبقاً على البنية والجودة وأسلوب التعلّم.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de13')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">Pharma-Coach: The Game</span><span id="fide13" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade13" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">لعبة تعليمية مجانية للمتصفح والهاتف: تتعامل مع مواقف حقيقية عند طاولة البيع، وتطرح أسئلة الاستشارة، وتكتشف العلامات الحمراء (Red Flags)، ويُظهر لك مؤشّر الثقة فوراً جودة استشارتك. بلا اشتراك، تسجيل مجاني، ومتاحة بالألمانية والإنجليزية والعربية.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de14')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">على أي أجهزة يعمل Pharma-Coach؟</span><span id="fide14" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade14" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">على جميعها: الهاتف الذكي، الجهاز اللوحي، الحاسوب المحمول والمكتبي. تعمل الكورسات في المتصفح مباشرة، ويمكن تشغيل اللعبة في المتصفح أو تثبيتها كتطبيق على الشاشة الرئيسية.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de15')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">بأي لغة المحتوى؟</span><span id="fide15" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade15" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">محتوى الكورسات بالألمانية بالكامل، تماماً كما تجري الاستشارة فعلياً في الصيدلية. أما الموقع واللعبة التعليمية فمتاحان إضافةً إلى ذلك بالإنجليزية والعربية.</div></div>
+<div class="faq-card" style="background:#fff;border:1.5px solid #F0E8E5;border-radius:8px;overflow:hidden;margin-bottom:8px;"><button onclick="tf('de16')" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;background:none;border:none;padding:18px 22px;cursor:pointer;text-align:right;"><span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15.5px;color:#23272E;">أعمل في الصيدلية منذ سنوات. هل ما زال هذا مفيداً لي؟</span><span id="fide16" style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#C9CDD4;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</span></button><div id="fade16" style="display:none;padding:0 22px 20px;font-size:15px;line-height:1.65;color:#5A5F68;">خصوصاً حينئذ. الخبرة تمنح الاعتياد، لكنها لا تمنح البنية تلقائياً. يحوّل Pharma-Coach ما تُتقنه أصلاً إلى نظام: تسلسل الخطوات نفسه في كل استطباب، وحدود واضحة للعلاج الذاتي، وتوصيات إضافية مبنية على أساس علمي.</div></div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:#23272E;padding:56px 24px 30px;overflow:hidden;" class="sp">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1.4fr;gap:38px;margin-bottom:40px;overflow:hidden;" class="fg">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:13px;">
+          <svg viewBox="0 0 120 64" width="40" height="22"><rect x="6" y="14" width="64" height="36" rx="18" fill="#E8192B"/><rect x="50" y="14" width="64" height="36" rx="18" fill="#2DDDC4"/><rect x="33" y="7" width="54" height="50" rx="25" fill="#383D45"/><path d="M53 21 L74 32 L53 43 Z" fill="#fff"/></svg>
+          <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:16px;color:#fff;">Pharma-Coach</span>
+        </div>
+        <p style="font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.5);margin-bottom:16px;">
+          تدريب استشاري منظَّم لفرق الصيدليات.
+        </p>
+
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:12px;">
+          الكورسات
+        </div>
+        <ul style="list-style:none;"><li><a href="otc-kurs.html" target="_blank" rel="noopener" style="font-size:13px;color:rgba(255,255,255,.65);text-decoration:none;font-weight:500;line-height:2.2;word-break:break-word;">استشارات OTC</a></li>
+<li><a href="#demnaechst-de" style="font-size:13px;color:rgba(255,255,255,.65);text-decoration:none;font-weight:500;line-height:2.2;word-break:break-word;">استشارات Rx (مُخطَّط)</a></li>
+<li><a href="#demnaechst-de" style="font-size:13px;color:rgba(255,255,255,.65);text-decoration:none;font-weight:500;line-height:2.2;word-break:break-word;">تحليل الأدوية (مُخطَّط)</a></li>
+<li><a href="#demnaechst-de" style="font-size:13px;color:rgba(255,255,255,.65);text-decoration:none;font-weight:500;line-height:2.2;word-break:break-word;">دراسات حالة (مُخطَّط)</a></li>
+<li><a href="#fsp-de" style="font-size:12px;color:rgba(255,255,255,.65);text-decoration:none;font-weight:500;line-height:2.0;word-break:break-word;">FSP و Kenntnisprüfung (مُخطَّط)</a></li>
+</ul>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:12px;">
+          المزيد
+        </div>
+        <ul style="list-style:none;"><li><a href="#preis-de" style="font-size:13px;color:rgba(255,255,255,.65);text-decoration:none;font-weight:500;line-height:2.2;word-break:break-word;">السعر</a></li>
+<li><a href="#about-de" style="font-size:13px;color:rgba(255,255,255,.65);text-decoration:none;font-weight:500;line-height:2.2;word-break:break-word;">عن عمّار</a></li>
+<li><a href="#demnaechst-de" style="font-size:13px;color:rgba(255,255,255,.65);text-decoration:none;font-weight:500;line-height:2.2;word-break:break-word;">قريباً</a></li>
+<li><a href="#faq-de" style="font-size:13px;color:rgba(255,255,255,.65);text-decoration:none;font-weight:500;line-height:2.2;word-break:break-word;">الأسئلة الشائعة</a></li>
+<li><a dir="ltr" href="mailto:pharma.coach.ammar@gmail.com" style="font-size:13px;color:rgba(255,255,255,.65);text-decoration:none;font-weight:500;line-height:2.2;word-break:break-word;">التواصل</a></li>
+</ul>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:12px;">التواصل</div>
+        <div class="footer-social" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+          <a href="https://youtube.com/@pharma-coach-2018?si=45FRAsxpbxjdZHI_" style="width:42px;height:42px;border-radius:10px;background:#FF0000;display:flex;align-items:center;justify-content:center;" title="YouTube" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M22.5 6.8a2.9 2.9 0 0 0-2-2C18.9 4.5 12 4.5 12 4.5s-6.9 0-8.5.3a2.9 2.9 0 0 0-2 2A30 30 0 0 0 1.2 12a30 30 0 0 0 .3 5.2 2.9 2.9 0 0 0 2 2C5.1 19.5 12 19.5 12 19.5s6.9 0 8.5-.3a2.9 2.9 0 0 0 2-2 30 30 0 0 0 .3-5.2 30 30 0 0 0-.3-5.2ZM9.8 15.2V8.8l5.6 3.2-5.6 3.2Z"/></svg></a>
+          <a href="https://www.linkedin.com/in/ammar-amiri-97332933" style="width:42px;height:42px;border-radius:10px;background:#0A66C2;display:flex;align-items:center;justify-content:center;" title="LinkedIn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+          <a href="https://www.instagram.com/pharma_coach_ammar?igsh=MXMxOHR3NTg5bG9zeg==" style="width:42px;height:42px;border-radius:10px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:flex;align-items:center;justify-content:center;" title="Instagram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/></svg></a>
+          <a href="https://www.tiktok.com/@pharmacoach11?_r=1&_t=ZG-92ssXzR6EBU" style="width:42px;height:42px;border-radius:10px;background:#010101;border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;" title="TikTok" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M19.6 5.4A4.6 4.6 0 0 1 16.2 4h-3.4v10.4a1.9 1.9 0 1 1-1.9-1.9 1.9 1.9 0 0 1 .5.07V9.1a5.3 5.3 0 1 0 4.8 5.3V9.5a8 8 0 0 0 4.6 1.5V7.6a4.6 4.6 0 0 1-1.2-.2Z"/></svg></a>
+          <a href="https://www.facebook.com/share/1HTD6t64sV/" style="width:46px;height:46px;border-radius:12px;background:#1877F2;display:flex;align-items:center;justify-content:center;" title="Facebook" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+        </div>
+        <a dir="ltr" href="mailto:pharma.coach.ammar@gmail.com" class="footer-email-link" title="pharma.coach.ammar@gmail.com" style="display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);color:#fff;font-size:13px;font-weight:700;padding:10px 16px;border-radius:11px;text-decoration:none;"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#2DDDC4" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3 6.5l9 6.5 9-6.5"/></svg><span class="mail-label">راسلني بالبريد الإلكتروني</span></a>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:20px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+      <span style="font-size:13.5px;color:rgba(255,255,255,.55);font-weight:500;"><strong style="font-family:Montserrat,sans-serif;font-weight:800;color:rgba(255,255,255,.8);">© 2026 Pharma-Coach</strong><span style="opacity:.5;"> · </span>عمّار أميري، صيدلاني<span style="opacity:.5;"> · </span>جميع الحقوق محفوظة</span>
+      <div class="footer-legal" style="display:flex;gap:18px;">
+        <a href="../impressum.html" style="font-size:13px;color:#71767F;text-decoration:none;font-weight:500;" target="_blank" rel="noopener">بيانات الناشر (Impressum)</a>
+        <a href="../datenschutz.html" style="font-size:13px;color:#71767F;text-decoration:none;font-weight:500;" target="_blank" rel="noopener">سياسة الخصوصية (Datenschutz)</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+
+
+
+<script>
+function tf(id) {
+  var a = document.getElementById('fa'+id);
+  var ic = document.getElementById('fi'+id);
+  var open = a.style.display === 'block';
+  a.style.display = open ? 'none' : 'block';
+  ic.textContent = open ? '+' : '–';
+  ic.style.background = open ? '#C9CDD4' : '#E8192B';
+}
+
+function playGratis(id){var d=document.getElementById(id);d.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/6HAqN36258E?autoplay=1&rel=0" style="width:100%;height:100%;border:0;position:absolute;inset:0;" title="Gratis-Lektion Erkältung" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';d.onclick=null;d.style.cursor='default';}
+
+(function(){
+  if(window.matchMedia && window.matchMedia('(hover: hover)').matches) return;
+  document.querySelectorAll('.hero-orb').forEach(function(o){
+    o.addEventListener('click', function(){ o.classList.toggle('tap'); });
+    setInterval(function(){ o.classList.add('tap');
+      setTimeout(function(){ o.classList.remove('tap'); }, 2200); }, 7000);
+  });
+})();
+</script>
+</body>
+</html>

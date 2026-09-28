@@ -84,7 +84,11 @@ main h2:hover{color:#0F9C8C;}
 .click-hint{transition:color .2s ease;}
 .chip-link{transition:transform .2s ease,background .2s ease,box-shadow .2s ease;}
 .chip-link:hover{transform:translateY(-3px);background:rgba(232,25,43,.26)!important;box-shadow:0 8px 18px rgba(232,25,43,.28);}
+a.ltbtn{text-decoration:none;display:inline-block;line-height:1.6;}
 </style>
+<link rel="alternate" hreflang="de" href="https://pharma-coach-amiri.de/ueber-ammar.html">
+<link rel="alternate" hreflang="ar" href="https://pharma-coach-amiri.de/ar/ueber-ammar.html">
+<link rel="alternate" hreflang="x-default" href="https://pharma-coach-amiri.de/ueber-ammar.html">
 </head>
 <body id="body">
 
@@ -99,7 +103,7 @@ main h2:hover{color:#0F9C8C;}
       <div style="display:flex;background:#2E333B;border-radius:11px;padding:3px;">
         <button class="ltbtn active" id="btn-de" onclick="setLang('de')">DE</button>
         <button class="ltbtn inactive" id="btn-en" onclick="setLang('en')">EN</button>
-      </div>
+      <a class="ltbtn inactive" href="ar/ueber-ammar.html">AR</a></div>
       <a href="index.html" style="display:inline-flex;align-items:center;gap:7px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:13px;padding:10px 16px;border-radius:12px;box-shadow:0 3px 0 #B30F1E;text-decoration:none;white-space:nowrap;">
         <span class="de-content">← Startseite</span><span class="en-content">← Home</span>
       </a>
@@ -265,6 +269,8 @@ function setLang(lang){
   document.getElementById('btn-de').className='ltbtn '+(lang==='de'?'active':'inactive');
   document.getElementById('btn-en').className='ltbtn '+(lang==='en'?'active':'inactive');
 }
+
+(function(){ if(new URLSearchParams(location.search).get('lang')==='en'){ setLang('en'); } })();
 </script>
 </body>
 </html>

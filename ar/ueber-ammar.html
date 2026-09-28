@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+
+<title>AR: عن عمّار | Pharma-Coach</title>
+<meta name="description" content="Ammar Amiri: Apotheker, Filialleiter und Gründer von Pharma-Coach. Werdegang, Engagement und Projekte.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Montserrat:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:#2A2E35;background:#fff;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{color:#E8192B;text-decoration:none;}
+.ltbtn{font-family:Montserrat,sans-serif;font-weight:800;font-size:13px;padding:6px 12px;border-radius:9px;border:none;cursor:pointer;}
+.ltbtn.active{background:#fff;color:#23272E;box-shadow:0 1px 4px rgba(0,0,0,.25);}
+.ltbtn.inactive{background:transparent;color:#8A8F98;}
+.de-content{display:block;}
+span.de-content{display:inline;}
+.en-content,span.en-content{display:none;}
+body.en .de-content,body.en span.de-content{display:none;}
+body.en .en-content{display:block;}
+body.en span.en-content{display:inline;}
+h2{font-family:Montserrat,sans-serif;font-weight:800;font-size:18px;color:#16B8A6;margin-bottom:12px;margin-top:44px;}
+p{font-size:16px;line-height:1.8;color:#4A4F58;margin-bottom:14px;}
+.card-link{display:flex;align-items:center;gap:16px;background:#F8F4F2;border:1.5px solid #F0E8E5;border-radius:12px;padding:18px 20px;margin-bottom:14px;text-decoration:none;cursor:pointer;transition:box-shadow .15s;}
+.card-link:hover{box-shadow:0 4px 18px rgba(20,30,40,.1);}
+.click-hint{font-size:12px;color:#16B8A6;margin-top:5px;font-weight:600;}
+.chip{background:#2E333B;border:1px solid #3A4049;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;color:#C9CED6;display:inline-flex;flex-direction:column;align-items:center;gap:2px;text-align:center;}
+.chip-check{color:#2DDDC4;font-size:14px;}
+/* Timeline */
+.tl{position:relative;margin:28px 0 8px;padding-left:34px;}
+.tl:before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,#2DDDC4,#E4E7EB);border-radius:2px;}
+.tl-item{position:relative;padding-bottom:34px;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-dot{position:absolute;left:-34px;top:4px;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #16B8A6;box-shadow:0 0 0 4px rgba(45,221,196,.15);}
+.tl-year{font-family:Montserrat,sans-serif;font-weight:800;font-size:13px;letter-spacing:.06em;color:#16B8A6;text-transform:uppercase;margin-bottom:4px;}
+.tl-title{font-family:Montserrat,sans-serif;font-weight:800;font-size:16.5px;color:#23272E;margin-bottom:6px;}
+.tl-item p{font-size:15px;line-height:1.75;margin-bottom:0;}
+@media(max-width:768px){
+  .hero-grid{grid-template-columns:1fr!important;}
+  .hero-photo{max-width:300px;margin:0 auto 32px!important;}
+}
+
+/* ===== Micro-Interactions (Hover) ===== */
+a,button{transition:color .18s ease,background-color .18s ease,transform .18s ease,box-shadow .18s ease,border-color .18s ease;}
+a[style*="B30F1E"]:hover,.btn-red:hover{transform:translateY(-3px);box-shadow:0 8px 0 #B30F1E,0 14px 26px rgba(232,25,43,.3)!important;}
+a[style*="B30F1E"]:active,.btn-red:active{transform:translateY(1px);box-shadow:0 2px 0 #B30F1E!important;}
+.cat-block{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;}
+.cat-block:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(20,30,40,.10);border-color:#E4DCD8;}
+.ind-chip{transition:transform .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease;}
+.ind-chip:hover{transform:translateY(-2px);background:#fff;border-color:#2DDDC4;box-shadow:0 6px 14px rgba(20,30,40,.09);}
+.step{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;}
+.step:hover{transform:translateY(-5px);box-shadow:0 16px 32px rgba(20,30,40,.11);border-color:transparent;}
+.cmp{transition:transform .22s ease,box-shadow .22s ease;}
+.cmp:hover{transform:translateY(-5px);box-shadow:0 18px 36px rgba(20,30,40,.12);}
+.peek .browser{transition:transform .3s ease,box-shadow .3s ease;}
+.peek .browser:hover{transform:translateY(-5px);box-shadow:0 22px 46px rgba(20,30,40,.2)!important;}
+.card-link{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;}
+.card-link:hover{transform:translateY(-3px);border-color:#2DDDC4;}
+footer a{transition:color .18s ease,transform .18s ease;display:inline-block;}
+footer a:hover{color:#fff!important;transform:translateY(-1px);}
+.ltbtn:hover{opacity:.85;}
+
+/* ===== Hover interactions ===== */
+h2.sec-hover,h2{transition:color .22s ease,transform .22s ease;}
+main h2{display:inline-block;position:relative;padding-bottom:4px;cursor:default;}
+main h2::after{content:"";position:absolute;left:0;bottom:0;height:2.5px;width:0;background:linear-gradient(90deg,#2DDDC4,#E8192B);border-radius:2px;transition:width .35s cubic-bezier(.4,0,.2,1);}
+main h2:hover::after{width:100%;}
+main h2:hover{color:#0F9C8C;}
+.tl-item{transition:transform .25s ease;}
+.tl-item:hover{transform:translateX(6px);}
+.tl-item .tl-dot{transition:transform .25s cubic-bezier(.34,1.4,.64,1),box-shadow .25s ease;}
+.tl-item:hover .tl-dot{transform:scale(1.25);box-shadow:0 0 0 7px rgba(45,221,196,.2);}
+.tl-item:hover .tl-title{color:#0F9C8C;}
+.tl-title{transition:color .25s ease;}
+.chip{transition:transform .2s ease,border-color .2s ease,background .2s ease;}
+.chip:hover{transform:translateY(-3px);border-color:#2DDDC4;background:#363C45;}
+.card-link:hover .click-hint{color:#E8192B;}
+.click-hint{transition:color .2s ease;}
+.chip-link{transition:transform .2s ease,background .2s ease,box-shadow .2s ease;}
+.chip-link:hover{transform:translateY(-3px);background:rgba(232,25,43,.26)!important;box-shadow:0 8px 18px rgba(232,25,43,.28);}
+</style>
+<style>
+body{font-family:"Plus Jakarta Sans","Cairo",system-ui,sans-serif;}
+[style*="Montserrat"]{font-family:Montserrat,"Cairo",sans-serif!important;}
+body *{letter-spacing:0!important;}
+h1,h2,h3,.tl-title,.cat-title{line-height:1.45!important;}
+p,li,.tl-item p{line-height:1.9!important;}
+a.ltbtn{text-decoration:none;display:inline-block;line-height:1.6;}
+.nav-links a::after{right:0;left:auto;}
+.tl{padding-left:0;padding-right:34px;}
+.tl:before{left:auto;right:9px;}
+.tl-dot{left:auto;right:-34px;}
+.tl-item:hover{transform:translateX(-6px);}
+h2.sec::after{left:auto;right:50%;transform:translateX(50%);}
+bdi,[dir="ltr"]{unicode-bidi:isolate;}
+@media(max-width:400px){nav{padding:12px 12px!important;gap:8px!important;}.ltbtn{padding:6px 9px!important;font-size:12px!important;}}
+</style>
+<link rel="canonical" href="https://pharma-coach-amiri.de/ar/ueber-ammar.html">
+<link rel="alternate" hreflang="de" href="https://pharma-coach-amiri.de/ueber-ammar.html">
+<link rel="alternate" hreflang="ar" href="https://pharma-coach-amiri.de/ar/ueber-ammar.html">
+<link rel="alternate" hreflang="x-default" href="https://pharma-coach-amiri.de/ueber-ammar.html">
+</head>
+<body id="body">
+
+<!-- NAV (dark) -->
+<header style="position:sticky;top:0;z-index:80;background:rgba(28,32,38,.92);backdrop-filter:blur(14px);border-bottom:1px solid #2E333B;">
+  <nav style="max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;">
+    <a href="index.html" style="display:flex;align-items:center;gap:11px;text-decoration:none;">
+      <svg viewBox="0 0 120 64" width="42" height="23"><rect x="6" y="14" width="64" height="36" rx="18" fill="#E8192B"/><rect x="50" y="14" width="64" height="36" rx="18" fill="#2DDDC4"/><rect x="33" y="7" width="54" height="50" rx="25" fill="#383D45"/><path d="M53 21 L74 32 L53 43 Z" fill="#fff"/></svg>
+      <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:19px;color:#fff;white-space:nowrap;">PHARMA<span style="color:#E8192B;">-</span>COACH</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="display:flex;background:#2E333B;border-radius:11px;padding:3px;gap:2px;"><a class="ltbtn inactive" href="../ueber-ammar.html">DE</a><a class="ltbtn inactive" href="../ueber-ammar.html?lang=en">EN</a><button class="ltbtn active" type="button">AR</button></div>
+      <a href="index.html" style="display:inline-flex;align-items:center;gap:7px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:13px;padding:10px 16px;border-radius:12px;box-shadow:0 3px 0 #B30F1E;text-decoration:none;white-space:nowrap;">
+        → الرئيسية</a>
+    </div>
+  </nav>
+</header>
+
+<!-- HERO (dark) -->
+<section style="position:relative;background:#23272E;padding:72px 24px 96px;overflow:hidden;">
+  <div style="position:absolute;top:-140px;right:-120px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(45,221,196,.16) 0%,rgba(45,221,196,0) 70%);"></div>
+  <div style="position:absolute;bottom:-160px;left:-140px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(232,25,43,.10) 0%,rgba(232,25,43,0) 70%);"></div>
+  <div style="max-width:1040px;margin:0 auto;display:grid;grid-template-columns:.85fr 1.15fr;gap:52px;align-items:center;position:relative;" class="hero-grid">
+    <div class="hero-photo" style="position:relative;">
+      <div style="position:absolute;inset:18px -18px -18px 18px;border-radius:8px;background:linear-gradient(150deg,#2DDDC4,#0E9486);"></div>
+      <div style="position:relative;border-radius:8px;overflow:hidden;background:#2E333B;box-shadow:0 22px 48px rgba(0,0,0,.45);aspect-ratio:319/480;">
+        <img src="../ua-portrait.webp" alt="Ammar Amiri" style="width:100%;height:100%;object-fit:cover;object-position:top;">
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:#2DDDC4;margin-bottom:12px;">
+        عن المؤسّس</div>
+      <h1 style="font-family:Montserrat,sans-serif;font-weight:900;font-size:clamp(30px,4vw,46px);color:#fff;margin-bottom:8px;">عمّار أميري</h1>
+      <div style="font-size:15px;font-weight:600;color:#2DDDC4;margin-bottom:22px;">
+        صيدلاني، مدير فرع، Engel-Apotheke في Harsewinkel
+        </div>
+      <p style="color:#B9BEC7;">عمّار أميري صيدلاني مرخَّص في ألمانيا، سوري الأصل ويحمل الجنسية الألمانية، من مواليد 1984. يعيش في ألمانيا منذ 2015 ويدير فرع Engel-Apotheke في Harsewinkel. وقبل ذلك عمل سبع سنوات في التسويق الدوائي، ودرس سنتين في برنامج MBA، وأتمّ دورات في إدارة الأعمال والتواصل المؤسسي.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+        <span class="chip"><span class="chip-check">✓</span><span>صيدلاني مرخَّص (approbiert)</span></span>
+        <span class="chip"><span class="chip-check">✓</span><span>2 J. MBA-Studium</span></span>
+        <span class="chip"><span class="chip-check">✓</span><span>7 سنوات في التسويق الدوائي</span></span>
+        <span class="chip"><span class="chip-check">✓</span><span>مؤسّس Pharma-Coach</span></span>
+        <a href="https://drive.google.com/file/d/1qvnX19-AhdvVPPuatpF1K0VIWWKgZUl_/view?usp=drivesdk" target="_blank" rel="noopener" class="chip-link" style="display:inline-flex;align-items:center;gap:6px;background:rgba(232,25,43,.14);border:1.5px solid rgba(232,25,43,.45);border-radius:999px;padding:8px 15px;font-size:13px;font-weight:700;color:#FF7A85;text-decoration:none;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M7.5 10.5 12 15l4.5-4.5"/><path d="M4 19.5h16"/></svg>مؤلف: دليل الترخيص (Approbation)<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+        <a href="https://youtube.com/@pharma-coach-2018?si=45FRAsxpbxjdZHI_" target="_blank" rel="noopener" class="chip-link" style="display:inline-flex;align-items:center;gap:6px;background:rgba(232,25,43,.14);border:1.5px solid rgba(232,25,43,.45);border-radius:999px;padding:8px 15px;font-size:13px;font-weight:700;color:#FF7A85;text-decoration:none;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7.5 17 12l-8 4.5z"/></svg>قناة YouTube<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <svg viewBox="0 0 1440 70" preserveAspectRatio="none" style="position:absolute;bottom:-1px;left:0;width:100%;height:70px;display:block;"><path d="M0,42 C240,74 480,10 720,30 C960,50 1200,66 1440,26 L1440,70 L0,70 Z" fill="#ffffff"/></svg>
+</section>
+
+<!-- MAIN -->
+<main style="max-width:800px;margin:0 auto;padding:16px 24px 96px;">
+
+  <h2>لماذا Pharma-Coach؟</h2>
+  <p>يعيش الصيدلاني في ألمانيا تفاوتاً يومياً: الدراسة متينة، لكن الانتقال إلى ممارسة الاستشارة عند طاولة البيع نادراً ما يكون مُعدّاً بشكل منظَّم. وهذا النقص يمسّ بوجه خاص الزملاء القادمين من الخارج، الذين يقطعون طريق المعادلة ثم يجدون أنفسهم في يوميات الصيدلية دون أن يكونوا قد تلقّوا ملاحظات عملية.</p>
+  <p>Pharma-Coach هو محاولة لمعالجة هذه المشكلة بوسائل حديثة: بشكل منظَّم وعملي وسهل الوصول. ليس بديلاً عن الدراسة، بل هو ما ينقص بعدها.</p>
+  <!-- Speaker photo -->
+  <div style="margin:40px 0;border-radius:10px;overflow:hidden;box-shadow:0 16px 40px rgba(20,30,40,.14);">
+    <img src="../ua-vortrag.webp" alt="Ammar Amiri Vortrag" style="width:100%;height:auto;display:block;">
+  </div>
+
+  <h2>المسيرة المهنية</h2>
+  <div class="tl">
+    <div class="tl-item">
+      <span class="tl-dot"></span>
+      <div class="tl-year">2003 – 2008</div>
+      <div class="tl-title">دراسة الصيدلة</div>
+      <p>إتمام دراسة الصيدلة، أساساً للمسيرة المهنية.</p>
+      </div>
+    <div class="tl-item">
+      <span class="tl-dot"></span>
+      <div class="tl-year">2008 – 2015</div>
+      <div class="tl-title">التسويق الدوائي ودراسة MBA</div>
+      <p>سبع سنوات في التسويق الدوائي لدى عدد من شركات تصنيع الأدوية. وبالتوازي، دراسة MBA لمدة سنتين، وبرامج تدريبية دولية في التنظيم والتسويق والتواصل المؤسسي، منها دورات في أكاديميات طلال أبو غزالة ومركز NYIT للتدريب.</p>
+      </div>
+    <div class="tl-item">
+      <span class="tl-dot"></span>
+      <div class="tl-year">2015</div>
+      <div class="tl-title">بداية جديدة في ألمانيا</div>
+      <p>الوصول إلى ألمانيا وبدء إجراءات المعادلة (Anerkennungsverfahren)، ومنذ ذلك الحين يعمل بالكامل في الصيدلية.</p>
+      </div>
+    <div class="tl-item">
+      <span class="tl-dot"></span>
+      <div class="tl-year">5 سنوات · Ehrenamt & Netzwerk: SyGAAD → العمل التطوعي والشبكات: SyGAAD</div>
+      <div class="tl-title">العمل التطوعي والشبكات: SyGAAD</div>
+      <p>عضو مؤسّس وعضو مجلس إدارة في جمعية الأطباء والصيادلة السوريين في ألمانيا (SyGAAD). نظّم العديد من الفعاليات التعليمية للزملاء من أصول مهاجرة، منها ورشة عمل بأكثر من 180 مشاركاً. أدار عدة ندوات عبر الإنترنت، وحلّ ضيفاً على عدد من البودكاستات الصيدلانية التخصصية.</p>
+      </div>
+    <div class="tl-item">
+      <span class="tl-dot"></span>
+      <div class="tl-year">اليوم</div>
+      <div class="tl-title">اليوم · مدير فرع ومؤسّس Pharma-Coach</div>
+      <p>إدارة فرع Engel-Apotheke في Harsewinkel، وبناء Pharma-Coach: منصة التعلّم الرقمية للكفاءة الاستشارية في الصيدلية.</p>
+      </div>
+  </div>
+
+  <h2>قناة YouTube</h2>
+  <a href="https://youtube.com/@pharma-coach-2018?si=45FRAsxpbxjdZHI_" target="_blank" rel="noopener" class="card-link">
+    <img src="../ua-yt-kanal.webp" alt="Pharma-Coach Arabic" style="width:72px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0;">
+    <div>
+      <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;color:#23272E;margin-bottom:4px;">unverändert</div>
+      <div style="font-size:14px;color:#5A5F68;line-height:1.5;">قناتي الرئيسية بالعربية. وجوهرها سلسلة <strong>«خلف طاولة البيع»</strong> حول مهارات الاستشارة والبيع في الصيدلية. يُضاف إليها مواضيع وأخبار صيدلانية راهنة، ومكتبة تراكمت عبر سنوات حول مسار المعادلة الألماني.</div>
+      <div class="click-hint">▶ اضغط هنا للفتح على YouTube</div>
+      </div>
+    <div class="tl-item">
+      <span class="tl-dot"></span>
+      <div class="tl-year">2020</div>
+      <div class="tl-title">الترخيص كصيدلاني (Approbation)</div>
+      <p>إتمام مسار المعادلة والحصول على الترخيص الألماني، ومنذ ذلك الحين العمل المتواصل في الصيدلية.</p>
+      </div>
+  </a>
+
+  <h2>الكتاب</h2>
+  <a href="https://drive.google.com/file/d/1qvnX19-AhdvVPPuatpF1K0VIWWKgZUl_/view?usp=drivesdk" target="_blank" rel="noopener" class="card-link">
+    <img src="../ua-buch.webp" alt="Dein Ratgeber" style="width:60px;height:80px;border-radius:6px;object-fit:cover;flex-shrink:0;box-shadow:0 4px 12px rgba(20,30,40,.15);">
+    <div>
+      <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:15px;color:#23272E;margin-bottom:4px;">«دليلك إلى الترخيص الألماني كصيدلاني» **«دليلك إلى الترخيص الألماني كصيدلاني»**</div>
+      <div style="font-size:14px;color:#5A5F68;line-height:1.5;">دليل مجاني <strong>بالعربية</strong> دليل مجاني باللغة العربية حول إجراءات المعادلة في ألمانيا، مكتوب من تجربة شخصية.</div>
+      <div class="click-hint">▶ اضغط هنا للتحميل المجاني</div>
+      </div>
+  </a>
+
+  <h2>التواصل</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:12px;">
+    <a href="mailto:pharma.coach.ammar@gmail.com" style="display:inline-flex;align-items:center;gap:8px;background:#F4F1EE;color:#2A2E35;font-size:14px;font-weight:600;padding:10px 16px;border-radius:10px;text-decoration:none;">
+      unverändert (dir="ltr")
+    </a>
+    <a href="https://www.linkedin.com/in/ammar-amiri-97332933" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:#0A66C2;color:#fff;font-size:14px;font-weight:600;padding:10px 16px;border-radius:10px;text-decoration:none;">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="#fff"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      LinkedIn
+    </a>
+  </div>
+
+</main>
+
+<footer style="background:#23272E;padding:28px 24px;">
+  <div style="max-width:800px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+    <span style="font-size:13px;color:#71767F;">© 2026 Pharma-Coach · عمّار أميري</span>
+    <div style="display:flex;gap:20px;">
+      <a href="../impressum.html" style="font-size:13px;color:#71767F;font-weight:500;">بيانات الناشر (Impressum)</a>
+      <a href="../datenschutz.html" style="font-size:13px;color:#71767F;font-weight:500;">سياسة الخصوصية (Datenschutz)</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+</script>
+</body>
+</html>
