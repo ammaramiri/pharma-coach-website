@@ -117,6 +117,20 @@ h2.sec:hover::after{width:180px;}
 
 .hero-orb.tap .av-a{opacity:0;}
 .hero-orb.tap .av-b{opacity:1;}
+
+/* ===== Mobile header: no horizontal scroll ===== */
+html,body{overflow-x:clip;}
+@media(max-width:560px){
+  .pc-nav{padding:10px 14px!important;gap:8px!important;}
+  .pc-logo{gap:7px!important;}
+  .pc-logo svg{width:34px;height:19px;}
+  .pc-word{font-size:14px!important;}
+  .pc-right{gap:8px!important;}
+  .pc-nav .ltbtn{padding:6px 9px;font-size:12px;}
+  .pc-home{padding:9px 10px!important;}
+  .pc-home-txt{display:none!important;}
+}
+@media(max-width:390px){.pc-word{display:none!important;}}
 </style>
 <style>
 body{font-family:"Plus Jakarta Sans","Cairo",system-ui,sans-serif;}
@@ -143,15 +157,14 @@ bdi,[dir="ltr"]{unicode-bidi:isolate;}
 
 <!-- NAV -->
 <header style="position:sticky;top:0;z-index:80;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid #F0EAE6;">
-  <nav style="max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;">
-    <a href="index.html" style="display:flex;align-items:center;gap:11px;">
+  <nav class="pc-nav" style="max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;">
+    <a href="index.html" class="pc-logo" style="display:flex;align-items:center;gap:11px;">
       <svg viewBox="0 0 120 64" width="42" height="23"><rect x="6" y="14" width="64" height="36" rx="18" fill="#E8192B"/><rect x="50" y="14" width="64" height="36" rx="18" fill="#2DDDC4"/><rect x="33" y="7" width="54" height="50" rx="25" fill="#383D45"/><path d="M53 21 L74 32 L53 43 Z" fill="#fff"/></svg>
-      <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:19px;color:#23272E;white-space:nowrap;">PHARMA<span style="color:#E8192B;">-</span>COACH</span>
+      <span class="pc-word" style="font-family:Montserrat,sans-serif;font-weight:800;font-size:19px;color:#23272E;white-space:nowrap;">PHARMA<span style="color:#E8192B;">-</span>COACH</span>
     </a>
-    <div style="display:flex;align-items:center;gap:14px;">
+    <div class="pc-right" style="display:flex;align-items:center;gap:14px;">
       <div style="display:flex;background:#F1ECE9;border-radius:11px;padding:3px;gap:2px;"><a class="ltbtn inactive" href="../otc-kurs.html">DE</a><a class="ltbtn inactive" href="../otc-kurs.html?lang=en">EN</a><button class="ltbtn active" type="button">AR</button></div>
-      <a href="index.html" style="display:inline-flex;align-items:center;gap:7px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:13px;padding:10px 16px;border-radius:12px;box-shadow:0 3px 0 #B30F1E;white-space:nowrap;">
-        → الرئيسية</a>
+      <a href="index.html" class="pc-home" aria-label="الرئيسية" style="display:inline-flex;align-items:center;gap:7px;background:#E8192B;color:#fff;font-family:Montserrat,sans-serif;font-weight:800;font-size:13px;padding:10px 16px;border-radius:12px;box-shadow:0 3px 0 #B30F1E;white-space:nowrap;"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9v11h13V9"/><path d="M10 20v-6h4v6"/></svg><span class="pc-home-txt">الرئيسية</span></a>
     </div>
   </nav>
 </header>
@@ -166,11 +179,11 @@ bdi,[dir="ltr"]{unicode-bidi:isolate;}
       <p style="font-size:16.5px;color:#5A5F68;line-height:1.75;margin-bottom:26px;">
         نحو 50 استطباباً، و8 مجالات، ونظام واحد: كل موضوع في 6 خطوات واضحة، من جملة الزبون الأولى حتى التوصية المبنية على أساس علمي مع البيع الإضافي.
         </p>
-      <a href="#gratis" class="btn-red">→ شاهد الدرس المجاني ←</a>
+      <a href="#gratis" class="btn-red">شاهد الدرس المجاني ←</a>
     </div>
     <div style="transform:rotate(1.2deg);">
       <div class="browser">
-        <div class="browser-bar"><span class="b-dot" style="background:#FF5F57;"></span><span class="b-dot" style="background:#FEBC2E;"></span><span class="b-dot" style="background:#28C840;"></span><span class="b-url">unverändert</span></div>
+        <div class="browser-bar"><span class="b-dot" style="background:#FF5F57;"></span><span class="b-dot" style="background:#FEBC2E;"></span><span class="b-dot" style="background:#28C840;"></span><span class="b-url">pharma-coach-amiri.de</span></div>
         <img src="../kurs-akne.jpg" alt="Pharma-Coach Video-Lektion: Beratungsfragen bei Akne" loading="eager">
       </div>
       <div class="peek-cap"><b>حبّ الشباب</b> حبّ الشباب · الخطوة 5: أسئلة الاستشارة</div>
