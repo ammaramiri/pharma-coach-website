@@ -122,12 +122,12 @@ window.PCRevisionMeta={
     "pta": {
       "de": "PTA",
       "en": "PTA",
-      "ar": "الـPTA"
+      "ar": "PTA"
     },
     "pka": {
       "de": "PKA",
       "en": "PKA",
-      "ar": "الـPKA"
+      "ar": "PKA"
     },
     "qmb": {
       "de": "QMS-Verantwortlicher",
