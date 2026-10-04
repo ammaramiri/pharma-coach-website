@@ -201,7 +201,8 @@ window.PCRevisionMeta={
   },
   "header": "Kreis Nordwaldt · Abteilung Gesundheit · Apothekenüberwachung",
   "available": [
-    "ch01"
+    "ch01",
+    "ch02"
   ],
   "weights": [
     0.4,
