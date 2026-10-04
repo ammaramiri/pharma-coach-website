@@ -1849,7 +1849,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-10-03a \u00b7 Revision: eine Anleitung, kein Schloss, Siegel" +
+var PC_BUILD = "2026-10-04 \u00b7 QMS-Karte mit Bild" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -8387,9 +8387,9 @@ document.querySelectorAll('.mute-btn').forEach(function(b){
 syncMute();
 
 /* Revision v2: UI and immediate feedback; independent saved project. */
-/* Die QMS-Karte bekommt keine Bilddatei: ein stiller 404 bei jedem
-   Oeffnen des Aktenschranks. Stattdessen eine Farbflaeche. */
-var AKTEN_PACKS=[{id:'revision',img:'assets/Revision/rev_pack_card.webp',name:'packRevision'},{id:'qms',img:null,name:'packQms',locked:true}];
+/* Das QMS-Bild ist seit 04.10.2026 im Repo, also wird es wieder benutzt.
+   Faellt es weg, zeichnet open() ersatzweise eine Farbflaeche: kein 404. */
+var AKTEN_PACKS=[{id:'revision',img:'assets/Revision/rev_pack_card.webp',name:'packRevision'},{id:'qms',img:'assets/QMS/qms_pack_card.webp',name:'packQms',locked:true}];
 var PCRevision=(function(){
 'use strict';
 var meta,items=[],loading=null,root,body,view='chapters',detail=null,detailBack='chapters',introIndex=0,introReturn='chapters',freshResult=null,correctionFresh=false,resizeObserver=null;
