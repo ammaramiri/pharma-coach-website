@@ -204,7 +204,8 @@ window.PCRevisionMeta={
     "ch01",
     "ch02",
     "ch03",
-    "ch04"
+    "ch04",
+    "ch05"
   ],
   "weights": [
     0.4,
