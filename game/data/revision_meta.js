@@ -203,7 +203,8 @@ window.PCRevisionMeta={
   "available": [
     "ch01",
     "ch02",
-    "ch03"
+    "ch03",
+    "ch04"
   ],
   "weights": [
     0.4,
