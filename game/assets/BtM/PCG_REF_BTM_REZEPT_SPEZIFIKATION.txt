@@ -1,0 +1,17 @@
+PHARMA-COACH · BtM-REZEPT · VERBINDLICHE BILDSPEZIFIKATION
+Festgelegt: 06.10.2026 (Ammar) · gilt für alle BtM-Level
+Referenzbild: PCG_REF_BTM_REZEPT_v001.webp (immer anhängen)
+
+TEXTBLOCK FÜR JEDEN BILDAUFTRAG MIT BtM-REZEPT (wörtlich übernehmen):
+---
+DAS BtM-REZEPT: Exakt wie die angehängte Referenz PCG_REF_BTM_REZEPT_v001.webp.
+Ein QUERFORMATIGES Rezeptblatt mit dem Aufbau des deutschen Kassenrezepts „Muster 16": Seitenverhältnis Breite : Höhe etwa 148 : 105, niemals hochkant, niemals länglich wie A4.
+Papier: blass gelb-cremefarben mit feiner Papierstruktur.
+Feldlinien: rot-rosa, dünn, im Muster-16-Aufbau – links oben großes Feld für Kasse/Patient, links am Rand eine Spalte kleiner Ankreuzkästchen, rechts oben mehrere kleine Felder, in der Mitte die Verordnungszeilen, darunter eine Reihe kleiner Kästchen, rechts unten das Feld für Stempel und Unterschrift, unten links zwei Längsfelder.
+Alle Inhalte nur als verschwommene graue bzw. rosa Balken – keine lesbaren Buchstaben, keine Zahlen.
+---
+
+FARBWERTE FÜR DEN CODE (BTM.build, damit Spiel-UI und Bilder übereinstimmen):
+Papier      #F3E4C8
+Feldfüllung #F8ECE2
+Feldlinien  #C4566A

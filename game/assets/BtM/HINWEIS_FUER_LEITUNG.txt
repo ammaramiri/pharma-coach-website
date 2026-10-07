@@ -1,0 +1,16 @@
+BtM-1 · 14 abgenommene Rohbilder + BtM-Rezept-Referenz · 07.10.2026
+
+ROHBILDER (Bearbeitung durch die Leitung: Maße, Farbkorrektur, WebP)
+v001: PCG_CHR_CUS021_P01_IDLE-FULL · btm01_s0_ankunft · btm01_s0_vater · btm01_s2_kalender · btm01_s5_tresor · btm_kategorie_karte
+v002: btm01_s1_zeile · btm01_s3_vergleich · btm01_s4_telefon · btm01_s6_drei_teile · btm01_s7_pruefung · btm01_pkg_1a_25 · btm01_pkg_al_25 · btm01_pkg_1a_50
+
+Formate:
+- Szenen 1600×900 WebP · Kategoriekarte zusätzlich Zuschnitt 640×360
+- Thomas P01: Freisteller, Maßstab wie CUS019_P01
+- Packungen: Freisteller, transparenter Hintergrund, Anzeige im Spiel mit 92 px Höhe (Mech.shelf)
+
+Farbkorrektur: Die Büro-Nahaufnahmen (s1, s6, s7, Kategoriekarte) sind deutlich wärmer und gesättigter als der Büro-Anker retax_scene_lupe (Anker: Wärme R−B 52 · Sättigung 95; diese Bilder: R−B um 85 · Sättigung um 130).
+
+FERTIG, OHNE BEARBEITUNG
+- PCG_REF_BTM_REZEPT_v001.webp: verbindliche Referenz für das BtM-Rezept (Bilder und UI)
+- PCG_REF_BTM_REZEPT_SPEZIFIKATION.txt: Textblock für jeden künftigen Bildauftrag mit BtM-Rezept + Farbwerte für BTM.build
