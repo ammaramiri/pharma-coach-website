@@ -1,5 +1,5 @@
 /* =====================================================================
-   HV-TISCH · CUS021 · Thomas Krämer · fentanyl_freitag
+   HV-TISCH · CUS021 · fentanyl_freitag (Kunde ohne Eigennamen)
    Umgestellt von Büro-Fall (BtM B3) auf Kundenfall am HV-Tisch · 10.10.2026
    Quelle: Fachkonzept BtM-1 (Unterhaltung BtM, 02.-07.10.2026), von Ammar abgenommen
    Recht: BtMVV §§ 9, 12, 14 (Stand Gesetzestext 2026) · Rahmenvertrag § 9 Abs. 3
@@ -9,7 +9,7 @@
    Benoetigt: BTM.build (doc type "btm") · Atlas "angeh" in PC_CUSTOMER_ATLASES (ohne Eigennamen, Beschluss 10.10.2026)
 ===================================================================== */
 
-var KRAEMER_REZ = { logo:'retax_logo_nordwaldt_kasse.webp', kasse:'Nordwaldt Kasse',
+var ANGEH_REZ = { logo:'retax_logo_nordwaldt_kasse.webp', kasse:'Nordwaldt Kasse',
   ktk:'103411401', name:'Krämer, Walter', geb:'03.04.44',
   adresse:'Lindenweg 12, 59609 Anröchte', vers:'K204518833', status:'5',
   bsnr:'123456700', lanr:'987654321', datum:'13.10.26',
@@ -21,11 +21,11 @@ var KRAEMER_REZ = { logo:'retax_logo_nordwaldt_kasse.webp', kasse:'Nordwaldt Kas
   apo:'', abgabedatum:'', zeichen:'', vermerk:'' };
 
 /* Teil I nach der Abgabe am Freitagabend: Zeichen und Vermerk fehlen (Schritt 7) */
-var KRAEMER_REZ_ABGABE = objWith(KRAEMER_REZ, {
+var ANGEH_REZ_ABGABE = objWith(ANGEH_REZ, {
   apo:'Apotheke am Markt\nMarktstraße 9, 59609 Anröchte',
   abgabedatum:'16.10.26', zeichen:'', vermerk:'' });
 
-var KRAEMER_PKG = {
+var ANGEH_PKG = {
   a25:"assets/PCG_PKG_CUS021_1A25_v001.webp",
   al25:"assets/PCG_PKG_CUS021_AL25_v001.webp",
   a50:"assets/PCG_PKG_CUS021_1A50_v001.webp" };
@@ -33,7 +33,7 @@ var KRAEMER_PKG = {
 /* Vertrauen: jede Entscheidung wirkt auf Thomas. 100 = ruhig, 0 = er geht.
    Die Zahlen sind Vorschlag der Leitung, Technik darf sie an die
    bestehende Kundenmechanik angleichen. */
-var KRAEMER_TRUST = {
+var ANGEH_TRUST = {
   start: 60,
   steps: { s2:+10, s3:+10, s4:+15, s5:-10, s6:+10, s7:+5, s8:+10 },
   wrong: -10,
@@ -43,7 +43,7 @@ var KRAEMER_TRUST = {
            spricht:"assets/PCG_CU_CUS021_P05_CU-TALK_v001.webp" } };
 
 TOPICS.fentanyl_freitag = {
-  persona:"angeh", cus:"CUS021", trust:KRAEMER_TRUST,
+  persona:"angeh", cus:"CUS021", trust:ANGEH_TRUST,
   de:"Fentanyl am Freitagabend", en:"Fentanyl on a Friday Evening", ar:"لصقة الفنتانيل مساء الجمعة",
   tag:"HV",
   banner:"assets/PCG_CARD_CUS021_v001.webp",
@@ -58,15 +58,15 @@ TOPICS.fentanyl_freitag = {
                {img:"assets/PCG_SCN_CUS021_B_COUNTER_v001.webp", ms:1800},
                {img:"assets/PCG_DET_CUS021_00_VATER_v001.webp", ms:1800}]},
   bubbles:[
-   {who:"Thomas Krämer",txt:"Guten Abend. Ich komme wegen meinem Vater. Er liegt zu Hause, er kann nicht mehr selbst kommen."},
-   {who:"Thomas Krämer",txt:"Das letzte Pflaster ist heute Mittag abgefallen. Ich war schon bei zwei Apotheken."},
-   {who:"Thomas Krämer",txt:"Bitte. Es ist Freitagabend."},
+   {who:"Der Angehörige",txt:"Guten Abend. Ich komme wegen meinem Vater. Er liegt zu Hause, er kann nicht mehr selbst kommen."},
+   {who:"Der Angehörige",txt:"Das letzte Pflaster ist heute Mittag abgefallen. Ich war schon bei zwei Apotheken."},
+   {who:"Der Angehörige",txt:"Bitte. Es ist Freitagabend."},
    {who:"Ich",txt:"Ich ziehe das gelbe Rezept zu mir und beginne die Prüfung."}]}},
 
  {mech:"rezept",data:{kicker:"Prüfung · Das BtM-Rezept", penalty:true, p:25,
   title:"Eine Pflichtangabe fehlt. Tippe das Feld an.",
   scene:"assets/PCG_DET_CUS021_01_ZEILE_v001.webp",
-  doc:{type:"btm", r:KRAEMER_REZ, open:["verordnung","datum","menge","gebrauch","stempel","unterschrift"]},
+  doc:{type:"btm", r:ANGEH_REZ, open:["verordnung","datum","menge","gebrauch","stempel","unterschrift"]},
   answer:"verordnung", okH:"Die Beladung fehlt",
   wrong:{datum:"Das Datum ist da. Ob es noch reicht, kommt gleich.",
          menge:"Die Menge steht in Ziffern und in Worten. Korrekt.",
@@ -126,36 +126,34 @@ TOPICS.fentanyl_freitag = {
   scene:"assets/PCG_DET_CUS021_05_TRESOR_v001.webp",
   hint:"Abgabehistorie: Fentanyl – 1 A Pharma 25 µg/h · 5,78 mg · PZN 00682784, seit drei Monaten.",
   boxes:[
-   {img:KRAEMER_PKG.a25,n:"Fentanyl – 1 A Pharma 25 µg/h",s:"5,78 mg · 10,5 cm² · 10 Pfl.",ok:true,p:25,tr:0,h:"Gleiche Rate, gleiche Beladung",
+   {img:ANGEH_PKG.a25,n:"Fentanyl – 1 A Pharma 25 µg/h",s:"5,78 mg · 10,5 cm² · 10 Pfl.",ok:true,p:25,tr:0,h:"Gleiche Rate, gleiche Beladung",
     x:"Das Pflaster, das der Vater kennt: gleiche Rate, gleiche Beladung."},
-   {img:KRAEMER_PKG.al25,n:"Fentanyl AL TTS 25 µg/h",s:"4,8 mg · 15 cm² · 10 Pfl.",p:0,tr:0,h:"Gleiche Rate, andere Beladung",
+   {img:ANGEH_PKG.al25,n:"Fentanyl AL TTS 25 µg/h",s:"4,8 mg · 15 cm² · 10 Pfl.",p:0,tr:0,h:"Gleiche Rate, andere Beladung",
     x:"25 µg/h wie das gewohnte Pflaster, aber 4,8 statt 5,78 mg und ein anderes System."},
-   {img:KRAEMER_PKG.a50,n:"Fentanyl – 1 A Pharma 50 µg/h",s:"11,56 mg · 21 cm² · 10 Pfl.",p:0,tr:0,h:"Die doppelte Rate",
+   {img:ANGEH_PKG.a50,n:"Fentanyl – 1 A Pharma 50 µg/h",s:"11,56 mg · 21 cm² · 10 Pfl.",p:0,tr:0,h:"Die doppelte Rate",
     x:"Gleicher Hersteller, aber doppelte Freisetzungsrate."}]}},
 
- {mech:"connect",data:{kicker:"Dokumentation · Wohin gehört was?",
-  title:"Verbinde jeden Eintrag mit seinem Ort.",
+ {mech:"truefalse",data:{kicker:"Dokumentation · Wohin gehört was?", title:"Richtig oder falsch?",
   scene:"assets/PCG_DET_CUS021_06_DREITEILE_v001.webp",
-  hint:"Tippe einen Eintrag an, dann seinen Ort.",
-  progress:"{a} von {b} Einträgen zugeordnet", per:5,
+  trueLabel:"Richtig", falseLabel:"Falsch", maxWrong:1,
   items:[
-   {n:"Teil I und II",s:"vermerke ich",col:"#C4566A"},
-   {n:"Nur Teil I",s:"vermerke ich",col:"#C4566A"},
-   {n:"Teil III",s:"vermerkt der Arzt",col:"#8A8F98"},
-   {n:"BtM-Nachweis",s:"Karteikarte oder EDV",col:"#8A8F98"},
-   {n:"Abgabe im dringenden Fall",s:"Arzt nicht erreichbar, Freitag 18:05",col:"#F3E4C8"},
-   {n:"Apotheke, Abgabedatum, Namenszeichen",s:"die Abgabevermerke",col:"#F3E4C8"},
-   {n:"Beladung 5,78 mg",s:"nach Rücksprache am Montag",col:"#F3E4C8"},
-   {n:"Bestätigung der Korrektur",s:"durch den Arzt",col:"#F3E4C8"},
-   {n:"Arzt und Rezeptnummer",s:"zur Abgabe",col:"#F3E4C8"}],
-  pairs:[[4,0,"§ 12 Abs. 2 BtMVV"],[5,1,"§ 12 Abs. 3 BtMVV"],[6,0,"§ 12 Abs. 2 BtMVV"],[7,2,"§ 12 Abs. 2 BtMVV"],[8,3,"§ 14 Abs. 1 Nr. 5 BtMVV"]],
-  okH:"Alles am richtigen Ort", badH:"Einiges am falschen Ort",
-  expl:"Was ich tue, also Abgabe im dringenden Fall, Rücksprache oder Korrektur, vermerke ich auf Teil I und II. Der Arzt vermerkt es auf Teil III. Die Abgabevermerke gehören nur auf Teil I, den ich drei Jahre aufbewahre. Der BtM-Nachweis trägt Arzt und Rezeptnummer. Teil II geht an die Kasse: Jede Lücke dort ist ein Retaxrisiko."}},
+   {t:"Die Notversorgung am Freitagabend trage ich auf Teil I und Teil II ein.",ok:true,p:5,
+    why:"§ 12 Abs. 2 BtMVV: Was ich selbst veranlasse, steht auf beiden Teilen."},
+   {t:"Apotheke, Abgabedatum und mein Namenszeichen gehören nur auf Teil I.",ok:true,p:5,
+    why:"§ 12 Abs. 3 BtMVV: Teil I bleibt in der Apotheke, drei Jahre lang."},
+   {t:"Die Bestätigung der Korrektur trage ich selbst auf Teil I und II ein.",ok:false,p:5,
+    why:"Die Bestätigung kommt vom Arzt, auf Teil III."},
+   {t:"Den Namen des Arztes und die BtM-Rezeptnummer dokumentiere ich im BtM-Buch.",ok:true,p:5,
+    why:"§ 14 Abs. 1 Nr. 5 BtMVV: Karteikarte oder EDV."},
+   {t:"Die korrigierte Belastungsmenge gehört auf Teil III.",ok:false,p:5,
+    why:"Sie gehört auf Teil I und Teil II; Teil III führt der Arzt."}],
+  okH:"Alles am richtigen Ort", badH:"Da liegt etwas falsch",
+  expl:"Was ich selbst tue — Notversorgung, Rücksprache, Korrektur der Belastungsmenge — steht auf Teil I und II. Die Abgabedaten stehen auf Teil I, der drei Jahre in der Apotheke bleibt. Teil III führt der Arzt. Und das BtM-Buch trägt Arztnamen und Rezeptnummer."}},
 
  {mech:"rezept",data:{kicker:"Szene 3 · 18:15 · Kontrolle von Teil I", penalty:true,
   title:"Zwei Dinge fehlen auf Teil I",
   scene:"assets/PCG_SCN_CUS021_D_HANDOVER_v001.webp",
-  doc:{type:"btm", r:KRAEMER_REZ_ABGABE, open:["apo","abgabedatum","zeichen","vermerk","verordnung"]},
+  doc:{type:"btm", r:ANGEH_REZ_ABGABE, open:["apo","abgabedatum","zeichen","vermerk","verordnung"]},
   phases:[
    {q:"Ein Abgabevermerk fehlt. Tippe ihn an.",
     answer:"zeichen", p:25, okH:"Mein Namenszeichen",
@@ -177,15 +175,15 @@ TOPICS.fentanyl_freitag = {
                {img:"assets/PCG_SCN_CUS021_B_COUNTER_v001.webp", ms:1800},
                {img:"assets/PCG_DET_CUS021_00_VATER_v001.webp", ms:1800}]},
   bubbles:[
-   {who:"Thomas Krämer",txt:"Good evening. It is for my father. He is at home, he cannot come himself any more."},
-   {who:"Thomas Krämer",txt:"The last patch came off at midday. I have already been to two pharmacies."},
-   {who:"Thomas Krämer",txt:"Please. It is Friday evening."},
+   {who:"The relative",txt:"Good evening. It is for my father. He is at home, he cannot come himself any more."},
+   {who:"The relative",txt:"The last patch came off at midday. I have already been to two pharmacies."},
+   {who:"The relative",txt:"Please. It is Friday evening."},
    {who:"I",txt:"I pull the yellow prescription towards me and start checking."}]}},
 
  {mech:"rezept",data:{kicker:"Check · The narcotics prescription", penalty:true, p:25,
   title:"A mandatory entry is missing. Tap the field.",
   scene:"assets/PCG_DET_CUS021_01_ZEILE_v001.webp",
-  doc:{type:"btm", r:KRAEMER_REZ, open:["verordnung","datum","menge","gebrauch","stempel","unterschrift"]},
+  doc:{type:"btm", r:ANGEH_REZ, open:["verordnung","datum","menge","gebrauch","stempel","unterschrift"]},
   answer:"verordnung", okH:"The drug load is missing",
   wrong:{datum:"The date is there. Whether it is still valid comes next.",
          menge:"The quantity is written in figures and in words. Correct.",
@@ -245,36 +243,34 @@ TOPICS.fentanyl_freitag = {
   scene:"assets/PCG_DET_CUS021_05_TRESOR_v001.webp",
   hint:"Dispensing history: Fentanyl – 1 A Pharma 25 µg/h · 5.78 mg · PZN 00682784, for three months.",
   boxes:[
-   {img:KRAEMER_PKG.a25,n:"Fentanyl – 1 A Pharma 25 µg/h",s:"5.78 mg · 10.5 cm² · 10 patches",ok:true,p:25,tr:0,h:"Same rate, same drug load",
+   {img:ANGEH_PKG.a25,n:"Fentanyl – 1 A Pharma 25 µg/h",s:"5.78 mg · 10.5 cm² · 10 patches",ok:true,p:25,tr:0,h:"Same rate, same drug load",
     x:"The patch the father knows: same rate, same drug load."},
-   {img:KRAEMER_PKG.al25,n:"Fentanyl AL TTS 25 µg/h",s:"4.8 mg · 15 cm² · 10 patches",p:0,tr:0,h:"Same rate, different drug load",
+   {img:ANGEH_PKG.al25,n:"Fentanyl AL TTS 25 µg/h",s:"4.8 mg · 15 cm² · 10 patches",p:0,tr:0,h:"Same rate, different drug load",
     x:"25 µg/h like the usual patch, but 4.8 instead of 5.78 mg and a different system."},
-   {img:KRAEMER_PKG.a50,n:"Fentanyl – 1 A Pharma 50 µg/h",s:"11.56 mg · 21 cm² · 10 patches",p:0,tr:0,h:"Double the rate",
+   {img:ANGEH_PKG.a50,n:"Fentanyl – 1 A Pharma 50 µg/h",s:"11.56 mg · 21 cm² · 10 patches",p:0,tr:0,h:"Double the rate",
     x:"Same manufacturer, but twice the release rate."}]}},
 
- {mech:"connect",data:{kicker:"Documentation · Where does each entry go?",
-  title:"Connect each entry with its place.",
+ {mech:"truefalse",data:{kicker:"Documentation · What goes where?", title:"True or false?",
   scene:"assets/PCG_DET_CUS021_06_DREITEILE_v001.webp",
-  hint:"Tap an entry, then its place.",
-  progress:"{a} of {b} entries placed", per:5,
+  trueLabel:"True", falseLabel:"False", maxWrong:1,
   items:[
-   {n:"Parts I and II",s:"I note it",col:"#C4566A"},
-   {n:"Part I only",s:"I note it",col:"#C4566A"},
-   {n:"Part III",s:"the doctor notes it",col:"#8A8F98"},
-   {n:"Narcotics record",s:"index card or software",col:"#8A8F98"},
-   {n:"Dispensed as an urgent case",s:"doctor unreachable, Friday 6:05 pm",col:"#F3E4C8"},
-   {n:"Pharmacy, date, initials",s:"the dispensing notes",col:"#F3E4C8"},
-   {n:"Drug load 5.78 mg",s:"after consultation on Monday",col:"#F3E4C8"},
-   {n:"Confirmation of the correction",s:"by the doctor",col:"#F3E4C8"},
-   {n:"Doctor and prescription number",s:"for the dispensing",col:"#F3E4C8"}],
-  pairs:[[4,0,"§ 12 (2) BtMVV"],[5,1,"§ 12 (3) BtMVV"],[6,0,"§ 12 (2) BtMVV"],[7,2,"§ 12 (2) BtMVV"],[8,3,"§ 14 (1) no. 5 BtMVV"]],
-  okH:"Everything in its place", badH:"Some entries misplaced",
-  expl:"What I do, an urgent dispensing, a consultation or a correction, I note on parts I and II. The doctor notes it on part III. The dispensing notes belong on part I only, which I keep for three years. The narcotics record carries the doctor and the prescription number. Part II goes to the insurer: every gap there is a claw-back risk."}},
+   {t:"I record the Friday-evening emergency supply on part I and part II.",ok:true,p:5,
+    why:"§ 12 (2) BtMVV: what I initiate goes on both parts."},
+   {t:"Pharmacy, date of dispensing and my initials belong on part I only.",ok:true,p:5,
+    why:"§ 12 (3) BtMVV: part I stays in the pharmacy for three years."},
+   {t:"I write the confirmation of the correction on parts I and II myself.",ok:false,p:5,
+    why:"The confirmation comes from the physician, on part III."},
+   {t:"The physician's name and the prescription number go into the narcotics register.",ok:true,p:5,
+    why:"§ 14 (1) no. 5 BtMVV: card file or software."},
+   {t:"The corrected loading quantity belongs on part III.",ok:false,p:5,
+    why:"It belongs on parts I and II; part III is the physician's."}],
+  okH:"Everything in its place", badH:"Something is in the wrong place",
+  expl:"What I do myself — emergency supply, call-back, corrected quantity — goes on parts I and II. The dispensing data go on part I, which stays three years in the pharmacy. Part III is the physician's. The narcotics register carries the physician's name and the prescription number."}},
 
  {mech:"rezept",data:{kicker:"Scene 3 · 6:15 pm · Checking part I", penalty:true,
   title:"Two things are missing on part I",
   scene:"assets/PCG_SCN_CUS021_D_HANDOVER_v001.webp",
-  doc:{type:"btm", r:KRAEMER_REZ_ABGABE, open:["apo","abgabedatum","zeichen","vermerk","verordnung"]},
+  doc:{type:"btm", r:ANGEH_REZ_ABGABE, open:["apo","abgabedatum","zeichen","vermerk","verordnung"]},
   phases:[
    {q:"A dispensing note is missing. Tap it.",
     answer:"zeichen", p:25, okH:"My initials",
@@ -296,15 +292,15 @@ TOPICS.fentanyl_freitag = {
                {img:"assets/PCG_SCN_CUS021_B_COUNTER_v001.webp", ms:1800},
                {img:"assets/PCG_DET_CUS021_00_VATER_v001.webp", ms:1800}]},
   bubbles:[
-   {who:"توماس كريمر",txt:"مساء الخير. أنا هنا من أجل أبي. هو في البيت ولم يعد يستطيع المجيء بنفسه."},
-   {who:"توماس كريمر",txt:"آخر لصقة سقطت عنه ظهر اليوم. وقد مررت على صيدليتين قبلكم."},
-   {who:"توماس كريمر",txt:"أرجوك. اليوم مساء جمعة."},
+   {who:"المرافق",txt:"مساء الخير. أنا هنا من أجل أبي. هو في البيت ولم يعد يستطيع المجيء بنفسه."},
+   {who:"المرافق",txt:"آخر لصقة سقطت عنه ظهر اليوم. وقد مررت على صيدليتين قبلكم."},
+   {who:"المرافق",txt:"أرجوك. اليوم مساء جمعة."},
    {who:"أنا",txt:"أسحب الوصفة الصفراء إليّ وأبدأ الفحص."}]}},
 
  {mech:"rezept",data:{kicker:"الفحص · وصفة BtM", penalty:true, p:25,
   title:"ينقص بيان إلزامي. ألمس الخانة.",
   scene:"assets/PCG_DET_CUS021_01_ZEILE_v001.webp",
-  doc:{type:"btm", r:KRAEMER_REZ, open:["verordnung","datum","menge","gebrauch","stempel","unterschrift"]},
+  doc:{type:"btm", r:ANGEH_REZ, open:["verordnung","datum","menge","gebrauch","stempel","unterschrift"]},
   answer:"verordnung", okH:"كمية التحميل ناقصة",
   wrong:{datum:"التاريخ موجود. أما هل ما زال صالحاً فذلك في الخطوة التالية.",
          menge:"الكمية مكتوبة بالأرقام وبالحروف. صحيح.",
@@ -364,36 +360,34 @@ TOPICS.fentanyl_freitag = {
   scene:"assets/PCG_DET_CUS021_05_TRESOR_v001.webp",
   hint:"سجل الصرف: Fentanyl – 1 A Pharma 25 µg/h · 5,78 mg · PZN 00682784، منذ ثلاثة أشهر.",
   boxes:[
-   {img:KRAEMER_PKG.a25,n:"Fentanyl – 1 A Pharma 25 µg/h",s:"5,78 mg · 10,5 cm² · 10 لصقات",ok:true,p:25,tr:0,h:"المعدل نفسه وكمية التحميل نفسها",
+   {img:ANGEH_PKG.a25,n:"Fentanyl – 1 A Pharma 25 µg/h",s:"5,78 mg · 10,5 cm² · 10 لصقات",ok:true,p:25,tr:0,h:"المعدل نفسه وكمية التحميل نفسها",
     x:"اللصقة التي يعرفها الأب: المعدل نفسه وكمية التحميل نفسها."},
-   {img:KRAEMER_PKG.al25,n:"Fentanyl AL TTS 25 µg/h",s:"4,8 mg · 15 cm² · 10 لصقات",p:0,tr:0,h:"المعدل نفسه وكمية تحميل أخرى",
+   {img:ANGEH_PKG.al25,n:"Fentanyl AL TTS 25 µg/h",s:"4,8 mg · 15 cm² · 10 لصقات",p:0,tr:0,h:"المعدل نفسه وكمية تحميل أخرى",
     x:"25 µg/h كاللصقة المعتادة، لكن 4,8 لا 5,78 mg، ونظام لصقة مختلف."},
-   {img:KRAEMER_PKG.a50,n:"Fentanyl – 1 A Pharma 50 µg/h",s:"11,56 mg · 21 cm² · 10 لصقات",p:0,tr:0,h:"ضعف المعدل",
+   {img:ANGEH_PKG.a50,n:"Fentanyl – 1 A Pharma 50 µg/h",s:"11,56 mg · 21 cm² · 10 لصقات",p:0,tr:0,h:"ضعف المعدل",
     x:"المصنّع نفسه، لكن معدل الإطلاق ضعفان."}]}},
 
- {mech:"connect",data:{kicker:"التوثيق · أين يُكتب كل شيء؟",
-  title:"اربط كل ملاحظة بمكانها.",
+ {mech:"truefalse",data:{kicker:"التوثيق · أين يُكتب كل شيء؟", title:"صحيح أم خطأ؟",
   scene:"assets/PCG_DET_CUS021_06_DREITEILE_v001.webp",
-  hint:"ألمس الملاحظة، ثم مكانها.",
-  progress:"{a} من {b} ملاحظات في مكانها", per:5,
+  trueLabel:"صحيح", falseLabel:"خطأ", maxWrong:1,
   items:[
-   {n:"الجزآن I وII",s:"أكتبها أنا",col:"#C4566A"},
-   {n:"الجزء I وحده",s:"أكتبها أنا",col:"#C4566A"},
-   {n:"الجزء III",s:"يكتبها الطبيب",col:"#8A8F98"},
-   {n:"سجل BtM",s:"الكرت أو EDV",col:"#8A8F98"},
-   {n:"صرف عاجل",s:"الطبيب لم يُصل إليه، الجمعة 18:05",col:"#F3E4C8"},
-   {n:"الصيدلية والتاريخ والحروف الأولى من اسمي",s:"بيانات الصرف",col:"#F3E4C8"},
-   {n:"كمية التحميل 5,78 mg",s:"بعد التواصل يوم الاثنين",col:"#F3E4C8"},
-   {n:"تأكيد التصحيح",s:"من الطبيب",col:"#F3E4C8"},
-   {n:"اسم الطبيب ورقم الوصفة",s:"لعملية الصرف",col:"#F3E4C8"}],
-  pairs:[[4,0,"§ 12 Abs. 2 BtMVV"],[5,1,"§ 12 Abs. 3 BtMVV"],[6,0,"§ 12 Abs. 2 BtMVV"],[7,2,"§ 12 Abs. 2 BtMVV"],[8,3,"§ 14 Abs. 1 Nr. 5 BtMVV"]],
-  okH:"كل شيء في مكانه", badH:"بعض الملاحظات في غير مكانها",
-  expl:"ما أفعله أنا من صرف عاجل أو تواصل مع الطبيب أو تصحيح، أكتبه على الجزأين I وII، ويكتبه الطبيب على الجزء III. وبيانات الصرف مكانها الجزء I وحده، وهو الجزء الذي يبقى عندي ثلاث سنوات. والسجل يحمل اسم الطبيب ورقم الوصفة. أما الجزء II فيذهب إلى صندوق التأمين، وكل نقص فيه خطر ريتاكس."}},
+   {t:"الصرف العاجل مساء الجمعة أكتبه على الجزء I والجزء II.",ok:true,p:5,
+    why:"§ 12 Abs. 2 BtMVV: ما أفعله أنا يُكتب على الجزأين."},
+   {t:"اسم الصيدلية وتاريخ الصرف وحروف اسمي الأولى مكانها الجزء I وحده.",ok:true,p:5,
+    why:"§ 12 Abs. 3 BtMVV: الجزء I يبقى في الصيدلية ثلاث سنوات."},
+   {t:"تأكيد التصحيح أكتبه أنا على الجزأين I وII.",ok:false,p:5,
+    why:"التأكيد يأتي من الطبيب، وعلى الجزء III."},
+   {t:"اسم الطبيب ورقم وصفة المخدّرات أوثّقهما في سجل BtM.",ok:true,p:5,
+    why:"§ 14 Abs. 1 Nr. 5 BtMVV: في الكرت أو في البرنامج."},
+   {t:"كمية التحميل بعد التصحيح مكانها الجزء III.",ok:false,p:5,
+    why:"مكانها الجزء I والجزء II؛ والجزء III يملؤه الطبيب."}],
+  okH:"كل شيء في مكانه", badH:"شيء في غير مكانه",
+  expl:"ما أفعله أنا — الصرف العاجل والتواصل مع الطبيب وتصحيح كمية التحميل — يُكتب على الجزأين I وII. وبيانات الصرف على الجزء I الذي يبقى ثلاث سنوات في الصيدلية. والجزء III يملؤه الطبيب. وسجل BtM يحمل اسم الطبيب ورقم الوصفة."}},
 
  {mech:"rezept",data:{kicker:"المشهد 3 · 18:15 · مراجعة الجزء I", penalty:true,
   title:"شيئان ناقصان على الجزء I",
   scene:"assets/PCG_SCN_CUS021_D_HANDOVER_v001.webp",
-  doc:{type:"btm", r:KRAEMER_REZ_ABGABE, open:["apo","abgabedatum","zeichen","vermerk","verordnung"]},
+  doc:{type:"btm", r:ANGEH_REZ_ABGABE, open:["apo","abgabedatum","zeichen","vermerk","verordnung"]},
   phases:[
    {q:"ينقص أحد بيانات الصرف. ألمسه.",
     answer:"zeichen", p:25, okH:"الحروف الأولى من اسمي",
