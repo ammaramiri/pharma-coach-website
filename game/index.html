@@ -608,47 +608,25 @@ body.rtl .doc{direction:ltr;text-align:left}
 .m16-kartei{background:#fff;border:1.5px solid #DCD6C9;border-radius:10px;padding:9px 11px;
   margin-top:9px}
 /* =====================================================================
-   BtM-Rezept · gelbe Variante der M16-Struktur
-   Die Klasse .btm haengt an der M16-Struktur: gleiche Knoepfe
-   .m16-f[data-k], gleiche ID #m16. Hier stehen nur Farben, Querformat
-   und Zonen. Mech.rezept, rezeptStrafe, M16.teach und M16.hintUhr
-   bleiben dadurch unveraendert.
+   BtM-Rezept · dasselbe Blatt wie Muster 16, nur gelb
+   Gleiche Struktur, gleiche Klassen, gleiche Zellen. Hier stehen nur
+   die Farben und zwei Zusaetze im Kopf: Rezeptnummer und Teil.
+   (Ammar 11.10.2026: das Rezept muss aussehen wie in der
+   Rezeptpruefung, gelb statt rot.)
 ===================================================================== */
-.m16.btm{background:#F3E4C8;border:2px solid #C4566A;position:relative;overflow:hidden;
-  container-type:inline-size;aspect-ratio:148/105}
-.m16.btm::before{content:'MUSTER';position:absolute;inset:0;display:grid;place-items:center;
-  transform:rotate(-22deg);font-family:'Fraunces',serif;font-weight:900;
-  font-size:clamp(40px,20cqw,150px);letter-spacing:.2em;color:rgba(196,86,106,.18);
-  pointer-events:none;z-index:1;white-space:nowrap}
-.m16.btm>*{position:relative;z-index:2}
-.btm-head{display:flex;align-items:center;gap:8px;padding:7px 11px;border-bottom:2px solid #C4566A}
-/* Weiter oben im Blatt steht .stage-body img{height:auto}. Das ist
-   spezifischer als .btm-logo und liess das Kassenlogo auf seine
-   volle Groesse wachsen; es fuellte das Blatt und schob alle Felder
-   aus dem beschnittenen Querformat. Zwei Klassen schlagen eine. */
-.m16.btm .btm-head img{height:20px;width:auto;max-width:110px;object-fit:contain;
-  flex:0 0 auto;filter:grayscale(1) contrast(1.1);opacity:.85}
-.btm-typ{font-weight:900;font-size:clamp(10px,2.7cqw,15px);color:#8E2338}
-.btm-nr{font-size:clamp(8px,2cqw,11px);font-weight:700;color:#8E2338;letter-spacing:.06em}
-.btm-teil{margin-inline-start:auto;font-size:clamp(8px,2cqw,12px);font-weight:800;color:#8E2338;
-  border:1.5px solid #C4566A;border-radius:6px;padding:2px 7px;white-space:nowrap}
-.btm-blatt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:8px;align-content:start}
-.btm-z{display:grid;gap:5px;align-content:start;grid-template-columns:repeat(2,minmax(0,1fr))}
-.btm-z.voll{grid-column:1 / -1;grid-template-columns:repeat(3,minmax(0,1fr))}
-.btm-z.zeilen{grid-column:1 / -1;grid-template-columns:minmax(0,1fr)}
-/* Auf schmalen Schirmen passen einundzwanzig Felder nicht in 148:105.
-   Lieber ein hoeheres Blatt als abgeschnittene Felder. */
-@media(max-width:700px){ .m16.btm{aspect-ratio:auto} }
-.btm-abgabe{grid-column:1 / -1;border-top:2px dashed #C4566A;padding-top:6px;
-  display:grid;gap:5px;grid-template-columns:repeat(2,minmax(0,1fr))}
-.m16.btm .m16-f{background:#F8ECE2;border:1.5px solid #C4566A;border-radius:6px;padding:5px 7px}
-.m16.btm .m16-f.m16-static{background:#F8ECE2;border-style:dashed}
-.m16.btm .m16-l{color:#A24A5E;font-size:clamp(7px,1.7cqw,9px)}
-.m16.btm .m16-v{color:#2B1B20;font-size:clamp(9px,2.3cqw,13px)}
-.m16.btm .m16-v.leer{color:#C79AA6}
-.m16.btm .m16-stempel{font-size:clamp(8px,1.9cqw,11.5px)}
-.m16.btm .m16-f.hit{border-color:var(--teal-dark);background:#EAF4F1}
-.m16.btm .m16-f.miss{border-color:#D89A2C;background:#FDF6E8}
+.m16.btm{background:#FBF4DF;border-color:#D7BE72}
+.m16.btm .m16-head{background:#F4E8C0;border-bottom-color:#D7BE72;flex-wrap:wrap;gap:5px 10px}
+.m16.btm .m16-head img{height:20px;width:auto;max-width:104px;object-fit:contain;flex:0 0 auto;
+  filter:grayscale(1) contrast(1.1);opacity:.85}
+.m16.btm .m16-kasse{color:#5A4A1F}
+.m16.btm .m16-typ{color:#8A6B1F;margin-inline-start:auto}
+.m16.btm .btm-nr{font-size:10px;font-weight:800;letter-spacing:.07em;color:#8A6B1F;white-space:nowrap}
+.m16.btm .btm-teil{font-size:10px;font-weight:800;color:#6B5316;border:1.5px solid #D7BE72;
+  border-radius:6px;padding:1px 7px;white-space:nowrap}
+.m16.btm .m16-f{border-color:#E2D2A0}
+.m16.btm .m16-f.m16-static{background:#FAF5E6}
+.m16.btm .m16-l{color:#8A7435}
+.m16.btm .m16-v.leer{color:#C4AF72}
 .m16-kartei h5{margin:0 0 6px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
   color:#8A8375}
 
@@ -1895,7 +1873,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-10-11 \u00b7 BtM-Blatt lesbar, kein Vorrang" +
+var PC_BUILD = "2026-10-11b \u00b7 BtM-Blatt wie Muster 16" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -2741,65 +2719,56 @@ var M16 = {
    Querformat 148:105 wie Muster 16, niemals hochkant.
 ===================================================================== */
 var BTM = {
+  /* Feldkennungen des BtM-Rezepts. Die Stufen sprechen sie an, also
+     nie umbenennen. Reihenfolge = Reihenfolge auf dem Blatt. */
+  KEYS:['ktk','name','geb','adresse','vers','status','bsnr','lanr','datum','kennz',
+        'verordnung','menge','gebrauch','stempel','unterschrift',
+        'apo','abgabedatum','zeichen','vermerk'],
+  BREIT:{adresse:1,verordnung:1,menge:1,gebrauch:1,stempel:1,unterschrift:1,apo:1},
   L:{
-    de:{kasse:'Krankenkasse',ktk:'Kostenträgerkennung',name:'Name, Vorname',geb:'geb. am',
+    de:{ktk:'Kostenträgerkennung',name:'Name, Vorname',geb:'geb. am',
         adresse:'Straße, PLZ Ort',vers:'Versicherten-Nr.',status:'Status',
-        bsnr:'Betriebsstätten-Nr.',lanr:'Arzt-Nr.',datum:'Datum',
-        rezeptnr:'BtM-Rezept-Nr.',kennz:'Kennbuchstabe',verordnung:'Verordnung',
-        menge:'Menge in Ziffern und Worten',gebrauch:'Gebrauchsanweisung',
+        bsnr:'Betriebsstätten-Nr.',lanr:'Arzt-Nr.',datum:'Datum',kennz:'Kennbuchstabe',
+        verordnung:'Verordnung',menge:'Menge in Ziffern und Worten',gebrauch:'Gebrauchsanweisung',
         stempel:'Arztstempel',unterschrift:'Unterschrift des Arztes',
         apo:'Apotheke, Name und Anschrift',abgabedatum:'Abgabedatum',
         zeichen:'Namenszeichen',vermerk:'Vermerk',
         typ:'Betäubungsmittel-Rezept',teil:'Teil',leer:'— nicht ausgefüllt —'},
-    en:{kasse:'Health insurer',ktk:'Payer code',name:'Surname, first name',geb:'date of birth',
+    en:{ktk:'Payer code',name:'Surname, first name',geb:'date of birth',
         adresse:'Street, postcode city',vers:'Insurance no.',status:'Status',
-        bsnr:'Practice no.',lanr:'Physician no.',datum:'Date',
-        rezeptnr:'Narcotic prescription no.',kennz:'Code letter',verordnung:'Prescription',
-        menge:'Quantity in figures and words',gebrauch:'Directions for use',
+        bsnr:'Practice no.',lanr:'Physician no.',datum:'Date',kennz:'Code letter',
+        verordnung:'Prescription',menge:'Quantity in figures and words',gebrauch:'Directions for use',
         stempel:'Practice stamp',unterschrift:'Physician signature',
         apo:'Pharmacy, name and address',abgabedatum:'Date of dispensing',
         zeichen:'Initials',vermerk:'Note',
         typ:'Narcotic prescription',teil:'Part',leer:'— not filled in —'},
-    ar:{kasse:'صندوق التأمين',ktk:'رمز جهة التحمّل',name:'الاسم واللقب',geb:'تاريخ الميلاد',
+    ar:{ktk:'رمز جهة التحمّل',name:'الاسم واللقب',geb:'تاريخ الميلاد',
         adresse:'الشارع والمدينة',vers:'رقم التأمين',status:'الحالة',
-        bsnr:'رقم المنشأة',lanr:'رقم الطبيب',datum:'تاريخ التحرير',
-        rezeptnr:'رقم وصفة المخدّرات',kennz:'الحرف الدال',verordnung:'الدواء الموصوف',
-        menge:'الكمية بالأرقام والحروف',gebrauch:'إرشاد الاستعمال',
+        bsnr:'رقم المنشأة',lanr:'رقم الطبيب',datum:'تاريخ التحرير',kennz:'الحرف الدال',
+        verordnung:'الدواء الموصوف',menge:'الكمية بالأرقام والحروف',gebrauch:'إرشاد الاستعمال',
         stempel:'ختم الطبيب',unterschrift:'توقيع الطبيب',
         apo:'الصيدلية · الاسم والعنوان',abgabedatum:'تاريخ الصرف',
         zeichen:'الحرف الشخصي',vermerk:'ملاحظة',
         typ:'وصفة مواد مخدّرة',teil:'الجزء',leer:'— غير مملوء —'}
   },
-  feld: function(k,r,open,L){
-    if(r[k]===undefined) return '';
-    var v=r[k], leer=(v===''||v===null), an=(open.indexOf(k)>=0);
-    return '<button class="doc-f m16-f'+(an?'':' m16-static')+'"'+
-      (an?' data-k="'+k+'"':' disabled')+'>'+
-      '<span class="m16-l">'+L[k]+'</span>'+
-      '<span class="m16-v'+(leer?' leer':'')+(k==='stempel'?' m16-stempel':'')+'">'+
-      (leer?L.leer:v)+'</span></button>';
-  },
   build: function(doc){
     var L=this.L[state.lang]||this.L.de, r=doc.r||{}, open=(doc.open||[]), B=this;
-    var f=function(k){ return B.feld(k,r,open,L); };
-    var zone=function(cls,keys){ return '<div class="btm-z '+cls+'">'+keys.map(f).join('')+'</div>'; };
-    var logo=r.logo?'<img class="btm-logo" src="assets/Retax/'+r.logo+'" alt="" loading="lazy">':'';
-    var abgabe='';
-    if(r.teil==='I'){
-      abgabe='<div class="btm-abgabe">'+['apo','abgabedatum','zeichen','vermerk'].map(f).join('')+'</div>';
-    }
+    var zellen=this.KEYS.filter(function(k){ return r[k]!==undefined; }).map(function(k){
+      var v=r[k], leer=(v===''||v===null), an=(open.indexOf(k)>=0);
+      return '<button class="doc-f m16-f'+(B.BREIT[k]?' w100':'')+(an?'':' m16-static')+'"'+
+        (an?' data-k="'+k+'"':' disabled')+'>'+
+        '<span class="m16-l">'+L[k]+'</span>'+
+        '<span class="m16-v'+(leer?' leer':'')+(k==='stempel'?' m16-stempel':'')+'">'+
+        (leer?L.leer:v)+'</span></button>';
+    }).join('');
     return '<div class="m16 btm" id="m16">'+
-      '<div class="btm-head">'+logo+'<span class="btm-typ">'+L.typ+'</span>'+
+      '<div class="m16-head">'+
+        (r.logo?'<img src="assets/Retax/'+r.logo+'" alt="" loading="lazy">':'')+
+        '<span class="m16-kasse">'+(r.kasse||'')+'</span>'+
+        '<span class="m16-typ">'+L.typ+'</span>'+
         (r.rezeptnr?'<span class="btm-nr">'+r.rezeptnr+'</span>':'')+
-        (r.teil?'<span class="btm-teil">'+L.teil+' '+r.teil+'</span>':'')+'</div>'+
-      '<div class="btm-blatt">'+
-        zone('', ['kasse','ktk','name','geb','adresse','vers','status'])+
-        zone('', ['bsnr','lanr','datum'])+
-        zone('voll', ['kennz'])+
-        zone('zeilen', ['verordnung','menge','gebrauch'])+
-        zone('', ['stempel','unterschrift'])+
-        abgabe+
-      '</div></div>';
+        (r.teil?'<span class="btm-teil">'+L.teil+' '+r.teil+'</span>':'')+
+      '</div><div class="m16-grid">'+zellen+'</div></div>';
   }
 };
 
@@ -2906,9 +2875,23 @@ function rezeptStrafe(host, d, done){
         if(!offen) return;
         var k=b.dataset.k;
         if(k!==ph.answer){
-          /* Fehlgriff: fuenf Punkte weg, Boden null, Schritt laeuft weiter. */
           if(b.classList.contains('miss')) return;
           b.classList.add('miss');
+          if(d.einmal){
+            /* Eine Antwort, dann die Auswertung. Kein Herumtippen, bis
+               das richtige Feld zufaellig dabei ist (Ammar 11.10.2026). */
+            offen=false;
+            felder.forEach(function(x){ x.disabled=true;
+              if(x.dataset.k===ph.answer) x.classList.add('hit'); });
+            vertrauen -= 6;
+            var kopf=((ph.wrong && ph.wrong[k]) || ph.badH || d.badH || '')+' \u00b7 +0';
+            return fbBlock(document.getElementById('fbz'), false, kopf, ph.expl, function(){
+              idx++;
+              if(idx<phasen.length) phaseStarten();
+              else done(punkte, vertrauen);
+            });
+          }
+          /* Fehlgriff: fuenf Punkte weg, Boden null, Schritt laeuft weiter. */
           stufe = Math.max(0, stufe - 5);
           var satz = (ph.wrong && ph.wrong[k]) || d.missNote || '';
           if(satz) fbNote(host, satz + '  \u2212 5');
