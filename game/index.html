@@ -1887,7 +1887,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-10-10 \u00b7 BtM als normaler Kunde" +
+var PC_BUILD = "2026-10-10b \u00b7 HV-Fassung des Falls" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -1942,7 +1942,7 @@ var PERSONAS = {
      der alten Comic-Fassung sind tot und bleiben deshalb leer. */
   angeh: {
     de:"Der Angehörige", en:"The relative", ar:"المرافق",
-    img:{ neutral:"assets/PCG_CU_CUS021_P04_CU-NEUTRAL_v003.jpg" },
+    img:{ neutral:"assets/PCG_CU_CUS021_P04_CU-NEUTRAL_v001.webp" },
     trustStart:55, minLevelRank:0
   },
   vater: {
@@ -5978,7 +5978,7 @@ var LEVELS = [
   { id:"L18", topic:"sonnenschutz_urlaub", persona:"urlaub", reqRank:0 },
   /* Ein ganz normaler Kunde, der zufaellig ein BtM-Rezept mitbringt:
      kein eigener Raum, kein Schrank, kein Sonderweg (Ammar 10.10.2026). */
-  { id:"L19", topic:"btm_fentanyl_freitag", persona:"angeh", reqRank:0 }
+  { id:"L19", topic:"fentanyl_freitag", persona:"angeh", reqRank:0 }
   /* kommende Fälle werden hier ergänzt */
 ];
 /* Büro-Level. Eigene Sequenz, eigener Abschnitt auf der Karte.
@@ -6969,18 +6969,21 @@ TOPICS.buero_formfehler_01.steps_ar = [
 ];
 
 /* ---------- Rank helpers ---------- */
-/* ===== BtM · B3 · eingefuegt aus btm_01_fentanyl_freitag.js (07.10.2026) ===== */
-/* Inhalt und Code sind getrennt (Beschluss Ammar, 07.10.2026): die
-   Schritte dieses Falls stehen in data/btm_01_fentanyl_freitag.js und
-   werden erst geladen, wenn der Fall startet. Hier bleibt nur, was die
-   Karte und das Archiv vorher brauchen. */
-TOPICS.btm_fentanyl_freitag = {
+/* ===== HV · L19 · Fentanyl am Freitagabend =====
+   Zwei Fassungen desselben Falls lagen im Repo: die Buero-Fassung
+   btm_01 und die HV-Fassung hv_21. Beschluss Ammar 10.10.2026: die
+   HV-Fassung gilt, weil sie fuer den Tresen geschrieben ist und
+   Fallkarte, vier Kundengesichter und eine Vertrauenstabelle
+   mitbringt. btm_01 und der Ordner assets/BtM entfallen.
+   Inhalt und Code bleiben getrennt: die Schritte stehen in
+   data/hv_21_fentanyl_freitag.js und werden erst beim Start geladen. */
+TOPICS.fentanyl_freitag = {
   de:"Fentanyl am Freitagabend", en:"Fentanyl on a Friday Evening", ar:"لصقة الفنتانيل مساء الجمعة",
   persona:"angeh",
-  tag:"BtM",
-  banner:"assets/BtM/btm_kategorie_karte_640_v001.webp",
+  tag:"HV",
+  banner:"assets/PCG_CARD_CUS021_v001.webp",
   badges:[],
-  src:"data/btm_01_fentanyl_freitag.js"
+  src:"data/hv_21_fentanyl_freitag.js"
 };
 
 function rankForPts(p){ var idx=0; for(var i=0;i<RANKS.length;i++){ if(p>=RANKS[i].pts) idx=i; } return idx; }
