@@ -63,7 +63,7 @@ TOPICS.fentanyl_freitag = {
    {who:"Der Angehörige",txt:"Bitte. Es ist Freitagabend."},
    {who:"Ich",txt:"Ich ziehe das gelbe Rezept zu mir und beginne die Prüfung."}]}},
 
- {mech:"rezept",data:{kicker:"Prüfung · Das BtM-Rezept", penalty:true, p:25,
+ {mech:"rezept",data:{einmal:true, kicker:"Prüfung · Das BtM-Rezept", penalty:true, p:25,
   title:"Eine Pflichtangabe fehlt. Tippe das Feld an.",
   scene:"assets/PCG_DET_CUS021_01_ZEILE_v001.webp",
   doc:{type:"btm", r:ANGEH_REZ, open:["verordnung","datum","menge","gebrauch","stempel","unterschrift"]},
@@ -150,7 +150,7 @@ TOPICS.fentanyl_freitag = {
   okH:"Alles am richtigen Ort", badH:"Da liegt etwas falsch",
   expl:"Was ich selbst tue — Notversorgung, Rücksprache, Korrektur der Belastungsmenge — steht auf Teil I und II. Die Abgabedaten stehen auf Teil I, der drei Jahre in der Apotheke bleibt. Teil III führt der Arzt. Und das BtM-Buch trägt Arztnamen und Rezeptnummer."}},
 
- {mech:"rezept",data:{kicker:"Szene 3 · 18:15 · Kontrolle von Teil I", penalty:true,
+ {mech:"rezept",data:{einmal:true, kicker:"Szene 3 · 18:15 · Kontrolle von Teil I", penalty:true,
   title:"Zwei Dinge fehlen auf Teil I",
   scene:"assets/PCG_SCN_CUS021_D_HANDOVER_v001.webp",
   doc:{type:"btm", r:ANGEH_REZ_ABGABE, open:["apo","abgabedatum","zeichen","vermerk","verordnung"]},
@@ -180,7 +180,7 @@ TOPICS.fentanyl_freitag = {
    {who:"The relative",txt:"Please. It is Friday evening."},
    {who:"I",txt:"I pull the yellow prescription towards me and start checking."}]}},
 
- {mech:"rezept",data:{kicker:"Check · The narcotics prescription", penalty:true, p:25,
+ {mech:"rezept",data:{einmal:true, kicker:"Check · The narcotics prescription", penalty:true, p:25,
   title:"A mandatory entry is missing. Tap the field.",
   scene:"assets/PCG_DET_CUS021_01_ZEILE_v001.webp",
   doc:{type:"btm", r:ANGEH_REZ, open:["verordnung","datum","menge","gebrauch","stempel","unterschrift"]},
@@ -267,7 +267,7 @@ TOPICS.fentanyl_freitag = {
   okH:"Everything in its place", badH:"Something is in the wrong place",
   expl:"What I do myself — emergency supply, call-back, corrected quantity — goes on parts I and II. The dispensing data go on part I, which stays three years in the pharmacy. Part III is the physician's. The narcotics register carries the physician's name and the prescription number."}},
 
- {mech:"rezept",data:{kicker:"Scene 3 · 6:15 pm · Checking part I", penalty:true,
+ {mech:"rezept",data:{einmal:true, kicker:"Scene 3 · 6:15 pm · Checking part I", penalty:true,
   title:"Two things are missing on part I",
   scene:"assets/PCG_SCN_CUS021_D_HANDOVER_v001.webp",
   doc:{type:"btm", r:ANGEH_REZ_ABGABE, open:["apo","abgabedatum","zeichen","vermerk","verordnung"]},
@@ -297,7 +297,7 @@ TOPICS.fentanyl_freitag = {
    {who:"المرافق",txt:"أرجوك. اليوم مساء جمعة."},
    {who:"أنا",txt:"أسحب الوصفة الصفراء إليّ وأبدأ الفحص."}]}},
 
- {mech:"rezept",data:{kicker:"الفحص · وصفة BtM", penalty:true, p:25,
+ {mech:"rezept",data:{einmal:true, kicker:"الفحص · وصفة BtM", penalty:true, p:25,
   title:"ينقص بيان إلزامي. ألمس الخانة.",
   scene:"assets/PCG_DET_CUS021_01_ZEILE_v001.webp",
   doc:{type:"btm", r:ANGEH_REZ, open:["verordnung","datum","menge","gebrauch","stempel","unterschrift"]},
@@ -384,7 +384,7 @@ TOPICS.fentanyl_freitag = {
   okH:"كل شيء في مكانه", badH:"شيء في غير مكانه",
   expl:"ما أفعله أنا — الصرف العاجل والتواصل مع الطبيب وتصحيح كمية التحميل — يُكتب على الجزأين I وII. وبيانات الصرف على الجزء I الذي يبقى ثلاث سنوات في الصيدلية. والجزء III يملؤه الطبيب. وسجل BtM يحمل اسم الطبيب ورقم الوصفة."}},
 
- {mech:"rezept",data:{kicker:"المشهد 3 · 18:15 · مراجعة الجزء I", penalty:true,
+ {mech:"rezept",data:{einmal:true, kicker:"المشهد 3 · 18:15 · مراجعة الجزء I", penalty:true,
   title:"شيئان ناقصان على الجزء I",
   scene:"assets/PCG_SCN_CUS021_D_HANDOVER_v001.webp",
   doc:{type:"btm", r:ANGEH_REZ_ABGABE, open:["apo","abgabedatum","zeichen","vermerk","verordnung"]},
