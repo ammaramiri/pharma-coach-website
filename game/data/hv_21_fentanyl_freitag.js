@@ -6,7 +6,7 @@
    Packungsdaten echt (ABDA, Stand 02.10.2026). Personen, Praxis, Kasse, Nummern konstruiert.
    Datum im Fall: ausgestellt Di 13.10.26, vorgelegt Fr 16.10.26
    Punkte: 0 + 25x6 + 50 = 200 · Fachinhalt unveraendert
-   Benoetigt: BTM.build (doc type "btm") · Atlas "kraemer" in PC_CUSTOMER_ATLASES
+   Benoetigt: BTM.build (doc type "btm") · Atlas "angeh" in PC_CUSTOMER_ATLASES (ohne Eigennamen, Beschluss 10.10.2026)
 ===================================================================== */
 
 var KRAEMER_REZ = { logo:'retax_logo_nordwaldt_kasse.webp', kasse:'Nordwaldt Kasse',
@@ -43,7 +43,7 @@ var KRAEMER_TRUST = {
            spricht:"assets/PCG_CU_CUS021_P05_CU-TALK_v001.webp" } };
 
 TOPICS.fentanyl_freitag = {
-  persona:"kraemer", cus:"CUS021", trust:KRAEMER_TRUST,
+  persona:"angeh", cus:"CUS021", trust:KRAEMER_TRUST,
   de:"Fentanyl am Freitagabend", en:"Fentanyl on a Friday Evening", ar:"لصقة الفنتانيل مساء الجمعة",
   tag:"HV",
   banner:"assets/PCG_CARD_CUS021_v001.webp",
