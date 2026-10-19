@@ -1,1 +1,335 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>Prototyp · Reibschale</title>
+<style>
+/* =====================================================================
+   Prototyp Reibschale · 18.10.2026
+   Eigenstaendige Testseite. Kein Spielstand, keine Punkte, keine
+   Verbindung zur index.html. Nur die Geste.
+   Alle Koordinaten beziehen sich auf die Bildflaeche 864 x 1536 und
+   werden in Prozent umgerechnet, damit jede Bildschirmgroesse passt.
+===================================================================== */
+:root{
+  --ink:#23272E; --soft:#6B7280; --line:#E5E0D8; --bg:#F6F3EC;
+  --teal:#0E7C6B; --teal-dark:#006D5B;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --ink:#F2EFE9; --soft:#A8AEB8; --line:#3A3F47; --bg:#14171B; }
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:'Inter',system-ui,-apple-system,"Segoe UI",sans-serif;
+  display:flex; flex-direction:column; align-items:center;
+  overflow:hidden; touch-action:none; -webkit-user-select:none; user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  padding-top:env(safe-area-inset-top,0px);
+}
 
+/* ---------- Pruefleiste ---------- */
+#hud{
+  width:100%; max-width:560px; display:flex; flex-wrap:wrap; align-items:center;
+  gap:8px 10px; padding:8px 10px; font-size:12px; font-weight:600;
+}
+#hud button{
+  font:inherit; font-weight:700; border:1.5px solid var(--line); background:transparent;
+  color:var(--ink); border-radius:10px; padding:7px 12px; cursor:pointer;
+}
+#hud button.on{ border-color:var(--teal-dark); color:var(--teal-dark) }
+#hud label{ display:flex; align-items:center; gap:6px; color:var(--soft) }
+#hud input[type=range]{ width:104px; accent-color:var(--teal-dark) }
+.ring{ width:34px; height:34px; flex:0 0 auto }
+.ring circle{ fill:none; stroke-width:4 }
+.ring .bg{ stroke:var(--line) }
+.ring .fg{ stroke:var(--teal-dark); stroke-linecap:round; transition:stroke-dashoffset .12s linear }
+#zahl{ min-width:132px; color:var(--soft); font-variant-numeric:tabular-nums }
+
+/* ---------- Buehne ---------- */
+#buehne{
+  position:relative; flex:1 1 auto; min-height:0;
+  width:min(100vw, calc((100dvh - 56px) * 864 / 1536));
+  aspect-ratio:864 / 1536; max-height:100%;
+  overflow:hidden; border-radius:14px; background:#EDE9E1;
+}
+#buehne img{ position:absolute; display:block; pointer-events:none; -webkit-user-drag:none }
+.schicht{ left:0; top:0; width:100%; height:100%; object-fit:cover }
+#clumps,#smooth{ opacity:0 }
+#rim{ z-index:40 }
+
+/* Schatten unter der Pistillspitze */
+#schatten{
+  position:absolute; z-index:18; pointer-events:none;
+  width:17.4%;            /* 150 / 864  */
+  height:3.0%;            /*  46 / 1536 */
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(closest-side, rgba(40,34,26,.34), rgba(40,34,26,0));
+}
+#pistill{
+  z-index:30; width:24.47%;      /* 341 * 0.62 / 864 */
+  transform-origin:50% 100%;
+}
+
+/* Steuerzone fuer Modus B */
+#zone{
+  position:absolute; z-index:20; border-radius:50%;
+  border:2px dashed rgba(14,124,107,.45);
+  background:radial-gradient(closest-side, rgba(14,124,107,.10), rgba(14,124,107,0));
+  display:none; place-items:center;
+  color:var(--teal-dark); font-size:12px; font-weight:700; text-align:center;
+}
+body[data-modus="B"] #zone{ display:grid }
+#fertig{
+  position:absolute; z-index:50; left:50%; top:8%; transform:translateX(-50%);
+  background:var(--teal-dark); color:#fff; font-weight:800; font-size:13px;
+  padding:7px 14px; border-radius:999px; opacity:0; transition:opacity .25s;
+}
+#fertig.an{ opacity:1 }
+</style>
+</head>
+<body data-modus="A">
+
+<div id="hud">
+  <svg class="ring" viewBox="0 0 40 40" aria-hidden="true">
+    <circle class="bg" cx="20" cy="20" r="16"></circle>
+    <circle class="fg" id="ringFg" cx="20" cy="20" r="16"
+            stroke-dasharray="100.53" stroke-dashoffset="100.53"
+            transform="rotate(-90 20 20)"></circle>
+  </svg>
+  <span id="zahl">0 % · 0,0 Umdr. · 0 fps</span>
+  <button id="btnModus" type="button">Modus A</button>
+  <button id="btnReset" type="button">Zurück</button>
+  <label>Umdr.
+    <input id="ziel" type="range" min="6" max="25" step="1" value="13">
+    <span id="zielWert">13</span>
+  </label>
+</div>
+
+<div id="buehne">
+  <img class="schicht" id="coarse" src="../assets/lab/PCG_LAB_REIBSCHALE_COARSE_v001.webp" alt="">
+  <img class="schicht" id="clumps" src="../assets/lab/PCG_LAB_REIBSCHALE_CLUMPS_v001.webp" alt="">
+  <img class="schicht" id="smooth" src="../assets/lab/PCG_LAB_REIBSCHALE_SMOOTH_v002.webp" alt="">
+  <div id="schatten"></div>
+  <img id="pistill" src="../assets/lab/PCG_LAB_PISTILL_v001.webp" alt="">
+  <img class="schicht" id="rim" src="../assets/lab/PCG_LAB_REIBSCHALE_RIM_FRONT_v001.webp" alt="">
+  <div id="zone">Kreisen</div>
+  <div id="fertig">Homogen</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Masse der Bildflaeche ---------- */
+var W=864, H=1536;
+var BAHN={ x:426, y:740, rx:150, ry:95 };   /* Weg der Pistillspitze */
+var ZONE={ x:432, y:1225, r:225 };          /* Daumenfeld fuer Modus B */
+var NEIGUNG=7;                              /* Grad, in Bewegungsrichtung */
+
+var buehne=document.getElementById('buehne');
+var pistill=document.getElementById('pistill');
+var schatten=document.getElementById('schatten');
+var clumps=document.getElementById('clumps');
+var smooth=document.getElementById('smooth');
+var ringFg=document.getElementById('ringFg');
+var zahl=document.getElementById('zahl');
+var zoneEl=document.getElementById('zone');
+var fertigEl=document.getElementById('fertig');
+var btnModus=document.getElementById('btnModus');
+var zielEl=document.getElementById('ziel');
+var zielWertEl=document.getElementById('zielWert');
+
+var S={
+  modus:'A',
+  phi:-Math.PI/2,     /* aktueller Winkel auf der Bahn */
+  weg:0,              /* zurueckgelegter Winkel in Radiant, nur bei Beruehrung */
+  ziel:13,            /* Umdrehungen bis 100 % */
+  greift:false,
+  zeiger:null,
+  letztePhi:0,
+  tempo:0,            /* Radiant je Sekunde, geglaettet */
+  rastend:0           /* fuer das Vibrieren je Viertelumdrehung */
+};
+
+/* ---------- Umrechnung Bildschirm -> Bildflaeche ---------- */
+function inBild(ev){
+  var r=buehne.getBoundingClientRect();
+  return { x:(ev.clientX-r.left)/r.width*W, y:(ev.clientY-r.top)/r.height*H };
+}
+function winkelAus(p, mitte, rx, ry){
+  return Math.atan2((p.y-mitte.y)/ry, (p.x-mitte.x)/rx);
+}
+function spitze(phi){
+  return { x:BAHN.x+BAHN.rx*Math.cos(phi), y:BAHN.y+BAHN.ry*Math.sin(phi) };
+}
+
+/* ---------- Zeichnen ---------- */
+function zeichnen(){
+  var p=spitze(S.phi);
+  /* Hinten kleiner: sin(phi) = -1 ist die Rueckseite der Schale. */
+  var tiefe=0.965+0.035*Math.sin(S.phi);
+  /* Die Neigung folgt der Bewegungsrichtung: auf der rechten Haelfte
+     kippt das Pistill nach rechts, auf der linken nach links. */
+  var grad=NEIGUNG*Math.cos(S.phi);
+  pistill.style.left=(p.x/W*100)+'%';
+  pistill.style.top =(p.y/H*100)+'%';
+  pistill.style.transform='translate(-50%,-100%) rotate('+grad.toFixed(2)+'deg) scale('+tiefe.toFixed(3)+')';
+  schatten.style.left=(p.x/W*100)+'%';
+  schatten.style.top =((p.y+10)/H*100)+'%';
+  schatten.style.opacity=(0.55+0.25*Math.sin(S.phi)).toFixed(2);
+}
+
+function fortschritt(){
+  return Math.min(1, S.weg/(S.ziel*2*Math.PI));
+}
+function stufen(){
+  var f=fortschritt();
+  /* 0 bis 35 %: grob -> Klumpen. 35 bis 80 %: Klumpen -> homogen. */
+  var a=f<=0?0:Math.min(1, f/0.35);
+  var b=f<=0.35?0:Math.min(1, (f-0.35)/0.45);
+  clumps.style.opacity=a.toFixed(3);
+  smooth.style.opacity=b.toFixed(3);
+  var u=S.weg/(2*Math.PI);
+  ringFg.setAttribute('stroke-dashoffset', (100.53*(1-f)).toFixed(2));
+  zahl.textContent=Math.round(f*100)+' % · '+u.toFixed(1).replace('.',',')+' Umdr. · '+fps+' fps';
+  /* Rundungsreste: 12,999999 Umdrehungen sind auch fertig. */
+  fertigEl.classList.toggle('an', f>=0.999);
+}
+
+/* ---------- Ton: gefiltertes Rauschen, keine Audiodatei ---------- */
+var AC=null, rauschen=null, filter=null, lautst=null;
+function tonAn(){
+  if(AC) return;
+  try{
+    var C=window.AudioContext||window.webkitAudioContext; if(!C) return;
+    AC=new C();
+    var len=Math.floor(AC.sampleRate*2), buf=AC.createBuffer(1,len,AC.sampleRate), d=buf.getChannelData(0);
+    for(var i=0;i<len;i++){ d[i]=(Math.random()*2-1)*0.7; }
+    rauschen=AC.createBufferSource(); rauschen.buffer=buf; rauschen.loop=true;
+    filter=AC.createBiquadFilter(); filter.type='bandpass'; filter.frequency.value=1150; filter.Q.value=0.8;
+    lautst=AC.createGain(); lautst.gain.value=0;
+    rauschen.connect(filter); filter.connect(lautst); lautst.connect(AC.destination);
+    rauschen.start();
+  }catch(e){ AC=null; }
+}
+function tonTempo(v){
+  if(!AC||!lautst) return;
+  try{
+    if(AC.state==='suspended') AC.resume();
+    var z=S.greift?Math.min(0.30, v*0.045):0;
+    lautst.gain.setTargetAtTime(z, AC.currentTime, 0.06);
+    filter.frequency.setTargetAtTime(900+Math.min(900, v*110), AC.currentTime, 0.08);
+  }catch(e){}
+}
+
+function rasten(){
+  /* Eine kurze Rueckmeldung je Viertelumdrehung, wo das Geraet sie kennt. */
+  var stufe=Math.floor(S.weg/(Math.PI/2));
+  if(stufe!==S.rastend){
+    S.rastend=stufe;
+    try{ if(navigator.vibrate) navigator.vibrate(8); }catch(e){}
+  }
+}
+
+/* ---------- Eingabe ---------- */
+function darfGreifen(p){
+  if(S.modus==='B'){
+    var dx=p.x-ZONE.x, dy=p.y-ZONE.y;
+    return Math.sqrt(dx*dx+dy*dy)<=ZONE.r*1.15;
+  }
+  /* Modus A: der Finger muss am Pistill liegen. */
+  var s=spitze(S.phi);
+  var ax=p.x-s.x, ay=p.y-(s.y-140);
+  return Math.sqrt(ax*ax+ay*ay)<=260;
+}
+function neuerWinkel(p){
+  return S.modus==='B'
+    ? winkelAus(p, ZONE, ZONE.r, ZONE.r)
+    : winkelAus(p, BAHN, BAHN.rx, BAHN.ry);
+}
+function runter(ev){
+  var p=inBild(ev);
+  if(!darfGreifen(p)) return;
+  S.greift=true; S.zeiger=ev.pointerId;
+  S.letztePhi=neuerWinkel(p);
+  if(S.modus==='B') S.phi=S.letztePhi;
+  tonAn();
+  try{ buehne.setPointerCapture(ev.pointerId); }catch(e){}
+  ev.preventDefault();
+}
+function bewegen(ev){
+  if(!S.greift || ev.pointerId!==S.zeiger) return;
+  var neu=neuerWinkel(inBild(ev));
+  var d=neu-S.letztePhi;
+  while(d>Math.PI) d-=2*Math.PI;
+  while(d<-Math.PI) d+=2*Math.PI;
+  S.letztePhi=neu;
+  S.phi+=d;
+  /* Nur der zurueckgelegte Weg zaehlt, die Richtung ist gleichgueltig
+     und schnelles Ruehren wird nie bestraft. */
+  S.weg+=Math.abs(d);
+  S.tempoRoh=(S.tempoRoh||0)+Math.abs(d);
+  rasten();
+  ev.preventDefault();
+}
+function hoch(ev){
+  if(ev.pointerId!==S.zeiger) return;
+  S.greift=false; S.zeiger=null; S.tempoRoh=0;
+}
+buehne.addEventListener('pointerdown', runter, {passive:false});
+buehne.addEventListener('pointermove', bewegen, {passive:false});
+buehne.addEventListener('pointerup', hoch);
+buehne.addEventListener('pointercancel', hoch);
+buehne.addEventListener('pointerleave', hoch);
+
+/* ---------- Bedienung ---------- */
+btnModus.addEventListener('click', function(){
+  S.modus = S.modus==='A' ? 'B' : 'A';
+  document.body.dataset.modus=S.modus;
+  btnModus.textContent='Modus '+S.modus;
+  btnModus.classList.toggle('on', S.modus==='B');
+  S.greift=false; S.zeiger=null;
+});
+document.getElementById('btnReset').addEventListener('click', function(){
+  S.weg=0; S.phi=-Math.PI/2; S.rastend=0; S.greift=false; S.zeiger=null;
+  zeichnen(); stufen();
+});
+zielEl.addEventListener('input', function(){
+  S.ziel=+zielEl.value; zielWertEl.textContent=zielEl.value; stufen();
+});
+
+/* Steuerzone an ihren Platz */
+zoneEl.style.left=((ZONE.x-ZONE.r)/W*100)+'%';
+zoneEl.style.top =((ZONE.y-ZONE.r)/H*100)+'%';
+zoneEl.style.width =(ZONE.r*2/W*100)+'%';
+zoneEl.style.height=(ZONE.r*2/H*100)+'%';
+
+/* ---------- Schleife ---------- */
+var fps=0, rahmen=0, fensterStart=0, vorher=0;
+function schleife(t){
+  if(!vorher) vorher=t;
+  var dt=Math.max(0.001,(t-vorher)/1000); vorher=t;
+  rahmen++;
+  if(!fensterStart) fensterStart=t;
+  if(t-fensterStart>=500){ fps=Math.round(rahmen*1000/(t-fensterStart)); rahmen=0; fensterStart=t; }
+  var roh=(S.tempoRoh||0)/dt; S.tempoRoh=0;
+  S.tempo=S.tempo+(roh-S.tempo)*0.25;
+  tonTempo(S.tempo);
+  zeichnen(); stufen();
+  requestAnimationFrame(schleife);
+}
+zeichnen(); stufen();
+requestAnimationFrame(schleife);
+
+/* Nur fuer die Pruefung von aussen, nicht fuer das Spiel. */
+window.PROTO={ S:S, spitze:spitze, fortschritt:fortschritt,
+  dreh:function(rad){ S.weg+=Math.abs(rad); S.phi+=rad; stufen(); zeichnen(); } };
+})();
+</script>
+</body>
+</html>
