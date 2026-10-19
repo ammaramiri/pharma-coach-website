@@ -75,15 +75,16 @@ body{
   transform-origin:50% 100%;
 }
 
-/* Steuerzone fuer Modus B */
-#zone{
-  position:absolute; z-index:20; border-radius:50%;
-  border:2px dashed rgba(14,124,107,.45);
-  background:radial-gradient(closest-side, rgba(14,124,107,.10), rgba(14,124,107,0));
-  display:none; place-items:center;
-  color:var(--teal-dark); font-size:12px; font-weight:700; text-align:center;
+/* Grifffeld: liegt ueber dem Stiel, oberhalb der Schale. Nur sichtbar,
+   solange der Finger nicht greift, damit man weiss, wo man anfasst. */
+#griff{
+  position:absolute; z-index:25; border-radius:999px;
+  border:2px dashed rgba(14,124,107,.40);
+  background:rgba(14,124,107,.06);
+  transform:translate(-50%,-50%);
+  transition:opacity .2s;
 }
-body[data-modus="B"] #zone{ display:grid }
+body.greift #griff{ opacity:0 }
 #fertig{
   position:absolute; z-index:50; left:50%; top:8%; transform:translateX(-50%);
   background:var(--teal-dark); color:#fff; font-weight:800; font-size:13px;
@@ -92,7 +93,7 @@ body[data-modus="B"] #zone{ display:grid }
 #fertig.an{ opacity:1 }
 </style>
 </head>
-<body data-modus="A">
+<body>
 
 <div id="hud">
   <svg class="ring" viewBox="0 0 40 40" aria-hidden="true">
@@ -102,11 +103,10 @@ body[data-modus="B"] #zone{ display:grid }
             transform="rotate(-90 20 20)"></circle>
   </svg>
   <span id="zahl">0 % · 0,0 Umdr. · 0 fps</span>
-  <button id="btnModus" type="button">Modus A</button>
   <button id="btnReset" type="button">Zurück</button>
   <label>Umdr.
-    <input id="ziel" type="range" min="6" max="25" step="1" value="13">
-    <span id="zielWert">13</span>
+    <input id="ziel" type="range" min="6" max="25" step="1" value="16">
+    <span id="zielWert">16</span>
   </label>
 </div>
 
@@ -114,10 +114,10 @@ body[data-modus="B"] #zone{ display:grid }
   <img class="schicht" id="coarse" src="../assets/lab/PCG_LAB_REIBSCHALE_COARSE_v001.webp" alt="">
   <img class="schicht" id="clumps" src="../assets/lab/PCG_LAB_REIBSCHALE_CLUMPS_v001.webp" alt="">
   <img class="schicht" id="smooth" src="../assets/lab/PCG_LAB_REIBSCHALE_SMOOTH_v002.webp" alt="">
+  <div id="griff"></div>
   <div id="schatten"></div>
   <img id="pistill" src="../assets/lab/PCG_LAB_PISTILL_v001.webp" alt="">
   <img class="schicht" id="rim" src="../assets/lab/PCG_LAB_REIBSCHALE_RIM_FRONT_v001.webp" alt="">
-  <div id="zone">Kreisen</div>
   <div id="fertig">Homogen</div>
 </div>
 
@@ -128,8 +128,14 @@ body[data-modus="B"] #zone{ display:grid }
 /* ---------- Masse der Bildflaeche ---------- */
 var W=864, H=1536;
 var BAHN={ x:426, y:740, rx:150, ry:95 };   /* Weg der Pistillspitze */
-var ZONE={ x:432, y:1225, r:225 };          /* Daumenfeld fuer Modus B */
 var NEIGUNG=7;                              /* Grad, in Bewegungsrichtung */
+/* Der Finger haelt den Stiel oben, nicht die Spitze. Das Pistill wird
+   mit 0,62 seiner Groesse gezeichnet, also 940 * 0,62 = 582,8 hoch.
+   Angefasst wird bei 0,82 dieser Laenge ueber der Spitze; so bleibt
+   die Schale frei und man sieht, was man zerreibt (Rezeptur 19.10.2026). */
+var PIST_H=940*0.62;
+var GRIFF=0.82;
+var GRIFF_DY=PIST_H*GRIFF;
 
 var buehne=document.getElementById('buehne');
 var pistill=document.getElementById('pistill');
@@ -138,17 +144,15 @@ var clumps=document.getElementById('clumps');
 var smooth=document.getElementById('smooth');
 var ringFg=document.getElementById('ringFg');
 var zahl=document.getElementById('zahl');
-var zoneEl=document.getElementById('zone');
+var griffEl=document.getElementById('griff');
 var fertigEl=document.getElementById('fertig');
-var btnModus=document.getElementById('btnModus');
 var zielEl=document.getElementById('ziel');
 var zielWertEl=document.getElementById('zielWert');
 
 var S={
-  modus:'A',
   phi:-Math.PI/2,     /* aktueller Winkel auf der Bahn */
   weg:0,              /* zurueckgelegter Winkel in Radiant, nur bei Beruehrung */
-  ziel:13,            /* Umdrehungen bis 100 % */
+  ziel:16,            /* Umdrehungen bis 100 % */
   greift:false,
   zeiger:null,
   letztePhi:0,
@@ -179,6 +183,9 @@ function zeichnen(){
   pistill.style.left=(p.x/W*100)+'%';
   pistill.style.top =(p.y/H*100)+'%';
   pistill.style.transform='translate(-50%,-100%) rotate('+grad.toFixed(2)+'deg) scale('+tiefe.toFixed(3)+')';
+  var g=griffPunkt(S.phi);
+  griffEl.style.left=(g.x/W*100)+'%';
+  griffEl.style.top =((g.y+40)/H*100)+'%';
   schatten.style.left=(p.x/W*100)+'%';
   schatten.style.top =((p.y+10)/H*100)+'%';
   schatten.style.opacity=(0.55+0.25*Math.sin(S.phi)).toFixed(2);
@@ -237,27 +244,25 @@ function rasten(){
 }
 
 /* ---------- Eingabe ---------- */
+function griffPunkt(phi){
+  var s=spitze(phi);
+  return { x:s.x, y:s.y-GRIFF_DY };
+}
 function darfGreifen(p){
-  if(S.modus==='B'){
-    var dx=p.x-ZONE.x, dy=p.y-ZONE.y;
-    return Math.sqrt(dx*dx+dy*dy)<=ZONE.r*1.15;
-  }
-  /* Modus A: der Finger muss am Pistill liegen. */
-  var s=spitze(S.phi);
-  var ax=p.x-s.x, ay=p.y-(s.y-140);
-  return Math.sqrt(ax*ax+ay*ay)<=260;
+  /* Das ganze obere Stielstueck, mit Rand fuer den Finger. */
+  var g=griffPunkt(S.phi);
+  return Math.abs(p.x-g.x)<=170 && p.y>=g.y-120 && p.y<=g.y+200;
 }
 function neuerWinkel(p){
-  return S.modus==='B'
-    ? winkelAus(p, ZONE, ZONE.r, ZONE.r)
-    : winkelAus(p, BAHN, BAHN.rx, BAHN.ry);
+  /* Der Finger haelt den Stiel: die Spitze liegt GRIFF_DY darunter. */
+  return winkelAus({x:p.x, y:p.y+GRIFF_DY}, BAHN, BAHN.rx, BAHN.ry);
 }
 function runter(ev){
   var p=inBild(ev);
   if(!darfGreifen(p)) return;
   S.greift=true; S.zeiger=ev.pointerId;
   S.letztePhi=neuerWinkel(p);
-  if(S.modus==='B') S.phi=S.letztePhi;
+  document.body.classList.add('greift');
   tonAn();
   try{ buehne.setPointerCapture(ev.pointerId); }catch(e){}
   ev.preventDefault();
@@ -280,6 +285,7 @@ function bewegen(ev){
 function hoch(ev){
   if(ev.pointerId!==S.zeiger) return;
   S.greift=false; S.zeiger=null; S.tempoRoh=0;
+  document.body.classList.remove('greift');
 }
 buehne.addEventListener('pointerdown', runter, {passive:false});
 buehne.addEventListener('pointermove', bewegen, {passive:false});
@@ -288,13 +294,6 @@ buehne.addEventListener('pointercancel', hoch);
 buehne.addEventListener('pointerleave', hoch);
 
 /* ---------- Bedienung ---------- */
-btnModus.addEventListener('click', function(){
-  S.modus = S.modus==='A' ? 'B' : 'A';
-  document.body.dataset.modus=S.modus;
-  btnModus.textContent='Modus '+S.modus;
-  btnModus.classList.toggle('on', S.modus==='B');
-  S.greift=false; S.zeiger=null;
-});
 document.getElementById('btnReset').addEventListener('click', function(){
   S.weg=0; S.phi=-Math.PI/2; S.rastend=0; S.greift=false; S.zeiger=null;
   zeichnen(); stufen();
@@ -303,11 +302,9 @@ zielEl.addEventListener('input', function(){
   S.ziel=+zielEl.value; zielWertEl.textContent=zielEl.value; stufen();
 });
 
-/* Steuerzone an ihren Platz */
-zoneEl.style.left=((ZONE.x-ZONE.r)/W*100)+'%';
-zoneEl.style.top =((ZONE.y-ZONE.r)/H*100)+'%';
-zoneEl.style.width =(ZONE.r*2/W*100)+'%';
-zoneEl.style.height=(ZONE.r*2/H*100)+'%';
+/* Grifffeld auf Groesse bringen; die Lage folgt dem Stiel in zeichnen(). */
+griffEl.style.width =(340/W*100)+'%';
+griffEl.style.height=(320/H*100)+'%';
 
 /* ---------- Schleife ---------- */
 var fps=0, rahmen=0, fensterStart=0, vorher=0;
@@ -327,7 +324,7 @@ zeichnen(); stufen();
 requestAnimationFrame(schleife);
 
 /* Nur fuer die Pruefung von aussen, nicht fuer das Spiel. */
-window.PROTO={ S:S, spitze:spitze, fortschritt:fortschritt,
+window.PROTO={ S:S, spitze:spitze, griffPunkt:griffPunkt, darfGreifen:darfGreifen, neuerWinkel:neuerWinkel, fortschritt:fortschritt,
   dreh:function(rad){ S.weg+=Math.abs(rad); S.phi+=rad; stufen(); zeichnen(); } };
 })();
 </script>
