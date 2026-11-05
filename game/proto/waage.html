@@ -48,7 +48,10 @@ body{
 
 /* Teile auf der Bank. Anker ist immer die Mitte des Bildes. */
 .teil{ transform:translate(-50%,-50%); z-index:20 }
-.teil.greifbar{ pointer-events:auto; cursor:grab }
+/* Weiter oben steht #buehne img{pointer-events:none}. Eine ID schlaegt
+   zwei Klassen, also blieben alle Teile taub. Darum hier ebenfalls mit
+   der ID: nur so lassen sich Schiffchen, Spatel und Gefaess anfassen. */
+#buehne img.greifbar{ pointer-events:auto; cursor:grab; touch-action:none }
 #heap{ z-index:24; transform:translate(-50%,-85%); transform-origin:50% 85% }
 #schiff{ z-index:22 }
 #spatel{ z-index:30 }
