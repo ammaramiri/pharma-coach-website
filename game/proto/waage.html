@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>Prototyp · Waage</title>
+<style>
+/* =====================================================================
+   Prototyp Waagenplatz · 25.10.2026
+   Eigenstaendige Testseite nach dem Muster des Reibschalen-Prototyps.
+   Keine Punkte, kein Spielstand, keine Verbindung zur index.html.
+   Bildflaeche 864 x 1536; alle Koordinaten darin, Ausgabe in Prozent.
+===================================================================== */
+:root{
+  --ink:#23272E; --soft:#6B7280; --line:#E5E0D8; --bg:#F6F3EC;
+  --teal:#0E7C6B; --teal-dark:#006D5B; --warn:#B3121F;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --ink:#F2EFE9; --soft:#A8AEB8; --line:#3A3F47; --bg:#14171B; }
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:'Inter',system-ui,-apple-system,"Segoe UI",sans-serif;
+  display:flex; flex-direction:column; align-items:center;
+  overflow:hidden; touch-action:none; -webkit-user-select:none; user-select:none;
+  -webkit-tap-highlight-color:transparent; padding-top:env(safe-area-inset-top,0px);
+}
+#hud{ width:100%; max-width:600px; display:flex; flex-wrap:wrap; align-items:center;
+      gap:6px 10px; padding:6px 10px; font-size:12px; font-weight:600 }
+#hud button{ font:inherit; font-weight:700; border:1.5px solid var(--line); background:transparent;
+             color:var(--ink); border-radius:10px; padding:6px 11px; cursor:pointer }
+#hud label{ display:flex; align-items:center; gap:5px; color:var(--soft) }
+#hud input[type=number]{ width:82px; font:inherit; padding:4px 6px; border-radius:8px;
+             border:1.5px solid var(--line); background:transparent; color:var(--ink) }
+#fehler{ width:100%; max-width:600px; padding:0 10px 4px; font-size:11.5px; color:var(--warn);
+         min-height:30px; line-height:1.45 }
+#fehler b{ color:var(--soft); font-weight:700 }
+
+#buehne{ position:relative; flex:1 1 auto; min-height:0;
+  width:min(100vw, calc((100dvh - 108px) * 864 / 1536));
+  aspect-ratio:864 / 1536; max-height:100%;
+  overflow:hidden; border-radius:14px; background:#EDE9E1 }
+#buehne img{ position:absolute; display:block; -webkit-user-drag:none; pointer-events:none }
+.szene{ left:0; top:0; width:100%; height:100%; object-fit:cover }
+
+/* Teile auf der Bank. Anker ist immer die Mitte des Bildes. */
+.teil{ transform:translate(-50%,-50%); z-index:20 }
+.teil.greifbar{ pointer-events:auto; cursor:grab }
+#heap{ z-index:24; transform:translate(-50%,-85%); transform-origin:50% 85% }
+#schiff{ z-index:22 }
+#spatel{ z-index:30 }
+#deckel{ z-index:21 }
+
+/* Waagenanzeige: eigene Flaeche, nicht das Display im Bild. */
+#anzeige{ position:absolute; z-index:40; transform:translate(-50%,-50%);
+  background:#11241F; color:#9BE7C8; border-radius:12px; padding:8px 12px;
+  font-variant-numeric:tabular-nums; text-align:center; min-width:46%;
+  box-shadow:0 6px 18px rgba(0,0,0,.25) }
+#wert{ font-size:clamp(16px,5.4cqw,26px); font-weight:800; letter-spacing:.03em }
+#anzeige small{ display:block; font-size:10px; opacity:.75; letter-spacing:.08em }
+#stabil{ display:inline-block; width:9px; height:9px; border-radius:50%;
+  background:#6B7280; margin-inline-end:6px; vertical-align:middle }
+#stabil.an{ background:#36D399 }
+
+.knopf{ position:absolute; z-index:42; transform:translate(-50%,-50%);
+  font:700 12px/1 'Inter',system-ui,sans-serif; color:#fff; background:var(--teal-dark);
+  border:0; border-radius:999px; padding:9px 14px; cursor:pointer; white-space:nowrap }
+.knopf.hell{ background:#4B5563 }
+
+/* Ziele */
+.ziel{ position:absolute; z-index:10; border:2px dashed rgba(14,124,107,.45);
+  border-radius:12px; transform:translate(-50%,-50%);
+  display:grid; place-items:center; color:var(--teal-dark);
+  font:700 11px/1.2 'Inter',system-ui,sans-serif; text-align:center }
+#tuerzone{ position:absolute; z-index:35; transform:translate(-50%,-50%);
+  border:2px dashed rgba(14,124,107,.35); border-radius:10px; display:grid; place-items:center;
+  color:var(--teal-dark); font:700 11px 'Inter',sans-serif; pointer-events:auto }
+
+/* Auswahl der Waage */
+#wahl{ position:absolute; inset:0; z-index:60; background:rgba(246,243,236,.96);
+  display:grid; place-items:center; gap:14px; grid-auto-rows:min-content; padding:8%;
+  align-content:center }
+#wahl h2{ margin:0; font-size:15px }
+#wahl .karte{ width:100%; border:2px solid var(--line); border-radius:14px; padding:12px 14px;
+  background:#fff; color:var(--ink); text-align:start; cursor:pointer }
+#wahl .karte b{ display:block; font-size:14px; margin-bottom:3px }
+#wahl .karte span{ font-size:11.5px; color:var(--soft) }
+body.gewaehlt #wahl{ display:none }
+</style>
+</head>
+<body>
+
+<div id="hud">
+  <span id="zahl">—</span>
+  <label>Soll (g) <input id="soll" type="number" step="0.0001" value="0.2500"></label>
+  <button id="btnReset" type="button">Zurück</button>
+  <button id="btnWaage" type="button">Waage wechseln</button>
+</div>
+<div id="fehler"><b>Fehlerprotokoll</b> · leer</div>
+
+<div id="buehne">
+  <img class="szene" id="szene" src="../assets/lab/PCG_LAB_WAAGE_ANALYSE_OPEN_v001.webp" alt="">
+
+  <div class="ziel" id="moerser">Mörser</div>
+  <img class="teil greifbar" id="abfall" src="../assets/lab/PCG_LAB_ABFALL_v001.webp" alt="">
+  <img class="teil" id="deckel" src="../assets/lab/PCG_LAB_DECKEL_v002.webp" alt="">
+  <img class="teil greifbar" id="gefaess" src="../assets/lab/PCG_LAB_STANDGEFAESS_CLOSED_v002.webp" alt="">
+  <img class="teil greifbar" id="schiff" src="../assets/lab/PCG_LAB_WAEGESCHIFFCHEN_v001.webp" alt="">
+  <img class="teil" id="heap" src="../assets/lab/PCG_LAB_PULVER_HEAP_v001.webp" alt="">
+  <img class="teil greifbar" id="spatel" src="../assets/lab/PCG_LAB_SPATEL_v001.webp" alt="">
+
+  <div id="tuerzone">Schiebetür</div>
+  <div id="anzeige"><div id="wert">0,0000 g</div><small><span id="stabil"></span><span id="stabilTxt">instabil</span></small></div>
+  <button class="knopf" id="btnTara" type="button">Tara</button>
+  <button class="knopf hell" id="btnUeber" type="button">Übernehmen</button>
+
+  <div id="wahl">
+    <h2>Welche Waage?</h2>
+    <button class="karte" data-w="analyse" type="button">
+      <b>Analysenwaage · d = 0,1 mg</b><span id="minA"></span></button>
+    <button class="karte" data-w="praezision" type="button">
+      <b>Präzisionswaage · d = 10 mg</b><span id="minP"></span></button>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Werte, die oben im Blatt stehen sollen ---------- */
+var WAAGEN={
+  analyse:{
+    bild:'../assets/lab/PCG_LAB_WAAGE_ANALYSE_OPEN_v001.webp',
+    bildZu:'../assets/lab/PCG_LAB_WAAGE_ANALYSE_CLOSED_v001.webp',
+    d:0.0001, nk:4, min:0.010,          /* Mindesteinwaage in g */
+    soll:0.2500,
+    pfanne:{x:412,y:592},
+    tuer:{x:430,y:300,w:380,h:330},
+    tara:{x:132,y:548}, uebernehmen:{x:132,y:786},
+    anzeige:{x:560,y:1000}
+  },
+  praezision:{
+    bild:'../assets/lab/PCG_LAB_WAAGE_PRAEZISION_v001.webp',
+    bildZu:null,
+    d:0.01, nk:2, min:0.50,
+    soll:5.00,
+    pfanne:{x:408,y:500},
+    tara:{x:207,y:742}, uebernehmen:{x:612,y:742},
+    anzeige:{x:432,y:1000}
+  }
+};
+var BANK={                               /* Ruheplaetze auf der Bank */
+  gefaess:{x:150,y:1180}, deckel:{x:330,y:1255},
+  spatel:{x:690,y:1180}, schiff:{x:420,y:1330},
+  abfall:{x:790,y:1420}, moerser:{x:250,y:1440,w:260,h:150}
+};
+var W=864, H=1536;
+var DOSIS=[0.02,0.05];                   /* Anteil des Solls je Tipp */
+var FLUSS=0.9;                           /* Anteil des Solls je Sekunde beim Halten */
+var KIPP_OK=60;                          /* Grad, ab dem alles herausfaellt */
+
+/* ---------- Kurzwege ---------- */
+var $=function(id){ return document.getElementById(id); };
+var buehne=$('buehne'), szene=$('szene'), heap=$('heap'), schiff=$('schiff'),
+    spatel=$('spatel'), gefaess=$('gefaess'), deckel=$('deckel'), abfall=$('abfall'),
+    moerser=$('moerser'), tuerzone=$('tuerzone'), anzeige=$('anzeige'),
+    wertEl=$('wert'), stabilEl=$('stabil'), stabilTxt=$('stabilTxt'),
+    btnTara=$('btnTara'), btnUeber=$('btnUeber'), fehlerEl=$('fehler'), zahlEl=$('zahl'),
+    sollEl=$('soll');
+
+var S={
+  waage:null, cfg:null,
+  soll:0.25,
+  masse:0,            /* Pulver auf dem Schiffchen in g */
+  schiffMasse:1.20,   /* Eigengewicht des Schiffchens */
+  tara:0,             /* abgezogener Wert */
+  taraGesetzt:false,
+  aufPfanne:false,
+  gefaessOffen:false,
+  spatelZustand:'leer',   /* leer · voll · ueber */
+  spatelRest:0,           /* vom Schiffchen abgenommenes Pulver */
+  tuerZu:false,
+  ruhigBis:0,
+  fliesst:false,
+  kippGrad:0,
+  uebernommen:null,
+  fehler:[]
+};
+var POS={};   /* aktuelle Lage der Teile in Bildkoordinaten */
+
+/* ---------- Hilfen ---------- */
+function setze(el,p,breite){
+  el.style.left=(p.x/W*100)+'%';
+  el.style.top =(p.y/H*100)+'%';
+  if(breite!=null) el.style.width=(breite/W*100)+'%';
+}
+function inBild(ev){
+  var r=buehne.getBoundingClientRect();
+  return { x:(ev.clientX-r.left)/r.width*W, y:(ev.clientY-r.top)/r.height*H };
+}
+function nah(p,q,r){ var dx=p.x-q.x, dy=p.y-q.y; return dx*dx+dy*dy<=r*r; }
+function zahl(v,nk){
+  return v.toFixed(nk).replace('.',',');
+}
+function fehler(text){
+  if(S.fehler.indexOf(text)>=0) return;
+  S.fehler.push(text);
+  fehlerEl.innerHTML='<b>Fehlerprotokoll</b> · '+S.fehler.join(' · ');
+  rumpeln(30);
+}
+
+/* ---------- Ton ---------- */
+var AC=null, rauschG=null, rauschF=null;
+function tonAn(){
+  if(AC) return;
+  try{
+    var C=window.AudioContext||window.webkitAudioContext; if(!C) return;
+    AC=new C();
+    var len=Math.floor(AC.sampleRate*2), buf=AC.createBuffer(1,len,AC.sampleRate), d=buf.getChannelData(0);
+    for(var i=0;i<len;i++) d[i]=(Math.random()*2-1)*0.7;
+    var q=AC.createBufferSource(); q.buffer=buf; q.loop=true;
+    rauschF=AC.createBiquadFilter(); rauschF.type='bandpass'; rauschF.frequency.value=2600; rauschF.Q.value=1.1;
+    rauschG=AC.createGain(); rauschG.gain.value=0;
+    q.connect(rauschF); rauschF.connect(rauschG); rauschG.connect(AC.destination); q.start();
+  }catch(e){ AC=null; }
+}
+function rieseln(an){
+  if(!AC) return;
+  try{ rauschG.gain.setTargetAtTime(an?0.16:0, AC.currentTime, 0.05); }catch(e){}
+}
+function klack(f,dauer){
+  if(!AC) return;
+  try{
+    var o=AC.createOscillator(), g=AC.createGain();
+    o.type='triangle'; o.frequency.value=f||440;
+    g.gain.setValueAtTime(0.0001,AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.12,AC.currentTime+0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001,AC.currentTime+(dauer||0.12));
+    o.connect(g); g.connect(AC.destination); o.start(); o.stop(AC.currentTime+(dauer||0.12)+0.02);
+  }catch(e){}
+}
+function rumpeln(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms||8); }catch(e){} }
+
+/* ---------- Waage waehlen ---------- */
+function waehle(name){
+  var c=WAAGEN[name];
+  S.waage=name; S.cfg=c; S.soll=c.soll;
+  sollEl.step=name==='analyse'?'0.0001':'0.01';
+  sollEl.value=c.soll.toFixed(c.nk);
+  szene.src=c.bild;
+  document.body.classList.add('gewaehlt');
+  tuerzone.style.display = c.bildZu? 'grid':'none';
+  if(c.bildZu){
+    setze(tuerzone,{x:c.tuer.x,y:c.tuer.y});
+    tuerzone.style.width=(c.tuer.w/W*100)+'%';
+    tuerzone.style.height=(c.tuer.h/H*100)+'%';
+  }
+  setze(anzeige,c.anzeige);
+  setze(btnTara,c.tara);
+  setze(btnUeber,c.uebernehmen);
+  zuruecksetzen(true);
+}
+function zuruecksetzen(behalteWaage){
+  S.masse=0; S.tara=0; S.taraGesetzt=false; S.aufPfanne=false;
+  S.gefaessOffen=false; S.spatelZustand='leer'; S.spatelRest=0;
+  S.tuerZu=false; S.kippGrad=0; S.uebernommen=null; S.fehler=[]; S.fliesst=false;
+  fehlerEl.innerHTML='<b>Fehlerprotokoll</b> · leer';
+  if(S.cfg) szene.src=S.cfg.bild;
+  gefaess.src='../assets/lab/PCG_LAB_STANDGEFAESS_CLOSED_v002.webp';
+  spatel.src='../assets/lab/PCG_LAB_SPATEL_v001.webp';
+  deckel.style.display='none';
+  schiff.style.transform='translate(-50%,-50%)';
+  POS.gefaess={x:BANK.gefaess.x,y:BANK.gefaess.y};
+  POS.spatel={x:BANK.spatel.x,y:BANK.spatel.y};
+  POS.schiff={x:BANK.schiff.x,y:BANK.schiff.y};
+  POS.abfall={x:BANK.abfall.x,y:BANK.abfall.y};
+  zeichnen();
+  if(!behalteWaage) document.body.classList.remove('gewaehlt');
+}
+
+/* ---------- Anzeige ---------- */
+function brutto(){ return (S.aufPfanne? S.schiffMasse+S.masse : 0); }
+function ablesung(t){
+  var c=S.cfg; if(!c) return 0;
+  var roh=brutto()-S.tara;
+  var ruhig=ruhig_(t);
+  /* Offene Tuer: die Anzeige wandert und wird nie ruhig. */
+  var stoerung = (!ruhig? (Math.random()-0.5)*c.d*6 : 0) +
+                 (c.bildZu && !S.tuerZu ? Math.sin(t/180)*c.d*7 + (Math.random()-0.5)*c.d*5 : 0);
+  return Math.round((roh+stoerung)/c.d)*c.d;
+}
+function ruhig_(t){
+  if(S.cfg && S.cfg.bildZu && !S.tuerZu) return false;
+  if(S.fliesst) return false;
+  return t>=S.ruhigBis;
+}
+function anzeigeMalen(t){
+  var c=S.cfg; if(!c) return;
+  var v=ablesung(t), r=ruhig_(t);
+  wertEl.textContent=zahl(v,c.nk)+' g';
+  stabilEl.classList.toggle('an', r);
+  stabilTxt.textContent = r? 'stabil' : 'instabil';
+}
+
+/* ---------- Pulverhaufen: Volumen ~ Masse, also Kante ~ dritte Wurzel ---------- */
+function zeichnen(){
+  setze(gefaess,POS.gefaess,147);
+  setze(spatel,POS.spatel,216);
+  setze(schiff,POS.schiff,190);
+  setze(abfall,POS.abfall,112);
+  setze(deckel,{x:BANK.deckel.x,y:BANK.deckel.y},95);
+  setze(moerser,{x:BANK.moerser.x,y:BANK.moerser.y});
+  moerser.style.width=(BANK.moerser.w/W*100)+'%';
+  moerser.style.height=(BANK.moerser.h/H*100)+'%';
+  if(S.masse>0){
+    var f=Math.cbrt(Math.max(S.masse,0)/Math.max(S.soll,1e-6));
+    heap.style.display='block';
+    setze(heap,{x:POS.schiff.x,y:POS.schiff.y-6},Math.max(30,120*f));
+  } else heap.style.display='none';
+  schiff.style.transform='translate(-50%,-50%) rotate('+(-S.kippGrad).toFixed(1)+'deg)';
+  heap.style.transform='translate(-50%,-85%) rotate('+(-S.kippGrad).toFixed(1)+'deg)';
+}
+
+/* ---------- Ziehen ---------- */
+var zieht=null;
+function greifPunkt(el,p){
+  var id=el.id;
+  if(id==='spatel'){
+    /* Oben am Stiel anfassen, damit die Hand die Schale frei laesst. */
+    return p.y < POS.spatel.y;
+  }
+  return true;
+}
+function runter(ev){
+  var p=inBild(ev), el=ev.currentTarget;
+  if(!greifPunkt(el,p)) return;
+  tonAn();
+  if(el===gefaess && !S.gefaessOffen){
+    S.gefaessOffen=true;
+    gefaess.src='../assets/lab/PCG_LAB_STANDGEFAESS_OPEN_v002.webp';
+    deckel.style.display='block';
+    klack(320,0.1); rumpeln(10);
+    ev.preventDefault(); return;
+  }
+  if(el===spatel && S.spatelZustand==='ueber'){
+    /* Auf dem Schiffchen: tippen dosiert, halten laesst fliessen. */
+    zieht={el:el, modus:'dosieren', start:p, zeit:performance.now(), bewegt:false, id:ev.pointerId};
+    try{ buehne.setPointerCapture(ev.pointerId); }catch(e){}
+    ev.preventDefault(); return;
+  }
+  if(el===schiff && S.kippBereit){
+    zieht={el:el, modus:'kippen', start:p, id:ev.pointerId};
+    try{ buehne.setPointerCapture(ev.pointerId); }catch(e){}
+    ev.preventDefault(); return;
+  }
+  var pos=POS[el.id]; if(!pos) return;
+  zieht={el:el, modus:'ziehen', id:ev.pointerId,
+         dx:pos.x-p.x, dy:pos.y-p.y, start:p, zeit:performance.now(), bewegt:false};
+  try{ buehne.setPointerCapture(ev.pointerId); }catch(e){}
+  ev.preventDefault();
+}
+function bewegen(ev){
+  if(!zieht || ev.pointerId!==zieht.id) return;
+  var p=inBild(ev);
+  if(zieht.modus==='ziehen'){
+    var pos=POS[zieht.el.id];
+    pos.x=p.x+zieht.dx; pos.y=p.y+zieht.dy;
+    if(Math.abs(p.x-zieht.start.x)+Math.abs(p.y-zieht.start.y)>18) zieht.bewegt=true;
+    if(zieht.el===schiff && S.aufPfanne){ S.aufPfanne=false; }
+    zeichnen();
+  } else if(zieht.modus==='dosieren'){
+    if(Math.abs(p.x-zieht.start.x)+Math.abs(p.y-zieht.start.y)>26){
+      /* Wegziehen: der Spatel nimmt etwas vom Schiffchen mit. */
+      zieht.bewegt=true;
+      if(S.masse>0){
+        var ab=Math.min(S.masse, Math.max(S.soll*0.05, S.masse*0.12));
+        S.masse-=ab; S.spatelRest+=ab;
+      }
+      S.spatelZustand='voll'; S.fliesst=false; rieseln(false);
+      S.ruhigBis=performance.now()+600;
+      zieht.modus='ziehen'; zieht.dx=POS.spatel.x-p.x; zieht.dy=POS.spatel.y-p.y;
+    }
+  } else if(zieht.modus==='kippen'){
+    S.kippGrad=Math.max(0, Math.min(95, (zieht.start.y-p.y)/2.2));
+    zeichnen();
+  }
+  ev.preventDefault();
+}
+function hoch(ev){
+  if(!zieht || ev.pointerId!==zieht.id) return;
+  var z=zieht; zieht=null;
+  S.fliesst=false; rieseln(false);
+  if(z.modus==='dosieren'){
+    if(!z.bewegt && performance.now()-z.zeit<260) dosieren(zufallsDosis());
+    return;
+  }
+  if(z.modus==='kippen'){ kippLos(); return; }
+  ablegen(z.el);
+}
+function kippLos(){
+  if(S.kippGrad>=KIPP_OK){
+    S.masse=0; klack(240,0.25); rumpeln(14);
+  } else if(S.masse>0){
+    fehler('Rest auf dem Schiffchen');
+  }
+  S.kippGrad=0; S.kippBereit=false; zeichnen();
+}
+function zufallsDosis(){
+  return S.soll*(DOSIS[0]+Math.random()*(DOSIS[1]-DOSIS[0]));
+}
+function dosieren(menge){
+  if(S.spatelZustand!=='ueber' && S.spatelZustand!=='voll') return;
+  S.masse+=menge;
+  S.ruhigBis=performance.now()+600;
+  klack(1500,0.05); rumpeln(6);
+  zeichnen();
+}
+
+/* ---------- Was passiert beim Loslassen ---------- */
+function ablegen(el){
+  var c=S.cfg, p=POS[el.id];
+  if(el===schiff){
+    if(c && nah(p,c.pfanne,150)){
+      p.x=c.pfanne.x; p.y=c.pfanne.y; S.aufPfanne=true;
+      S.ruhigBis=performance.now()+600; klack(520,0.08);
+    } else if(nah(p,{x:BANK.moerser.x,y:BANK.moerser.y},170)){
+      p.x=BANK.moerser.x; p.y=BANK.moerser.y-70;
+      S.kippBereit=true;                      /* jetzt kann gekippt werden */
+    } else { S.kippBereit=false; }
+    zeichnen(); return;
+  }
+  if(el===spatel){
+    /* Zuerst der Fehlgriff: abgenommenes Pulver darf nie zurueck ins
+       Standgefaess. Diese Pruefung muss vor dem Nachfuellen stehen. */
+    if(S.spatelRest>0 && S.gefaessOffen && nah(p,{x:POS.gefaess.x,y:POS.gefaess.y-90},150)){
+      fehler('Rückgabe ins Standgefäß');
+      S.spatelRest=0; S.spatelZustand='voll'; zeichnen(); return;
+    }
+    if(S.gefaessOffen && nah(p,{x:POS.gefaess.x,y:POS.gefaess.y-90},150)){
+      S.spatelZustand='voll'; S.spatelRest=0;
+      spatel.src='../assets/lab/PCG_LAB_SPATEL_LOADED_v001.webp';
+      klack(380,0.1); zeichnen(); return;
+    }
+    if(nah(p,{x:POS.abfall.x,y:POS.abfall.y-60},150)){
+      S.spatelRest=0; S.spatelZustand='leer';
+      spatel.src='../assets/lab/PCG_LAB_SPATEL_v001.webp';
+      klack(200,0.14); zeichnen(); return;
+    }
+    if(S.spatelZustand!=='leer' && S.aufPfanne && nah(p,{x:POS.schiff.x,y:POS.schiff.y},170)){
+      /* Ueber dem Schiffchen parken: ab hier wird dosiert. */
+      p.x=POS.schiff.x+40; p.y=POS.schiff.y-150;
+      S.spatelZustand='ueber'; zeichnen(); return;
+    }
+    if(S.spatelZustand==='ueber') S.spatelZustand='voll';
+    zeichnen(); return;
+  }
+  zeichnen();
+}
+
+/* ---------- Knoepfe ---------- */
+btnTara.addEventListener('click', function(){
+  tonAn();
+  S.tara=brutto(); S.taraGesetzt=true;
+  S.ruhigBis=performance.now()+400; klack(700,0.08); rumpeln(8);
+});
+btnUeber.addEventListener('click', function(){
+  tonAn();
+  var t=performance.now(), v=ablesung(t), r=ruhig_(t);
+  S.uebernommen={ wert:v, stabil:r };
+  if(!r) fehler('Instabile Anzeige übernommen');
+  if(!S.taraGesetzt) fehler('Tara vergessen');
+  if(S.soll < S.cfg.min) fehler('Unter Mindesteinwaage');
+  klack(900,0.1); rumpeln(12);
+});
+[gefaess,spatel,schiff,abfall].forEach(function(el){
+  el.addEventListener('pointerdown', runter, {passive:false});
+});
+buehne.addEventListener('pointermove', bewegen, {passive:false});
+buehne.addEventListener('pointerup', hoch);
+buehne.addEventListener('pointercancel', hoch);
+
+tuerzone.addEventListener('pointerdown', function(ev){
+  tonAn();
+  S.tuerZu=!S.tuerZu;
+  szene.src = S.tuerZu? S.cfg.bildZu : S.cfg.bild;
+  tuerzone.textContent = S.tuerZu? 'Schiebetür offen' : 'Schiebetür';
+  if(AC){ rieseln(true); setTimeout(function(){ rieseln(false); },170); }
+  rumpeln(10);
+  if(S.tuerZu) S.ruhigBis=performance.now()+700;
+  ev.preventDefault();
+});
+
+$('btnReset').addEventListener('click', function(){ zuruecksetzen(true); });
+$('btnWaage').addEventListener('click', function(){
+  document.body.classList.remove('gewaehlt'); zuruecksetzen(false);
+});
+sollEl.addEventListener('change', function(){
+  var v=parseFloat(sollEl.value.replace(',','.'));
+  if(isFinite(v)&&v>0){ S.soll=v; zeichnen(); }
+});
+Array.prototype.forEach.call(document.querySelectorAll('#wahl .karte'), function(b){
+  b.addEventListener('click', function(){ waehle(b.dataset.w); });
+});
+$('minA').textContent='Mindesteinwaage '+zahl(WAAGEN.analyse.min,3)+' g';
+$('minP').textContent='Mindesteinwaage '+zahl(WAAGEN.praezision.min,2)+' g';
+
+/* ---------- Schleife ---------- */
+var fps=0, rahmen=0, fenster=0, letzte=0;
+function schleife(t){
+  if(!letzte) letzte=t;
+  var dt=Math.max(0.001,(t-letzte)/1000); letzte=t;
+  rahmen++; if(!fenster) fenster=t;
+  if(t-fenster>=500){ fps=Math.round(rahmen*1000/(t-fenster)); rahmen=0; fenster=t; }
+  /* Dauerfluss, solange der Finger auf dem Spatel liegt und nicht wandert */
+  if(zieht && zieht.modus==='dosieren' && !zieht.bewegt && t-zieht.zeit>320){
+    if(!S.fliesst){ S.fliesst=true; rieseln(true); }
+    dosieren(S.soll*FLUSS*dt);
+  }
+  if(S.cfg){
+    anzeigeMalen(t);
+    zahlEl.textContent=(S.waage==='analyse'?'Analysen':'Präzisions')+'waage · Soll '+
+      zahl(S.soll,S.cfg.nk)+' g · Ist '+zahl(S.masse,S.cfg.nk)+' g · '+
+      (S.uebernommen? ('übernommen '+zahl(S.uebernommen.wert,S.cfg.nk)+' g') : 'nicht übernommen')+
+      ' · '+fps+' fps';
+  } else zahlEl.textContent='Waage wählen · '+fps+' fps';
+  requestAnimationFrame(schleife);
+}
+zuruecksetzen(false);
+requestAnimationFrame(schleife);
+
+/* Nur zur Pruefung von aussen. */
+window.PROTO={ S:S, POS:POS, WAAGEN:WAAGEN, BANK:BANK,
+  waehle:waehle, dosieren:dosieren, ablegen:ablegen, ablesung:ablesung, kippLos:kippLos,
+  ruhig:ruhig_, fehler:fehler, zeichnen:zeichnen, reset:zuruecksetzen };
+})();
+</script>
+</body>
+</html>
