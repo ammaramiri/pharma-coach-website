@@ -58,11 +58,13 @@ body{
 #deckel{ z-index:21 }
 
 /* Waagenanzeige: eigene Flaeche, nicht das Display im Bild. */
+/* Die Anzeige sitzt in der oberen Ecke, nicht in der Mitte: dort lag
+   sie dem Spatel im Weg (Ammar 25.10.2026). */
 #anzeige{ position:absolute; z-index:40; transform:translate(-50%,-50%);
-  background:#11241F; color:#9BE7C8; border-radius:12px; padding:8px 12px;
-  font-variant-numeric:tabular-nums; text-align:center; min-width:46%;
-  box-shadow:0 6px 18px rgba(0,0,0,.25) }
-#wert{ font-size:clamp(16px,5.4cqw,26px); font-weight:800; letter-spacing:.03em }
+  background:#11241F; color:#9BE7C8; border-radius:10px; padding:5px 10px;
+  font-variant-numeric:tabular-nums; text-align:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.22) }
+#wert{ font-size:15px; font-weight:800; letter-spacing:.03em }
 #anzeige small{ display:block; font-size:10px; opacity:.75; letter-spacing:.08em }
 #stabil{ display:inline-block; width:9px; height:9px; border-radius:50%;
   background:#6B7280; margin-inline-end:6px; vertical-align:middle }
@@ -74,15 +76,24 @@ body{
 .knopf.hell{ background:#4B5563 }
 
 /* Ziele */
+.ziel small{ font-weight:600; opacity:.8 }
+#abfallZiel{ border-style:dotted }
 .ziel{ position:absolute; z-index:10; border:2px dashed rgba(14,124,107,.45);
   border-radius:12px; transform:translate(-50%,-50%);
   display:grid; place-items:center; color:var(--teal-dark);
   font:700 11px/1.2 'Inter',system-ui,sans-serif; text-align:center }
 #tuerzone{ position:absolute; z-index:35; transform:translate(-50%,-50%);
-  border:2px dashed rgba(14,124,107,.35); border-radius:10px; display:grid; place-items:center;
-  color:var(--teal-dark); font:700 11px 'Inter',sans-serif; pointer-events:auto }
+  border:2px dashed rgba(14,124,107,.45); border-radius:10px; display:grid; place-items:center;
+  pointer-events:auto; background:rgba(255,255,255,.10) }
+#tuerzone span{ background:var(--teal-dark); color:#fff; border-radius:999px;
+  padding:7px 13px; font:700 12px 'Inter',system-ui,sans-serif; white-space:nowrap }
 
 /* Auswahl der Waage */
+/* Eine Zeile sagt immer, was als Naechstes dran ist. Ohne sie raet
+   der Spieler, und nichts hier ist von selbst klar. */
+#tipp{ position:absolute; z-index:44; left:3%; right:3%; bottom:2.5%;
+  background:rgba(17,36,31,.86); color:#D9F2E7; border-radius:10px;
+  padding:7px 10px; font:600 11.5px/1.35 'Inter',system-ui,sans-serif; text-align:center }
 #wahl{ position:absolute; inset:0; z-index:60; background:rgba(246,243,236,.96);
   display:grid; place-items:center; gap:14px; grid-auto-rows:min-content; padding:8%;
   align-content:center }
@@ -107,7 +118,7 @@ body.gewaehlt #wahl{ display:none }
 <div id="buehne">
   <img class="szene" id="szene" src="../assets/lab/PCG_LAB_WAAGE_ANALYSE_OPEN_v001.webp" alt="">
 
-  <div class="ziel" id="moerser">Mörser</div>
+  <div class="ziel" id="abfallZiel">Abfall<br><small>Überschuss hierher</small></div>
   <img class="teil greifbar" id="abfall" src="../assets/lab/PCG_LAB_ABFALL_v001.webp" alt="">
   <img class="teil" id="deckel" src="../assets/lab/PCG_LAB_DECKEL_v002.webp" alt="">
   <img class="teil greifbar" id="gefaess" src="../assets/lab/PCG_LAB_STANDGEFAESS_CLOSED_v002.webp" alt="">
@@ -115,10 +126,12 @@ body.gewaehlt #wahl{ display:none }
   <img class="teil" id="heap" src="../assets/lab/PCG_LAB_PULVER_HEAP_v001.webp" alt="">
   <img class="teil greifbar" id="spatel" src="../assets/lab/PCG_LAB_SPATEL_v001.webp" alt="">
 
-  <div id="tuerzone">Schiebetür</div>
+  <div id="tuerzone"><span id="tuerTxt">Tür schließen</span></div>
   <div id="anzeige"><div id="wert">0,0000 g</div><small><span id="stabil"></span><span id="stabilTxt">instabil</span></small></div>
   <button class="knopf" id="btnTara" type="button">Tara</button>
   <button class="knopf hell" id="btnUeber" type="button">Übernehmen</button>
+
+  <div id="tipp">Wägeschiffchen auf die Waagschale ziehen</div>
 
   <div id="wahl">
     <h2>Welche Waage?</h2>
@@ -139,37 +152,39 @@ var WAAGEN={
     bild:'../assets/lab/PCG_LAB_WAAGE_ANALYSE_OPEN_v001.webp',
     bildZu:'../assets/lab/PCG_LAB_WAAGE_ANALYSE_CLOSED_v001.webp',
     d:0.0001, nk:4, min:0.010,          /* Mindesteinwaage in g */
-    soll:0.2500,
-    pfanne:{x:412,y:592},
+    soll:0.2500, loeffel:0.080,         /* was ein Spatelkopf fasst, in g */
+    pfanne:{x:427,y:622},             /* an der Scheibe nachgemessen */
     tuer:{x:430,y:300,w:380,h:330},
     tara:{x:132,y:548}, uebernehmen:{x:132,y:786},
-    anzeige:{x:560,y:1000}
+    anzeige:{x:640,y:150}
   },
   praezision:{
     bild:'../assets/lab/PCG_LAB_WAAGE_PRAEZISION_v001.webp',
     bildZu:null,
     d:0.01, nk:2, min:0.50,
-    soll:5.00,
-    pfanne:{x:408,y:500},
+    soll:5.00, loeffel:1.500,
+    pfanne:{x:435,y:525},             /* an der Scheibe nachgemessen */
     tara:{x:207,y:742}, uebernehmen:{x:612,y:742},
-    anzeige:{x:432,y:1000}
+    anzeige:{x:640,y:150}
   }
 };
 var BANK={                               /* Ruheplaetze auf der Bank */
   gefaess:{x:150,y:1180}, deckel:{x:330,y:1255},
   spatel:{x:690,y:1180}, schiff:{x:420,y:1330},
-  abfall:{x:790,y:1420}, moerser:{x:250,y:1440,w:260,h:150}
+  abfall:{x:790,y:1400},
+  abfallZiel:{x:790,y:1480,w:190,h:90}
 };
 var W=864, H=1536;
 var DOSIS=[0.02,0.05];                   /* Anteil des Solls je Tipp */
-var FLUSS=0.9;                           /* Anteil des Solls je Sekunde beim Halten */
-var KIPP_OK=60;                          /* Grad, ab dem alles herausfaellt */
+var FLUSS=0.45;                          /* Anteil des Solls je Sekunde beim Halten */
+var LOEFFEL=0.45;                        /* Was ein Spatel fasst, als Anteil des Solls */
+var FANG=230;                            /* Fangradius beim Ablegen, grosszuegig */
 
 /* ---------- Kurzwege ---------- */
 var $=function(id){ return document.getElementById(id); };
 var buehne=$('buehne'), szene=$('szene'), heap=$('heap'), schiff=$('schiff'),
     spatel=$('spatel'), gefaess=$('gefaess'), deckel=$('deckel'), abfall=$('abfall'),
-    moerser=$('moerser'), tuerzone=$('tuerzone'), anzeige=$('anzeige'),
+     tuerzone=$('tuerzone'), anzeige=$('anzeige'),
     wertEl=$('wert'), stabilEl=$('stabil'), stabilTxt=$('stabilTxt'),
     btnTara=$('btnTara'), btnUeber=$('btnUeber'), fehlerEl=$('fehler'), zahlEl=$('zahl'),
     sollEl=$('soll');
@@ -184,11 +199,11 @@ var S={
   aufPfanne:false,
   gefaessOffen:false,
   spatelZustand:'leer',   /* leer · voll · ueber */
-  spatelRest:0,           /* vom Schiffchen abgenommenes Pulver */
+  spatelMenge:0,          /* was gerade im Spatel liegt, in g */
+  spatelRest:0,           /* davon vom Schiffchen abgenommen */
   tuerZu:false,
   ruhigBis:0,
   fliesst:false,
-  kippGrad:0,
   uebernommen:null,
   fehler:[]
 };
@@ -268,8 +283,8 @@ function waehle(name){
 }
 function zuruecksetzen(behalteWaage){
   S.masse=0; S.tara=0; S.taraGesetzt=false; S.aufPfanne=false;
-  S.gefaessOffen=false; S.spatelZustand='leer'; S.spatelRest=0;
-  S.tuerZu=false; S.kippGrad=0; S.uebernommen=null; S.fehler=[]; S.fliesst=false;
+  S.gefaessOffen=false; S.spatelZustand='leer'; S.spatelMenge=0; S.spatelRest=0;
+  S.tuerZu=false; S.uebernommen=null; S.fehler=[]; S.fliesst=false;
   fehlerEl.innerHTML='<b>Fehlerprotokoll</b> · leer';
   if(S.cfg) szene.src=S.cfg.bild;
   gefaess.src='../assets/lab/PCG_LAB_STANDGEFAESS_CLOSED_v002.webp';
@@ -315,26 +330,26 @@ function zeichnen(){
   setze(schiff,POS.schiff,190);
   setze(abfall,POS.abfall,112);
   setze(deckel,{x:BANK.deckel.x,y:BANK.deckel.y},95);
-  setze(moerser,{x:BANK.moerser.x,y:BANK.moerser.y});
-  moerser.style.width=(BANK.moerser.w/W*100)+'%';
-  moerser.style.height=(BANK.moerser.h/H*100)+'%';
+  var az=$('abfallZiel');
+  setze(az,{x:BANK.abfallZiel.x,y:BANK.abfallZiel.y});
+  az.style.width=(BANK.abfallZiel.w/W*100)+'%';
+  az.style.height=(BANK.abfallZiel.h/H*100)+'%';
   if(S.masse>0){
+    /* Volumen waechst mit der Masse, die Kante also mit der dritten
+       Wurzel. Gedeckelt, damit der Haufen nie ueber das Schiffchen
+       hinauswaechst, und mittig auf der Mulde. */
     var f=Math.cbrt(Math.max(S.masse,0)/Math.max(S.soll,1e-6));
     heap.style.display='block';
-    setze(heap,{x:POS.schiff.x,y:POS.schiff.y-6},Math.max(30,120*f));
+    setze(heap,{x:POS.schiff.x,y:POS.schiff.y+6},Math.max(34,Math.min(150,118*f)));
   } else heap.style.display='none';
-  schiff.style.transform='translate(-50%,-50%) rotate('+(-S.kippGrad).toFixed(1)+'deg)';
-  heap.style.transform='translate(-50%,-85%) rotate('+(-S.kippGrad).toFixed(1)+'deg)';
+  schiff.style.transform='translate(-50%,-50%)';
+  heap.style.transform='translate(-50%,-85%)';
 }
 
 /* ---------- Ziehen ---------- */
 var zieht=null;
-function greifPunkt(el,p){
-  var id=el.id;
-  if(id==='spatel'){
-    /* Oben am Stiel anfassen, damit die Hand die Schale frei laesst. */
-    return p.y < POS.spatel.y;
-  }
+function greifPunkt(){
+  /* Der Spatel laesst sich ueberall anfassen (Ammar 25.10.2026). */
   return true;
 }
 function runter(ev){
@@ -351,11 +366,6 @@ function runter(ev){
   if(el===spatel && S.spatelZustand==='ueber'){
     /* Auf dem Schiffchen: tippen dosiert, halten laesst fliessen. */
     zieht={el:el, modus:'dosieren', start:p, zeit:performance.now(), bewegt:false, id:ev.pointerId};
-    try{ buehne.setPointerCapture(ev.pointerId); }catch(e){}
-    ev.preventDefault(); return;
-  }
-  if(el===schiff && S.kippBereit){
-    zieht={el:el, modus:'kippen', start:p, id:ev.pointerId};
     try{ buehne.setPointerCapture(ev.pointerId); }catch(e){}
     ev.preventDefault(); return;
   }
@@ -378,17 +388,11 @@ function bewegen(ev){
     if(Math.abs(p.x-zieht.start.x)+Math.abs(p.y-zieht.start.y)>26){
       /* Wegziehen: der Spatel nimmt etwas vom Schiffchen mit. */
       zieht.bewegt=true;
-      if(S.masse>0){
-        var ab=Math.min(S.masse, Math.max(S.soll*0.05, S.masse*0.12));
-        S.masse-=ab; S.spatelRest+=ab;
-      }
-      S.spatelZustand='voll'; S.fliesst=false; rieseln(false);
+      S.spatelZustand = S.spatelMenge>0? 'voll':'leer';
+      S.fliesst=false; rieseln(false);
       S.ruhigBis=performance.now()+600;
       zieht.modus='ziehen'; zieht.dx=POS.spatel.x-p.x; zieht.dy=POS.spatel.y-p.y;
     }
-  } else if(zieht.modus==='kippen'){
-    S.kippGrad=Math.max(0, Math.min(95, (zieht.start.y-p.y)/2.2));
-    zeichnen();
   }
   ev.preventDefault();
 }
@@ -397,64 +401,84 @@ function hoch(ev){
   var z=zieht; zieht=null;
   S.fliesst=false; rieseln(false);
   if(z.modus==='dosieren'){
-    if(!z.bewegt && performance.now()-z.zeit<260) dosieren(zufallsDosis());
+    if(!z.bewegt && performance.now()-z.zeit<260){
+      if(S.spatelMenge>0) dosieren(zufallsDosis()); else abnehmen();
+    }
     return;
   }
-  if(z.modus==='kippen'){ kippLos(); return; }
   ablegen(z.el);
-}
-function kippLos(){
-  if(S.kippGrad>=KIPP_OK){
-    S.masse=0; klack(240,0.25); rumpeln(14);
-  } else if(S.masse>0){
-    fehler('Rest auf dem Schiffchen');
-  }
-  S.kippGrad=0; S.kippBereit=false; zeichnen();
 }
 function zufallsDosis(){
   return S.soll*(DOSIS[0]+Math.random()*(DOSIS[1]-DOSIS[0]));
 }
+function kapazitaet(){
+  /* Fassungsvermoegen des Spatels, nicht des Ziels: auf der
+     Analysenwaage sind das rund drei Portionen, auf der
+     Praezisionswaage rund vier. */
+  return (S.cfg && S.cfg.loeffel) || Math.max(0.25, S.soll*LOEFFEL);
+}
 function dosieren(menge){
-  if(S.spatelZustand!=='ueber' && S.spatelZustand!=='voll') return;
-  S.masse+=menge;
+  if(S.spatelZustand!=='ueber') return;
+  if(S.spatelMenge<=0){ leerMelden(); return; }
+  var ab=Math.min(menge, S.spatelMenge);
+  S.spatelMenge-=ab; S.masse+=ab;
+  if(S.spatelMenge<=1e-9){
+    S.spatelMenge=0; S.spatelRest=0;
+    spatel.src='../assets/lab/PCG_LAB_SPATEL_v001.webp';
+    S.fliesst=false; rieseln(false);
+  }
   S.ruhigBis=performance.now()+600;
   klack(1500,0.05); rumpeln(6);
   zeichnen();
 }
+/* Zu viel auf dem Schiffchen? Mit dem leeren Spatel abnehmen. */
+function abnehmen(){
+  if(S.masse<=0) return;
+  var ab=Math.min(S.masse, kapazitaet()*0.5);
+  S.masse-=ab; S.spatelMenge+=ab; S.spatelRest+=ab;
+  spatel.src='../assets/lab/PCG_LAB_SPATEL_LOADED_v001.webp';
+  S.ruhigBis=performance.now()+600;
+  klack(1100,0.06); rumpeln(6); zeichnen();
+}
+function leerMelden(){ klack(300,0.06); }
 
 /* ---------- Was passiert beim Loslassen ---------- */
 function ablegen(el){
   var c=S.cfg, p=POS[el.id];
   if(el===schiff){
-    if(c && nah(p,c.pfanne,150)){
+    /* Nur noch ein Ziel: die Waagschale. Das Umfuellen in die
+       Reibschale gehoert zum naechsten Geraet, nicht zum Wiegen
+       (Ammar 25.10.2026). */
+    if(c && nah(p,c.pfanne,FANG)){
       p.x=c.pfanne.x; p.y=c.pfanne.y; S.aufPfanne=true;
       S.ruhigBis=performance.now()+600; klack(520,0.08);
-    } else if(nah(p,{x:BANK.moerser.x,y:BANK.moerser.y},170)){
-      p.x=BANK.moerser.x; p.y=BANK.moerser.y-70;
-      S.kippBereit=true;                      /* jetzt kann gekippt werden */
-    } else { S.kippBereit=false; }
+    }
     zeichnen(); return;
   }
   if(el===spatel){
     /* Zuerst der Fehlgriff: abgenommenes Pulver darf nie zurueck ins
        Standgefaess. Diese Pruefung muss vor dem Nachfuellen stehen. */
-    if(S.spatelRest>0 && S.gefaessOffen && nah(p,{x:POS.gefaess.x,y:POS.gefaess.y-90},150)){
+    if(S.spatelRest>0 && S.gefaessOffen && nah(p,{x:POS.gefaess.x,y:POS.gefaess.y-90},FANG)){
       fehler('Rückgabe ins Standgefäß');
-      S.spatelRest=0; S.spatelZustand='voll'; zeichnen(); return;
+      S.spatelMenge=0; S.spatelRest=0; S.spatelZustand='leer';
+      spatel.src='../assets/lab/PCG_LAB_SPATEL_v001.webp';
+      zeichnen(); return;
     }
-    if(S.gefaessOffen && nah(p,{x:POS.gefaess.x,y:POS.gefaess.y-90},150)){
-      S.spatelZustand='voll'; S.spatelRest=0;
+    if(S.gefaessOffen && nah(p,{x:POS.gefaess.x,y:POS.gefaess.y-90},FANG)){
+      /* Ein Spatel fasst eine begrenzte Menge; fuer mehr muss man
+         noch einmal holen (Ammar 25.10.2026). */
+      S.spatelMenge=kapazitaet(); S.spatelRest=0; S.spatelZustand='voll';
       spatel.src='../assets/lab/PCG_LAB_SPATEL_LOADED_v001.webp';
       klack(380,0.1); zeichnen(); return;
     }
-    if(nah(p,{x:POS.abfall.x,y:POS.abfall.y-60},150)){
-      S.spatelRest=0; S.spatelZustand='leer';
+    if(nah(p,{x:POS.abfall.x,y:POS.abfall.y-40},FANG)){
+      S.spatelMenge=0; S.spatelRest=0; S.spatelZustand='leer';
       spatel.src='../assets/lab/PCG_LAB_SPATEL_v001.webp';
       klack(200,0.14); zeichnen(); return;
     }
-    if(S.spatelZustand!=='leer' && S.aufPfanne && nah(p,{x:POS.schiff.x,y:POS.schiff.y},170)){
+    if(S.aufPfanne && nah(p,{x:POS.schiff.x,y:POS.schiff.y},FANG)){
       /* Ueber dem Schiffchen parken: ab hier wird dosiert. */
-      p.x=POS.schiff.x+40; p.y=POS.schiff.y-150;
+      p.x=POS.schiff.x+150; p.y=POS.schiff.y-190;
       S.spatelZustand='ueber'; zeichnen(); return;
     }
     if(S.spatelZustand==='ueber') S.spatelZustand='voll';
@@ -489,7 +513,7 @@ tuerzone.addEventListener('pointerdown', function(ev){
   tonAn();
   S.tuerZu=!S.tuerZu;
   szene.src = S.tuerZu? S.cfg.bildZu : S.cfg.bild;
-  tuerzone.textContent = S.tuerZu? 'Schiebetür offen' : 'Schiebetür';
+  $('tuerTxt').textContent = S.tuerZu? 'Tür öffnen' : 'Tür schließen';
   if(AC){ rieseln(true); setTimeout(function(){ rieseln(false); },170); }
   rumpeln(10);
   if(S.tuerZu) S.ruhigBis=performance.now()+700;
@@ -510,6 +534,9 @@ Array.prototype.forEach.call(document.querySelectorAll('#wahl .karte'), function
 $('minA').textContent='Mindesteinwaage '+zahl(WAAGEN.analyse.min,3)+' g';
 $('minP').textContent='Mindesteinwaage '+zahl(WAAGEN.praezision.min,2)+' g';
 
+/* Die Zeile unten sagt immer den naechsten Schritt. */
+var tippEl=$('tipp');
+
 /* ---------- Schleife ---------- */
 var fps=0, rahmen=0, fenster=0, letzte=0;
 function schleife(t){
@@ -524,6 +551,7 @@ function schleife(t){
   }
   if(S.cfg){
     anzeigeMalen(t);
+    tippSetzen();
     zahlEl.textContent=(S.waage==='analyse'?'Analysen':'Präzisions')+'waage · Soll '+
       zahl(S.soll,S.cfg.nk)+' g · Ist '+zahl(S.masse,S.cfg.nk)+' g · '+
       (S.uebernommen? ('übernommen '+zahl(S.uebernommen.wert,S.cfg.nk)+' g') : 'nicht übernommen')+
@@ -534,9 +562,29 @@ function schleife(t){
 zuruecksetzen(false);
 requestAnimationFrame(schleife);
 
+function tippSetzen(){
+  var t;
+  if(S.uebernommen) t='Übernommen: '+zahl(S.uebernommen.wert,S.cfg.nk)+' g · das Umfüllen gehört zum nächsten Gerät';
+  else if(!S.aufPfanne) t='Wägeschiffchen auf die Waagschale ziehen';
+  else if(S.cfg.bildZu && !S.tuerZu) t='Tür schließen · solange sie offen ist, wird die Anzeige nie ruhig';
+  else if(!S.taraGesetzt) t='Tara drücken · das Gewicht des Schiffchens muss weg';
+  else if(!S.gefaessOffen) t='Standgefäß antippen · es öffnet sich';
+  else if(S.spatelZustand==='leer' && S.spatelMenge<=0 && S.masse<=0)
+       t='Spatel auf das offene Gefäß ziehen · er füllt sich';
+  else if(S.spatelZustand!=='ueber')
+       t=(S.spatelMenge>0?'Spatel über das Schiffchen ziehen':'Spatel am Gefäß nachfüllen');
+  else if(S.spatelMenge>0)
+       t='Tippen = eine Spur · Halten = Dauerfluss · Spatel fasst '+zahl(kapazitaet(),S.cfg.nk)+' g';
+  else if(S.masse>S.soll)
+       t='Zu viel: mit dem leeren Spatel antippen, dann in den Abfall';
+  else t='Spatel am Gefäß nachfüllen · oder Übernehmen drücken';
+  if(tippEl.textContent!==t) tippEl.textContent=t;
+}
+
 /* Nur zur Pruefung von aussen. */
 window.PROTO={ S:S, POS:POS, WAAGEN:WAAGEN, BANK:BANK,
-  waehle:waehle, dosieren:dosieren, ablegen:ablegen, ablesung:ablesung, kippLos:kippLos,
+  waehle:waehle, dosieren:dosieren, abnehmen:abnehmen, kapazitaet:kapazitaet,
+  ablegen:ablegen, ablesung:ablesung, tippSetzen:tippSetzen, tipp:function(){return tippEl.textContent;},
   ruhig:ruhig_, fehler:fehler, zeichnen:zeichnen, reset:zuruecksetzen };
 })();
 </script>
