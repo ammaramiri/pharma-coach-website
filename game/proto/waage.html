@@ -175,9 +175,16 @@ var BANK={                               /* Ruheplaetze auf der Bank */
   abfallZiel:{x:790,y:1480,w:190,h:90}
 };
 var W=864, H=1536;
-var DOSIS=[0.02,0.05];                   /* Anteil des Solls je Tipp */
-var FLUSS=0.45;                          /* Anteil des Solls je Sekunde beim Halten */
-var LOEFFEL=0.45;                        /* Was ein Spatel fasst, als Anteil des Solls */
+/* Jede Gabe ist ein ganzes Vielfaches einer festen Spur. Nur so
+   trifft der Spieler das Soll ueberhaupt genau; mit Zufallsmengen
+   landet man ewig knapp darueber oder darunter (Ammar 06.11.2026).
+   Die Spur ist ein Fuenfundzwanzigstel des Solls, auf die Teilung
+   der Waage gerundet: 0,0100 g auf der Analysen-, 0,20 g auf der
+   Praezisionswaage. */
+var SCHRITTE=25;                         /* Spuren bis zum Soll */
+var FLUSS_PRO_S=6;                       /* Spuren je Sekunde beim Halten */
+var LOEFFEL_SPUREN=8;                    /* Was ein Spatel fasst, in Spuren */
+var LOEFFEL=0.45;                        /* nur noch Rueckfall ohne Waage */
 var FANG=230;                            /* Fangradius beim Ablegen, grosszuegig */
 
 /* ---------- Kurzwege ---------- */
@@ -399,29 +406,38 @@ function bewegen(ev){
 function hoch(ev){
   if(!zieht || ev.pointerId!==zieht.id) return;
   var z=zieht; zieht=null;
-  S.fliesst=false; rieseln(false);
+  S.fliesst=false; S.flussRest=0; rieseln(false);
   if(z.modus==='dosieren'){
     if(!z.bewegt && performance.now()-z.zeit<260){
-      if(S.spatelMenge>0) dosieren(zufallsDosis()); else abnehmen();
+      if(S.spatelMenge>0) dosieren(1); else abnehmen();
     }
     return;
   }
   ablegen(z.el);
 }
-function zufallsDosis(){
-  return S.soll*(DOSIS[0]+Math.random()*(DOSIS[1]-DOSIS[0]));
+function spur(){
+  /* Eine Spur, gerundet auf die Teilung der Waage. */
+  var c=S.cfg; if(!c) return S.soll/SCHRITTE;
+  var roh=S.soll/SCHRITTE;
+  return Math.max(c.d, Math.round(roh/c.d)*c.d);
+}
+function raster(v){
+  var c=S.cfg; if(!c) return v;
+  return Math.max(0, Math.round(v/c.d)*c.d);
 }
 function kapazitaet(){
-  /* Fassungsvermoegen des Spatels, nicht des Ziels: auf der
-     Analysenwaage sind das rund drei Portionen, auf der
-     Praezisionswaage rund vier. */
-  return (S.cfg && S.cfg.loeffel) || Math.max(0.25, S.soll*LOEFFEL);
+  /* Der Spatel fasst acht Spuren: drei Ladungen bis zum Soll, und
+     die Zahl geht glatt auf, damit er sich restlos leert. */
+  return spur()*LOEFFEL_SPUREN;
 }
-function dosieren(menge){
+function dosieren(spuren){
   if(S.spatelZustand!=='ueber') return;
   if(S.spatelMenge<=0){ leerMelden(); return; }
-  var ab=Math.min(menge, S.spatelMenge);
-  S.spatelMenge-=ab; S.masse+=ab;
+  var e=spur();
+  var moeglich=Math.round(S.spatelMenge/e);
+  var n=Math.max(1, Math.min(Math.round(spuren||1), moeglich));
+  var ab=n*e;
+  S.spatelMenge=raster(S.spatelMenge-ab); S.masse=raster(S.masse+ab);
   if(S.spatelMenge<=1e-9){
     S.spatelMenge=0; S.spatelRest=0;
     spatel.src='../assets/lab/PCG_LAB_SPATEL_v001.webp';
@@ -434,8 +450,10 @@ function dosieren(menge){
 /* Zu viel auf dem Schiffchen? Mit dem leeren Spatel abnehmen. */
 function abnehmen(){
   if(S.masse<=0) return;
-  var ab=Math.min(S.masse, kapazitaet()*0.5);
-  S.masse-=ab; S.spatelMenge+=ab; S.spatelRest+=ab;
+  /* Abnehmen geht in derselben Spur wie das Geben: so laesst sich
+     ein Ueberschuss genau wieder abtragen. */
+  var e=spur(), ab=Math.min(S.masse, e);
+  S.masse=raster(S.masse-ab); S.spatelMenge=raster(S.spatelMenge+ab); S.spatelRest+=ab;
   spatel.src='../assets/lab/PCG_LAB_SPATEL_LOADED_v001.webp';
   S.ruhigBis=performance.now()+600;
   klack(1100,0.06); rumpeln(6); zeichnen();
@@ -467,7 +485,7 @@ function ablegen(el){
     if(S.gefaessOffen && nah(p,{x:POS.gefaess.x,y:POS.gefaess.y-90},FANG)){
       /* Ein Spatel fasst eine begrenzte Menge; fuer mehr muss man
          noch einmal holen (Ammar 25.10.2026). */
-      S.spatelMenge=kapazitaet(); S.spatelRest=0; S.spatelZustand='voll';
+      S.spatelMenge=raster(kapazitaet()); S.spatelRest=0; S.spatelZustand='voll';
       spatel.src='../assets/lab/PCG_LAB_SPATEL_LOADED_v001.webp';
       klack(380,0.1); zeichnen(); return;
     }
@@ -547,7 +565,8 @@ function schleife(t){
   /* Dauerfluss, solange der Finger auf dem Spatel liegt und nicht wandert */
   if(zieht && zieht.modus==='dosieren' && !zieht.bewegt && t-zieht.zeit>320){
     if(!S.fliesst){ S.fliesst=true; rieseln(true); }
-    dosieren(S.soll*FLUSS*dt);
+    S.flussRest=(S.flussRest||0)+FLUSS_PRO_S*dt;
+    if(S.flussRest>=1){ var n=Math.floor(S.flussRest); S.flussRest-=n; dosieren(n); }
   }
   if(S.cfg){
     anzeigeMalen(t);
@@ -573,17 +592,25 @@ function tippSetzen(){
        t='Spatel auf das offene Gefäß ziehen · er füllt sich';
   else if(S.spatelZustand!=='ueber')
        t=(S.spatelMenge>0?'Spatel über das Schiffchen ziehen':'Spatel am Gefäß nachfüllen');
-  else if(S.spatelMenge>0)
-       t='Tippen = eine Spur · Halten = Dauerfluss · Spatel fasst '+zahl(kapazitaet(),S.cfg.nk)+' g';
-  else if(S.masse>S.soll)
-       t='Zu viel: mit dem leeren Spatel antippen, dann in den Abfall';
+  else if(S.spatelMenge>0){
+       var fehlt=raster(S.soll-S.masse);
+       t = fehlt>0
+         ? ('Tippen = '+zahl(spur(),S.cfg.nk)+' g · noch '+Math.round(fehlt/spur())+' Tipps bis zum Soll · Halten = Dauerfluss')
+         : (Math.abs(S.masse-S.soll)<S.cfg.d/2
+             ? 'Genau auf dem Soll · Tür schließen und Übernehmen'
+             : 'Zu viel: Spatel leeren, dann mit dem leeren Spatel abtragen');
+  }
+  else if(S.masse>S.soll+S.cfg.d/2)
+       t='Zu viel um '+zahl(S.masse-S.soll,S.cfg.nk)+' g · leeren Spatel antippen ('+zahl(spur(),S.cfg.nk)+' g je Tipp), dann in den Abfall';
+  else if(Math.abs(S.masse-S.soll)<S.cfg.d/2)
+       t='Genau auf dem Soll · Tür schließen und Übernehmen';
   else t='Spatel am Gefäß nachfüllen · oder Übernehmen drücken';
   if(tippEl.textContent!==t) tippEl.textContent=t;
 }
 
 /* Nur zur Pruefung von aussen. */
 window.PROTO={ S:S, POS:POS, WAAGEN:WAAGEN, BANK:BANK,
-  waehle:waehle, dosieren:dosieren, abnehmen:abnehmen, kapazitaet:kapazitaet,
+  waehle:waehle, dosieren:dosieren, abnehmen:abnehmen, kapazitaet:kapazitaet, spur:spur,
   ablegen:ablegen, ablesung:ablesung, tippSetzen:tippSetzen, tipp:function(){return tippEl.textContent;},
   ruhig:ruhig_, fehler:fehler, zeichnen:zeichnen, reset:zuruecksetzen };
 })();
