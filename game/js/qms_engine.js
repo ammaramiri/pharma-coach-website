@@ -83,10 +83,19 @@ function button(text,fn,parent,cls){
   return b;
 }
 function bild(src,alt,parent){
+  /* Das Bild haengt sofort im Dokument und bekommt erst dann seine
+     Quelle. Ein losgeloestes Image mit loading="lazy" laedt in
+     manchen Browsern nie: kein onload, kein onerror, nur ein leerer
+     Kasten. Genau das war am 06.11.2026 auf dem Telefon zu sehen. */
   var f=node('figure',null,parent,'qms-figure'), box=node('div',null,f,'qms-image');
-  var img=new Image(); img.alt=alt||''; img.loading='lazy';
-  img.onload=function(){ box.replaceChildren(img); };
-  img.onerror=function(){ box.classList.add('qms-image-leer'); };
+  var img=document.createElement('img');
+  img.alt=alt||''; img.decoding='async';
+  img.addEventListener('error', function(){
+    box.classList.add('qms-image-leer');
+    box.textContent=src.split('/').pop();
+    try{ console.warn('QMS: Bild fehlt ·', src); }catch(e){}
+  });
+  box.appendChild(img);
   img.src=src;
   return f;
 }
@@ -614,6 +623,8 @@ var STIL=[
 '#qmsScreen .qms-figure{margin:0 0 12px}',
 '#qmsScreen .qms-image{aspect-ratio:16/9;background:#E9E4DA;border-radius:14px;overflow:hidden;display:grid;place-items:center}',
 '#qmsScreen .qms-image img{width:100%;height:100%;object-fit:cover;display:block}',
+'#qmsScreen .qms-image-leer{font-size:11px;color:#8A8F98;padding:10px;text-align:center;word-break:break-all}',
+'#qmsScreen .qms-image-leer img{display:none}',
 '#qmsScreen .qms-text{font-size:14.5px;line-height:1.55;margin:0 0 14px}',
 '#qmsScreen .qms-note{font-size:12px;color:#6B7280;margin:6px 0}',
 '#qmsScreen .qms-quelle{font-size:11.5px;color:#6B7280;margin:10px 0 0}',
