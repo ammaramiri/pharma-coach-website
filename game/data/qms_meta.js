@@ -138,7 +138,7 @@ window.PCQmsMeta={
       "text": {
         "de": "Ein Jahr, acht Bereiche. Jeden Monat passiert etwas in deiner Apotheke. Du entscheidest, was sich im Qualitätshandbuch ändern muss – und wer es wissen muss. Im Dezember prüft das Jahr dein Handbuch.",
         "en": "One year, eight areas. Every month something happens in your pharmacy. You decide what must change in the quality handbook – and who needs to know. In December the year tests your handbook.",
-        "ar": "سنة واحدة وثمانية مجالات. كل شهر يحدث شيء في صيدليتك. أنت تقرّر ما الذي يجب أن يتغيّر في كتيّب الجودة، ومن يجب أن يعرف. وفي ديسمبر تختبر السنةُ كتيّبك."
+        "ar": "أنت مسؤول كتيّب الجودة في صيدليتك لمدة سنة كاملة. الكتيّب هو مجموعة الإجراءات المكتوبة التي تقول: كيف نعمل هنا، ومن يفعل ماذا. السنة ثمانية مجالات، وفي كل شهر يقع حدث في مجال منها. مهمتك في كل حدث أن تقرّر أمرين: ما الذي يجب أن يتغيّر في الكتيّب، ومن يجب أن يعرف بالتغيير أو يوقّع عليه. وفي ديسمبر تأتي المراجعة السنوية فتختبر الواقعُ ما كتبته."
       }
     },
     {
@@ -146,7 +146,7 @@ window.PCQmsMeta={
       "text": {
         "de": "Zwei Arten von Aufgaben: Bei einem Ereignis triffst du zwei Entscheidungen. Beim Bauen stellst du eine SOP aus Karten zusammen – aber Vorsicht: Nicht jede Karte gehört hinein. Eine Sofortmaßnahme ist gut, ändert aber noch kein System.",
         "en": "Two kinds of tasks: in an event you make two decisions. In a build you assemble an SOP from cards – but careful: not every card belongs in it. An immediate action is good, but it does not yet change the system.",
-        "ar": "نوعان من المهام: في الحدث تتخذ قرارين. وفي البناء تركّب إجراءً من بطاقات، لكن انتبه: ليست كل بطاقة تنتمي إليه. الإجراء الفوري جيد، لكنه لا يغيّر النظام بعد."
+        "ar": "ستلتقي بثلاثة أنواع من المهام. الحدث: تقرأ الموقف ثم تجيب عن سؤالين، وتظهر لك النتيجة والشرح بعد السؤالين معاً. والبناء: تركّب إجراءً مكتوباً من بطاقات، تختار منها ما ينتمي إليه وترتّبها، وانتبه فبين البطاقات فخاخ وحشو لا مكان لها. وتوزيع المسؤوليات: تحدّد من يجوز له أداء مهمة ومن لا يجوز. وتذكّر القاعدة التي تقوم عليها المرحلة كلها: الإجراء الفوري الصحيح يحلّ مشكلة اليوم، لكنه لا يغيّر النظام، والتغيير لا يكون إلا في الكتيّب."
       }
     }
   ],
@@ -155,7 +155,7 @@ window.PCQmsMeta={
     "text": {
       "de": "Dezember. Zeit für die Jahresbewertung. Drei Situationen aus dem Jahr zeigen, ob dein Handbuch hält.",
       "en": "December. Time for the annual review. Three situations from the year show whether your handbook holds.",
-      "ar": "ديسمبر. موعد المراجعة السنوية. ثلاثة مواقف من السنة تُظهر هل يصمد كتيّبك."
+      "ar": "ديسمبر، وموعد المراجعة السنوية. ثلاثة مواقف وقعت خلال السنة تُظهر لك هل صمد كتيّبك: ما أحسنت كتابته منع المشكلة، وما أهملته وقع فعلاً."
     }
   },
   "result": {
@@ -163,7 +163,7 @@ window.PCQmsMeta={
     "text": {
       "de": "Das Jahr ist vorbei, das Handbuch steht wieder im Regal. Ein QMS endet nie – es beginnt jedes Jahr neu.",
       "en": "The year is over, the handbook is back on the shelf. A QMS never ends – it starts again every year.",
-      "ar": "انتهت السنة، وعاد الكتيّب إلى الرف. نظام إدارة الجودة (QMS) لا ينتهي أبداً، بل يبدأ كل سنة من جديد."
+      "ar": "انتهت السنة وعاد الكتيّب إلى الرف. هذه نتيجتك في كل مجال، ومعها الدروس التي فاتتك. ونظام إدارة الجودة (QMS) لا ينتهي أبداً: كل سنة يبدأ من جديد."
     }
   },
   "bewertung": {
