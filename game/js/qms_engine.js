@@ -19,9 +19,19 @@ var W={
   titel:['QMS','QMS','نظام إدارة الجودة (QMS)'],
   weiter:['Weiter','Continue','متابعة'],
   los:['Verstanden – los geht\u2019s','Got it – let\u2019s start','فهمت، لنبدأ'],
-  jahr:['Das Jahr','The year','السنة'],
+  jahr:['Das Jahr','The year','سنة الجودة'],
+  wieSpielen:['Wie es geht','How it works','طريقة اللعب'],
+  ueberspringen:['Überspringen','Skip','تخطّي'],
+  handbuchSub:['Welcher Teil des Handbuchs ist aktuell, welcher nicht.',
+               'Which part of the handbook is up to date, which is not.',
+               'حالة أقسام كتيّب الجودة الثمانية: أيّها صار محدَّثاً، وأيّها ما زال ناقصاً أو لم يُعالَج.'],
+  bewertungSub:['Ende des Jahres: drei Situationen prüfen, ob dein Handbuch hält.',
+                'End of the year: three situations test whether your handbook holds.',
+                'نهاية السنة: ثلاثة مواقف حقيقية تختبر ما كتبته في الكتيّب. تستطيع فتحها في أي وقت.'],
+  kapitelSub:['Fünf Ereignisse, nach Monaten geordnet.','Five events, ordered by month.',
+              'خمسة أحداث مرتّبة بحسب أشهر السنة. اختر أيّها شئت.'],
   zurueck:['Zurück','Back','رجوع'],
-  zurApo:['Zurück · Apotheke','Back · pharmacy','عودة · الصيدلية'],
+  zurApo:['Zurück · Apotheke','Back · pharmacy','رجوع إلى الصيدلية'],
   handbuch:['Handbuch','Handbook','الكتيّب'],
   bewertung:['Jahresbewertung','Annual review','المراجعة السنوية'],
   monat:['Monat','Month','الشهر'],
@@ -30,29 +40,29 @@ var W={
     ['January','February','March','April','May','June','July','August','September','October','November','December'],
     ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر']],
   pruefen:['Auswerten','Check','تحقّق'],
-  fertigSop:['Verfahren fertig','Finish procedure','إنهاء الإجراء'],
-  meine:['Mein Verfahren','My procedure','إجرائي'],
-  stapel:['Kartenstapel','Card pile','كومة البطاقات'],
-  leerSop:['Noch keine Karte gewählt','No card chosen yet','لم تُختَر بطاقة بعد'],
+  fertigSop:['Verfahren fertig','Finish procedure','انتهيت من الإجراء'],
+  meine:['Mein Verfahren','My procedure','الإجراء الذي أبنيه'],
+  stapel:['Kartenstapel','Card pile','البطاقات المتاحة'],
+  leerSop:['Noch keine Karte gewählt','No card chosen yet','لم تختر أي بطاقة بعد · انقر بطاقة من الأسفل لتضيفها'],
   lernpunkt:['Lernpunkt','Lesson','الدرس'],
-  quelle:['Grundlage','Basis','السند'],
+  quelle:['Grundlage','Basis','السند القانوني'],
   punkte:['Punkte','Points','نقاط'],
   von:['von','of','من'],
-  erledigt:['erledigt','done','منجز'],
-  offen:['offen','open','مفتوح'],
+  erledigt:['erledigt','done','منجزة'],
+  offen:['offen','open','لم يُلعب بعد'],
   aktualisiert:['aktualisiert','updated','محدَّث'],
   teilweise:['teilweise','partial','جزئي'],
   unbearbeitet:['unbearbeitet','untouched','لم يُعالَج'],
-  kapFertig:['Kapitel abgeschlossen','Chapter finished','انتهى الفصل'],
-  wasGeaendert:['Was sich im Handbuch geändert hat','What changed in the handbook','ما تغيّر في الكتيّب'],
+  kapFertig:['Kapitel abgeschlossen','Chapter finished','أنهيت هذا الفصل'],
+  wasGeaendert:['Was sich im Handbuch geändert hat','What changed in the handbook','ما الذي تغيّر في كتيّب الجودة'],
   reviewStart:['Jahresbewertung starten','Start the annual review','ابدأ المراجعة السنوية'],
-  reviewOffen:['Noch offene Kapitel zählen als unbearbeitet.','Unfinished chapters count as untouched.','الفصول الناقصة تُحسب غير معالَجة.'],
-  vorfallA:['Das ist passiert','This happened','هذا ما وقع'],
-  vorfallB:['Das Handbuch hat es verhindert','The handbook prevented it','الكتيّب منعه'],
+  reviewOffen:['Noch offene Kapitel zählen als unbearbeitet.','Unfinished chapters count as untouched.','ما لم تلعبه من الفصول يُحسب قسماً لم يُعالَج في الكتيّب.'],
+  vorfallA:['Das ist passiert','This happened','وقع هذا فعلاً'],
+  vorfallB:['Das Handbuch hat es verhindert','The handbook prevented it','كتيّبك منع وقوعه'],
   ergebnis:['Ergebnis','Result','النتيجة'],
-  nochmal:['Kapitel wiederholen','Repeat a chapter','فصل للإعادة'],
+  nochmal:['Kapitel wiederholen','Repeat a chapter','اختر فصلاً لإعادته'],
   rollenFrage:['Wer darf das?','Who may do this?','من يجوز له ذلك؟'],
-  aufgabe:['Aufgabe','Task','المهمة'],
+  aufgabe:['Aufgabe','Task','مهمة'],
   richtigL:['richtig','correct','صحيح'],
   teilL:['teilweise','partial','جزئي'],
   falschL:['falsch','wrong','خطأ'],
@@ -215,6 +225,7 @@ function intro(){
   });
   if(introIdx < meta.intro.length-1){
     button(w('weiter'), function(){ introIdx++; intro(); }, body, 'qms-btn qms-primary');
+    button(w('ueberspringen'), function(){ q().introGesehen=true; sichern(); jahr(); }, body, 'qms-btn');
   } else {
     button(w('los'), function(){ q().introGesehen=true; sichern(); jahr(); }, body, 'qms-btn qms-primary');
   }
@@ -234,10 +245,16 @@ function jahr(){
     var bar=node('div',null,karte,'qms-bar'); node('span',null,bar).style.width=
       (st.anzahl? st.fertig/st.anzahl*100 : 0)+'%';
   });
-  var reihe=node('div',null,body,'qms-row');
-  button(w('handbuch'), handbuch, reihe, 'qms-btn');
-  button(w('bewertung'), function(){ reviewStart(); }, reihe, 'qms-btn qms-primary');
-  if(!alleFertig()) node('p', w('reviewOffen'), body, 'qms-note');
+  /* Zwei Knoepfe, die niemand von selbst versteht. Also steht unter
+     jedem in einem Satz, wofuer er da ist. */
+  var k1=node('div',null,body,'qms-tor');
+  button(w('handbuch'), handbuch, k1, 'qms-btn');
+  node('p', w('handbuchSub'), k1, 'qms-note');
+  var k2=node('div',null,body,'qms-tor');
+  button(w('bewertung'), function(){ reviewStart(); }, k2, 'qms-btn qms-primary');
+  node('p', w('bewertungSub'), k2, 'qms-note');
+  if(!alleFertig()) node('p', w('reviewOffen'), k2, 'qms-note');
+  button(w('wieSpielen'), function(){ introIdx=0; intro(); }, body, 'qms-btn');
 }
 
 /* ---------- 3 · Kapitel ---------- */
@@ -246,6 +263,7 @@ function kapitelSchirm(){
   geruest(tr(k.titel), jahr);
   bild(k.card, tr(k.titel), body);
   if(ch.einleitung) node('p', tr(ch.einleitung), body, 'qms-text');
+  node('p', w('kapitelSub'), body, 'qms-note');
   var liste=node('div',null,body,'qms-liste');
   evListe(aktKap).forEach(function(e){
     var s=evStand(e.id);
@@ -626,7 +644,9 @@ var STIL=[
 '#qmsScreen .qms-image-leer{font-size:11px;color:#8A8F98;padding:10px;text-align:center;word-break:break-all}',
 '#qmsScreen .qms-image-leer img{display:none}',
 '#qmsScreen .qms-text{font-size:14.5px;line-height:1.55;margin:0 0 14px}',
-'#qmsScreen .qms-note{font-size:12px;color:#6B7280;margin:6px 0}',
+'#qmsScreen .qms-note{font-size:12px;color:#6B7280;margin:6px 0;line-height:1.5}',
+'#qmsScreen .qms-tor{margin:14px 0 0}',
+'#qmsScreen .qms-tor .qms-btn{margin-bottom:4px}',
 '#qmsScreen .qms-quelle{font-size:11.5px;color:#6B7280;margin:10px 0 0}',
 '#qmsScreen .qms-btn{display:block;width:100%;margin:8px 0;padding:12px 16px;border-radius:12px;',
 '  border:2px solid #E5E0D8;background:#fff;font-weight:700;font-size:14px}',
@@ -710,8 +730,11 @@ function open(){
   node('p', w('laden'), node('main',null,root,'qms-body'), 'qms-text');
   showNow('qmsScreen');
   return laden_().then(function(){
-    introIdx=0;
-    if(q().introGesehen) jahr(); else intro();
+    /* Die Erklaerung kommt bei jedem Eintritt, nicht nur beim ersten
+       Mal: wer nach Wochen zurueckkehrt, hat sie vergessen
+       (Ammar 06.11.2026). Ueberspringen geht mit einem Knopf, und
+       vom Jahresbrett aus ist sie jederzeit wieder erreichbar. */
+    introIdx=0; intro();
   }).catch(function(){
     root.replaceChildren();
     var b=node('main',null,root,'qms-body');
