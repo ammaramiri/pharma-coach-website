@@ -8183,8 +8183,28 @@ function goTo(cx,cy){
   if(p.length>1) s.push(p[p.length-1]);
   W.path=s; SND.click(); return true;
 }
+/* Alle Raumkarten einmal im Hintergrund laden und dekodieren und die
+   Bilder festhalten. Ohne das wartet jeder erste Wechsel in einen Raum
+   auf den Download seiner Karte, und der Browser kann die dekodierte
+   Karte nach dem Wechsel wieder verwerfen (Ammar 09.11.2026: Raumwechsel
+   traege). Startet erst nach dem ersten Raum, damit der Einstieg nicht
+   auf die anderen vier Karten wartet. */
+var PC_MAP_CACHE=null;
+function pcPreloadMaps(){
+  if(PC_MAP_CACHE) return; PC_MAP_CACHE=[];
+  var los=function(){
+    Object.keys(ROOMS).forEach(function(k){
+      var src=ROOMS[k].img; if(!src) return;
+      var im=new Image(); im.decoding='async';
+      im.onload=function(){ if(im.decode) im.decode().catch(function(){}); };
+      im.src=src; PC_MAP_CACHE.push(im);
+    });
+  };
+  if(window.requestIdleCallback) requestIdleCallback(los,{timeout:2500}); else setTimeout(los,1200);
+}
 function enterRoom(id, at){
   pcLoadPhar();
+  pcPreloadMaps();
   W.room=id; W.mask=WORLD_MASKS[ROOMS[id].mask];
   var r=ROOMS[id];
   W.pos={x:(at||r.start)[0], y:(at||r.start)[1]}; W.path=[]; W.moving=false; W.walkPhase=0; W.dir='down'; W.near=null;
