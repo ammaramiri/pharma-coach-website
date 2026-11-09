@@ -7153,9 +7153,9 @@ function preloadLevel(steps, persona){
 /* Additive save schema: old pc_sim_v1 progress remains valid. */
 var PC_SAVE_VERSION=1;
 var PC_TEXT={
- de:{best:'Bestleistung',last:'Letzter Versuch',first:'Erster Versuch',earned:'Neu gutgeschriebene Punkte',summary:'Mein Lernrückblick',strong:'Das gelang mir',weak:'Das übe ich noch',rule:'Das merke ich mir',none:'Noch kein vollständig gelöster Bewertungsschritt.',perfect:'Alle Bewertungsschritte mit voller Punktzahl abgeschlossen.',resume:'Fall fortsetzen',restart:'Von vorne beginnen',back:'Zur Apotheke',saved:'Mein Fortschritt ist gespeichert. Ich setze nach dem letzten abgeschlossenen Schritt fort.',timer:'Eine gestartete Uhr läuft bei einer Unterbrechung weiter.',step:'Schritt',saveError:'Der Browser konnte meinen Fortschritt nicht speichern. Ich halte diese Seite offen und prüfe den verfügbaren Browserspeicher.',quit:'Mein Fortschritt bleibt gespeichert. Zur Apotheke zurückkehren?'},
- en:{best:'Best result',last:'Last attempt',first:'First attempt',earned:'New progress points',summary:'My learning review',strong:'What I did well',weak:'What I need to practise',rule:'What I will remember',none:'No scored step was completed with full points yet.',perfect:'All scored steps completed with full points.',resume:'Resume case',restart:'Start from the beginning',back:'Back to the pharmacy',saved:'My progress is saved. I continue after the last completed step.',timer:'A started timer keeps running during an interruption.',step:'Step',saveError:'The browser could not save my progress. I keep this page open and check available browser storage.',quit:'My progress stays saved. Return to the pharmacy?'},
- ar:{best:'أفضل نتيجة',last:'آخر محاولة',first:'المحاولة الأولى',earned:'نقاط التقدم التي أضفتها الآن',summary:'مراجعتي التعليمية',strong:'ما أحسنتُ فيه',weak:'ما أحتاج إلى مراجعته',rule:'ما أتذكره في عملي',none:'لم أُكمل بعد خطوة تقييم بكامل نقاطها.',perfect:'أكملتُ جميع خطوات التقييم بكامل نقاطها.',resume:'أستأنف الحالة',restart:'أبدأ من جديد',back:'أعود إلى الصيدلية',saved:'أحتفظ بتقدمي وأستأنف بعد آخر خطوة أكملتُها.',timer:'إذا بدأتُ المؤقّت فإنه يستمر أثناء الانقطاع.',step:'الخطوة',saveError:'لم أتمكّن من حفظ تقدمي في المتصفح. أُبقي الصفحة مفتوحة وأتحقق من المساحة المتاحة للمتصفح.',quit:'أحتفظ بتقدمي. هل أعود إلى الصيدلية؟'}
+ de:{best:'Bestleistung',last:'Letzter Versuch',first:'Erster Versuch',earned:'Neu gutgeschriebene Punkte',summary:'Mein Lernrückblick',strong:'Das gelang mir',weak:'Das übe ich noch',rule:'Das merke ich mir',none:'Noch kein vollständig gelöster Bewertungsschritt.',perfect:'Alle Bewertungsschritte mit voller Punktzahl abgeschlossen.',resume:'Fall fortsetzen',restart:'Von vorne beginnen',back:'Zur Apotheke',saved:'Mein Fortschritt ist gespeichert. Ich setze nach dem letzten abgeschlossenen Schritt fort.',timer:'Eine gestartete Uhr läuft bei einer Unterbrechung weiter.',step:'Schritt',saveError:'Der Browser konnte meinen Fortschritt nicht speichern. Ich halte diese Seite offen und prüfe den verfügbaren Browserspeicher.',quit:'Ich breche den Fall ab. Er wird nicht gespeichert und beginnt beim nächsten Mal von vorne. Zur Apotheke zurückkehren?'},
+ en:{best:'Best result',last:'Last attempt',first:'First attempt',earned:'New progress points',summary:'My learning review',strong:'What I did well',weak:'What I need to practise',rule:'What I will remember',none:'No scored step was completed with full points yet.',perfect:'All scored steps completed with full points.',resume:'Resume case',restart:'Start from the beginning',back:'Back to the pharmacy',saved:'My progress is saved. I continue after the last completed step.',timer:'A started timer keeps running during an interruption.',step:'Step',saveError:'The browser could not save my progress. I keep this page open and check available browser storage.',quit:'I am leaving this case. It is not saved and starts from the beginning next time. Return to the pharmacy?'},
+ ar:{best:'أفضل نتيجة',last:'آخر محاولة',first:'المحاولة الأولى',earned:'نقاط التقدم التي أضفتها الآن',summary:'مراجعتي التعليمية',strong:'ما أحسنتُ فيه',weak:'ما أحتاج إلى مراجعته',rule:'ما أتذكره في عملي',none:'لم أُكمل بعد خطوة تقييم بكامل نقاطها.',perfect:'أكملتُ جميع خطوات التقييم بكامل نقاطها.',resume:'أستأنف الحالة',restart:'أبدأ من جديد',back:'أعود إلى الصيدلية',saved:'أحتفظ بتقدمي وأستأنف بعد آخر خطوة أكملتُها.',timer:'إذا بدأتُ المؤقّت فإنه يستمر أثناء الانقطاع.',step:'الخطوة',saveError:'لم أتمكّن من حفظ تقدمي في المتصفح. أُبقي الصفحة مفتوحة وأتحقق من المساحة المتاحة للمتصفح.',quit:'أترك هذه الحالة. لن تُحفظ، وتبدأ من أولها في المرة القادمة. هل أعود إلى الصيدلية؟'}
 };
 function pcText(k){return (PC_TEXT[state.lang]||PC_TEXT.de)[k]||k;}
 function pcEscape(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -7167,10 +7167,10 @@ function pcSaveWarning(){
 }
 function pcSync(){try{if(window.PCKonto)Promise.resolve(window.PCKonto.sichern()).catch(function(){});}catch(e){}}
 function pcCheckpoint(){
- if(!run || run.committed)return;
- state.checkpoints=state.checkpoints||{};
- state.checkpoints[run.lv.id]={version:PC_SAVE_VERSION,id:run.lv.id,lang:state.lang,stepIdx:run.stepIdx,score:run.score,trust:run.trust,stepScores:run.stepScores,skipped:run.skipped,docs:run.docs,review:run.review,leer:run.leer,attemptId:run.attemptId,at:Date.now()};
- save();
+ /* Seit 09.11.2026 abgeschaltet (Entscheidung Ammar): ein angefangener Fall
+    wird nicht mehr gespeichert und nicht fortgesetzt. Alte Reste werden
+    beim naechsten Aufruf entfernt. */
+ if(state.checkpoints && Object.keys(state.checkpoints).length){ state.checkpoints={}; save(); }
 }
 function pcClearCheckpoint(){
  if(run && state.checkpoints)delete state.checkpoints[run.lv.id];
@@ -7234,10 +7234,9 @@ function startLevel(lv, resume){
   levelDaten(lv.topic, function(){ startLevelJetzt(lv, resume); });
 }
 function startLevelJetzt(lv, resume){
-  var checkpoint=(state.checkpoints||{})[lv.id];
-  if(checkpoint && checkpoint.version===PC_SAVE_VERSION && !resume){
-    return pcResumeChoice(lv, checkpoint);
-  }
+  /* Jeder Fall beginnt beim ersten Schritt (Entscheidung Ammar 09.11.2026). */
+  var checkpoint=null; resume=false;
+  if(state.checkpoints && state.checkpoints[lv.id]){ delete state.checkpoints[lv.id]; save(); }
   var topic=TOPICS[lv.topic];
   var office=!!lv.office;
   var persona=office ? {de:"Büro",en:"Office",ar:"المكتب",trustStart:100,img:{}}
@@ -8641,8 +8640,12 @@ document.getElementById('cfNo').addEventListener('click',function(){
 /* WIRING                                                                */
 /* ===================================================================== */
 document.getElementById('playBtn').addEventListener('click',function(){
-  if(!state.guideSeen) openGuide(function(){ pcContinueOrWorld(); });
-  else pcContinueOrWorld();
+  /* Entscheidung Ammar 09.11.2026: Wer das Spiel oeffnet, steht sofort in
+     der Offizin. Kein Angebot, einen angefangenen Fall fortzusetzen.
+     Abgeschlossene Faelle (levelBest) und die Kundenrunde bleiben erhalten. */
+  if(state.checkpoints && Object.keys(state.checkpoints).length){ state.checkpoints={}; save(); }
+  if(!state.guideSeen) openGuide(function(){ openWorld(); });
+  else openWorld();
 });
 /* Aus einem laufenden Fall geht es zurueck in die Apotheke, nicht in
    eine Liste aller Faelle. Die gibt es nicht mehr. */
