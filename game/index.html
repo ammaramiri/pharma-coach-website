@@ -1714,7 +1714,7 @@ var I18N = {
     kraftLeer:"So mache ich Fehler. Erst eine Pause, dann der nächste Kunde.",
     kraftAbzug:"Müde beraten: {p} Punkte weniger. Eine Pause in der Teamküche hätte das gespart.",
     pauseKaffee:"Kaffee trinken", pauseSofa:"Kurz sitzen",
-    sofaText:"Zehn Minuten sitzen, Beine hoch, nichts denken.",
+    sofaText:"Zehn Minuten sitzen, zurücklehnen, nichts denken.",
     kraftPlus:"Das tut gut: +{k} Kraft.", replayNote:"Wiederholung zum Nachlesen. Punkte gibt es nur beim ersten Mal.",
     quitConfirm:"Beratung wirklich abbrechen? Der Fortschritt dieser Beratung geht verloren.",
     disclaimer:"Alle Inhalte dienen ausschließlich der pharmazeutischen Fortbildung und ersetzen keine ärztliche oder pharmazeutische Beratung im Einzelfall.",
@@ -1780,7 +1780,7 @@ var I18N = {
     kraftLeer:"This is how mistakes happen. A break first, then the next customer.",
     kraftAbzug:"Advising while tired: {p} points less. A break in the team kitchen would have saved that.",
     pauseKaffee:"Have a coffee", pauseSofa:"Sit down a moment",
-    sofaText:"Ten minutes sitting, feet up, thinking of nothing.",
+    sofaText:"Ten minutes sitting, leaning back, thinking of nothing.",
     kraftPlus:"That helps: +{k} strength.", replayNote:"A replay for reading up. Points are given only the first time.",
     quitConfirm:"Really quit this consultation? Progress in this case will be lost.",
     disclaimer:"All content is intended solely for pharmaceutical training and does not replace medical or pharmaceutical advice in individual cases.",
@@ -1846,7 +1846,7 @@ var I18N = {
     kraftLeer:"هكذا تقع الأخطاء. استراحة أولاً ثم الزبون التالي.",
     kraftAbzug:"استشارة وأنت مُرهَق: {p} نقاط أقل. استراحة في المطبخ كانت ستوفّرها.",
     pauseKaffee:"اشرب قهوة", pauseSofa:"اجلس قليلاً",
-    sofaText:"عشر دقائق جلوس، وقدمان مرفوعتان، وذهن خالٍ.",
+    sofaText:"عشر دقائق جلوس، وظهر مسنود، وذهن خالٍ.",
     kraftPlus:"هذا يريح: +{k} من الطاقة.", replayNote:"إعادة للمراجعة. النقاط تُحتسب في المرة الأولى وحدها.",
     quitConfirm:"هل تريد فعلاً إنهاء الاستشارة؟ سيضيع تقدمك في هذه الحالة.",
     disclaimer:"جميع المحتويات مخصصة للتدريب الصيدلاني فقط ولا تُغني عن الاستشارة الطبية أو الصيدلانية في الحالات الفردية.",
@@ -1873,7 +1873,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-11-06 \u00b7 QMS-Motor angeschlossen" +
+var PC_BUILD = "2026-11-09 \u00b7 Kaffee und Sofa in Bewegung" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -7693,6 +7693,26 @@ var PHAR = { down:"assets/phar_down.png", up:"assets/phar_up.png",
    der Avatar beim einen Standbild. Erst hochladen, dann laeuft er. */
 var PHAR_ATLAS = {"down":{"src":"assets/phar_down_v002.webp","frames":[[86,48,209,436,192.0],[409,49,204,442,510.0],[731,48,214,443,843.0],[84,543,203,444,191.5],[403,543,210,444,511.0],[743,544,203,443,837.0],[88,1037,211,445,189.5],[412,1037,206,441,511.0],[740,1037,207,445,839.0]]},"side":{"src":"assets/phar_side_v002.webp","frames":[[98,40,176,472,182.0],[387,40,254,472,502.0],[746,40,199,472,846.0],[61,512,258,493,183.5],[423,512,182,493,507.5],[714,512,277,496,845.5],[94,1029,188,470,185.0],[389,1029,247,463,505.5],[760,1029,174,472,845.5]]},"up":{"src":"assets/phar_up_v002.webp","frames":[[92,46,199,447,193.0],[408,46,203,455,512.5],[734,46,204,455,835.5],[89,539,199,449,192.0],[411,539,202,446,513.5],[738,540,196,449,835.0],[90,1032,204,447,191.5],[414,1031,197,450,512.5],[734,1031,200,448,834.5]]}};
 var PHAR_FRAMES={}, pcPharLoaded=false, pcPharFallback={};
+/* =====================================================================
+   Kaffee und Sofa · Bewegung an Ort und Stelle
+   Zwei Blaetter mit je neun Bildern, gebaut wie PHAR_ATLAS:
+   [x, y, w, h, anchorX]. Die Kastenhoehe ist je Blatt gleich und die
+   Fuesse stehen auf der Unterkante, darum wirkt der Sitzende kuerzer
+   als der Stehende und wird nicht auf dessen Hoehe gezogen.
+   Beide Blaetter schauen nach links wie phar_side; in der Kueche
+   werden sie gespiegelt gezeigt, weil Maschine und Sofa rechts sind.
+===================================================================== */
+var PHAR_AKTION = {
+  kaffee:{ src:"assets/phar_coffee_v001.webp", frames:[
+    [25,38,264,459,184.5],[342,38,269,459,505.0],[727,38,215,459,844.2],
+    [73,550,201,459,185.0],[378,550,233,459,505.0],[694,550,294,459,814.5],
+    [77,1061,194,459,182.5],[380,1061,232,459,505.0],[693,1061,261,459,827.5]]},
+  sofa:{ src:"assets/phar_sofa_v001.webp", frames:[
+    [85,36,184,470,188.0],[373,36,293,470,528.0],[733,37,224,470,870.0],
+    [33,538,287,470,206.0],[356,538,303,470,531.0],[691,538,301,470,864.0],
+    [35,1051,298,470,208.0],[359,1052,293,470,540.0],[692,1053,265,470,851.0]]}
+};
+
 function pcLoadPhar(){
   if(pcPharLoaded)return;pcPharLoaded=true;
   Object.keys(PHAR_ATLAS).forEach(function(key){
@@ -7708,12 +7728,27 @@ function pcLoadPhar(){
     };
     im.src=atlas.src;
   });
+  /* Die beiden Aktionsblaetter. Fehlt eines, bleibt alles beim Alten:
+     dann laeuft die Pause ohne Bewegung, wie bisher. */
+  Object.keys(PHAR_AKTION).forEach(function(key){
+    var atlas=PHAR_AKTION[key], im=new Image(); im.decoding='async';
+    im.onload=function(){
+      var ready=function(){ atlas.image=im; atlas.ready=true; };
+      if(im.decode) im.decode().then(ready,ready); else ready();
+    };
+    im.onerror=function(){ atlas.ready=false; };
+    im.src=atlas.src;
+  });
 }
 function pcDrawPhar(h){
   var el=document.getElementById('wChar'),dir=W.dir,atlas=PHAR_ATLAS[dir==='left'||dir==='right'?'side':dir];
   var frame=W.moving?1+(Math.floor(W.walkPhase||0)%8):0;
+  /* Waehrend einer Aktion kommt das Bild aus dem Aktionsblatt und der
+     Blick geht immer nach rechts: Maschine und Sofa stehen rechts. */
+  var akt=(W.aktion && PHAR_AKTION[W.aktion.name] && PHAR_AKTION[W.aktion.name].ready) ? W.aktion : null;
+  if(akt){ atlas=PHAR_AKTION[akt.name]; dir='right'; frame=akt.frame||0; }
   var width=h*.9,dpr=Math.min(window.devicePixelRatio||1,2);
-  var sig=dir+'|'+frame+'|'+h.toFixed(2)+'|'+dpr+'|'+!!atlas.ready+'|'+!!pcPharFallback[dir];
+  var sig=dir+'|'+frame+'|'+h.toFixed(2)+'|'+dpr+'|'+!!atlas.ready+'|'+!!pcPharFallback[dir]+'|'+(akt?akt.name:'-');
   if(el._frameSig===sig)return;el._frameSig=sig;
   pcStyle(el,'height',h.toFixed(2)+'px');pcStyle(el,'width',width.toFixed(2)+'px');
   var pw=Math.max(1,Math.ceil(width*dpr)),ph=Math.max(1,Math.ceil(h*dpr));
@@ -8008,10 +8043,17 @@ function placeChar(){
   var px=W.ox+(W.pos.x+0.5)*W.cell, py=W.oy+(W.pos.y+0.9)*W.cellY;
   pcStyle(ch,'left','0px');pcStyle(ch,'top','0px');
   platziereSpruch();
-  var ph=W.moving?Math.sin((W.walkPhase||0)*Math.PI/4):0;
+  var ph=(W.moving && !W.aktion)?Math.sin((W.walkPhase||0)*Math.PI/4):0;
   var bob=-Math.abs(ph)*(W.cell*0.10);
-  var sway=W.moving?ph*0.65:0;
-  pcStyle(ch,'transform','translate3d('+px.toFixed(2)+'px,'+(py+bob).toFixed(2)+'px,0) translate(-50%,-100%) rotate('+sway.toFixed(2)+'deg)');
+  var sway=(W.moving && !W.aktion)?ph*0.65:0;
+  /* Auf dem Sofa hebt und senkt sich der Brustkorb: ein Prozent
+     Hoehe, drei Sekunden hin und zurueck, Ursprung unten. */
+  var atem='';
+  if(W.aktion && W.aktion.atmen){
+    pcStyle(ch,'transformOrigin','50% 100%');
+    atem=' scaleY('+(1+0.012*(0.5-0.5*Math.cos(performance.now()/3000*2*Math.PI))).toFixed(4)+')';
+  } else pcStyle(ch,'transformOrigin','50% 50%');
+  pcStyle(ch,'transform','translate3d('+px.toFixed(2)+'px,'+(py+bob).toFixed(2)+'px,0) translate(-50%,-100%) rotate('+sway.toFixed(2)+'deg)'+atem);
   var sw=W.cell*2.6*(1-Math.abs(ph)*0.16);
   pcStyle(sh,'width',sw.toFixed(2)+'px');pcStyle(sh,'height',(sw*0.42).toFixed(2)+'px');
   pcStyle(sh,'left','0px');pcStyle(sh,'top','0px');
@@ -8118,6 +8160,7 @@ function tick(t){
   /* Die Kunden haben ihre eigene Zeit. Frueher hing ihr Schritt am
      Schritt des Spielers, dann standen sie still, sobald er stand. */
   custTick(dt);
+  if(W.aktion && W.aktion.atmen) placeChar();
   var nr=nearestSpot();
   if((nr&&nr.id)!==(W.near&&W.near.id)){
     W.near=nr;
@@ -8129,6 +8172,7 @@ function tick(t){
 function arrive(){ var sp=nearestSpot(); if(sp) openSpot(sp); }
 
 function goTo(cx,cy){
+  if(W.locked) return false;          /* waehrend Kaffee und Sofa steht alles */
   var p=findPath(W.pos.x,W.pos.y,cx,cy);
   if(!p||!p.length) return false;
   /* smooth: drop collinear waypoints */
@@ -8189,6 +8233,7 @@ function closePanel(){ document.getElementById('wPanel').classList.remove('up');
 
 function locRoom(r){ return locName(ROOMS[r]||{de:r,en:r,ar:r}); }
 function openSpot(sp){
+  if(W.locked) return;
   if(sp.id==='akten' && W.room==='buero'){pcRevisionOpen();return;}
   var L=state.lang, T=WSPOT[W.room+'.'+sp.id]||WSPOT[sp.id]||{};
 
@@ -8209,17 +8254,60 @@ function openSpot(sp){
     });
   }
   if(sp.id==='kaffee') acts.push({t:t('pauseKaffee'), cls:'main', fn:function(){
+    closePanel();
     var vorher=state.kraft||0;
-    kraftAendern(KRAFT_KAFFEE);
-    coffeeBreak(Math.round((state.kraft||0)-vorher));
+    var ende=function(){
+      aktionEnde();
+      kraftAendern(KRAFT_KAFFEE);
+      coffeeBreak(Math.round((state.kraft||0)-vorher));
+    };
+    spieleAktion('kaffee', [
+      [0,500],  [1,600,SND_K.mahlen], [2,900],
+      [3,500,SND_K.tasse], [4,900], [5,700], [6,800], [7,900], [8,800],
+      [0,500,SND_K.tasse]
+    ], ende);
   }});
   if(sp.id==='sofa') acts.push({t:t('pauseSofa'), cls:'main', fn:function(){
-    var vorher=state.kraft||0;
-    kraftAendern(KRAFT_SOFA);
-    var gewinn=Math.round((state.kraft||0)-vorher);
-    SND.good();
-    openPanel(t('pauseSofa'), t('sofaText')+(gewinn>0?' '+t('kraftPlus').replace('{k}',gewinn):''),
-      [{t:t('closeBtn'), cls:'main'}]);
+    closePanel();
+    var vorher=state.kraft||0, sitz={x:14,y:12}, stand={x:W.pos.x,y:W.pos.y};
+    var atlas=PHAR_AKTION.sofa;
+    var schluss=function(){
+      W.pos.x=17; W.pos.y=12;
+      aktionEnde();
+      kraftAendern(KRAFT_SOFA);
+      var gewinn=Math.round((state.kraft||0)-vorher);
+      SND.good();
+      openPanel(t('pauseSofa'), t('sofaText')+(gewinn>0?' '+t('kraftPlus').replace('{k}',gewinn):''),
+        [{t:t('closeBtn'), cls:'main'}]);
+    };
+    if(!atlas || !atlas.ready){ schluss(); return; }
+    /* Sitzpunkt: der Rumpf sitzt auf dem Polster, nicht davor. */
+    W.pos.x=sitz.x; W.pos.y=sitz.y;
+    spieleAktion('sofa', [[0,450],[1,450],[2,450,SND_K.kissen],[3,450],[4,450]], function(){
+      /* Ruhen: Bild vier bleibt stehen, der Atem kommt aus dem Code.
+         Bild fuenf und sechs passen nicht dazu und lassen den Kopf
+         zucken, darum bleiben sie ungenutzt. */
+      W.aktion.frame=4; W.aktion.atmen=true; placeChar();
+      var geschlafen=false, weg=false;
+      var doesen=setTimeout(function(){
+        if(weg) return; geschlafen=true; W.aktion.frame=7; placeChar();
+      }, 8000);
+      var aufstehen=function(ev){
+        if(weg) return; weg=true;
+        clearTimeout(doesen);
+        document.removeEventListener('click', aufstehen, true);
+        if(ev) { ev.preventDefault(); ev.stopPropagation(); }
+        W.aktion.atmen=false;
+        var folge=geschlafen? [[8,700],[3,350],[2,350],[1,350],[0,350]]
+                            : [[3,350],[2,350],[1,350],[0,350]];
+        var i=0;
+        (function schritt(){
+          if(i>=folge.length){ schluss(); return; }
+          var f=folge[i++]; W.aktion.frame=f[0]; placeChar(); setTimeout(schritt, f[1]);
+        })();
+      };
+      setTimeout(function(){ document.addEventListener('click', aufstehen, true); }, 300);
+    });
   }});
   /* allgemeiner Punkt: oeffnet einen Link nach draussen */
   if(sp.url) acts.push({t:locName(sp), cls:'main', fn:function(){ window.open(sp.url,'_blank','noopener'); }});
@@ -8265,6 +8353,74 @@ var COFFEE_TIPS={
       "الأسبرين دون 12 سنة يحمل خطر متلازمة راي.",
       "مضادات الهيستامين أنجع وقائياً منها عند الحاجة."]
 };
+/* =====================================================================
+   Drei Geraeusche fuer die Kueche, im Code erzeugt, ohne Dateien.
+   Eigener AudioContext, damit SND unberuehrt bleibt. Stumm bleibt
+   stumm. Ein schlechter Ton ist schlimmer als keiner: faellt einer
+   unangenehm aus, wird er geloescht, nicht verbessert.
+===================================================================== */
+var SND_K = (function(){
+  var ctx;
+  function an(){ return !state.muted; }
+  function C(){ if(!ctx) ctx=new (window.AudioContext||window.webkitAudioContext)(); return ctx; }
+  function rauschen(dauer, hz, q, vol){
+    if(!an()) return;
+    try{
+      var c=C(), n=Math.floor(c.sampleRate*dauer), b=c.createBuffer(1,n,c.sampleRate), d=b.getChannelData(0);
+      for(var i=0;i<n;i++) d[i]=Math.random()*2-1;
+      var s=c.createBufferSource(); s.buffer=b;
+      var f=c.createBiquadFilter(); f.type='bandpass'; f.frequency.value=hz; f.Q.value=q;
+      var g=c.createGain(), t=c.currentTime;
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+0.05);
+      g.gain.setValueAtTime(vol,t+dauer-0.15); g.gain.linearRampToValueAtTime(0,t+dauer);
+      s.connect(f); f.connect(g); g.connect(c.destination); s.start();
+    }catch(e){}
+  }
+  return {
+    mahlen:function(){ rauschen(1.2, 900, 1.2, 0.12); },
+    tasse:function(){
+      if(!an()) return;
+      try{
+        var c=C(), t=c.currentTime;
+        [2200,3300].forEach(function(hz,i){
+          var o=c.createOscillator(), g=c.createGain();
+          o.type='sine'; o.frequency.value=hz;
+          g.gain.setValueAtTime(0.08/(i+1),t);
+          g.gain.exponentialRampToValueAtTime(0.0001,t+0.18);
+          o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+0.2);
+        });
+      }catch(e){}
+    },
+    kissen:function(){ rauschen(0.35, 180, 0.7, 0.18); }
+  };
+})();
+
+/* =====================================================================
+   Abspieler fuer eine Bildfolge an Ort und Stelle.
+   folge: [[bild, dauer_ms, ton?], ...] · waehrend des Laufs ist die
+   Steuerung gesperrt: kein Tippen auf die Karte, kein Raumwechsel.
+===================================================================== */
+function spieleAktion(name, folge, fertig){
+  var atlas=PHAR_AKTION[name];
+  if(!atlas || !atlas.ready){ if(fertig) fertig(); return; }   /* Blatt fehlt: alles wie vorher */
+  W.locked=true; W.path=[]; W.moving=false;
+  W.aktion={ name:name, frame:(folge[0]&&folge[0][0])||0, atmen:false };
+  var i=0;
+  (function schritt(){
+    if(i>=folge.length){ if(fertig) fertig(); return; }
+    var f=folge[i++];
+    W.aktion.frame=f[0];
+    placeChar();
+    if(f[2]) try{ f[2](); }catch(e){}
+    setTimeout(schritt, f[1]);
+  })();
+}
+function aktionEnde(){
+  W.aktion=null; W.locked=false;
+  var ch=document.getElementById('wChar'); if(ch) pcStyle(ch,'transformOrigin','50% 50%');
+  placeChar();
+}
+
 function coffeeBreak(gewinn){
   var L=state.lang, arr=COFFEE_TIPS[L]||COFFEE_TIPS.de;
   var tip=arr[Math.floor(Math.random()*arr.length)];
@@ -8309,6 +8465,7 @@ document.getElementById('wCustLayer').addEventListener('click', function(e){
 (function(){
   var st=document.getElementById('wStage');
   st.addEventListener('click',function(e){
+    if(W.locked) return;
     if(document.getElementById('wPanel').classList.contains('up')) { closePanel(); return; }
     var img=document.getElementById('wMap');
     var r=img.getBoundingClientRect();
