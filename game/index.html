@@ -233,6 +233,15 @@ body.rtl .lc-stars{right:auto;left:10px}
   .w-spot.key .sic{width:29px;height:29px} .w-spot.key .sic .ico{width:16px;height:16px}
   .w-spot .lb{font-size:9px}
 }
+.pc-dampf{position:absolute;width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,.75);pointer-events:none;
+  animation:pcDampf 1.2s ease-out infinite}
+.pc-dampf:nth-child(2){animation-delay:.4s;left:5px}
+.pc-dampf:nth-child(3){animation-delay:.8s;left:-4px}
+@keyframes pcDampf{
+  0%{transform:translateY(0) scale(.6);opacity:0}
+  20%{opacity:.8}
+  100%{transform:translateY(-28px) scale(1.4);opacity:0}}
 .w-char{position:absolute;transform-origin:50% 100%;pointer-events:none;z-index:6;
   filter:drop-shadow(0 5px 5px rgba(0,0,0,.5));will-change:left,top,transform}
 .w-shadow{position:absolute;z-index:5;pointer-events:none;border-radius:50%;
@@ -1873,7 +1882,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-11-09 \u00b7 Kaffee und Sofa in Bewegung" +
+var PC_BUILD = "2026-11-10 \u00b7 Kaffee und Sofa v002" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -7702,15 +7711,22 @@ var PHAR_FRAMES={}, pcPharLoaded=false, pcPharFallback={};
    werden sie gespiegelt gezeigt, weil Maschine und Sofa rechts sind.
 ===================================================================== */
 var PHAR_AKTION = {
-  kaffee:{ src:"assets/phar_coffee_v001.webp", frames:[
-    [25,38,264,459,184.5],[342,38,269,459,505.0],[727,38,215,459,844.2],
-    [73,550,201,459,185.0],[378,550,233,459,505.0],[694,550,294,459,814.5],
-    [77,1061,194,459,182.5],[380,1061,232,459,505.0],[693,1061,261,459,827.5]]},
-  sofa:{ src:"assets/phar_sofa_v001.webp", frames:[
-    [85,36,184,470,188.0],[373,36,293,470,528.0],[733,37,224,470,870.0],
-    [33,538,287,470,206.0],[356,538,303,470,531.0],[691,538,301,470,864.0],
-    [35,1051,298,470,208.0],[359,1052,293,470,540.0],[692,1053,265,470,851.0]]}
+  /* Vier mal vier Bilder je Blatt. Die Kaesten sind knapp geschnitten,
+     darum ist der stehende Mann hier 310 bzw. 346 Pixel hoch, im
+     Gehblatt aber 470. Ohne Ausgleich waere er in der Pause anderthalb
+     mal so gross. hf = Kastenhoehe / 470 haelt ihn gleich gross. */
+  kaffee:{ src:"assets/phar_coffee_v002.webp", hf:310/470, frames:[
+    [44,57,165,310,136.5],[284,57,181,310,392.5],[527,57,194,310,648.5],[811,57,167,310,904.5],
+    [32,441,177,310,136.5],[330,441,135,310,392.5],[560,441,158,310,654.5],[796,441,173,310,904.0],
+    [58,825,141,310,136.5],[311,825,146,310,392.5],[563,825,158,310,648.5],[804,825,180,310,891.0],
+    [61,1209,142,310,137.0],[318,1209,140,310,393.0],[555,1209,166,310,649.0],[799,1209,170,310,903.0]]},
+  sofa:{ src:"assets/phar_sofa_v002.webp", hf:346/470, frames:[
+    [70,42,142,346,148.0],[312,43,183,346,404.0],[547,43,206,346,658.0],[796,43,206,346,905.0],
+    [37,408,211,346,149.0],[297,407,158,346,389.0],[532,406,178,346,642.0],[759,412,215,346,898.0],
+    [15,776,218,346,143.0],[266,776,234,346,403.0],[514,775,238,346,650.0],[764,777,235,346,897.0],
+    [15,1166,231,346,147.0],[265,1167,225,346,402.0],[514,1167,237,346,634.0],[767,1168,208,346,901.0]]}
 };
+
 
 function pcLoadPhar(){
   if(pcPharLoaded)return;pcPharLoaded=true;
@@ -7756,9 +7772,11 @@ function pcDrawPhar(h){
   ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,width,h);
   ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
   if(atlas.ready){
-    var f=atlas.frames[frame],scale=h/f[3];ctx.save();
+    /* hf nur bei den Aktionsblaettern; die Fuesse bleiben unten. */
+    var hf=(akt && atlas.hf) ? atlas.hf : 1, hh=h*hf, oy=h-hh;
+    var f=atlas.frames[frame],scale=hh/f[3];ctx.save();
     if(dir==='right'){ctx.translate(width,0);ctx.scale(-1,1);}
-    ctx.drawImage(atlas.image,f[0],f[1],f[2],f[3],width/2-(f[4]-f[0])*scale,0,f[2]*scale,h);ctx.restore();
+    ctx.drawImage(atlas.image,f[0],f[1],f[2],f[3],width/2-(f[4]-f[0])*scale,oy,f[2]*scale,hh);ctx.restore();
   }else if(pcPharFallback[dir]){
     var old=pcPharFallback[dir],ow=h*old.naturalWidth/old.naturalHeight;ctx.drawImage(old,(width-ow)/2,0,ow,h);
   }
@@ -8053,6 +8071,7 @@ function placeChar(){
     atem=' scaleY('+(1+0.012*(0.5-0.5*Math.cos(performance.now()/3000*2*Math.PI))).toFixed(4)+')';
   } else pcStyle(ch,'transformOrigin','50% 50%');
   pcStyle(ch,'transform','translate3d('+px.toFixed(2)+'px,'+(py+bob).toFixed(2)+'px,0) translate(-50%,-100%) rotate('+sway.toFixed(2)+'deg)'+atem);
+  dampfSetzen(px,py,W.cell*9.68*depth);
   var sw=W.cell*2.6*(1-Math.abs(ph)*0.16);
   pcStyle(sh,'width',sw.toFixed(2)+'px');pcStyle(sh,'height',(sw*0.42).toFixed(2)+'px');
   pcStyle(sh,'left','0px');pcStyle(sh,'top','0px');
@@ -8276,19 +8295,29 @@ function openSpot(sp){
     closePanel();
     var vorher=state.kraft||0;
     var ende=function(){
+      dampf(false);
+      W.pos.x=34; W.pos.y=21;                 /* zurueck auf den Anlaufpunkt */
       aktionEnde();
       kraftAendern(KRAFT_KAFFEE);
       coffeeBreak(Math.round((state.kraft||0)-vorher));
     };
+    if(!PHAR_AKTION.kaffee.ready){ ende(); return; }
+    /* Dicht an die Maschine: in Bild 2 soll die Hand das Blech
+       beruehren. Wert nach Augenmass, bei Bedarf hier aendern. */
+    W.pos.x=40; W.pos.y=21;
     spieleAktion('kaffee', [
-      [0,500],  [1,600,SND_K.mahlen], [2,900],
-      [3,500,SND_K.tasse], [4,900], [5,700], [6,800], [7,900], [8,800],
-      [0,500,SND_K.tasse]
+      [0,150], [1,130], [2,350,SND_K.tasse], [3,130],
+      [4,350,SND_K.mahlen], [5,250], [6,250], [5,250], [6,250], [7,150],
+      [8,350], [9,150], [10,600],
+      [11,500,function(){ dampf(true); }],
+      [12,220], [13,220], [12,220], [13,220], [12,220],
+      [13,220,function(){ dampf(false); }],
+      [14,700], [15,800], [8,150], [2,350,SND_K.tasse], [3,150]
     ], ende);
   }});
   if(sp.id==='sofa') acts.push({t:t('pauseSofa'), cls:'main', fn:function(){
     closePanel();
-    var vorher=state.kraft||0, sitz={x:14,y:12}, stand={x:W.pos.x,y:W.pos.y};
+    var vorher=state.kraft||0;
     var atlas=PHAR_AKTION.sofa;
     var schluss=function(){
       W.pos.x=17; W.pos.y=12;
@@ -8300,25 +8329,32 @@ function openSpot(sp){
         [{t:t('closeBtn'), cls:'main'}]);
     };
     if(!atlas || !atlas.ready){ schluss(); return; }
-    /* Sitzpunkt: der Rumpf sitzt auf dem Polster, nicht davor. */
-    W.pos.x=sitz.x; W.pos.y=sitz.y;
-    spieleAktion('sofa', [[0,450],[1,450],[2,450,SND_K.kissen],[3,450],[4,450]], function(){
-      /* Ruhen: Bild vier bleibt stehen, der Atem kommt aus dem Code.
-         Bild fuenf und sechs passen nicht dazu und lassen den Kopf
-         zucken, darum bleiben sie ungenutzt. */
-      W.aktion.frame=4; W.aktion.atmen=true; placeChar();
-      var geschlafen=false, weg=false;
+    W.pos.x=14; W.pos.y=12;                   /* Sitzpunkt, nach Augenmass */
+    /* Hinsetzen 0..5, dann hinlegen 6..9, beides kurz getaktet. */
+    spieleAktion('sofa', [
+      [0,120],[1,120],[2,120],[3,120],[4,120,SND_K.kissen],[5,120],
+      [6,130],[7,130],[8,130],[9,130]
+    ], function(){
+      /* Ruhen: Bild 10 steht, der Atem kommt aus dem Code. Bild 11
+         bleibt ungenutzt, der Wechsel liesse den Kopf zucken. */
+      W.aktion.frame=10; W.aktion.atmen=true; placeChar();
+      var geschlafen=false, weg=false, doesen2=null;
       var doesen=setTimeout(function(){
-        if(weg) return; geschlafen=true; W.aktion.frame=7; placeChar();
+        if(weg) return;
+        W.aktion.frame=12; placeChar();                    /* schwere Lider */
+        doesen2=setTimeout(function(){
+          if(weg) return; geschlafen=true; W.aktion.frame=13; placeChar();
+        }, 300);
       }, 8000);
       var aufstehen=function(ev){
         if(weg) return; weg=true;
-        clearTimeout(doesen);
+        clearTimeout(doesen); clearTimeout(doesen2);
         document.removeEventListener('click', aufstehen, true);
-        if(ev) { ev.preventDefault(); ev.stopPropagation(); }
+        if(ev){ ev.preventDefault(); ev.stopPropagation(); }
         W.aktion.atmen=false;
-        var folge=geschlafen? [[8,700],[3,350],[2,350],[1,350],[0,350]]
-                            : [[3,350],[2,350],[1,350],[0,350]];
+        var folge=geschlafen
+          ? [[14,150],[15,500],[9,90],[8,90],[7,90],[6,90],[5,90],[4,90],[3,90],[2,90],[1,90],[0,90]]
+          : [[9,90],[8,90],[7,90],[6,90],[5,90],[4,90],[3,90],[2,90],[1,90],[0,90]];
         var i=0;
         (function schritt(){
           if(i>=folge.length){ schluss(); return; }
@@ -8438,6 +8474,26 @@ function aktionEnde(){
   W.aktion=null; W.locked=false;
   var ch=document.getElementById('wChar'); if(ch) pcStyle(ch,'transformOrigin','50% 50%');
   placeChar();
+}
+
+/* Dampf · drei Punkte aus dem Code, kein Bild. Liegt ueber dem
+   Zeichenfeld, nicht darin: #wChar ist ein canvas ohne Kinder. */
+function dampf(an){
+  var alt=document.getElementById('pcDampf');
+  if(!an){ if(alt) alt.remove(); return; }
+  if(alt) return;
+  var box=document.createElement('div'); box.id='pcDampf';
+  box.style.cssText='position:absolute;left:0;top:0;z-index:6;pointer-events:none';
+  for(var i=0;i<3;i++){ var d=document.createElement('span'); d.className='pc-dampf'; box.appendChild(d); }
+  var ch=document.getElementById('wChar');
+  (ch.parentNode||document.body).appendChild(box);
+  placeChar();
+}
+function dampfSetzen(px,py,h){
+  var box=document.getElementById('pcDampf'); if(!box) return;
+  /* Becher vor dem Gesicht: ein Viertel der Breite nach rechts,
+     weil das Blatt gespiegelt wird, und knapp ein Drittel von oben. */
+  pcStyle(box,'transform','translate3d('+(px+h*0.9*0.25).toFixed(2)+'px,'+(py-h*0.70).toFixed(2)+'px,0)');
 }
 
 function coffeeBreak(gewinn){
