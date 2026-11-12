@@ -1884,7 +1884,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-11-12 \u00b7 Kaffee und Sofa v003" +
+var PC_BUILD = "2026-11-12 \u00b7 Kaffee und Sofa v004" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -7651,7 +7651,7 @@ var WORLD_MASKS = {
   "offizin": "000000000000000000000000000000000000000000000000000000000000000000000000000ffffffc00000000000c00000000000c000000000004000000000006000000000006000000000006000000000007000000000007000000000003000000000003800000000003800000000003800000000003c00000000003c00000000001c00000000001c00000000001e00000000001e00000000001e00000000001f00000000000f00000000000f00000000000f80000000000f80000000000f800000000007c00000000007c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
   "buero": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000001ffffff000001ffffff000001ffffff0000007fffff0000007fffff0000007fffff0000007fffff0000007fffff8000007fffff8000007fffff8000007fffff8000007fffff8000007fffff8000007fffff8000007fffff80001fffffff80000000003fc0000000003fc0000000003fc0002000003fc0002000003fc0002000003fc0006000003fc0006000003fc0006000003ffe006000003ffe00e000003ffe00e000003fff00e000003fff00ffffffffff01ffffffffff01ffffffffff81ffffffffff81ffffffffff83ffffffffffc3ffffffffffc3ffffffffffc7ffffffffffc000000000000000000000000000000000000",
   "rezeptur": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000007ffff80000007ffff80000007ffff8000000fffff8000000fffff8000000fffff8000000fffff8000000fffffc000000fffffc000000fffffc000000fffffc000001fffffc000001fffffc000001fffffc000001fffffc000001fffffe0000000007fe0000000007fe0000000007fe0000000007fe0000000007fe0000000007fe0000400007fe0000400007fe0000400007ff0000400007ff0000c00007ff0000c00007ff0000ffffffffff00ffffffffff01ffffffffff01ffffffffff81ffffffffff81ffffffffff83ffffffffffc3ffffffffffc3ffffffffffc7ffffffffffc000000000000000000000000000000000000",
-  "kueche": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000007fff800000007fff800000007fff800000007fff800000007fffc00000007fffc00000007fffc00000007fffc00000007fffc000007fffffc000007fffffe00000ffffffe00000ffffffe0000000001fe0000000001fe0000000001fe0000000001fe0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001fffc00000001fffe00000001fffe00000001fffe00000001ffff00000001ffff00000001ffff01ffffffffff01ffffffffff81ffffffffff81ffffffffff83ffffffffffc3ffffffffffc3ffffffffffc7ffffffffffc000000000000000000000000000000000000",
+  "kueche": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000007fff800000007fff800000007fff800000007fff800000007fffc00000007fffc00000007fffc00000007fffc00000007fffc000007fffffc000007fffffe00000ffffffe00000ffffffe0000000001fe0000000001fe0000000001ffc000000001ffe000000001ffe000000001ff0000000001ff0000000001ff0000000001ff0000000001ff0000000001fffc00000001fffe00000001fffe00000001fffe00000001ffff00000001ffff00000001ffff01ffffffffff01ffffffffff81ffffffffff81ffffffffff83ffffffffffc3ffffffffffc3ffffffffffc7ffffffffffc000000000000000000000000000000000000",
   "beratung": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001fffff8000001fffff8000001fffff8000001fffff8000001fffffc00003ffffffc00003ffffffc00003ffffffc00003ffffffc00007ffffffc00007ffffffc000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000200000000000200000000200600000000200600000000200600000000200e00000000300e00000000300ffffffffff00ffffffffff81ffffffffff81ffffffffff81ffffffffff83ffffffffffc3ffffffffffc3ffffffffffc3ffffffffffc000000000000000000000000000000000000"
 };
 
@@ -7682,7 +7682,7 @@ var ROOMS = {
     de:"Teamküche", en:"Team kitchen", ar:"مطبخ الفريق",
     start:[25, 17],
     spots:[
-      {id:"kaffee", c:[44, 21], approach:[34, 21], ico:"coffee", de:"Kaffeemaschine", en:"Coffee machine", ar:"ماكينة القهوة"},
+      {id:"kaffee", c:[44, 21], approach:[38, 23], ico:"coffee", de:"Kaffeemaschine", en:"Coffee machine", ar:"ماكينة القهوة"},
       {id:"tisch", c:[16, 27], approach:[28, 29], ico:"table", de:"Esstisch", en:"Dining table", ar:"طاولة الطعام"},
       {id:"sofa", c:[13, 12], approach:[17, 12], ico:"sofa", de:"Sofa", en:"Sofa", ar:"الكنبة"},
       {id:"kalender", c:[8, 15], approach:[9, 17], ico:"calendar", de:"Dienstplan", en:"Duty roster", ar:"جدول المناوبات"},
@@ -8191,7 +8191,13 @@ function tick(t){
   }
   if(pcWorldVisible()) W.raf=requestAnimationFrame(tick);
 }
-function arrive(){ var sp=nearestSpot(); if(sp) openSpot(sp); }
+function arrive(){
+  /* Ein Auftrag fuer die Ankunft (Kaffee: erst hingehen, dann trinken)
+     ersetzt das Oeffnen des Panels. Wer unterwegs woanders hin tippt,
+     kommt nicht am Standpunkt an; der Auftrag prueft das selbst. */
+  if(W.nachAnkunft){ var f=W.nachAnkunft; W.nachAnkunft=null; f(); return; }
+  var sp=nearestSpot(); if(sp) openSpot(sp);
+}
 
 function goTo(cx,cy){
   if(W.locked) return false;          /* waehrend Kaffee und Sofa steht alles */
@@ -8206,6 +8212,9 @@ function goTo(cx,cy){
   if(p.length>1) s.push(p[p.length-1]);
   W.path=s; SND.click(); return true;
 }
+/* Innerhalb von openSpot verdeckt ein lokales goTo(room) dieses hier.
+   Wer dort laufen lassen will, ruft pcGeheZu. */
+function pcGeheZu(cx,cy){ return goTo(cx,cy); }
 /* Alle Raumkarten einmal im Hintergrund laden und dekodieren und die
    Bilder festhalten. Ohne das wartet jeder erste Wechsel in einen Raum
    auf den Download seiner Karte, und der Browser kann die dekodierte
@@ -8228,7 +8237,7 @@ function pcPreloadMaps(){
 function enterRoom(id, at){
   pcLoadPhar();
   pcPreloadMaps();
-  W.room=id; W.mask=WORLD_MASKS[ROOMS[id].mask]; W.tasseLeer=false;
+  W.room=id; W.mask=WORLD_MASKS[ROOMS[id].mask]; W.tasseLeer=false; W.nachAnkunft=null;
   var r=ROOMS[id];
   W.pos={x:(at||r.start)[0], y:(at||r.start)[1]}; W.path=[]; W.moving=false; W.walkPhase=0; W.dir='down'; W.near=null;
   var rn=document.getElementById('wRoomName');
@@ -8300,17 +8309,27 @@ function openSpot(sp){
     var vorher=state.kraft||0;
     var ende=function(){
       dampf(false); tasseLeer(false);
-      W.pos.x=34; W.pos.y=21;                 /* zurueck auf den Anlaufpunkt */
+      /* v004: er bleibt stehen, wo er getrunken hat. Kein Sprung. */
       aktionEnde();
       kraftAendern(KRAFT_KAFFEE);
       coffeeBreak(Math.round((state.kraft||0)-vorher));
     };
     if(!PHAR_AKTION.kaffee.ready){ ende(); return; }
-    /* Vor dem Tresen, unterhalb der Maschine im Bild: das Blech liegt
-       auf Hueftoehe, also stehen die Fuesse tiefer als die Maschine.
-       Gerechnet aus Karte und Blatt (v003), am Telefon nachzustellen. */
-    W.pos.x=39; W.pos.y=23;
-    tasseLaden();                             /* zwei Sekunden Vorlauf bis Bild 8 */
+    /* v004 (Ammar 12.11.2026): kein Versetzen mehr. Der Anlaufpunkt IST
+       der Standpunkt [38,23], eine Zelle vor der Front des Unterschranks.
+       Steht er noch nicht dort, geht er erst hin, dann beginnt die Pause. */
+    var STAND=[38,23];
+    tasseLaden();                             /* Vorlauf bis Bild 8 */
+    var dort=function(){ return Math.hypot(W.pos.x-STAND[0], W.pos.y-STAND[1])<0.15; };
+    var los=function(){
+      W.pos.x=STAND[0]; W.pos.y=STAND[1];      /* hoechstens Bruchteile einer Zelle */
+      spieleKaffee();
+    };
+    if(dort()){ los(); return; }
+    if(!pcGeheZu(STAND[0], STAND[1])){ los(); return; }
+    W.nachAnkunft=function(){ if(dort()) los(); };
+    return;
+    function spieleKaffee(){
     /* v003: eine Tasse. Er bringt keine mit, er nimmt die vom Blech.
        Bild 8: Tasse in der Hand, das Blech wird leer gezeigt.
        Bild 2: Tasse zurueck, danach ist das Blech wieder voll. */
@@ -8326,6 +8345,7 @@ function openSpot(sp){
       [2,350,SND_K.tasse],
       [3,150,function(){ tasseLeer(false); }]
     ], ende);
+    }
   }});
   if(sp.id==='sofa') acts.push({t:t('pauseSofa'), cls:'main', fn:function(){
     closePanel();
