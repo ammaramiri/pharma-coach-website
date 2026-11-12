@@ -204,6 +204,7 @@ body.rtl .lc-stars{right:auto;left:10px}
 .w-map{position:absolute;left:0;top:0;display:block;user-select:none;-webkit-user-drag:none;
   object-fit:fill;transition:left .18s linear}
 .w-hot{position:absolute;inset:0;pointer-events:none}
+.w-tasse{position:absolute;left:0;top:0;z-index:1;pointer-events:none;user-select:none;-webkit-user-drag:none}
 .w-spot{position:absolute;transform:translate(-50%,-50%);pointer-events:none;
   display:flex;flex-direction:column;align-items:center;gap:3px;transition:opacity .25s;z-index:7}
 .w-spot .ic{display:none}
@@ -1246,6 +1247,7 @@ body.rtl .rv-nav{flex-direction:row-reverse}
   </div>
   <div class="w-stage" id="wStage">
     <img class="w-map" id="wMap" src="" alt="">
+    <img class="w-tasse" id="wTasse" alt="" style="display:none">
     <div class="w-hot" id="wHot"></div>
     <div class="w-shadow" id="wShadow"></div>
     <canvas class="w-char" id="wChar" width="1" height="1" aria-label="Pharmacist"></canvas>
@@ -1882,7 +1884,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-11-10 \u00b7 Kaffee und Sofa v002" +
+var PC_BUILD = "2026-11-12 \u00b7 Kaffee und Sofa v003" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -7711,16 +7713,17 @@ var PHAR_FRAMES={}, pcPharLoaded=false, pcPharFallback={};
    werden sie gespiegelt gezeigt, weil Maschine und Sofa rechts sind.
 ===================================================================== */
 var PHAR_AKTION = {
-  /* Vier mal vier Bilder je Blatt. Die Kaesten sind knapp geschnitten,
-     darum ist der stehende Mann hier 310 bzw. 346 Pixel hoch, im
-     Gehblatt aber 470. Ohne Ausgleich waere er in der Pause anderthalb
-     mal so gross. hf = Kastenhoehe / 470 haelt ihn gleich gross. */
-  kaffee:{ src:"assets/phar_coffee_v002.webp", hf:310/470, frames:[
+  /* Vier mal vier Bilder je Blatt. Die Kaesten sind wie in PHAR_ATLAS
+     auf die Hoehe des stehenden Mannes geschnitten: er fuellt den Kasten.
+     Darum kein Hoehenfaktor. Die 470 Pixel des Gehblatts sagen nichts
+     ueber die Groesse auf dem Schirm (v003, 12.11.2026: hf entfernt,
+     er schrumpfte sonst auf 66 bzw. 74 Prozent). */
+  kaffee:{ src:"assets/phar_coffee_v002.webp", frames:[
     [44,57,165,310,136.5],[284,57,181,310,392.5],[527,57,194,310,648.5],[811,57,167,310,904.5],
     [32,441,177,310,136.5],[330,441,135,310,392.5],[560,441,158,310,654.5],[796,441,173,310,904.0],
     [58,825,141,310,136.5],[311,825,146,310,392.5],[563,825,158,310,648.5],[804,825,180,310,891.0],
     [61,1209,142,310,137.0],[318,1209,140,310,393.0],[555,1209,166,310,649.0],[799,1209,170,310,903.0]]},
-  sofa:{ src:"assets/phar_sofa_v002.webp", hf:346/470, frames:[
+  sofa:{ src:"assets/phar_sofa_v002.webp", frames:[
     [70,42,142,346,148.0],[312,43,183,346,404.0],[547,43,206,346,658.0],[796,43,206,346,905.0],
     [37,408,211,346,149.0],[297,407,158,346,389.0],[532,406,178,346,642.0],[759,412,215,346,898.0],
     [15,776,218,346,143.0],[266,776,234,346,403.0],[514,775,238,346,650.0],[764,777,235,346,897.0],
@@ -7772,8 +7775,8 @@ function pcDrawPhar(h){
   ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,width,h);
   ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
   if(atlas.ready){
-    /* hf nur bei den Aktionsblaettern; die Fuesse bleiben unten. */
-    var hf=(akt && atlas.hf) ? atlas.hf : 1, hh=h*hf, oy=h-hh;
+    /* Gleiche Groesse in allen Blaettern: der Kasten ist die Figur. */
+    var hh=h, oy=0;
     var f=atlas.frames[frame],scale=hh/f[3];ctx.save();
     if(dir==='right'){ctx.translate(width,0);ctx.scale(-1,1);}
     ctx.drawImage(atlas.image,f[0],f[1],f[2],f[3],width/2-(f[4]-f[0])*scale,oy,f[2]*scale,hh);ctx.restore();
@@ -8054,6 +8057,7 @@ function kraftPruefen(){
 
 function placeChar(){
   cameraFollow();
+  tasseSetzen();
   var ch=document.getElementById('wChar'), sh=document.getElementById('wShadow');
   var depth=0.85+0.45*(W.pos.y/WORLD_G);
   pcDrawPhar(W.cell*9.68*depth);
@@ -8224,7 +8228,7 @@ function pcPreloadMaps(){
 function enterRoom(id, at){
   pcLoadPhar();
   pcPreloadMaps();
-  W.room=id; W.mask=WORLD_MASKS[ROOMS[id].mask];
+  W.room=id; W.mask=WORLD_MASKS[ROOMS[id].mask]; W.tasseLeer=false;
   var r=ROOMS[id];
   W.pos={x:(at||r.start)[0], y:(at||r.start)[1]}; W.path=[]; W.moving=false; W.walkPhase=0; W.dir='down'; W.near=null;
   var rn=document.getElementById('wRoomName');
@@ -8295,24 +8299,32 @@ function openSpot(sp){
     closePanel();
     var vorher=state.kraft||0;
     var ende=function(){
-      dampf(false);
+      dampf(false); tasseLeer(false);
       W.pos.x=34; W.pos.y=21;                 /* zurueck auf den Anlaufpunkt */
       aktionEnde();
       kraftAendern(KRAFT_KAFFEE);
       coffeeBreak(Math.round((state.kraft||0)-vorher));
     };
     if(!PHAR_AKTION.kaffee.ready){ ende(); return; }
-    /* Dicht an die Maschine: in Bild 2 soll die Hand das Blech
-       beruehren. Wert nach Augenmass, bei Bedarf hier aendern. */
-    W.pos.x=40; W.pos.y=21;
+    /* Vor dem Tresen, unterhalb der Maschine im Bild: das Blech liegt
+       auf Hueftoehe, also stehen die Fuesse tiefer als die Maschine.
+       Gerechnet aus Karte und Blatt (v003), am Telefon nachzustellen. */
+    W.pos.x=39; W.pos.y=23;
+    tasseLaden();                             /* zwei Sekunden Vorlauf bis Bild 8 */
+    /* v003: eine Tasse. Er bringt keine mit, er nimmt die vom Blech.
+       Bild 8: Tasse in der Hand, das Blech wird leer gezeigt.
+       Bild 2: Tasse zurueck, danach ist das Blech wieder voll. */
     spieleAktion('kaffee', [
-      [0,150], [1,130], [2,350,SND_K.tasse], [3,130],
-      [4,350,SND_K.mahlen], [5,250], [6,250], [5,250], [6,250], [7,150],
-      [8,350], [9,150], [10,600],
+      [5,150], [4,350,SND_K.mahlen], [5,250], [6,250], [5,250], [6,250],
+      [7,250],
+      [8,350,function(){ tasseLeer(true); SND_K.tasse(); }],
+      [9,150], [10,600],
       [11,500,function(){ dampf(true); }],
-      [12,220], [13,220], [12,220], [13,220], [12,220],
-      [13,220,function(){ dampf(false); }],
-      [14,700], [15,800], [8,150], [2,350,SND_K.tasse], [3,150]
+      [12,220], [13,220], [12,220], [13,220], [12,220], [13,220],
+      [14,700,function(){ dampf(false); }],
+      [15,800], [8,150],
+      [2,350,SND_K.tasse],
+      [3,150,function(){ tasseLeer(false); }]
     ], ende);
   }});
   if(sp.id==='sofa') acts.push({t:t('pauseSofa'), cls:'main', fn:function(){
@@ -8494,6 +8506,36 @@ function dampfSetzen(px,py,h){
   /* Becher vor dem Gesicht: ein Viertel der Breite nach rechts,
      weil das Blatt gespiegelt wird, und knapp ein Drittel von oben. */
   pcStyle(box,'transform','translate3d('+(px+h*0.9*0.25).toFixed(2)+'px,'+(py-h*0.70).toFixed(2)+'px,0)');
+}
+
+/* Leeres Blech · ein Ausschnitt der Kuechenkarte ohne Tasse, liegt
+   ueber der Karte und unter der Figur. Sichtbar nur, solange die Tasse
+   in der Hand ist. Fehlt die Datei, laeuft alles ohne Ausschnitt. */
+var TASSE_LEER = { src:"assets/maps/kueche_tasse_leer_v001.webp",
+                   x:806, y:676, w:80, h:88, kw:941, kh:1672 };
+function tasseLaden(){
+  var el=document.getElementById('wTasse'); if(!el) return;
+  if(el.getAttribute('src') || el._fehler) return;
+  /* Das Bild haengt schon im Dokument, erst jetzt kommt die Quelle:
+     ein freies new Image() mit lazy laedt auf manchem Telefon nie. */
+  el.onerror=function(){ el._fehler=true; el.style.display='none'; };
+  el.src=TASSE_LEER.src;
+}
+function tasseLeer(an){
+  W.tasseLeer=!!an;
+  if(an) tasseLaden();
+  tasseSetzen();
+}
+function tasseSetzen(){
+  var el=document.getElementById('wTasse'); if(!el) return;
+  var zeigen=W.tasseLeer && W.room==='kueche' && !el._fehler && W.dw>0;
+  if(!zeigen){ if(el.style.display!=='none') el.style.display='none'; return; }
+  var T=TASSE_LEER;
+  el.style.left=(W.ox+T.x*W.dw/T.kw).toFixed(2)+'px';
+  el.style.top=(W.oy+T.y*W.dh/T.kh).toFixed(2)+'px';
+  el.style.width=(T.w*W.dw/T.kw).toFixed(2)+'px';
+  el.style.height=(T.h*W.dh/T.kh).toFixed(2)+'px';
+  el.style.display='block';
 }
 
 function coffeeBreak(gewinn){
