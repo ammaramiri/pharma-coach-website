@@ -1884,7 +1884,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-11-12 \u00b7 Falldaten ausgelagert v001" +
+var PC_BUILD = "2026-11-14 \u00b7 Rezeptur REZ_01 v001" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5544,6 +5544,11 @@ function openSpot(sp){
      zeigen je eine Tuer, nicht drei, und erfundene Tueren waeren gelogen. */
   function goTo(room){ return function(){ enterRoom(room); }; }
 
+  if(sp.id==='waage' && W.room==='rezeptur'){
+    /* Rezeptur-Werkbank: Motor und Daten kommen erst mit diesem Knopf. */
+    acts.push({t:({de:'Erythromycin-Creme 1 % herstellen',en:'Make erythromycin cream 1%',ar:'تحضير كريم الإريثرومايسين 1%'})[L]||'Rezeptur',
+               cls:'main', fn:function(){ rezStarten('01'); }});
+  }
   if(sp.id==='desk'){
     /* Zwei Arten Arbeit liegen hier. Der Spieler waehlt die Art. */
     acts.push({t:t('workOpen'), cls:'main', fn:function(){ openWorkPicker('buero'); }});
@@ -6103,6 +6108,21 @@ syncMute();
    eigenen Datei und wird erst beim Klick geladen, samt seinen Daten
    (Spezifikation QMS, Abschnitt 9.7). */
 var AKTEN_PACKS=[{id:'revision',img:'assets/Revision/rev_pack_card.webp',name:'packRevision'},{id:'qms',img:'assets/QMS/qms_pack_card.webp',name:'packQms',motor:'js/qms_engine.js'}];
+/* Rezeptur (REZ_01, 14.11.2026): Motor, Kategorie und Fall liegen in
+   js/rez_engine.js, data/rez_meta.js und data/rez_01.js und werden
+   erst geladen, wenn der Spieler die Rezeptur-Arbeit oeffnet. */
+function rezStarten(id){
+  if(window.PCRez) return window.PCRez.open(id);
+  var s=document.createElement('script');
+  s.src='js/rez_engine.js'; s.async=true;
+  s.onload=function(){ if(window.PCRez) window.PCRez.open(id); };
+  s.onerror=function(){ s.remove();
+    window.alert({de:'Die Stufe konnte nicht geladen werden. Bitte Verbindung prüfen.',
+                  en:'The stage could not be loaded. Please check your connection.',
+                  ar:'تعذّر تحميل المرحلة. تحقّق من الاتصال.'}[state.lang]||'Fehler');
+  };
+  document.head.appendChild(s);
+}
 function qmsStarten(){
   if(window.PCQms) return window.PCQms.open();
   var s=document.createElement('script');
@@ -6447,6 +6467,8 @@ function pcRevisionOpen(){return PCRevision.open();}
 if(['de','en','ar'].indexOf(state.lang)<0){ state.lang='de'; save(); }
 applyLang();
 updateReturning();
+/* Testzugang: ?rez=01 oeffnet den Fall direkt, ohne den Weg durch die Raeume. */
+(function(){ var m=(location.search||'').match(/[?&]rez=(\d+)/); if(m) rezStarten(m[1]); })();
 </script>
 </body>
 </html>
