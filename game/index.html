@@ -1884,7 +1884,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-11-14 \u00b7 Rezeptur REZ_01 v001" +
+var PC_BUILD = "2026-11-14 \u00b7 Rezeptur REZ_01 + Team 01 v001" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5536,6 +5536,7 @@ function locRoom(r){ return locName(ROOMS[r]||{de:r,en:r,ar:r}); }
 function openSpot(sp){
   if(W.locked) return;
   if(sp.id==='akten' && W.room==='buero'){pcRevisionOpen();return;}
+  if(sp.id==='tisch' && W.room==='kueche'){teamAuswahl();return;}
   var L=state.lang, T=WSPOT[W.room+'.'+sp.id]||WSPOT[sp.id]||{};
 
   var title=locName(sp), text=(T['t_'+L]||T.t_de||'');
@@ -6116,6 +6117,46 @@ function rezStarten(id){
   var s=document.createElement('script');
   s.src='js/rez_engine.js'; s.async=true;
   s.onload=function(){ if(window.PCRez) window.PCRez.open(id); };
+  s.onerror=function(){ s.remove();
+    window.alert({de:'Die Stufe konnte nicht geladen werden. Bitte Verbindung prüfen.',
+                  en:'The stage could not be loaded. Please check your connection.',
+                  ar:'تعذّر تحميل المرحلة. تحقّق من الاتصال.'}[state.lang]||'Fehler');
+  };
+  document.head.appendChild(s);
+}
+/* Teamgespraeche am Kuechentisch (14.11.2026). Hier nur Titel, Karte
+   und Pfad; Inhalt in data/team_*.js, Motor in js/team_engine.js, beides
+   erst beim Antippen einer Karte geladen. Kein Fortschritt, keine Sperre. */
+var TEAM_STUFEN=[
+  { id:"team_01", src:"data/team_01_streit_hv.js", karte:"assets/Team/PCG_CARD_TEAM01_v002.webp", max:110,
+    de:"Streit am HV-Tisch", en:"The argument at the counter", ar:"شجار على الطاولة" }
+];
+function teamAuswahl(){
+  var L=state.lang;
+  openPanel(({de:'Teamgespräch',en:'Team talk',ar:'حديث الفريق'})[L]||'Teamgespräch','',
+    [{t:(L==='ar'?'إغلاق':(L==='en'?'Close':'Schließen')),cls:'ghost'}]);
+  var host=document.getElementById('wpText'), grid=document.createElement('div');
+  grid.className='wk-grid'; host.appendChild(grid);
+  TEAM_STUFEN.forEach(function(st){
+    var card=document.createElement('button'); card.type='button'; card.className='wk-card';
+    var img=document.createElement('img'); img.src=st.karte; img.alt=''; img.loading='lazy'; img.decoding='async';
+    img.onerror=function(){ img.remove(); };
+    card.appendChild(img);
+    var body=document.createElement('div'); body.className='wk-body'; card.appendChild(body);
+    var n=document.createElement('div'); n.className='wk-name'; n.textContent=locName(st); body.appendChild(n);
+    var best=state.levelBest[st.id];
+    var m=document.createElement('div'); m.className='wk-meta'; body.appendChild(m);
+    /* \u2066 \u2069: Zahlen bleiben auch im arabischen Panel in Leserichtung */
+    m.textContent='\u2066'+(best? (best.score+' / '+st.max+' · '+starStr(best.stars||0)) : ('0 / '+st.max))+'\u2069';
+    card.addEventListener('click',function(){ closePanel(); teamStarten(st); });
+    grid.appendChild(card);
+  });
+}
+function teamStarten(st){
+  if(window.PCTeam) return window.PCTeam.open(st.id, st.src);
+  var s=document.createElement('script');
+  s.src='js/team_engine.js'; s.async=true;
+  s.onload=function(){ if(window.PCTeam) window.PCTeam.open(st.id, st.src); };
   s.onerror=function(){ s.remove();
     window.alert({de:'Die Stufe konnte nicht geladen werden. Bitte Verbindung prüfen.',
                   en:'The stage could not be loaded. Please check your connection.',
