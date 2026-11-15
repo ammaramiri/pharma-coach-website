@@ -13,7 +13,7 @@ window.REZ_META = {
      den Spielstand (state.levelBest), Karte 640 x 360. */
   faelle: [
     { id:"01", level:"R1", src:"data/rez_01.js",
-      karte:"assets/rezeptur/PCG_REZ01_CARD_v001.webp",
+      karte:"assets/rezeptur/PCG_REZ01_CARD_v002.webp",
       titel:{ de:"Erythromycin-Creme 1 %", en:"Erythromycin cream 1%", ar:"كريم الإريثرومايسين 1%" } }
   ],
 

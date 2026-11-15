@@ -40,9 +40,23 @@ var CSS_SPIEL=[
 '.m16r-lupe{position:sticky;left:calc(100% - 42px);top:0;float:right;z-index:3;width:36px;height:36px;margin:-36px 0 0 0;border-radius:50%;border:0;background:#23272E;color:#fff;font:700 13px Inter,Arial,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25);cursor:pointer}',
 '.m16r .tap:hover,.m16r [data-field]:hover{background:#fff8dc}',
 '.m16r [data-field]{cursor:pointer}',
+/* Schutz gegen globale Klassen der Spielseite (.box in index.html) */
+'.m16r .stempel .box{background:transparent;border:0;border-radius:0;padding:0;box-shadow:none;min-width:0;max-width:none;transition:none;text-align:center}',
 '.m16r .miss{outline:.25cqw solid #D89A2C;background:rgba(216,154,44,.18);animation:m16rWack .2s ease-in-out}',
 '@keyframes m16rWack{25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}',
 '.m16r.lehre [data-field]:not(.hit){opacity:.45}',
+/* Ganzes Blatt auf dem Telefon (opt.gross): Blatt in Bildschirmbreite,
+   kein Wischen, keine Lupe. Die eingetragenen Werte werden groesser
+   gesetzt, die Vordruck-Beschriftung bleibt klein wie auf Papier. */
+'.m16r-gross .m16r-lupe{display:none}',
+'.m16r-gross .m16r{width:100%}',
+'.m16r-gross .m16r .vl{font-size:2.55cqw;line-height:1.12}',
+'.m16r-gross .m16r .lb{font-size:1.45cqw}',
+'.m16r-gross .m16r .rx{gap:1.2%}',
+'.m16r-gross .m16r .rx .vl{white-space:normal;overflow:visible;font-size:2.75cqw;font-weight:600}',
+'.m16r-gross .m16r .stempel .box span{font-size:2cqw}',
+'.m16r-gross .m16r .f1 .num,.m16r-gross .m16r .bar{font-size:2.2cqw}',
+'.m16r-gross .m16r .rpline b{font-size:2.6cqw}',
 '.m16r-gelb.m16r{--red:#C4566A;--paper:#F3E4C8}.m16r-gelb.m16r .bx,.m16r-gelb.m16r .ck,.m16r-gelb.m16r .b,.m16r-gelb.m16r .apo,.m16r-gelb.m16r .vorow,.m16r-gelb.m16r .grid6 i,.m16r-gelb.m16r .unfall{background:#F8ECE2}'
 ].join('\n');
 function stil(){
@@ -96,6 +110,7 @@ function erzeugen(el, opt){
   });
   /* Telefon hochkant: doppelte Breite mit Wischen, sonst ganzes Blatt.
      Gemessen bei 380 px: 1x = 4,7 px Schrift (unlesbar), 2x = 9,5 px. */
+  if(opt.gross){ rahmen.classList.add('m16r-gross'); I.zoom(1); return I; }
   I.zoom(opt.zoom || ((el.clientWidth||400)<520 ? 2 : 1));
   return I;
 }

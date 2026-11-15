@@ -193,7 +193,8 @@ function kopfZeichnen(nr){
   kopf.replaceChildren();
   var zu=knopf('✕',function(){ if(window.confirm(w('abbrechen'))) raus(); },kopf,'rz-zu');
   zu.setAttribute('aria-label','close');
-  el('span','rz-kopf-titel',kopf, nr? (nr+' · '+stName(nr)) : tr(R.fall.titel));
+  /* dir=auto: "1%" bleibt im arabischen Titel an seinem Platz */
+  el('span','rz-kopf-titel',kopf, nr? (nr+' · '+stName(nr)) : tr(R.fall.titel)).dir='auto';
   var p=el('span','rz-punkte',kopf);
   for(var i=1;i<=8;i++){ el('span','rz-dot'+(i<nr?' fertig':'')+(i===nr?' jetzt':''),p); }
   if(nr && nr>=1 && !R.uebersprungen[nr] && !R.fertig[nr]) knopf(w('ueberspringen'),function(){ ueberspringen(nr); },kopf,'rz-skip');
@@ -283,12 +284,12 @@ function etikettAuf(eltern,pos,html,cls){
 function s1(){
   kopfZeichnen(1); leeren(); hintergrund(META.bilder.bank);
   var rz=F.rezept, r={}; Object.keys(rz.r).forEach(function(k){ r[k]=ersetzen(rz.r[k]); });
-  var k=karte('rz-voll rz-papier');
+  var k=karte('rz-voll rz-auto rz-papier');
   el('p','rz-frage',k,tr(rz.aufgabe));
   var host=el('div','rz-m16',k);
   var fb=el('div','rz-fb',k);
   var punkte=25, fertig=false, daneben={};
-  var I=M16.create(host);
+  var I=M16.create(host,{gross:true});
   I.clear();
   I.set(M16.ausAlt(r));
   /* Felder des Falls (alte Namen) auf die Felder des Formulars */
@@ -1252,8 +1253,12 @@ function ziehbar(z,ziel,fn){
 }
 function etikettHTML(zeilen){ return zeilen.map(function(z){ return '<div>'+esc(z)+'</div>'; }).join(''); }
 function s7Freigabe(){
-  kopfZeichnen(8); leeren(); hintergrund(META.bilder.bank);
-  var k=karte('rz-unten');
+  /* Szene statt leerer Bank: die Dose mit dem Etikett auf dem Tisch,
+     die Entscheidung darunter. Die Szene verraet das Ergebnis nicht. */
+  kopfZeichnen(8); leeren(); hintergrund(F.szenen.freigabe);
+  etikettAuf(buehne,F.etiketten.freigabe,etikettHTML(R.etikett||[]),'rz-etik-mini');
+  /* Karte oben: die Dose (57-70 % der Bildhoehe) bleibt sichtbar */
+  var k=karte('rz-oben rz-oben-lang');
   el('p','rz-frage',k,w('freigabeFrage'));
   var vorschau=el('div','rz-etikett-blatt klein',k); vorschau.dir='ltr'; vorschau.innerHTML=etikettHTML(R.etikett||[]);
   var reihe=el('div','rz-reihe',k);
@@ -1307,12 +1312,23 @@ function ergebnisListe(richtig,frei){
   knopf(w('auswertung'),auswertung,k,'rz-btn rz-haupt');
 }
 function fehlerAusgeben(k){
-  var ul=el('ul','rz-fehlerliste',k), gesehen={};
+  /* Ein Eintrag je Fehlerart: Station, Grund, darunter die betroffenen
+     Dinge (Zutat oder Etikett-Baustein). So steht kein Eintrag ohne Text. */
+  var ul=el('ul','rz-fehlerliste',k), gruppen=[], nachId={};
   R.fehler.forEach(function(f){
-    var key=f.id; var g=grundText(f.id);
-    var li=el('li',null,ul); el('b',null,li,stName(f.st)+(f.wo&&zutatDef(f.wo)?' · '+zutatDef(f.wo).name:''));
-    if(!gesehen[key]){ el('span',null,li,g); gesehen[key]=true; }
+    var g=nachId[f.id]; if(!g){ g=nachId[f.id]={f:f,wo:[]}; gruppen.push(g); }
+    var n=woName(f.wo); if(n && g.wo.indexOf(n)<0) g.wo.push(n);
   });
+  gruppen.forEach(function(g){
+    var li=el('li',null,ul); el('b',null,li,stName(g.f.st)); el('span',null,li,grundText(g.f.id));
+    if(g.wo.length){ var d=el('div','rz-fehler-wo',li); d.dir='ltr'; g.wo.forEach(function(n){ el('span',null,d,n); }); }
+  });
+}
+function woName(wo){
+  if(!wo) return '';
+  var z=zutatDef(wo); if(z) return z.name;
+  var b=((F.etikett&&F.etikett.bausteine)||[]).filter(function(x){ return x.id===wo; })[0];
+  return b? bausteinText(b) : '';
 }
 
 /* ---------- Auswertung und Spielstand ---------- */
@@ -1428,6 +1444,8 @@ var STIL=[
 '.rz-tab{width:100%;border-collapse:collapse;font-size:11.5px;margin:6px 0}.rz-tab th,.rz-tab td{border-bottom:1px solid #E5E0D8;padding:5px 3px;text-align:left;vertical-align:top}',
 '.rz-abw{background:#FFF1D6}',
 '.rz-fehlerliste{margin:6px 0;padding-inline-start:18px;font-size:13px}.rz-fehlerliste li{margin-bottom:6px}.rz-fehlerliste b{display:block}',
+'.rz-fehler-wo{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.rz-fehler-wo span{font-size:11.5px;background:#F1EEE8;border-radius:6px;padding:2px 6px}',
+'.rz-karte.rz-auto{bottom:auto;max-height:95%}.rz-karte.rz-oben.rz-oben-lang{max-height:54%}',
 '.rz-sterne{font-size:28px;color:#E8192B;letter-spacing:4px;margin-bottom:6px}.rz-fallkarte{position:static!important;width:100%;border-radius:12px;margin-bottom:10px}.rz-lehre{border-inline-start:3px solid #2DDDC4;padding-inline-start:8px}',
 '.rz-schild{position:absolute;z-index:23;transform:translate(-50%,0);background:#fff;border-radius:999px;padding:3px 9px;font:700 11px Inter,sans-serif;box-shadow:0 2px 6px rgba(0,0,0,.12)}',
 '.rz-mitte{left:50%;top:45%;width:30%}',

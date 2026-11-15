@@ -1884,7 +1884,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-11-14 \u00b7 Muster 16 m16.js v001" +
+var PC_BUILD = "2026-11-15 \u00b7 Rezeptur-Liste + REZ_01 v003" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5544,8 +5544,8 @@ function openSpot(sp){
 
   if(sp.id==='waage' && W.room==='rezeptur'){
     /* Rezeptur-Werkbank: Motor und Daten kommen erst mit diesem Knopf. */
-    acts.push({t:({de:'Erythromycin-Creme 1 % herstellen',en:'Make erythromycin cream 1%',ar:'تحضير كريم الإريثرومايسين 1%'})[L]||'Rezeptur',
-               cls:'main', fn:function(){ rezStarten('01'); }});
+    acts.push({t:({de:'Rezeptur herstellen',en:'Compound a preparation',ar:'تحضير وصفة'})[L]||'Rezeptur',
+               cls:'main', fn:function(){ rezAuswahl(); }});
   }
   if(sp.id==='desk'){
     /* Zwei Arten Arbeit liegen hier. Der Spieler waehlt die Art. */
@@ -6119,6 +6119,34 @@ function rezStarten(id){
                   ar:'تعذّر تحميل المرحلة. تحقّق من الاتصال.'}[state.lang]||'Fehler');
   };
   document.head.appendChild(s);
+}
+/* Rezeptur-Faelle als Kartenliste (15.11.2026), wie Team und Retax.
+   Hier nur Titel, Karte und Spielstand-Id; alles andere laedt
+   rezStarten(id) erst beim Antippen. Neuer Fall = eine Zeile hier
+   und eine in data/rez_meta.js. */
+var REZ_STUFEN=[
+  { id:"01", level:"R1", karte:"assets/rezeptur/PCG_REZ01_CARD_v002.webp", max:200,
+    de:"Erythromycin-Creme 1 %", en:"Erythromycin cream 1%", ar:"كريم الإريثرومايسين 1%" }
+];
+function rezAuswahl(){
+  var L=state.lang;
+  openPanel(({de:'Rezeptur',en:'Compounding',ar:'التحضير'})[L]||'Rezeptur','',
+    [{t:(L==='ar'?'إغلاق':(L==='en'?'Close':'Schließen')),cls:'ghost'}]);
+  var host=document.getElementById('wpText'), grid=document.createElement('div');
+  grid.className='wk-grid'; host.appendChild(grid);
+  REZ_STUFEN.forEach(function(st){
+    var card=document.createElement('button'); card.type='button'; card.className='wk-card';
+    var img=document.createElement('img'); img.src=st.karte; img.alt=''; img.loading='lazy'; img.decoding='async';
+    img.onerror=function(){ img.remove(); };
+    card.appendChild(img);
+    var body=document.createElement('div'); body.className='wk-body'; card.appendChild(body);
+    var n=document.createElement('div'); n.className='wk-name'; n.textContent=locName(st); body.appendChild(n);
+    var best=state.levelBest[st.level];
+    var m=document.createElement('div'); m.className='wk-meta'; body.appendChild(m);
+    m.textContent='\u2066'+(best? (best.score+' / '+st.max+' · '+starStr(best.stars||0)) : ('0 / '+st.max))+'\u2069';
+    card.addEventListener('click',function(){ closePanel(); rezStarten(st.id); });
+    grid.appendChild(card);
+  });
 }
 /* Teamgespraeche am Kuechentisch (14.11.2026). Hier nur Titel, Karte
    und Pfad; Inhalt in data/team_*.js, Motor in js/team_engine.js, beides
