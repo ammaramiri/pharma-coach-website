@@ -8,7 +8,7 @@
      oberen Stiel, Bahn, Neigung, Tiefe, Schatten, Rauschton, Rasten).
    - Waagenplatz aus game/proto/waage.html (Tara, Tuer, Ruhe der
      Anzeige, Spatel mit Spuren, Halten = Dauerfluss, Abfall, Rueckgabe).
-   - Rezeptformular M16 (M16.build, M16.ring, M16.teach) aus index.html.
+   - Rezeptformular Muster 16 aus js/m16.js (Leitung 14.11.2026).
 
    Regeln (Brief §2): keine Fehlermeldung an der Werkbank; jeder Fehler
    wird still notiert und zeigt sich erst bei Pruefung, Protokoll oder
@@ -274,11 +274,11 @@ function etikettAuf(eltern,pos,html,cls){
 }
 
 /* =====================================================================
-   1 · REZEPT · M16 aus index.html
-   Mech.rezept kennt genau ein richtiges Feld je Phase. Hier sind zwei
-   Felder richtig und ihre Reihenfolge ist frei; darum baut der Motor das
-   Formular mit M16.build und wertet selbst aus, nach dem Muster von
-   rezeptStrafe: ein Fehlgriff kostet fuenf Punkte, Boden null.
+   1 · REZEPT · Muster 16 aus js/m16.js (Leitung 14.11.2026)
+   Das eine Rezeptformular des Spiels. Zwei Ziele (Verordnung und
+   Dosierung) in beliebiger Reihenfolge: target() nimmt die Liste und
+   sperrt das Blatt, wenn beide gefunden sind. Ein Fehlgriff kostet fuenf
+   Punkte, je Feld einmal, Boden null.
 ===================================================================== */
 function s1(){
   kopfZeichnen(1); leeren(); hintergrund(META.bilder.bank);
@@ -286,29 +286,27 @@ function s1(){
   var k=karte('rz-voll rz-papier');
   el('p','rz-frage',k,tr(rz.aufgabe));
   var host=el('div','rz-m16',k);
-  host.innerHTML=M16.build({ r:r, open:rz.offen });
   var fb=el('div','rz-fb',k);
-  var gefunden={}, punkte=25, fertig=false;
-  host.querySelectorAll('.m16-f[data-k]').forEach(function(b){
-    b.addEventListener('click',function(){
-      if(fertig) return; tonAn();
-      var key=b.dataset.k;
-      if(rz.richtig.indexOf(key)<0){
-        if(b.classList.contains('miss')) return;
-        b.classList.add('miss'); punkte=Math.max(0,punkte-5); schlecht(); vib(20); return;
-      }
-      if(gefunden[key]) return;
-      gefunden[key]=true; b.classList.add('hit'); b.disabled=true; klack(880,0.1);
-      M16.ring(b,null);
-      if(rz.richtig.every(function(x){ return gefunden[x]; })){
-        fertig=true; R.p1=punkte; gut(); stFertig(1);
-        host.querySelectorAll('.m16-f').forEach(function(x){ x.disabled=true; });
-        rueckmeldung(fb,true,w('gefunden'),tr(rz.erkl),s2);
-      }
-    });
+  var punkte=25, fertig=false, daneben={};
+  var I=M16.create(host);
+  I.clear();
+  I.set(M16.ausAlt(r));
+  /* Felder des Falls (alte Namen) auf die Felder des Formulars */
+  var ziele=rz.richtig.map(function(x){ return M16.altFeld(x); });
+  I.target(ziele);
+  I.onTap(function(f,ok){
+    tonAn();
+    if(ok){ klack(880,0.1); vib(10); return; }
+    if(daneben[f]) return; daneben[f]=true;
+    punkte=Math.max(0,punkte-5); schlecht(); vib(20);
   });
-  R.s1Loesen=function(){ rz.richtig.forEach(function(x){ var b=host.querySelector('[data-k="'+x+'"]'); if(b && !gefunden[x]){ gefunden[x]=true; b.classList.add('hit'); } });
-    fertig=true; host.querySelectorAll('.m16-f').forEach(function(x){ x.disabled=true; }); rueckmeldung(fb,true,w('uebersprungen'),tr(rz.erkl),s2); };
+  I.onDone(function(){
+    if(fertig) return; fertig=true; R.p1=punkte; gut(); stFertig(1);
+    I.lehre(true);
+    rueckmeldung(fb,true,w('gefunden'),tr(rz.erkl),s2);
+  });
+  R.s1Loesen=function(){ if(fertig) return; fertig=true; I.reveal(); I.lehre(true);
+    rueckmeldung(fb,true,w('uebersprungen'),tr(rz.erkl),s2); };
 }
 function rueckmeldung(zone,gutes,kopfTxt,text,weiter){
   zone.innerHTML='';
@@ -531,6 +529,9 @@ function waageAnsicht(){
   WV.anzeige=el('div','rz-anzeige',buehne); setze(WV.anzeige,c.anzeige);
   WV.wert=el('div','rz-wert',WV.anzeige,'0');
   var sm=el('small',null,WV.anzeige); WV.stabil=el('span','rz-stabil',sm); WV.stabilTxt=el('span',null,sm,'');
+  /* Sollwert immer sichtbar: kein Zurueckblaettern zum Arbeitsblatt */
+  WV.soll=el('div','rz-soll',buehne); setze(WV.soll,{x:c.anzeige.x,y:c.anzeige.y+52});
+  el('span',null,WV.soll,zutatDef(z).name); el('b',null,WV.soll,w('sollIst')+' '+zahl(sollVon(z),zutatDef(z).nk)+' g');
   WV.tara=knopf(w('tara'),tara,buehne,'rz-wknopf'); setze(WV.tara,c.tara);
   WV.ueber=knopf(w('uebernehmen'),uebernehmen,buehne,'rz-wknopf hell'); setze(WV.ueber,c.uebernehmen);
   WV.tipp=el('div','rz-tipp',buehne);
@@ -699,7 +700,7 @@ function sitzungEnde(zurSchale){
 }
 
 /* ---------- Ziehen am Waagenplatz (nach waage.html) ---------- */
-var zieht=null, FANG=230;
+var zieht=null, FANG=230, FINGER=null;
 function runter(ev){
   tonAn();
   var p=inBild(ev), e=ev.currentTarget, n=e.dataset.n;
@@ -716,7 +717,7 @@ function bewegen(ev){
   if(!zieht||ev.pointerId!==zieht.id) return;
   var p=inBild(ev);
   if(zieht.modus==='ziehen'){
-    var pos=WV.pos[zieht.n]; pos.x=p.x+zieht.dx; pos.y=p.y+zieht.dy;
+    var pos=WV.pos[zieht.n]; pos.x=p.x+zieht.dx; pos.y=p.y+zieht.dy; FINGER=p;
     if(Math.abs(p.x-zieht.start.x)+Math.abs(p.y-zieht.start.y)>18) zieht.bewegt=true;
     if(zieht.n==='schiff') B.schiffOrt='bank';
     if(zieht.n==='schale') B.schaleOrt='bank';
@@ -742,16 +743,19 @@ function hoch(ev){
   ablegen(z.n);
 }
 function ablegen(n){
-  var c=cfg(), p=WV.pos[n], bank=META.bank;
+  var c=cfg(), p=WV.pos[n], bank=META.bank, f=FINGER; FINGER=null;
+  /* Treffer, wenn Bildmitte ODER Finger am Ziel ist: der Spieler haelt
+     das Teil selten genau in der Mitte. */
+  function treffer(q,r){ return nah(p,q,r) || (f? nah(f,q,r) : false); }
   if(n==='schiff' || n==='schale'){
-    if(nah(p,c.pfanne,FANG)){
+    if(treffer(c.pfanne,FANG)){
       if(n==='schiff') B.schiffOrt=B.waage; else B.schaleOrt=B.waage;
       B.ruhigBis=performance.now()+600; klack(520,0.08);
     }
     waageZeichnen(); return;
   }
   if(n==='flasche'){
-    if(aufPfanne('schale') && nah(p,{x:WV.pos.schale.x,y:WV.pos.schale.y-120},FANG)){ B.flascheUeber=true; klack(420,0.08); }
+    if(aufPfanne('schale') && treffer({x:WV.pos.schale.x,y:WV.pos.schale.y-120},FANG)){ B.flascheUeber=true; klack(420,0.08); }
     else { WV.pos.flasche.x=bank.flasche.x; WV.pos.flasche.y=bank.flasche.y; }
     waageZeichnen(); return;
   }
@@ -761,19 +765,19 @@ function ablegen(n){
     var vorratOffen = creme || B.gefaessOffen;
     var behaelter = creme? (aufPfanne('schale')? {x:WV.pos.schale.x,y:WV.pos.schale.y} : null)
                          : (aufPfanne('schiff')? {x:WV.pos.schiff.x,y:WV.pos.schiff.y} : null);
-    if(s.rest>0 && vorratOffen && nah(p,vorrat,FANG)){
+    if(s.rest>0 && vorratOffen && treffer(vorrat,FANG)){
       fehler('rueckgabe',B.zutat); s.menge=0; s.rest=0; s.zustand='leer'; klack(300,0.1);
       waageZeichnen(); return;
     }
-    if(vorratOffen && nah(p,vorrat,FANG)){
+    if(vorratOffen && treffer(vorrat,FANG)){
       s.menge=raster(spur()*8); s.rest=0; s.zustand='voll'; s.art=creme?'creme':'pulver';
       klack(380,0.1); if(!creme){ rauschen(0.1,2600); setTimeout(function(){ rauschen(0); },160); }
       waageZeichnen(); return;
     }
-    if(nah(p,{x:WV.pos.abfall.x,y:WV.pos.abfall.y-40},FANG)){
+    if(treffer({x:WV.pos.abfall.x,y:WV.pos.abfall.y-40},FANG)){
       s.menge=0; s.rest=0; s.zustand='leer'; klack(200,0.14); waageZeichnen(); return;
     }
-    if(behaelter && nah(p,behaelter,FANG)){
+    if(behaelter && treffer(behaelter,FANG)){
       p.x=behaelter.x+150; p.y=behaelter.y-(creme?230:190); s.zustand='ueber'; waageZeichnen(); return;
     }
     if(s.zustand==='ueber') s.zustand='voll';
@@ -1032,7 +1036,7 @@ function s6(){
   var liste=el('div','rz-optionen',k), fertig=false;
   [['homogen',F.pruefen.homogen],['nach',F.pruefen.nach]].forEach(function(o){
     knopf(o[1],function(){
-      if(fertig) return; fertig=true; stFertig(6);
+      if(fertig) return; fertig=true;
       R.pruefung=o[0];
       if(o[0]==='homogen'){ if(R.klumpen) fehler('homogen'); klack(700,0.1); fuellen(); }
       else { if(!R.klumpen){ fehler('unnoetig'); klack(700,0.1); fuellen(); } else { R.nachbearbeitet=true; nacharbeit(); } }
@@ -1077,49 +1081,79 @@ var FV={};
 function fuellen(){
   bankFortsetzen(); stopSchleifeTicks(); leeren(); kopfZeichnen(6);
   hintergrund(META.bilder.bank);
+  var BS=META.bilder.schale, S=FUELL.schale;
   FV={ ladungen:{dose:0,kruke:0}, zu:{dose:false,kruke:false}, wahl:null, spatelVoll:false };
-  FV.pos={ schale:{x:250,y:830}, dose:{x:640,y:720}, kruke:{x:640,y:1110}, spatel:{x:300,y:1260} };
-  FV.schale=bildEl(META.bilder.schaleKlein,'rz-teil',buehne); setze(FV.schale,FV.pos.schale,400);
-  FV.blob=bildEl(META.bilder.blob,'rz-teil rz-blob',buehne); setze(FV.blob,{x:250,y:815},250);
+  FV.pos={ dose:{x:650,y:760}, kruke:{x:650,y:1130}, spatel:{x:470,y:1330} };
+  /* Die Schale mit der Creme darin: Ausschnitt aus dem Schalenbild,
+     nicht ein Haeufchen darueber. Je Ladung blendet die leere Schale ein. */
+  FV.schale=el('div','rz-fschale',buehne);
+  FV.schale.style.left=(S.x0/META.W*100)+'%'; FV.schale.style.top=(S.y0/META.H*100)+'%';
+  FV.schale.style.width=(S.w/META.W*100)+'%'; FV.schale.style.height=(S.h/META.H*100)+'%';
+  [BS[R.klumpen?'CREAM_LUMPS':'CREAM_SMOOTH'], BS.EMPTY].forEach(function(src,i){
+    var im=bildEl(src,'rz-fschale-bild',FV.schale);
+    im.style.width=(META.W/S.cw*100)+'%'; im.style.left=(-S.cx/S.cw*100)+'%'; im.style.top=(-S.cy/S.ch*100)+'%';
+    if(i===1){ im.style.opacity='0'; FV.leer=im; }
+  });
   FV.dose=bildEl(META.bilder.dose.EMPTY,'rz-teil',buehne); setze(FV.dose,FV.pos.dose,190);
   FV.kruke=bildEl(META.bilder.kruke.EMPTY,'rz-teil',buehne); setze(FV.kruke,FV.pos.kruke,190);
-  el('div','rz-schild',buehne,w('spenderdose')).style.cssText='left:'+(640/8.64)+'%;top:'+(870/15.36)+'%';
-  el('div','rz-schild',buehne,w('kruke')).style.cssText='left:'+(640/8.64)+'%;top:'+(1255/15.36)+'%';
+  el('div','rz-schild',buehne,w('spenderdose')).style.cssText='left:'+(650/8.64)+'%;top:'+(905/15.36)+'%';
+  el('div','rz-schild',buehne,w('kruke')).style.cssText='left:'+(650/8.64)+'%;top:'+(1275/15.36)+'%';
   FV.spatel=bildEl(META.bilder.spatel,'rz-teil greifbar',buehne); setze(FV.spatel,FV.pos.spatel,216);
   var k=karte('rz-oben'); el('p','rz-frage',k,tr(F.pruefen.fuellen));
   FV.tipp=el('p','rz-klein',k,w('tFuellen'));
   var leiste=el('div','rz-leiste',buehne);
   FV.weiter=knopf(w('weiter'),fuellenEnde,leiste,'rz-btn rz-haupt'); FV.weiter.style.display='none';
   var zh=null;
+  /* Der Spatel ist ueberall greifbar. Massgeblich ist seine Spitze: sie
+     nimmt Creme auf, sobald sie in der Schale ist, und gibt sie ab,
+     sobald sie ueber einem offenen Gefaess ist. Kein Loslassen noetig. */
   buehne.addEventListener('pointerdown',function(ev){ tonAn(); var p=inBild(ev);
-    if(nah(p,FV.pos.spatel,150)){ zh={id:ev.pointerId,dx:FV.pos.spatel.x-p.x,dy:FV.pos.spatel.y-p.y}; fang(ev); return; }
-    ['dose','kruke'].forEach(function(g){ if(nah(p,FV.pos[g],120) && FV.ladungen[g]>=F.pruefen.ladungen && !FV.zu[g]) zumachen(g); });
+    var sp=FV.pos.spatel;
+    if(Math.abs(p.x-sp.x)<150 && Math.abs(p.y-sp.y)<190){ zh={id:ev.pointerId,dx:sp.x-p.x,dy:sp.y-p.y}; fang(ev); return; }
+    ['dose','kruke'].forEach(function(g){ if(nah(p,FV.pos[g],130) && FV.ladungen[g]>=F.pruefen.ladungen && !FV.zu[g]) zumachen(g); });
   },{passive:false});
   buehne.addEventListener('pointermove',function(ev){ if(!zh||ev.pointerId!==zh.id) return; var p=inBild(ev);
-    FV.pos.spatel={x:p.x+zh.dx,y:p.y+zh.dy}; setze(FV.spatel,FV.pos.spatel,216); ev.preventDefault(); },{passive:false});
-  var los=function(ev){ if(!zh||ev.pointerId!==zh.id) return; zh=null; spatelAblegen(FV.pos.spatel); };
+    FV.pos.spatel={x:p.x+zh.dx,y:p.y+zh.dy}; setze(FV.spatel,FV.pos.spatel,216); spatelSpitze(); ev.preventDefault(); },{passive:false});
+  var los=function(ev){ if(!zh||ev.pointerId!==zh.id) return; zh=null; spatelSpitze();
+    FV.pos.spatel={x:470,y:1330}; setze(FV.spatel,FV.pos.spatel,216); };
   buehne.addEventListener('pointerup',los); buehne.addEventListener('pointercancel',los);
 }
-function spatelAblegen(p){
-  if(!FV.spatelVoll && nah(p,FV.pos.schale,190)){ FV.spatelVoll=true; FV.spatel.src=META.bilder.spatelCreme; klack(380,0.1); }
-  else if(FV.spatelVoll){
-    ['dose','kruke'].some(function(g){
-      if(!nah(p,FV.pos[g],170) || FV.zu[g]) return false;
-      if(FV.wahl && FV.wahl!==g) return false;
-      if(!FV.wahl){ FV.wahl=g; R.gefaess=g; if(g==='kruke') fehler('kruke'); }
-      FV.ladungen[g]++; FV.spatelVoll=false; FV.spatel.src=META.bilder.spatel; klack(520,0.1); vib(10);
-      if(FV.ladungen[g]>=F.pruefen.ladungen){ FV[g].src=META.bilder[g==='dose'?'dose':'kruke'].FILLED; FV.tipp.textContent=w('tDeckel'); }
-      FV.blob.style.width=((250*(1-FV.ladungen[g]/F.pruefen.ladungen)+20)/META.W*100)+'%';
-      return true;
-    });
+/* Schalenausschnitt (Bildkoordinaten des Schalenbilds) und Lage auf der Bank */
+var FUELL={ schale:{ cx:100, cy:470, cw:660, ch:530, x0:30, y0:690, w:440, h:353 },
+            spitze:{ dx:-84, dy:126 } };
+function spitzePunkt(){ var p=FV.pos.spatel; return {x:p.x+FUELL.spitze.dx, y:p.y+FUELL.spitze.dy}; }
+function spatelSpitze(){
+  var t=spitzePunkt(), S=FUELL.schale;
+  var mitte={x:S.x0+S.w/2, y:S.y0+S.h*0.52};
+  var inSchale=Math.abs(t.x-mitte.x)<S.w*0.40 && Math.abs(t.y-mitte.y)<S.h*0.34;
+  var rest=F.pruefen.ladungen-Math.max(FV.ladungen.dose,FV.ladungen.kruke);
+  if(!FV.spatelVoll && inSchale && rest>0){
+    FV.spatelVoll=true; FV.spatel.src=META.bilder.spatelCreme; klack(380,0.08); vib(8);
+    rauschen(0.08,1400); setTimeout(function(){ rauschen(0); },140);
+    return;
   }
-  FV.pos.spatel={x:300,y:1260}; setze(FV.spatel,FV.pos.spatel,216);
+  if(!FV.spatelVoll) return;
+  ['dose','kruke'].some(function(g){
+    if(FV.zu[g] || (FV.wahl && FV.wahl!==g)) return false;
+    var o={x:FV.pos[g].x, y:FV.pos[g].y-60};
+    if(!(Math.abs(t.x-o.x)<120 && Math.abs(t.y-o.y)<130)) return false;
+    if(!FV.wahl){ FV.wahl=g; R.gefaess=g; if(g==='kruke') fehler('kruke'); }
+    FV.ladungen[g]++; FV.spatelVoll=false; FV.spatel.src=META.bilder.spatel;
+    klack(520,0.1); vib(12);
+    /* Die Ladung faellt sichtbar ins Gefaess */
+    var b=bildEl(META.bilder.blob,'rz-teil rz-plopp',buehne); setze(b,{x:o.x,y:o.y-30},70);
+    setTimeout(function(){ b.remove(); },420);
+    FV.leer.style.opacity=(FV.ladungen[g]/F.pruefen.ladungen).toFixed(2);
+    if(FV.ladungen[g]>=F.pruefen.ladungen){ FV[g].src=META.bilder[g==='dose'?'dose':'kruke'].FILLED; FV.tipp.textContent=w('tDeckel'); }
+    return true;
+  });
 }
+function spatelAblegen(p){ FV.pos.spatel={x:p.x-FUELL.spitze.dx, y:p.y-FUELL.spitze.dy}; spatelSpitze(); }
 function zumachen(g){
   FV.zu[g]=true; FV[g].src=META.bilder[g==='dose'?'dose':'kruke'].CLOSED; klack(300,0.12); vib(15);
   FV.weiter.style.display='inline-block';
 }
-function fuellenEnde(){ s7Protokoll(); }
+function fuellenEnde(){ stFertig(6); s7Protokoll(); }
 
 /* =====================================================================
    7 · PROTOKOLL · ETIKETT · FREIGABE
@@ -1362,7 +1396,7 @@ var STIL=[
 '.rz-option.gewaehlt{border-color:#16B8A6;background:#E9FBF8}.rz-option.erledigt{border-color:#16B8A6}.rz-option:disabled{opacity:.6}',
 '.rz-reihe{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}',
 '.rz-fb{margin-top:10px}.rz-fbk{border-radius:12px;padding:10px 12px;white-space:pre-line}.rz-fbk.gut{background:#E9FBF8;border:1.5px solid #2DDDC4}.rz-fbk.schlecht{background:#FDECEE;border:1.5px solid #E8192B}.rz-fbk h5{margin:0 0 4px;font-size:14px}.rz-fbk p{margin:0}',
-'.rz-m16 .m16{font-size:13px}.rz-m16 .m16-v{unicode-bidi:plaintext}',
+'.rz-m16{margin:4px -6px 0;direction:ltr}',
 '.rz-monitor{background:#11241F;color:#D9F2E7;border-radius:12px;padding:10px 12px;margin-bottom:12px;font:500 13.5px/1.5 Inter,sans-serif}.rz-monitor-kopf{font-weight:800;color:#9BE7C8;margin-bottom:6px;font-size:12px;letter-spacing:.04em}.rz-cave{margin:0}',
 '.rz-hilfe{background:#FFF6D6;border:1px dashed #D4A574;border-radius:10px;padding:6px 10px;font-size:13px;margin-bottom:10px;direction:ltr}',
 '.rz-rechnen{display:flex;flex-direction:column;gap:6px;direction:ltr}.rz-rfeld{display:flex;align-items:center;gap:8px;border:2px solid #E5E0D8;border-radius:10px;padding:8px 10px;background:#fff;font:600 13px Inter,sans-serif;color:#23272E;cursor:pointer}',
@@ -1397,6 +1431,11 @@ var STIL=[
 '.rz-sterne{font-size:28px;color:#E8192B;letter-spacing:4px;margin-bottom:6px}.rz-fallkarte{position:static!important;width:100%;border-radius:12px;margin-bottom:10px}.rz-lehre{border-inline-start:3px solid #2DDDC4;padding-inline-start:8px}',
 '.rz-schild{position:absolute;z-index:23;transform:translate(-50%,0);background:#fff;border-radius:999px;padding:3px 9px;font:700 11px Inter,sans-serif;box-shadow:0 2px 6px rgba(0,0,0,.12)}',
 '.rz-mitte{left:50%;top:45%;width:30%}',
+'.rz-fschale{position:absolute;z-index:15;overflow:hidden;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 78%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 78%,transparent 100%)}',
+'.rz-buehne .rz-fschale-bild{position:absolute;height:auto;max-width:none;transition:opacity .35s}',
+'.rz-plopp{z-index:24;animation:rzPlopp .4s ease-in forwards}@keyframes rzPlopp{from{transform:translate(-50%,-50%) scale(1)}to{transform:translate(-50%,40%) scale(.5);opacity:0}}',
+'.rz-soll{position:absolute;z-index:40;transform:translate(-50%,0);background:#fff;color:#23272E;border:1.5px solid #16B8A6;border-radius:10px;padding:4px 9px;font:700 11.5px/1.25 Inter,sans-serif;text-align:center;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,.12)}',
+'.rz-soll b{display:block;font-size:14px;font-variant-numeric:tabular-nums}',
 '.rz-debug{position:fixed;z-index:9998;right:4px;top:48px;max-width:58vw;max-height:40vh;overflow:auto;margin:0;background:rgba(0,0,0,.72);color:#9BE7C8;font:10px/1.35 ui-monospace,monospace;padding:6px;border-radius:6px;pointer-events:none;white-space:pre-wrap}'
 ].join('\n');
 function stil(){ if(document.getElementById('rzStil')) return; var s=document.createElement('style'); s.id='rzStil'; s.textContent=STIL; document.head.appendChild(s); }
@@ -1405,7 +1444,7 @@ function stil(){ if(document.getElementById('rzStil')) return; var s=document.cr
 function start(id){
   stopSchleife();
   var fall=META.faelle.filter(function(f){ return f.id===id; })[0] || META.faelle[0];
-  return skript(fall.src).then(function(){
+  return Promise.all([skript(fall.src), skript('js/m16.js')]).then(function(){
     F=window.REZ_FAELLE[fall.id];
     R={ fall:fall, falsch:false, fehler:[], uebersprungen:{}, fertig:{}, p1:0, p2:0, p8:0, werte:{}, ticks:[] };
     B=null;
@@ -1432,7 +1471,7 @@ window.PCRez={ open:open,
        sitzungEnde:sitzungEnde, schaleAnsicht:schaleAnsicht, schiffLeeren:schiffLeeren, drehen:drehen,
        schaben:function(){ var o=META.schale.oeffnung, bins={}; for(var i=0;i<12;i++){ var ph=Math.PI+(i+0.5)*Math.PI/12; karteSchaben({x:o.x+o.rx*Math.cos(ph),y:o.y+o.ry*Math.sin(ph)},bins); } },
        bankFertig:bankFertig, inhaltZustand:inhaltZustand, nachDreh:function(d){ R.nachDreh(d); },
-       fuellen:function(g){ for(var i=0;i<F.pruefen.ladungen;i++){ spatelAblegen(FV.pos.schale); spatelAblegen(FV.pos[g]); } zumachen(g); },
+       fuellen:function(g){ var S=FUELL.schale; for(var i=0;i<F.pruefen.ladungen;i++){ spatelAblegen({x:S.x0+S.w/2,y:S.y0+S.h*0.52}); spatelAblegen({x:FV.pos[g].x,y:FV.pos[g].y-60}); } zumachen(g); },
        ueberspringen:ueberspringen, entscheiden:entscheiden, s7Etikett:s7Etikett, s7Freigabe:s7Freigabe, auswertung:auswertung, start:start }
 };
 })();
