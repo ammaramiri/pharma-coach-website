@@ -7,7 +7,8 @@
    wer geht, beginnt neu. Die Endpunkte zaehlen wie bei allen Faellen.
 
    Schrittarten (Spezifikation TEAM01 §2): intro · timer · choice ·
-   dialog · cards. Reihenfolge der Antworten wird bei jedem Spiel neu
+   dialog · cards. Dazu (PLAN01, 16.11.2026): story · board (Plantafel).
+   Teamplan-Stufen stehen in window.PC_PLAN, Gespraeche in PC_TEAM. Reihenfolge der Antworten wird bei jedem Spiel neu
    gemischt; die Buchstaben-ids erscheinen nie.
 ===================================================================== */
 (function(){
@@ -32,7 +33,22 @@ var WT={
   gewaehlt:['{k} von {n} gewählt','{k} of {n} chosen','اخترت {k} من {n}'],
   ich:['Ich','Me','أنا'],
   quelle:['Quelle','Source','المرجع'],
-  ersteMal:['Punkte zählen beim ersten Durchgang.','Points count on the first run.','النقاط تُحتسب في المرة الأولى.']
+  ersteMal:['Punkte zählen beim ersten Durchgang.','Points count on the first run.','النقاط تُحتسب في المرة الأولى.'],
+  /* Plantafel (Bedienung, kein Fachtext) */
+  planOk:['Plan bestätigen','Confirm the plan','تأكيد الخطة'],
+  keineWarnung:['Keine Warnung.','No warnings.','لا إنذار.'],
+  tafelHilfe:['Feld antippen = füllen oder leeren · über eine Zeile wischen = mehrere Felder. Zum Blättern über die Uhrzeiten oder eine graue Zeile wischen.',
+              'Tap a slot to fill or clear it · swipe along a row for several slots. To scroll, swipe over the times or a grey row.',
+              'انقر خانة لتملأها أو تفرّغها · اسحب على الصف لعدة خانات. للتمرير اسحب على شريط الساعات أو على صف رمادي.'],
+  pauseHilfe:['Pause in die Zeile von {n} ziehen, oder antippen und dann ein Feld wählen.',
+              'Drag the break into {n}\'s row, or tap it and then pick a slot.',
+              'اسحب الاستراحة إلى صف {n}، أو انقرها ثم اختر خانة.'],
+  pauseBereit:['Jetzt ein Feld in der Zeile von {n} antippen.','Now tap a slot in {n}\'s row.','الآن انقر خانة في صف {n}.'],
+  meinPlan:['Mein Plan','My plan','خطتي'],
+  musterPlan:['Musterplan','Model plan','الخطة النموذجية'],
+  pauseFenster:['Gestrichelt: hier darf die Pause beginnen.','Dashed: the break may start here.','المنقّط: هنا يجوز أن تبدأ الاستراحة.'],
+  rolle_apotheker:['Apotheker','Pharmacist','صيدلاني'],
+  rolle_pta:['PTA','PTA','PTA']
 };
 function li(){ return state.lang==='en'?1:(state.lang==='ar'?2:0); }
 function w(k){ var v=WT[k]; return v? v[li()] : k; }
@@ -101,7 +117,8 @@ function weiterSchritt(){
   L.idx++; fortschritt();
   var s=T.steps[L.idx-1];
   if(!s) return epilog();
-  if(s.type==='intro') return introSchritt(s);
+  if(s.type==='intro' || s.type==='story') return introSchritt(s);
+  if(s.type==='board') return tafelSchritt(s);
   if(s.type==='timer') return wahlSchritt(s,true);
   if(s.type==='choice') return wahlSchritt(s,false);
   if(s.type==='dialog') return dialogSchritt(s);
@@ -109,7 +126,7 @@ function weiterSchritt(){
   weiterSchritt();
 }
 function introSchritt(s){
-  textLeeren();
+  textLeeren(); bild.classList.remove('flach');
   bildSetzen(s.img,0);
   absatz(text,tr(s.text));
   knopf(w('weiter'),weiterSchritt,text,'tm-btn tm-haupt');
@@ -133,7 +150,7 @@ function folge(eltern, opt, alle, haupttext, extra){
 var uhr=null;
 function stopUhr(){ if(uhr){ cancelAnimationFrame(uhr.raf); uhr=null; } }
 function wahlSchritt(s, mitUhr){
-  textLeeren(); stopUhr();
+  textLeeren(); stopUhr(); bild.classList.remove('flach');
   vorladen(s.options.map(function(o){ return o.img; }).concat(s.outro? [s.outro.img] : []));
   var geladen=bildSetzen(s.img,0);
   absatz(text,tr(s.text));
@@ -255,9 +272,292 @@ function kartenSchritt(s){
   L.aktuell={ waehlen:function(ids){ ids.forEach(function(id){ knoepfe.filter(function(b){ return b._c.id===id; })[0].click(); }); ok.click(); } };
 }
 
+
+/* =====================================================================
+   board · Plantafel (PLAN01 §3, 16.11.2026)
+   Zeilen = Personen, Spalten = 30-Minuten-Felder. Fuellen per Tippen
+   oder Wischen in der Zeile; Pause als eigene Karte, die auf einem
+   Feld liegt (darunter bleibt der Plan, wie er war). Warnungen nach
+   jeder Beruehrung. Blaettern: Uhrzeitleiste und graue Zeilen lassen
+   das native Wischen durch, Arbeitszeilen nicht (touch-action pan-y).
+===================================================================== */
+var SCHLOSS='<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><rect x="3" y="7" width="10" height="8" rx="1.5" fill="currentColor"/><path d="M5 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>';
+var ALARM_REIHE=['noPharmacist','tooLong','breakAlone','overTen','noBreak'];
+function minuten(t){ var m=String(t).split(':'); return (+m[0])*60+(+m[1]); }
+function uhrText(m){ return Math.floor(m/60)+':'+('0'+(m%60)).slice(-2); }
+
+function tafelModell(s){
+  var st=minuten(s.day.start), en=minuten(s.day.end), d=s.day.slotMinutes||30, n=Math.round((en-st)/d);
+  var M={ s:s, st:st, d:d, n:n, arbeit:{}, pause:-1, pid:(s.breakTile&&s.breakTile.for)||null };
+  s.people.forEach(function(p){ M.arbeit[p.id]=[]; for(var i=0;i<n;i++) M.arbeit[p.id].push(false); });
+  return M;
+}
+function person(M,id){ return M.s.people.filter(function(p){ return p.id===id; })[0]; }
+function zeit(M,i){ return M.st+i*M.d; }
+function gesperrtGrund(M,p,i){
+  var a=zeit(M,i), b=a+M.d, g=null;
+  (p.locked||[]).forEach(function(l){ if(a>=minuten(l.from) && b<=minuten(l.to)) g=l; });
+  return g;
+}
+function frei(M,p,i){
+  if(p.blocked || !p.available) return false;
+  var a=zeit(M,i);
+  if(a<minuten(p.available[0]) || a+M.d>minuten(p.available[1])) return false;
+  return !gesperrtGrund(M,p,i);
+}
+function arbeitet(M,id,i){ return M.arbeit[id][i] && !(id===M.pid && M.pause===i); }
+
+/* Warnungen: Typen fuer die Punkte, Orte fuer die Anzeige */
+function tafelAlarme(M){
+  var s=M.s, R=s.rules||{}, A={typen:{}, spalten:{}, zellen:{}, namen:{}};
+  var ap=s.people.filter(function(p){ return p.role==='apotheker' && !p.blocked; }).map(function(p){ return p.id; });
+  if(R.pharmacistAlways!==false){
+    for(var i=0;i<M.n;i++){
+      if(!ap.some(function(id){ return arbeitet(M,id,i); })){ A.spalten[i]=1; A.typen.noPharmacist=1; }
+    }
+  }
+  var k=M.pid; if(!k) return A;
+  var maxAm=(R.maxContinuousHours||6)*60, maxTag=(R.maxDailyHours||10)*60, lauf=0, summe=0;
+  for(var j=0;j<M.n;j++){
+    if(arbeitet(M,k,j)){ lauf+=M.d; summe+=M.d;
+      if(lauf>maxAm){ A.zellen[k+'_'+j]='tooLong'; A.typen.tooLong=1; } }
+    else lauf=0;
+  }
+  if(M.pause>=0 && R.breakNeedsOtherPharmacist!==false){
+    var andere=ap.filter(function(id){ return id!==k; }).some(function(id){ return arbeitet(M,id,M.pause); });
+    if(!andere){ A.zellen[k+'_'+M.pause]='breakAlone'; A.typen.breakAlone=1; }
+  }
+  if(summe>maxTag){ A.namen[k]=1; A.typen.overTen=1; }
+  if(summe>maxAm && M.pause<0){ A.namen[k]=1; A.typen.noBreak=1; }
+  return A;
+}
+
+/* Tafel zeichnen. nurLesen: Musterplan und Plan nach dem Bestaetigen */
+function tafelZeichnen(host, M, opt){
+  opt=opt||{};
+  host.replaceChildren();
+  var s=M.s, A=tafelAlarme(M);
+  var rahmen=el('div','tb-scroll',host); rahmen.dir=state.lang==='ar'?'rtl':'ltr';
+  var g=el('div','tb-grid',rahmen);
+  g.style.gridTemplateColumns='var(--tbName) repeat('+M.n+', minmax(var(--tbZelle),1fr))';
+  g.style.minWidth='calc(var(--tbName) + '+M.n+' * var(--tbZelle))';
+  var zeile=1;
+  /* Uhrzeiten */
+  el('div','tb-ecke',g).style.gridRow=zeile;
+  for(var i=0;i<M.n;i++){
+    var h=el('div','tb-uhr',g);
+    if(zeit(M,i)%60===0) el('span',null,h,uhrText(zeit(M,i))).dir='ltr';
+    h.style.gridRow=zeile; h.style.gridColumn=(i+2);
+  }
+  s.people.forEach(function(p){
+    zeile++;
+    var nm=el('div','tb-name '+(p.role==='pta'?'pta':'apo')+(A.namen[p.id]?' alarm':''),g);
+    nm.style.gridRow=zeile;
+    el('b',null,nm,tr(p.name)); el('small',null,nm,w('rolle_'+(p.role==='pta'?'pta':'apotheker')));
+    if(p.blocked){
+      var bl=el('div','tb-block',g); bl.style.gridRow=zeile; bl.style.gridColumn='2 / span '+M.n;
+      bl.innerHTML=SCHLOSS; bl._grund=p.blocked; bl._name=p.name;
+      return;
+    }
+    for(var j=0;j<M.n;j++){
+      var z=el('div','tb-z',g); z.style.gridRow=zeile; z.style.gridColumn=(j+2);
+      z.dataset.p=p.id; z.dataset.i=j;
+      var gr=gesperrtGrund(M,p,j);
+      if(gr) z.classList.add('gesperrt');
+      else if(!frei(M,p,j)) z.classList.add('aus');
+      else { z.classList.add('frei'); if(M.arbeit[p.id][j]) z.classList.add(p.role==='pta'?'an-pta':'an-apo'); }
+      if(p.id===M.pid && M.pause===j){ z.classList.add('pause'); z.title=tr(s.breakTile.label); }
+      if(A.zellen[p.id+'_'+j]) z.classList.add('alarm');
+      if(opt.fenster && p.id===M.pid && opt.fenster.indexOf(j)>=0) z.classList.add('fenster');
+    }
+    /* Text ueber gesperrten Bloecken */
+    (p.locked||[]).forEach(function(l){
+      var a=Math.round((minuten(l.from)-M.st)/M.d), b=Math.round((minuten(l.to)-M.st)/M.d);
+      if(b<=0||a>=M.n) return;
+      var t=el('div','tb-sperrtext',g,tr(l.reason)); t.style.gridRow=zeile; t.style.gridColumn=(Math.max(a,0)+2)+' / '+(Math.min(b,M.n)+2);
+    });
+  });
+  /* rote Linie unter Spalten ohne Apotheker */
+  zeile++;
+  el('div','tb-ecke',g).style.gridRow=zeile;
+  for(var c=0;c<M.n;c++){ var r=el('div','tb-rot'+(A.spalten[c]?' an':''),g); r.style.gridRow=zeile; r.style.gridColumn=(c+2); }
+  return {g:g, A:A, rahmen:rahmen};
+}
+
+function tafelSchritt(s){
+  textLeeren();
+  bild.classList.add('flach');
+  bildSetzen(s.img,0);
+  absatz(text,tr(s.text),'tm-p tm-rede');
+  var M=tafelModell(s), fertig=false, scharf=false;
+  var pName=M.pid? tr(person(M,M.pid).name) : '';
+  el('p','tb-hilfe',text,w('tafelHilfe'));
+  var host=el('div','tb-host',text);
+  var info=el('div','tb-info',text);
+  var ablage=el('div','tb-ablage',text), chip=null;
+  if(s.breakTile){
+    chip=el('button','tb-chip',ablage,tr(s.breakTile.label)+' · '+s.breakTile.minutes+' min'); chip.type='button';
+    el('span','tb-chiphilfe',ablage,w('pauseHilfe').replace('{n}',pName));
+  }
+  var warnBox=el('div','tb-warn',text);
+  var ok=knopf(w('planOk'),bestaetigen,el('div','tm-reihe',text),'tm-btn tm-haupt');
+  var zone=el('div',null,text);
+  var ansicht=null;
+
+  function malen(){
+    var sl=ansicht? ansicht.rahmen.scrollLeft : null;
+    ansicht=tafelZeichnen(host,M);
+    if(sl!=null) ansicht.rahmen.scrollLeft=sl;
+    warnungen(warnBox,ansicht.A);
+    if(chip){ chip.classList.toggle('gelegt',M.pause>=0); chip.classList.toggle('scharf',scharf); }
+  }
+  function zeigeInfo(t){ info.textContent=t||''; info.classList.toggle('an',!!t); }
+
+  /* ---- Fuellen und Leeren ---- */
+  var zug=null;
+  function zelleAus(x,y){ var e=document.elementFromPoint(x,y); return e && e.classList && e.classList.contains('tb-z')? e : null; }
+  function setzen(pid,i,an){
+    var p=person(M,pid); if(!p || !frei(M,p,i)) return false;
+    if(pid===M.pid && M.pause===i) return false;
+    if(M.arbeit[pid][i]===an) return false;
+    M.arbeit[pid][i]=an; return true;
+  }
+  function pauseLegen(i){
+    var p=person(M,M.pid); if(!p || !frei(M,p,i)) return false;
+    M.pause=i; return true;
+  }
+  host.addEventListener('pointerdown',function(ev){
+    if(fertig) return;
+    var t=ev.target;
+    var blk=t.closest && t.closest('.tb-block');
+    if(blk){ zeigeInfo(tr(blk._name)+': '+tr(blk._grund)); return; }
+    var z=t.closest && t.closest('.tb-z');
+    if(!z) return;
+    if(z.classList.contains('gesperrt')){ var p0=person(M,z.dataset.p), g0=gesperrtGrund(M,p0,+z.dataset.i); zeigeInfo(g0? tr(g0.reason):''); return; }
+    if(!z.classList.contains('frei')) return;
+    var pid=z.dataset.p, i=+z.dataset.i;
+    if(pid===M.pid && M.pause===i){ zug={art:'pause',x:ev.clientX,y:ev.clientY,id:ev.pointerId,bewegt:false}; }
+    else zug={art:'malen',pid:pid,i:i,an:!M.arbeit[pid][i],x:ev.clientX,y:ev.clientY,id:ev.pointerId,bewegt:false,besucht:{}};
+    try{ host.setPointerCapture(ev.pointerId); }catch(e){}
+  });
+  host.addEventListener('pointermove',function(ev){
+    if(!zug||ev.pointerId!==zug.id) return;
+    if(!zug.bewegt && Math.abs(ev.clientX-zug.x)+Math.abs(ev.clientY-zug.y)<7) return;
+    if(zug.art==='malen'){
+      if(!zug.bewegt){ zug.bewegt=true; if(setzen(zug.pid,zug.i,zug.an)) malen(); zug.besucht[zug.i]=1; }
+      var z=zelleAus(ev.clientX,ev.clientY);
+      /* in der eigenen Zeile bleiben: Hoehe der Startzeile, Spalte vom Finger */
+      if(!z || z.dataset.p!==zug.pid){
+        var zeilen=host.querySelectorAll('.tb-z[data-p="'+zug.pid+'"]'); if(!zeilen.length) return;
+        var r0=zeilen[0].getBoundingClientRect(); z=zelleAus(ev.clientX, r0.top+r0.height/2);
+        if(!z || z.dataset.p!==zug.pid) return;
+      }
+      var j=+z.dataset.i, a=Math.min(j,zug.i), b=Math.max(j,zug.i), geaendert=false;
+      for(var k=a;k<=b;k++){ if(setzen(zug.pid,k,zug.an)) geaendert=true; }
+      if(geaendert){ malen(); try{ navigator.vibrate&&navigator.vibrate(5); }catch(e){} }
+    } else {
+      zug.bewegt=true; geistBewegen(ev.clientX,ev.clientY);
+    }
+  });
+  function hoch(ev){
+    if(!zug||ev.pointerId!==zug.id) return;
+    var z0=zug; zug=null;
+    if(z0.art==='malen'){
+      if(!z0.bewegt){
+        if(scharf && z0.pid===M.pid){ scharf=false; pauseLegen(z0.i); zeigeInfo(''); }
+        else setzen(z0.pid,z0.i,z0.an);
+        malen();
+      }
+    } else {
+      geistWeg();
+      if(!z0.bewegt){ M.pause=-1; malen(); return; }
+      var z=zelleAus(ev.clientX,ev.clientY);
+      if(z && z.dataset.p===M.pid) pauseLegen(+z.dataset.i); else M.pause=-1;
+      malen();
+    }
+  }
+  host.addEventListener('pointerup',hoch); host.addEventListener('pointercancel',function(ev){ if(zug&&zug.art==='pause') geistWeg(); zug=null; });
+
+  /* ---- Pausenkarte ziehen oder antippen ---- */
+  var geist=null;
+  function geistBewegen(x,y){
+    if(!geist){ geist=el('div','tb-geist',document.body,tr(s.breakTile.label)); }
+    geist.style.left=x+'px'; geist.style.top=y+'px';
+  }
+  function geistWeg(){ if(geist){ geist.remove(); geist=null; } }
+  if(chip){
+    var cz=null;
+    chip.addEventListener('pointerdown',function(ev){
+      if(fertig) return;
+      cz={x:ev.clientX,y:ev.clientY,id:ev.pointerId,bewegt:false};
+      try{ chip.setPointerCapture(ev.pointerId); }catch(e){} ev.preventDefault();
+    });
+    chip.addEventListener('pointermove',function(ev){
+      if(!cz||ev.pointerId!==cz.id) return;
+      if(!cz.bewegt && Math.abs(ev.clientX-cz.x)+Math.abs(ev.clientY-cz.y)<7) return;
+      cz.bewegt=true; geistBewegen(ev.clientX,ev.clientY);
+    });
+    chip.addEventListener('pointerup',function(ev){
+      if(!cz||ev.pointerId!==cz.id) return;
+      var c0=cz; cz=null; geistWeg();
+      if(!c0.bewegt){ scharf=!scharf; zeigeInfo(scharf? w('pauseBereit').replace('{n}',pName):''); malen(); return; }
+      var z=zelleAus(ev.clientX,ev.clientY);
+      if(z && z.dataset.p===M.pid && pauseLegen(+z.dataset.i)){ scharf=false; zeigeInfo(''); }
+      malen();
+    });
+    chip.addEventListener('pointercancel',function(){ cz=null; geistWeg(); });
+  }
+
+  malen();
+
+  function bestaetigen(){
+    if(fertig) return; fertig=true; scharf=false; zeigeInfo('');
+    host.classList.add('fest'); ok.parentNode.remove(); ablage.remove();
+    text.querySelector('.tb-hilfe').remove();
+    var A=tafelAlarme(M), anzahl=Object.keys(A.typen).length;
+    var pkt=Math.max(0,(s.points||0)-(s.penaltyPerAlarm||0)*anzahl);
+    L.punkte[s.id]=pkt; L.wahl[s.id]={arbeit:M.arbeit, pause:M.pause, alarme:Object.keys(A.typen)};
+    host.insertAdjacentElement('beforebegin', el('h4','tb-h4',null,w('meinPlan')));
+    var k=el('div','tm-folge '+(pkt>=(s.points||0)?'gruen':(pkt>0?'gelb':'rot')),zone);
+    el('div','tm-pkt',k,'+'+pkt+' '+w('punkte'));
+    /* Musterplan in denselben Farben */
+    if(s.solution){
+      var MM=tafelModell(s), sol=s.solution;
+      Object.keys(sol).forEach(function(pid){
+        if(!MM.arbeit[pid]) return;
+        sol[pid].forEach(function(r){
+          for(var i=0;i<MM.n;i++){ var a=zeit(MM,i); if(a>=minuten(r[0]) && a+MM.d<=minuten(r[1])) MM.arbeit[pid][i]=true; }
+        });
+      });
+      var fenster=(sol.karimBreakStartAllowed||[]).map(function(t){ return Math.round((minuten(t)-MM.st)/MM.d); });
+      if(fenster.length) MM.pause=fenster[0];
+      el('h4','tb-h4',zone,w('musterPlan'));
+      var mh=el('div','tb-host fest',zone);
+      tafelZeichnen(mh,MM,{fenster:fenster});
+      if(fenster.length) el('p','tb-klein',zone,w('pauseFenster'));
+      if(s.solutionText) absatz(zone,tr(s.solutionText));
+    }
+    knopf(w('weiter'),weiterSchritt,el('div','tm-reihe',zone),'tm-btn tm-haupt');
+    try{ k.scrollIntoView({block:'nearest',behavior:'smooth'}); }catch(e){}
+  }
+  L.aktuell={ M:M,
+    setzen:function(pid,von,bis){ for(var i=0;i<M.n;i++){ var a=zeit(M,i); if(a>=minuten(von)&&a+M.d<=minuten(bis)) setzen(pid,i,true); } malen(); },
+    pause:function(t){ pauseLegen(Math.round((minuten(t)-M.st)/M.d)); malen(); },
+    alarme:function(){ return Object.keys(tafelAlarme(M).typen); },
+    bestaetigen:bestaetigen };
+}
+function warnungen(box,A){
+  box.replaceChildren();
+  var aktiv=ALARM_REIHE.filter(function(k){ return A.typen[k]; });
+  var s=T.steps[L.idx-1];
+  if(!aktiv.length){ el('p','tb-ok',box,w('keineWarnung')); return; }
+  var ul=el('ul','tb-warnliste',box);
+  aktiv.forEach(function(k){ el('li',null,ul,tr(s.alarms && s.alarms[k])); });
+}
+
 /* ---------- Abschluss ---------- */
 function epilog(){
-  textLeeren(); fortschritt();
+  textLeeren(); fortschritt(); bild.classList.remove('flach');
   bildSetzen(T.epilogue.img);
   absatz(text,tr(T.epilogue.text));
   knopf(w('weiter'),zusammenfassung,text,'tm-btn tm-haupt');
@@ -344,6 +644,42 @@ var STIL=[
 '.tm-why{margin:6px 0 0;font-weight:700;color:#B3121F}',
 '.tm-h3{font:800 17px Montserrat,Inter,sans-serif;margin:4px 0 8px}.tm-liste{margin:0 0 10px;padding-inline-start:20px}.tm-liste li{margin-bottom:6px}',
 '.tm-ergebnis{display:flex;align-items:center;gap:14px;margin:8px 0}.tm-summe{font:800 20px Montserrat,Inter,sans-serif}.tm-sterne{font-size:26px;color:#E8192B;letter-spacing:3px}',
+/* Plantafel */
+'.tm-bild.flach{aspect-ratio:16/6}',
+'.tb-hilfe{font-size:12.5px;color:#4B5563;margin:4px 0 6px}',
+'.tb-host{--tbName:66px;--tbZelle:26px;margin:4px 0}',
+/* breiter Bildschirm: der ganze Tag ohne Blaettern */
+'@media (min-width:600px){.tb-host{--tbName:60px;--tbZelle:24px}}',
+'.tb-scroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;border:1.5px solid #E5E0D8;border-radius:12px;background:#fff;overscroll-behavior-x:contain}',
+'.tb-grid{display:grid;grid-auto-rows:34px;width:100%;position:relative}',
+'.tb-grid>div{border-bottom:1px solid #F0ECE5}',
+'.tb-ecke,.tb-name{position:sticky;inset-inline-start:0;z-index:3;background:#fff;grid-column:1;border-inline-end:1.5px solid #E5E0D8}',
+'.tb-uhr{font:700 10px/1 Inter,sans-serif;color:#4B5563;white-space:nowrap;padding-top:12px;padding-inline-start:2px;overflow:visible;text-align:start;border-inline-start:1px solid #E5E0D8}',
+'.tb-name{display:flex;flex-direction:column;justify-content:center;padding:0 6px;font:800 12px/1.1 Inter,sans-serif;min-width:0}',
+'.tb-name small{font:600 9.5px Inter,sans-serif;color:#6B7280}.tb-name.apo{box-shadow:inset 3px 0 0 #16B8A6}.tb-name.pta{box-shadow:inset 3px 0 0 #F2B33D}',
+'[dir=rtl] .tb-name.apo{box-shadow:inset -3px 0 0 #16B8A6}[dir=rtl] .tb-name.pta{box-shadow:inset -3px 0 0 #F2B33D}',
+'.tb-name.alarm{color:#B3121F;background:#FDECEE}.tb-name.alarm b::after{content:" !";color:#E8192B}',
+'.tb-z{border-inline-end:1px solid #F0ECE5;touch-action:pan-y;cursor:pointer;display:flex;align-items:center;justify-content:center;font:800 11px Inter,sans-serif;color:#23272E;-webkit-user-select:none;user-select:none}',
+'.tb-z.aus{background:#F4F2EE;cursor:default;touch-action:auto}',
+'.tb-z.an-apo{background:#16B8A6}.tb-z.an-pta{background:#F2B33D}',
+'.tb-z.gesperrt{background:repeating-linear-gradient(135deg,#E9E5DD 0 5px,#F6F3EC 5px 10px);cursor:default;touch-action:auto}',
+'.tb-z.pause{background:repeating-linear-gradient(135deg,#fff 0 4px,#9ADFD6 4px 8px);outline:2px solid #0E6F64;outline-offset:-2px;cursor:grab;touch-action:none}',
+'.tb-z.alarm{box-shadow:inset 0 0 0 2.5px #E8192B}',
+'.tb-z.fenster{outline:2px dashed #0E6F64;outline-offset:-3px}',
+'.tb-sperrtext{z-index:2;pointer-events:none;align-self:center;text-align:center;font:700 10px/1.15 Inter,sans-serif;color:#4B5563;padding:0 4px;white-space:normal;border:0!important;overflow:hidden}',
+'.tb-block{display:flex;align-items:center;gap:6px;padding:0 8px;background:#ECEAE6;color:#8A8F98;cursor:pointer}',
+'.tb-rot{height:6px}.tb-rot.an{background:#E8192B}',
+'.tb-grid>.tb-rot,.tb-grid>.tb-ecke:last-of-type{border-bottom:0}',
+'.tb-info{min-height:0;font:700 12.5px/1.4 Inter,sans-serif;color:#23272E}.tb-info.an{background:#FFF7E3;border-radius:10px;padding:7px 10px;margin:6px 0}',
+'.tb-ablage{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:8px 0}',
+'.tb-chip{font:800 13px Inter,sans-serif;border:2px solid #0E6F64;border-radius:10px;padding:8px 12px;background:repeating-linear-gradient(135deg,#fff 0 4px,#C9EFEA 4px 8px);color:#0E6F64;touch-action:none;cursor:grab}',
+'.tb-chip.scharf{box-shadow:0 0 0 3px #E8192B}.tb-chip.gelegt{opacity:.55}',
+'.tb-chiphilfe{font-size:12px;color:#4B5563;flex:1 1 160px}',
+'.tb-geist{position:fixed;z-index:9999;transform:translate(-50%,-120%);pointer-events:none;font:800 13px Inter,sans-serif;border:2px solid #0E6F64;border-radius:10px;padding:6px 10px;background:repeating-linear-gradient(135deg,#fff 0 4px,#C9EFEA 4px 8px);color:#0E6F64;box-shadow:0 6px 16px rgba(0,0,0,.25)}',
+'.tb-warn{margin:6px 0}.tb-warnliste{margin:0;padding-inline-start:18px;color:#B3121F;font:700 13px/1.4 Inter,sans-serif}.tb-warnliste li{margin-bottom:3px}',
+'.tb-ok{color:#0E6F64;font-weight:800;margin:0}',
+'.tb-host.fest .tb-z{cursor:default;touch-action:auto}',
+'.tb-h4{font:800 14px Montserrat,Inter,sans-serif;margin:12px 0 4px}.tb-klein{font-size:12px;color:#4B5563;margin:4px 0 8px}',
 '.tm-klein{font-size:12.5px;color:#4B5563}.tm-quelle{font-size:11.5px;color:#6B7280;margin-top:14px;word-break:break-word}.tm-quelle a{color:#16B8A6}'
 ].join('\n');
 function stil(){ if(document.getElementById('tmStil')) return; var s=document.createElement('style'); s.id='tmStil'; s.textContent=STIL; document.head.appendChild(s); }
@@ -360,7 +696,7 @@ function skript(src){
 }
 function start(id){
   stopUhr();
-  T=window.PC_TEAM[id];
+  T=(window.PC_TEAM||{})[id] || (window.PC_PLAN||{})[id];
   L={ idx:0, punkte:{}, wahl:{}, fertig:false };
   geruest(); fortschritt();
   vorladen([T.intro && T.intro.img].concat(T.steps.map(function(s){ return s.img; })));

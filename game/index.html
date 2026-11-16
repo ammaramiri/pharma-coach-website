@@ -1884,7 +1884,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-11-15 \u00b7 Rezeptur direkt + REZ_01 v004" +
+var PC_BUILD = "2026-11-16 \u00b7 Teamplan 01 + Plantafel" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -4935,7 +4935,7 @@ var ROOMS = {
       {id:"kaffee", c:[44, 21], approach:[38, 23], ico:"coffee", de:"Kaffeemaschine", en:"Coffee machine", ar:"ماكينة القهوة"},
       {id:"tisch", c:[16, 27], approach:[28, 29], ico:"table", key:true, de:"Teamgespräch", en:"Team talk", ar:"حديث الفريق"},
       {id:"sofa", c:[13, 12], approach:[17, 12], ico:"sofa", de:"Sofa", en:"Sofa", ar:"الكنبة"},
-      {id:"kalender", c:[8, 15], approach:[9, 17], ico:"calendar", de:"Dienstplan", en:"Duty roster", ar:"جدول المناوبات"},
+      {id:"kalender", c:[8, 15], approach:[9, 17], ico:"calendar", key:true, de:"Teamplan", en:"Team plan", ar:"خطة الفريق"},
       {id:"door_buero", c:[25, 5], approach:[25, 7], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
   beratung:{ img:"assets/maps/map_beratung_v007.webp", mask:"beratung",
@@ -5534,6 +5534,8 @@ function openSpot(sp){
   if(W.locked) return;
   if(sp.id==='akten' && W.room==='buero'){pcRevisionOpen();return;}
   if(sp.id==='tisch' && W.room==='kueche'){teamAuswahl();return;}
+  /* Teamplan (Plantafel) am Kalender, 16.11.2026 */
+  if(sp.id==='kalender' && W.room==='kueche'){planAuswahl();return;}
   /* Rezeptur: direkt die Kartenliste, kein Zwischenfenster (15.11.2026) */
   if(sp.id==='waage' && W.room==='rezeptur'){rezAuswahl();return;}
   var L=state.lang, T=WSPOT[W.room+'.'+sp.id]||WSPOT[sp.id]||{};
@@ -6152,19 +6154,26 @@ var TEAM_STUFEN=[
   { id:"team_01", src:"data/team_01_streit_hv.js", karte:"assets/Team/PCG_CARD_TEAM01_v002.webp", max:110,
     de:"Streit am HV-Tisch", en:"The argument at the counter", ar:"شجار على الطاولة" }
 ];
-function teamAuswahl(){
+/* Teamplan-Stufen (Kalender in der Kueche), gleicher Motor wie Team */
+var PLAN_STUFEN=[
+  { id:"plan_01", src:"data/plan_01_schwarzer_montag.js", karte:"assets/Team/PCG_CARD_PLAN01_v001.webp", max:80,
+    de:"Schwarzer Montag", en:"Black Monday", ar:"الاثنين الأسود" }
+];
+function planAuswahl(){ teamAuswahl(PLAN_STUFEN,{de:'Teamplan',en:'Team plan',ar:'خطة الفريق'}); }
+function teamAuswahl(liste,titel){
   var L=state.lang;
-  openPanel(({de:'Teamgespräch',en:'Team talk',ar:'حديث الفريق'})[L]||'Teamgespräch','',
+  liste=liste||TEAM_STUFEN; titel=titel||{de:'Teamgespräch',en:'Team talk',ar:'حديث الفريق'};
+  openPanel(titel[L]||titel.de,'',
     [{t:(L==='ar'?'إغلاق':(L==='en'?'Close':'Schließen')),cls:'ghost'}]);
   var host=document.getElementById('wpText'), grid=document.createElement('div');
   grid.className='wk-grid'; host.appendChild(grid);
-  TEAM_STUFEN.forEach(function(st){
+  liste.forEach(function(st){
     var card=document.createElement('button'); card.type='button'; card.className='wk-card';
     var img=document.createElement('img'); img.src=st.karte; img.alt=''; img.loading='lazy'; img.decoding='async';
     img.onerror=function(){ img.remove(); };
     card.appendChild(img);
     var body=document.createElement('div'); body.className='wk-body'; card.appendChild(body);
-    var n=document.createElement('div'); n.className='wk-name'; n.textContent=locName(st); body.appendChild(n);
+    var n=document.createElement('div'); n.className='wk-name'; n.textContent=locName(st); n.dir='auto'; body.appendChild(n);
     var best=state.levelBest[st.id];
     var m=document.createElement('div'); m.className='wk-meta'; body.appendChild(m);
     /* \u2066 \u2069: Zahlen bleiben auch im arabischen Panel in Leserichtung */
