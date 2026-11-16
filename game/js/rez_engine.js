@@ -193,6 +193,21 @@ function geruest(){
   buehne=el('div','rz-buehne',wrap); buehne.dir='ltr';
   if(DEBUG){ debugEl=el('pre','rz-debug',root); }
   showNow('rezScreen');
+  desktopMass();
+  if(!desktopMass.an){ desktopMass.an=true; window.addEventListener('resize',desktopMass); }
+}
+/* ---------- Computer (15.11.2026) ----------
+   Ab 700 px Fensterbreite: Kopf und Buehne werden in Telefongroesse
+   gebaut (400 px breit) und als Ganzes per CSS-zoom auf die Fensterhoehe
+   vergroessert. Schrift, Knoepfe und Bild wachsen gemeinsam, das Bild
+   bleibt wie auf dem Telefon. Unter 700 px aendert sich nichts. */
+var DESK_B=400, DESK_H=52+Math.round(DESK_B*1536/864);
+function desktopMass(){
+  if(!root) return;
+  var wrap=root.querySelector('.rz-wrap'); if(!wrap) return;
+  var d = window.innerWidth>=700;
+  root.classList.toggle('rz-desk',d);
+  wrap.style.zoom = d? String(Math.min((window.innerHeight-16)/DESK_H,(window.innerWidth-16)/DESK_B)) : '';
 }
 function kopfZeichnen(nr){
   kopf.replaceChildren();
@@ -1484,6 +1499,11 @@ var STIL=[
 '#rezScreen{position:fixed;inset:0;z-index:60;background:#F6F3EC;color:#23272E;overflow:hidden}',
 '#rezScreen.active{display:block}',
 '.rz-wrap{height:100%;display:flex;flex-direction:column;align-items:center;padding-top:env(safe-area-inset-top,0px)}',
+/* Computer: feste Telefonmasse, Vergroesserung per zoom (desktopMass) */
+'#rezScreen.rz-desk.active{display:flex;align-items:center;justify-content:center}',
+'#rezScreen.rz-desk .rz-wrap{height:auto;width:'+DESK_B+'px;padding-top:0}',
+'#rezScreen.rz-desk .rz-kopf{max-width:none}',
+'#rezScreen.rz-desk .rz-buehne{width:'+DESK_B+'px}',
 '.rz-kopf{width:100%;max-width:600px;display:flex;align-items:center;gap:8px;padding:6px 10px;min-height:44px;font:600 13px/1.2 Inter,system-ui,sans-serif}',
 '.rz-kopf-titel{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:Montserrat,Inter,sans-serif;font-weight:800}',
 '.rz-zu,.rz-skip{border:1.5px solid #E5E0D8;background:#fff;color:#23272E;border-radius:10px;padding:6px 10px;font:700 12px Inter,sans-serif;cursor:pointer}',
