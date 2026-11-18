@@ -1884,7 +1884,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-11-18 \u00b7 HV 22 + Teamplan 01" +
+var PC_BUILD = "2026-11-18 \u00b7 Testzugang ?kunde" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -6671,6 +6671,26 @@ applyLang();
 updateReturning();
 /* Testzugang: ?rez=01 oeffnet den Fall direkt, ohne den Weg durch die Raeume. */
 (function(){ var m=(location.search||'').match(/[?&]rez=(\d+)/); if(m) rezStarten(m[1]); })();
+/* Testzugang Kunden (Ammar 18.11.2026): ?kunde=22 oeffnet den Fall von
+   CUS022 sofort, ohne auf ihn in der Offizin zu warten. Auch moeglich:
+   ?kunde=lagerist (Persona) oder ?kunde=L20 (Stufe). Die Kundenrunde
+   (state.custRunde) wird dabei nicht beruehrt: der Fall startet direkt,
+   nicht ueber custPickLevel, die Reihenfolge der Offizin bleibt gleich.
+   Punkte eines Testlaufs zaehlen wie ein normaler Lauf. */
+(function(){
+  var m=(location.search||'').match(/[?&]kunde=([A-Za-z0-9_]+)/); if(!m) return;
+  var k=m[1], nr=/^\d+$/.test(k) ? 'CUS'+('000'+k).slice(-3) : null;
+  var lv=LEVELS.filter(function(x){
+    var b=String((TOPICS[x.topic]||{}).banner||'');
+    return x.id===k || x.persona===k || x.topic===k || (nr && b.indexOf(nr+'_')>=0);
+  })[0];
+  if(!lv){
+    return window.alert({de:'Kunde '+k+' nicht gefunden.',en:'Customer '+k+' not found.',
+                         ar:'لم يُعثر على الزبون '+k+'.'}[state.lang]||k);
+  }
+  state.guideSeen=true;
+  startLevel(lv);
+})();
 </script>
 </body>
 </html>
