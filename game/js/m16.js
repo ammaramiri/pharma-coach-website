@@ -71,6 +71,9 @@ function stil(){
 function erzeugen(el, opt){
   stil(); opt=opt||{};
   var rahmen=document.createElement('div'); rahmen.className='m16r-rahmen';
+  /* Das Formular ist deutsch und immer links nach rechts, auch in einer
+     arabischen Seite (sonst spiegelt es sich: ".Rp", "-.Geb"). */
+  rahmen.dir='ltr';
   rahmen.innerHTML=HTML;
   var r=rahmen.firstChild;
   if(opt.gelb) r.classList.add('m16r-gelb');
@@ -110,7 +113,10 @@ function erzeugen(el, opt){
   });
   /* Telefon hochkant: doppelte Breite mit Wischen, sonst ganzes Blatt.
      Gemessen bei 380 px: 1x = 4,7 px Schrift (unlesbar), 2x = 9,5 px. */
-  if(opt.gross){ rahmen.classList.add('m16r-gross'); I.zoom(1); return I; }
+  /* Regel Ammar 18.11.2026: Muster 16 immer in Bildschirmgroesse, nie
+     wischen. Ganzes Blatt ist Standard; nur opt.gross===false gibt die
+     alte Lupe zurueck. */
+  if(opt.gross!==false){ rahmen.classList.add('m16r-gross'); I.zoom(1); return I; }
   I.zoom(opt.zoom || ((el.clientWidth||400)<520 ? 2 : 1));
   return I;
 }
