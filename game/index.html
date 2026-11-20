@@ -256,6 +256,14 @@ body.rtl .lc-stars{right:auto;left:10px}
   border-radius:22px 22px 0 0;padding:18px 20px 22px;box-shadow:0 -12px 40px rgba(0,0,0,.4);
   transform:translateY(110%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 .w-panel.up{transform:translateY(0)}
+/* Stufenliste (stufenWahl): fast ganzer Bildschirm, Liste blaettert in sich */
+.w-panel.voll{display:flex;flex-direction:column;max-height:88vh;max-height:88dvh}
+.w-panel.voll .w-p-text{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;margin:0 -4px 12px;padding:0 4px}
+.st-zahl{font-size:12px;font-weight:700;color:var(--soft);margin:0 0 8px}
+.wk-card.gespielt{border-color:var(--teal-dark);background:#EAF7F4}
+.wk-card.gespielt .wk-name::after{content:' \2713';color:var(--teal-dark)}
+.st-wert{color:var(--teal-dark);font-weight:800}
+.st-neu{color:var(--soft)}
 .w-p-title{font-family:'Fraunces',serif;font-weight:700;font-size:19px;margin-bottom:5px}
 .w-p-text{font-size:13.5px;line-height:1.55;color:var(--soft);margin-bottom:14px}
 .w-p-acts{display:flex;gap:10px;flex-wrap:wrap}
@@ -1884,7 +1892,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-11-20 \u00b7 Retax B3 Nachweis" +
+var PC_BUILD = "2026-11-20 \u00b7 Stufenlisten" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5375,15 +5383,76 @@ function openWorkPicker(raum){
   }).join('')+'</div>';
   box.querySelectorAll('.wk-card').forEach(function(b){
     b.addEventListener('click',function(){
-      var lv=catNext(b.dataset.cat);
-      closePanel();
-      if(lv) startLevel(lv);
+      var cat=cats.filter(function(c){ return c.id===b.dataset.cat; })[0];
+      /* Ammar 20.11.2026: der Spieler waehlt die Stufe selbst, nichts wird erzwungen */
+      stufenWahl({ titel:cat,
+        liste:catLevels(cat.id).map(function(lv){
+          var T=TOPICS[lv.topic]||{};
+          return {key:lv.id, name:T, karte:T.banner, max:200, start:function(){ startLevel(lv); }};
+        }),
+        zurueck:function(){ openWorkPicker(raum); } });
     });
   });
   var host=document.getElementById('wpActs'); host.innerHTML='';
   var c=document.createElement('button'); c.textContent=t('closeBtn');
   c.addEventListener('click', closePanel); host.appendChild(c);
+  document.getElementById('wPanel').classList.remove('voll');
   document.getElementById('wPanel').classList.add('up');
+}
+
+/* =====================================================================
+   stufenWahl · eine Liste aller Stufen einer Kategorie (Ammar 20.11.2026)
+   Gilt fuer jede Kategorie ausser den Kunden: alle Stufen untereinander,
+   der Spieler waehlt frei, keine Reihenfolge, nichts gesperrt. Gespielte
+   Stufen sind farbig markiert mit Bestwert und Sternen und bleiben
+   waehlbar. Bei vielen Stufen fuellt die Liste fast den Bildschirm und
+   blaettert in sich.
+   o = { titel:{de,en,ar}, liste:[{key, name:{de,en,ar}, karte, max, start()}],
+         zurueck: fn | null }
+===================================================================== */
+var STUFEN_TXT={
+  de:{zahl:'{n} Stufen · {f} gespielt', neu:'Noch nicht gespielt', zur:'‹ Zurück', zu:'Schließen'},
+  en:{zahl:'{n} stages · {f} played', neu:'Not played yet', zur:'‹ Back', zu:'Close'},
+  ar:{zahl:'عدد المراحل: {n} · لعبتُ منها {f}', neu:'لم ألعبها بعد', zur:'‹ رجوع', zu:'إغلاق'}
+};
+function stufenWahl(o){
+  var L=state.lang, X=STUFEN_TXT[L]||STUFEN_TXT.de, liste=o.liste||[];
+  var gespielt=liste.filter(function(e){ return !!state.levelBest[e.key]; }).length;
+  document.getElementById('wpTitle').textContent=locName(o.titel||{});
+  var box=document.getElementById('wpText'); box.innerHTML='';
+  var zahl=document.createElement('div'); zahl.className='st-zahl';
+  zahl.textContent=X.zahl.replace('{n}',liste.length).replace('{f}',gespielt); box.appendChild(zahl);
+  var grid=document.createElement('div'); grid.className='wk-grid'; box.appendChild(grid);
+  liste.forEach(function(e){
+    var best=state.levelBest[e.key];
+    var card=document.createElement('button'); card.type='button'; card.className='wk-card'+(best?' gespielt':'');
+    if(e.karte){
+      var img=document.createElement('img'); img.src=e.karte; img.alt=''; img.loading='lazy'; img.decoding='async';
+      img.onerror=function(){ img.remove(); }; card.appendChild(img);
+    }
+    var body=document.createElement('div'); body.className='wk-body'; card.appendChild(body);
+    var n=document.createElement('div'); n.className='wk-name'; n.textContent=locName(e.name||{}); n.dir='auto'; body.appendChild(n);
+    var m=document.createElement('div'); m.className='wk-meta'; body.appendChild(m);
+    if(best){
+      var w=document.createElement('span'); w.className='st-wert';
+      /* \u2066 \u2069: Zahlen bleiben im arabischen Panel in Leserichtung */
+      w.textContent='\u2066'+best.score+(e.max?' / '+e.max:'')+' · '+starStr(best.stars||0)+'\u2069';
+      m.appendChild(w);
+    } else {
+      var nn=document.createElement('span'); nn.className='st-neu'; nn.textContent=X.neu; m.appendChild(nn);
+    }
+    card.addEventListener('click',function(){ closePanel(); e.start(); });
+    grid.appendChild(card);
+  });
+  var host=document.getElementById('wpActs'); host.innerHTML='';
+  if(o.zurueck){
+    var z=document.createElement('button'); z.textContent=X.zur; z.className='ghost';
+    z.addEventListener('click',function(){ o.zurueck(); }); host.appendChild(z);
+  }
+  var c=document.createElement('button'); c.textContent=X.zu; c.className=o.zurueck?'':'ghost';
+  c.addEventListener('click', closePanel); host.appendChild(c);
+  var P=document.getElementById('wPanel'); P.classList.add('voll'); P.classList.add('up');
+  box.scrollTop=0;
 }
 
 /* =====================================================================
@@ -5726,6 +5795,7 @@ function enterRoom(id, at){
 
 /* ---------- panel ---------- */
 function openPanel(title, text, acts){
+  document.getElementById('wPanel').classList.remove('voll');
   document.getElementById('wpTitle').textContent=title;
   document.getElementById('wpText').innerHTML=''; document.getElementById('wpText').textContent=text||'';
   var host=document.getElementById('wpActs'); host.innerHTML='';
@@ -5737,12 +5807,14 @@ function openPanel(title, text, acts){
   });
   document.getElementById('wPanel').classList.add('up');
 }
-function closePanel(){ document.getElementById('wPanel').classList.remove('up'); }
+function closePanel(){ var P=document.getElementById('wPanel'); P.classList.remove('up'); P.classList.remove('voll'); }
 
 function locRoom(r){ return locName(ROOMS[r]||{de:r,en:r,ar:r}); }
 function openSpot(sp){
   if(W.locked) return;
   if(sp.id==='akten' && W.room==='buero'){pcRevisionOpen();return;}
+  /* Schreibtisch: direkt Retax oder Rezeptpruefung, kein Zwischenfenster (20.11.2026) */
+  if(sp.id==='desk' && W.room==='buero'){openWorkPicker('buero');return;}
   if(sp.id==='tisch' && W.room==='kueche'){teamAuswahl();return;}
   /* Teamplan (Plantafel) am Kalender, 16.11.2026 */
   if(sp.id==='kalender' && W.room==='kueche'){planAuswahl();return;}
@@ -6338,24 +6410,10 @@ var REZ_STUFEN=[
     de:"Erythromycin-Creme 1 %", en:"Erythromycin cream 1%", ar:"كريم الإريثرومايسين 1%" }
 ];
 function rezAuswahl(){
-  var L=state.lang;
-  openPanel(({de:'Rezeptur',en:'Compounding',ar:'التحضير'})[L]||'Rezeptur','',
-    [{t:(L==='ar'?'إغلاق':(L==='en'?'Close':'Schließen')),cls:'ghost'}]);
-  var host=document.getElementById('wpText'), grid=document.createElement('div');
-  grid.className='wk-grid'; host.appendChild(grid);
-  REZ_STUFEN.forEach(function(st){
-    var card=document.createElement('button'); card.type='button'; card.className='wk-card';
-    var img=document.createElement('img'); img.src=st.karte; img.alt=''; img.loading='lazy'; img.decoding='async';
-    img.onerror=function(){ img.remove(); };
-    card.appendChild(img);
-    var body=document.createElement('div'); body.className='wk-body'; card.appendChild(body);
-    var n=document.createElement('div'); n.className='wk-name'; n.textContent=locName(st); n.dir='auto'; body.appendChild(n);
-    var best=state.levelBest[st.level];
-    var m=document.createElement('div'); m.className='wk-meta'; body.appendChild(m);
-    m.textContent='\u2066'+(best? (best.score+' / '+st.max+' · '+starStr(best.stars||0)) : ('0 / '+st.max))+'\u2069';
-    card.addEventListener('click',function(){ closePanel(); rezStarten(st.id); });
-    grid.appendChild(card);
-  });
+  stufenWahl({ titel:{de:'Rezeptur',en:'Compounding',ar:'التحضير'},
+    liste:REZ_STUFEN.map(function(st){
+      return {key:st.level, name:st, karte:st.karte, max:st.max, start:function(){ rezStarten(st.id); }};
+    }) });
 }
 /* Teamgespraeche am Kuechentisch (14.11.2026). Hier nur Titel, Karte
    und Pfad; Inhalt in data/team_*.js, Motor in js/team_engine.js, beides
@@ -6371,26 +6429,10 @@ var PLAN_STUFEN=[
 ];
 function planAuswahl(){ teamAuswahl(PLAN_STUFEN,{de:'Teamplan',en:'Team plan',ar:'خطة الفريق'}); }
 function teamAuswahl(liste,titel){
-  var L=state.lang;
   liste=liste||TEAM_STUFEN; titel=titel||{de:'Teamgespräch',en:'Team talk',ar:'حديث الفريق'};
-  openPanel(titel[L]||titel.de,'',
-    [{t:(L==='ar'?'إغلاق':(L==='en'?'Close':'Schließen')),cls:'ghost'}]);
-  var host=document.getElementById('wpText'), grid=document.createElement('div');
-  grid.className='wk-grid'; host.appendChild(grid);
-  liste.forEach(function(st){
-    var card=document.createElement('button'); card.type='button'; card.className='wk-card';
-    var img=document.createElement('img'); img.src=st.karte; img.alt=''; img.loading='lazy'; img.decoding='async';
-    img.onerror=function(){ img.remove(); };
-    card.appendChild(img);
-    var body=document.createElement('div'); body.className='wk-body'; card.appendChild(body);
-    var n=document.createElement('div'); n.className='wk-name'; n.textContent=locName(st); n.dir='auto'; body.appendChild(n);
-    var best=state.levelBest[st.id];
-    var m=document.createElement('div'); m.className='wk-meta'; body.appendChild(m);
-    /* \u2066 \u2069: Zahlen bleiben auch im arabischen Panel in Leserichtung */
-    m.textContent='\u2066'+(best? (best.score+' / '+st.max+' · '+starStr(best.stars||0)) : ('0 / '+st.max))+'\u2069';
-    card.addEventListener('click',function(){ closePanel(); teamStarten(st); });
-    grid.appendChild(card);
-  });
+  stufenWahl({ titel:titel, liste:liste.map(function(st){
+    return {key:st.id, name:st, karte:st.karte, max:st.max, start:function(){ teamStarten(st); }};
+  }) });
 }
 function teamStarten(st){
   if(window.PCTeam) return window.PCTeam.open(st.id, st.src);
