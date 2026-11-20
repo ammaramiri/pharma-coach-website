@@ -49,7 +49,7 @@ TOPICS.retax_rabatt_klein = {
   okH:"Sauber unterschieden", badH:"Die Codes verwechselt",
   expl:"Bei den beiden 63er-Positionen wurde das richtige Präparat abgegeben. Sichtbar wird es im Feld <b>RBT Apo</b>: Es stand auf 0,00 und wurde auf 1,86 bzw. 2,09 korrigiert. Der Apothekenabschlag war schlicht nicht im Datensatz. Ein Einspruch hat hier keine Aussicht, weil die Berechnung objektiv unvollständig war. Der Code <b>421 Nichtbeachtung Rabattverträge</b> ist demgegenüber der echte Vorwurf: dass das Präparat selbst falsch war. Die beiden Codes wirken verwandt und sind in ihrer Angreifbarkeit gegensätzlich. Entscheidend ist die andere Konsequenz: 63 ist ein Signal für eine Fehlkonfiguration im Warenwirtschaftssystem oder in der Übertragung ans Rechenzentrum, nicht für einen Fehler im HV. Es wiederholt sich still in jedem Monat, in dem die Ursache besteht."}},
 
- {mech:"sort",data:{kicker:"Sortierung · auf Zeit", title:"Welche Positionen sind angreifbar?",
+ {mech:"sort",data:{kicker:"Sortierung · vier Positionen", title:"Welche Positionen sind angreifbar?",
   visual:{img:"assets/Retax/retax_scene_karte_in_fach.webp", bg:true},
   hint:"Maßstab ist die Begründung, nicht der Betrag.", pts:25,
   flagLabel:"Angreifbar", safeLabel:"Nicht angreifbar",
@@ -59,7 +59,6 @@ TOPICS.retax_rabatt_klein = {
    {t:"Bisoprolol 5 1A Pharma FTA 100 St. N3<small>PZN 03820525 · Code 421 · −10,52 €</small>",flag:true},
    {t:"Isotonische Kochsalzlösung z. Inhalation<small>PZN 05450802 · Code 63 · −2,09 €</small>",flag:false}],
   okH:"Nach dem Code sortiert", badH:"Nach dem Betrag sortiert",
-  timeoutH:"Zeit abgelaufen", timeoutX:"Im Büro entscheidet die Menge der Bescheide das Tempo.",
   expl:"Sortiert wird nach dem Code, nicht nach dem Betrag. Die Positionen 2 und 3 tragen 421: Die Kasse behauptet, ein rabattiertes Präparat sei verfügbar gewesen. Das ist eine Tatsachenbehauptung, und die Kasse muss sie belegen. Die Positionen 1 und 4 tragen 63, dort ist die Berechnung objektiv unvollständig, und es gibt keinen Ansatzpunkt. Das ist erst die halbe Entscheidung: Die Sortierung sagt, welche Positionen angefochten werden können. Welche den Einspruch lohnen, ist die nächste Frage."}},
 
  {mech:"mcq",data:{kicker:"Entscheidung · Wirtschaftlichkeit", title:"Wann lohnt ein Einspruch wirtschaftlich nicht mehr?",
@@ -148,7 +147,7 @@ TOPICS.retax_rabatt_klein = {
   okH:"Cleanly distinguished", badH:"The codes mixed up",
   expl:"On both 63 positions the correct product was dispensed. You can see it in the <b>RBT Apo</b> field: it stood at 0.00 and was corrected to 1.86 and 2.09. The pharmacy discount was simply absent from the record. An appeal has no prospect here, because the calculation was objectively incomplete. Code <b>421 Nichtbeachtung Rabattverträge</b>, by contrast, is the real allegation: that the product itself was wrong. The two codes look related and are opposites in how attackable they are. The other consequence is what matters: 63 signals a misconfiguration in the stock system or in the transfer to the billing centre, not an error at the counter. It repeats silently every month the cause persists."}},
 
- {mech:"sort",data:{kicker:"Sorting · against the clock", title:"Which positions are attackable?",
+ {mech:"sort",data:{kicker:"Sorting · four positions", title:"Which positions are attackable?",
   visual:{img:"assets/Retax/retax_scene_karte_in_fach.webp", bg:true},
   hint:"The criterion is the reason, not the amount.", pts:25,
   flagLabel:"Attackable", safeLabel:"Not attackable",
@@ -158,7 +157,6 @@ TOPICS.retax_rabatt_klein = {
    {t:"Bisoprolol 5 1A Pharma FTA 100 St. N3<small>PZN 03820525 · code 421 · −10.52 €</small>",flag:true},
    {t:"Isotonische Kochsalzlösung z. Inhalation<small>PZN 05450802 · code 63 · −2.09 €</small>",flag:false}],
   okH:"Sorted by the code", badH:"Sorted by the amount",
-  timeoutH:"Time is up", timeoutX:"In the office the number of notices sets the pace.",
   expl:"Sorting follows the code, not the amount. Positions 2 and 3 carry 421: the insurer asserts a rebated product was available. That is a factual assertion, and the insurer must substantiate it. Positions 1 and 4 carry 63, where the calculation is objectively incomplete and there is no purchase. This is only half the decision: sorting tells you which positions can be challenged. Which ones are worth challenging is the next question."}},
 
  {mech:"mcq",data:{kicker:"Decision · economics", title:"When does an appeal stop being worthwhile?",
@@ -247,7 +245,7 @@ TOPICS.retax_rabatt_klein = {
   okH:"تمييز دقيق", badH:"خلط بين الكودين",
   expl:"في موضعَي الكود 63 صُرف الدواء الصحيح. ويظهر ذلك في حقل <b>RBT Apo</b>: كان صفراً فصُحّح إلى 1,86 و2,09. أبشلاغ الصيدلية لم يكن في مجموعة البيانات ببساطة. فلا حظّ للاعتراض هنا، لأن الحساب كان ناقصاً موضوعياً. وفي المقابل، الكود <b>421 Nichtbeachtung Rabattverträge</b> هو الاتهام الحقيقي: أن الدواء نفسه خطأ. الكودان يبدوان متقاربين وهما متعاكسان في قابلية الطعن. والمهم هو النتيجة الأخرى: 63 إشارة إلى خلل في إعداد نظام إدارة البضاعة أو في النقل إلى مركز التحاسب، لا خطأ عند الكاونتر. وهو يتكرر صامتاً كل شهر يبقى فيه السبب."}},
 
- {mech:"sort",data:{kicker:"فرز · على الوقت", title:"أي المواضع قابلة للطعن؟",
+ {mech:"sort",data:{kicker:"فرز · أربعة مواضع", title:"أي المواضع قابلة للطعن؟",
   visual:{img:"assets/Retax/retax_scene_karte_in_fach.webp", bg:true},
   hint:"المعيار الحجة، لا المبلغ.", pts:25,
   flagLabel:"أستطيع الطعن", safeLabel:"لا أستطيع الطعن",
@@ -257,7 +255,6 @@ TOPICS.retax_rabatt_klein = {
    {t:"Bisoprolol 5 1A Pharma FTA 100 St. N3<small>PZN 03820525 · كود 421 · −10,52 €</small>",flag:true},
    {t:"Isotonische Kochsalzlösung z. Inhalation<small>PZN 05450802 · كود 63 · −2,09 €</small>",flag:false}],
   okH:"فُرز على الكود", badH:"فُرز على المبلغ",
-  timeoutH:"انتهى الوقت", timeoutX:"في المكتب عدد الإشعارات هو من يفرض الإيقاع.",
   expl:"الفرز يجري على الكود لا على المبلغ. الموضعان 2 و3 يحملان 421: الكاسة تزعم أن دواءً مربَّطاً كان متوفراً، وهذا ادعاء واقعة وعلى الكاسة إثباته. والموضعان 1 و4 يحملان 63، والحساب فيهما ناقص موضوعياً فلا مدخل للطعن. وهذا نصف القرار فقط: الفرز يقول أيّ المواضع يمكن الاعتراض عليها، وأيّها يستحق سؤال تالٍ."}},
 
  {mech:"mcq",data:{kicker:"قرار · الجدوى", title:"متى يكفّ الاعتراض عن كونه مجدياً؟",

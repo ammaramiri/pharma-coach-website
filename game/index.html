@@ -1884,7 +1884,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-11-19 \u00b7 CUS023 Testkaeufer" +
+var PC_BUILD = "2026-11-20 \u00b7 Retax B3 Nachweis" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -2847,6 +2847,7 @@ Mech.rezept = function(host, d, done){
   if(d.phases || d.penalty) return rezeptStrafe(host, d, done);
   host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
     '<div class="stage-title">'+d.title+'</div></div><div class="stage-body">'+
+    sceneStrip(d)+   /* Bild der Stufe (Retax B3, 20.11.2026) */
     (d.hint?'<div class="a3-hint">'+d.hint+'</div>':'')+
     docHTML(d.doc)+'<div id="fbz"></div></div></div>';
   var fin=false, misses=0, fields=host.querySelectorAll('[data-k]');
@@ -3097,6 +3098,7 @@ function rezeptStrafe(host, d, done){
 Mech.hunt = function(host, d, done){
   host.innerHTML='<div class="stage"><div class="stage-head"><div class="kicker">'+d.kicker+'</div>'+
     '<div class="stage-title">'+d.title+'</div></div><div class="stage-body">'+
+    sceneStrip(d)+   /* Bild der Stufe (Retax B3, 20.11.2026) */
     (d.hint?'<div class="a3-hint">'+d.hint+'</div>':'')+
     docHTML(d.doc)+'<div id="fbz"></div></div></div>';
   var fin=false, started=true, fields=host.querySelectorAll('.doc-f[data-k]');
@@ -3342,7 +3344,12 @@ function rxLayers(el, v, shot){
 /* Schriftgroesse in Prozent der Regionsbreite. In px gerechnet, damit es
    in jedem WebView gleich sitzt. */
 function rxSizeText(reg){
-  var w=reg.getBoundingClientRect().width;
+  /* Mit quad liegt die Ebene in einem eigenen Papiermass (1000 px breit)
+     und wird erst danach per matrix3d aufs Blatt verkleinert. Die Schrift
+     bezieht sich dann auf dieses Papiermass, sonst wird sie zweimal
+     verkleinert und ist auf dem Telefon unlesbar (gefunden an B3,
+     20.11.2026; betraf auch B1). */
+  var w=reg.hasAttribute('data-quad') ? parseFloat(reg.style.width) : reg.getBoundingClientRect().width;
   if(!w) return;
   reg.querySelectorAll('.rx-l[data-fs]').forEach(function(el){
     var fs=parseFloat(el.getAttribute('data-fs'));
@@ -3356,7 +3363,7 @@ window.addEventListener('resize', function(){
 function rxPlay(el, v, shots, i, done){
   if(!el || !document.body.contains(el)) return;
   var shot=shots[i];
-  var img=el.querySelector('.rx-img');
+  var img=el.querySelector('.rx-img'); if(!img) return;
   el.classList.add('rx-fade');
   _rxTimer=setTimeout(function(){
     if(!document.body.contains(el)) return;
@@ -3430,6 +3437,16 @@ function rxAfter(good){
   if(!v || !el || !v.after || !document.body.contains(el)) return;
   var a=v.after;
   if(a.onlyGood && !good) return;
+  /* Hintergrundbild (bg:true): Folge ueber den Hintergrund der Stufe
+     zeigen, es gibt dort kein eigenes Bild (Retax B3, 20.11.2026) */
+  if(v.bg){
+    var body=el.closest('.stage-body'), t=0;
+    if(body && a.seq) a.seq.forEach(function(sh){
+      t+=160; setTimeout(function(){ if(document.body.contains(body)) body.style.setProperty('--rxbg','url("'+sh.img+'")'); }, t);
+      t+=(sh.ms||900);
+    });
+    return;
+  }
   if(a.seq && a.seq.length) rxPlay(el, v, a.seq, 0);
   if(a.tilt) el.classList.add('rx-tilt');
   if(a.count) rxCount(el, a.count);
@@ -3587,6 +3604,7 @@ TOPICS.sonnenschutz_urlaub = { de:"Sonnenschutz", en:"Sun protection", ar:"ال�
    {icon:"🤝",de:"Vertrauensperson",en:"Trusted Advisor",ar:"موضع الثقة",cond:function(s){return s.trust>=70;}}
   ], src:"data/hv_20_sonnenschutz_urlaub.js" };
 TOPICS.retax_rabatt_klein = { de:"Vier Positionen, ein Betrag", en:"Four Positions, One Amount", ar:"أربعة مواضع ومبلغ واحد", tag:"Retax", banner:"assets/Retax/retax_card_b1.webp", sub:{de:"Büro · Retax", en:"Office · Claw-back", ar:"المكتب · ريتاكس"}, badges:[], src:"data/buero_b1_retax_rabatt_klein.js" };
+TOPICS.retax_nachweis = { de:"Der Nachweis", en:"The Proof", ar:"الإثبات", tag:"Retax", banner:"assets/Retax/retax2_scene_07_protokoll_in_hand.webp", sub:{de:"Büro · Retax", en:"Office · Claw-back", ar:"المكتب · ريتاكس"}, badges:[], reqRank:0, src:"data/buero_b3_retax_nachweis.js" };
 TOPICS.buero_formfehler_01 = { de:"Drei Rezepte, drei Fallen", en:"Three Prescriptions, Three Traps", ar:"ثلاث وصفات، ثلاثة فخاخ", tag:"Rezeptprüfung", banner:"assets/Retax/retax_scene_lupe.webp", sub:{de:"Büro · Rezeptprüfung", en:"Office · Prescription review", ar:"المكتب · تدقيق الوصفات"}, badges:[], reqRank:0, src:"data/buero_b2_formfehler_01.js" };
 
 
@@ -3691,7 +3709,8 @@ var LEVELS = [
    Wandern in den Raum, sobald die fünf Karten angebunden sind. */
 var OFFICE_LEVELS = [
   { id:"B1", topic:"retax_rabatt_klein", persona:null, office:true, reqRank:0, cat:"retax" },
-  { id:"B2", topic:"buero_formfehler_01", persona:null, office:true, reqRank:0, cat:"pruef" }
+  { id:"B2", topic:"buero_formfehler_01", persona:null, office:true, reqRank:0, cat:"pruef" },
+  { id:"B3", topic:"retax_nachweis",      persona:null, office:true, reqRank:0, cat:"retax" }
 ];
 
 /* Fülle bis 20 mit "coming soon" Platzhaltern für die Karte */
