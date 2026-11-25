@@ -1892,7 +1892,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-11-20 \u00b7 Stufenlisten" +
+var PC_BUILD = "2026-11-25 \u00b7 Rezeptpruefung 01" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -3613,6 +3613,7 @@ TOPICS.sonnenschutz_urlaub = { de:"Sonnenschutz", en:"Sun protection", ar:"ال�
   ], src:"data/hv_20_sonnenschutz_urlaub.js" };
 TOPICS.retax_rabatt_klein = { de:"Vier Positionen, ein Betrag", en:"Four Positions, One Amount", ar:"أربعة مواضع ومبلغ واحد", tag:"Retax", banner:"assets/Retax/retax_card_b1.webp", sub:{de:"Büro · Retax", en:"Office · Claw-back", ar:"المكتب · ريتاكس"}, badges:[], src:"data/buero_b1_retax_rabatt_klein.js" };
 TOPICS.retax_nachweis = { de:"Der Nachweis", en:"The Proof", ar:"الإثبات", tag:"Retax", banner:"assets/Retax/retax2_scene_07_protokoll_in_hand.webp", sub:{de:"Büro · Retax", en:"Office · Claw-back", ar:"المكتب · ريتاكس"}, badges:[], reqRank:0, src:"data/buero_b3_retax_nachweis.js" };
+TOPICS.pruef_faelschung_01 = { de:"Eine von beiden ist gefälscht", en:"One of the Two Is Forged", ar:"واحدة منهما مزوّرة", tag:"Rezeptprüfung", banner:"assets/Rezeptpruefung/faelsch_stufe_karte.webp", sub:{de:"Büro · Rezeptprüfung", en:"Office · Prescription review", ar:"المكتب · تدقيق الوصفات"}, badges:[], reqRank:0, src:"data/pruef_faelschung_01.js", engine:"js/pruef_engine.js" };
 TOPICS.buero_formfehler_01 = { de:"Drei Rezepte, drei Fallen", en:"Three Prescriptions, Three Traps", ar:"ثلاث وصفات، ثلاثة فخاخ", tag:"Rezeptprüfung", banner:"assets/Retax/retax_scene_lupe.webp", sub:{de:"Büro · Rezeptprüfung", en:"Office · Prescription review", ar:"المكتب · تدقيق الوصفات"}, badges:[], reqRank:0, src:"data/buero_b2_formfehler_01.js" };
 
 
@@ -3718,7 +3719,9 @@ var LEVELS = [
 var OFFICE_LEVELS = [
   { id:"B1", topic:"retax_rabatt_klein", persona:null, office:true, reqRank:0, cat:"retax" },
   { id:"B2", topic:"buero_formfehler_01", persona:null, office:true, reqRank:0, cat:"pruef" },
-  { id:"B3", topic:"retax_nachweis",      persona:null, office:true, reqRank:0, cat:"retax" }
+  { id:"B3", topic:"retax_nachweis",      persona:null, office:true, reqRank:0, cat:"retax" },
+  /* Rezeptpruefung 01 · Daten data/pruef_faelschung_01.js · Motor js/pruef_engine.js */
+  { id:"B4", topic:"pruef_faelschung_01", persona:null, office:true, reqRank:0, cat:"pruef" }
 ];
 
 /* Fülle bis 20 mit "coming soon" Platzhaltern für die Karte */
@@ -4658,6 +4661,14 @@ var run = null;
 var LEVEL_DATEN={};
 function levelDaten(topicId, weiter){
   var t=TOPICS[topicId];
+  /* Eigener Motor einer Stufe (t.engine) wird vor ihren Daten geladen. */
+  if(t && t.engine && !t._engineOk){
+    var se=document.createElement('script'); se.src=t.engine; se.async=true;
+    se.onload=function(){ t._engineOk=true; levelDaten(topicId, weiter); };
+    se.onerror=function(){ se.remove(); window.alert({de:'Die Falldaten konnten nicht geladen werden. Bitte Verbindung prüfen.',en:'The case data could not be loaded. Please check your connection.',ar:'تعذّر تحميل بيانات الحالة. تحقّق من الاتصال.'}[state.lang]||'Fehler'); };
+    document.head.appendChild(se);
+    return;
+  }
   if(!t || !t.src || t.steps) return weiter();
   if(LEVEL_DATEN[t.src]==='ok') return weiter();
   /* Laeuft der stille Vorlauf noch, auf ihn warten statt doppelt laden. */
@@ -4945,6 +4956,11 @@ function runStep(){
   if(run.stepIdx>=run.steps.length){ return finishLevel(); }
   var step=run.steps[run.stepIdx];
   var idx=run.stepIdx;
+  /* Bedingter Schritt: step.wenn(run) falsch => entfaellt ohne Punkte.
+     Das Maximum der Stufe bleibt gleich (Rezeptpruefung 01, Schritt 4). */
+  if(typeof step.wenn==='function' && !step.wenn(run)){
+    run.stepScores['step'+idx]=0; run.stepIdx++; return runStep();
+  }
   pcCheckpoint();
   preloadLevel(run.steps.slice(idx,idx+2));
   var finished=false, thisRun=run;
