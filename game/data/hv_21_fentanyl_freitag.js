@@ -42,6 +42,40 @@ var ANGEH_TRUST = {
            tief:"assets/PCG_CU_CUS021_P07_CU-UPSET_v001.webp",
            spricht:"assets/PCG_CU_CUS021_P05_CU-TALK_v001.webp" } };
 
+
+/* Merkzettel zum Rezept (Ammar 26.11.2026): Testspieler vergassen nach der
+   Pruefung, was auf dem Rezept stand. Ab Schritt 3 steht es oben auf jeder
+   Frage, die es braucht. index.html zeigt data.merk ueber mountMerk(). */
+var ANGEH_MERK = {
+ de:{k:"Das Rezept", z:[
+   ["Verordnung","Fentanyl Matrixpflaster 25 µg/h"],
+   ["25 µg/h","Freisetzungsrate, keine Wirkstoffmenge"],
+   ["Beladung je Pflaster","fehlt",1],
+   ["PZN · Hersteller","nicht angegeben",1],
+   ["Menge","10 St. (zehn)"],
+   ["Gebrauch","alle 3 Tage 1 Pflaster wechseln"],
+   ["Ausgestellt · vorgelegt","Di 13.10.26 · Fr 16.10.26"],
+   ["Arzt","Dr. med. Jürgen Haller, Anröchte"]]},
+ en:{k:"The prescription", z:[
+   ["Prescribed","Fentanyl Matrixpflaster 25 µg/h"],
+   ["25 µg/h","release rate, not an amount of active ingredient"],
+   ["Load per patch","missing",1],
+   ["PZN · manufacturer","not stated",1],
+   ["Quantity","10 patches (ten)"],
+   ["Directions","change 1 patch every 3 days"],
+   ["Issued · presented","Tue 13.10.26 · Fri 16.10.26"],
+   ["Physician","Dr. med. Jürgen Haller, Anröchte"]]},
+ ar:{k:"الوصفة", z:[
+   ["الدواء الموصوف","Fentanyl Matrixpflaster 25 µg/h"],
+   ["25 µg/h","معدّل التحرير، وليس كمية المادة الفعالة"],
+   ["كمية المادة في اللصقة (Beladung)","غير مكتوبة",1],
+   ["PZN · الشركة المصنّعة","غير مذكورين",1],
+   ["الكمية","10 لصقات (عشر)"],
+   ["الاستعمال","لصقة جديدة كل 3 أيام"],
+   ["تاريخ الوصفة · تاريخ تقديمها","الثلاثاء 13.10.26 · الجمعة 16.10.26"],
+   ["الطبيب","Dr. med. Jürgen Haller، Anröchte"]]}
+};
+
 TOPICS.fentanyl_freitag = {
   persona:"angeh", cus:"CUS021", trust:ANGEH_TRUST,
   de:"Fentanyl am Freitagabend", en:"Fentanyl on a Friday Evening", ar:"لصقة الفنتانيل مساء الجمعة",
@@ -75,7 +109,7 @@ TOPICS.fentanyl_freitag = {
          unterschrift:"Die Unterschrift ist vorhanden."},
   expl:"„25 µg/h“ ist eine Freisetzungsrate, keine Wirkstoffmenge. Pflaster mit derselben Rate tragen je nach Hersteller unterschiedlich viel Fentanyl. Deshalb verlangt § 9 Abs. 1 Nr. 3 BtMVV die Gewichtsmenge je Pflaster. Dieses Rezept trägt weder PZN noch Hersteller: Aus dem Rezept selbst ist nicht zu erkennen, welches Pflaster gemeint ist."}},
 
- {mech:"truefalse",data:{kicker:"Schnellprüfung · Fristen und Mythen", title:"Richtig oder falsch?",
+ {mech:"truefalse",data:{merk:ANGEH_MERK.de, kicker:"Schnellprüfung · Fristen und Mythen", title:"Richtig oder falsch?",
   scene:"assets/PCG_DET_CUS021_02_KALENDER_v001.webp",
   trueLabel:"Richtig", falseLabel:"Falsch", maxWrong:1,
   items:[
@@ -90,7 +124,7 @@ TOPICS.fentanyl_freitag = {
   okH:"Auf dem aktuellen Stand", badH:"Ein alter Stand",
   expl:"§ 12 Abs. 1 Nr. 1c BtMVV: Kein BtM auf ein Rezept, das bei Vorlage vor mehr als sieben Tagen ausgefertigt wurde. Höchstmengen, das „A“ und die Grenze von zwei BtM in 30 Tagen sind am 8. April 2023 entfallen. Wer aus Unterlagen vor 2023 gelernt hat, fällt genau hier."}},
 
- {mech:"mcq",data:{kicker:"Entscheidung · Was ich selbst ergänzen darf",
+ {mech:"mcq",data:{merk:ANGEH_MERK.de, kicker:"Entscheidung · Was ich selbst ergänzen darf",
   title:"Die Beladung fehlt. Wann darf ich sie selbst eintragen, ohne Rücksprache mit dem Arzt?",
   scene:"assets/PCG_DET_CUS021_03_VERGLEICH_v001.webp",
   options:[
@@ -105,7 +139,7 @@ TOPICS.fentanyl_freitag = {
   okH:"Die PZN entscheidet", badH:"Das reicht nicht",
   expl:"Steht die PZN auf dem Rezept, ist das Präparat eindeutig, und ich trage die Beladung ein und vermerke die Ergänzung auf Teil I und II. Abgabehistorie, Auskunft des Sohnes und Lagerbestand sagen nur, was üblich ist, nicht, was verordnet wurde. Dieses Rezept trägt keine PZN: Ich kann die Beladung nicht selbst eintragen."}},
 
- {mech:"mcq",data:{kicker:"Szene 2 · 17:55 · Die Praxis ist zu",
+ {mech:"mcq",data:{merk:ANGEH_MERK.de, kicker:"Szene 2 · 17:55 · Die Praxis ist zu",
   title:"Was erlaubt mir die BtMVV in dieser Lage?",
   scene:"assets/PCG_DET_CUS021_04_TELEFON_v001.webp",
   hint:"Anrufbeantworter: Praxis bis Montag geschlossen, keine Vertretung genannt. Das aktuelle Pflaster des Vaters endet heute Nacht, er hat seit dem Morgen Schmerzen.",
@@ -121,7 +155,7 @@ TOPICS.fentanyl_freitag = {
   okH:"Der dringende Fall", badH:"Nicht, was die BtMVV vorsieht",
   expl:"§ 12 Abs. 2 Satz 3 BtMVV: Ist eine Rücksprache nicht möglich und ein dringender Fall glaubhaft oder erkennbar, darf ich das Verschriebene ganz oder in Teilmengen abgeben. Danach muss ich den Arzt unverzüglich benachrichtigen, und die Korrektur wird unverzüglich nachgeholt (Satz 4)."}},
 
- {mech:"shelf",data:{kicker:"Abgabe · Das richtige Pflaster",
+ {mech:"shelf",data:{merk:ANGEH_MERK.de, kicker:"Abgabe · Das richtige Pflaster",
   title:"Welche Packung gebe ich ab?",
   scene:"assets/PCG_DET_CUS021_05_TRESOR_v001.webp",
   hint:"Abgabehistorie: Fentanyl – 1 A Pharma 25 µg/h · 5,78 mg · PZN 00682784, seit drei Monaten.",
@@ -133,7 +167,7 @@ TOPICS.fentanyl_freitag = {
    {img:ANGEH_PKG.a50,n:"Fentanyl – 1 A Pharma 50 µg/h",s:"11,56 mg · 21 cm² · 10 Pfl.",p:0,tr:0,h:"Die doppelte Rate",
     x:"Gleicher Hersteller, aber doppelte Freisetzungsrate."}]}},
 
- {mech:"truefalse",data:{kicker:"Dokumentation · Wohin gehört was?", title:"Richtig oder falsch?",
+ {mech:"truefalse",data:{merk:ANGEH_MERK.de, kicker:"Dokumentation · Wohin gehört was?", title:"Richtig oder falsch?",
   scene:"assets/PCG_DET_CUS021_06_DREITEILE_v001.webp",
   trueLabel:"Richtig", falseLabel:"Falsch", maxWrong:1,
   items:[
@@ -192,7 +226,7 @@ TOPICS.fentanyl_freitag = {
          unterschrift:"The signature is there."},
   expl:"“25 µg/h” is a release rate, not an amount of active substance. Patches with the same rate carry different amounts of fentanyl depending on the manufacturer. That is why § 9 (1) no. 3 BtMVV requires the weight per patch. This prescription carries neither a PZN nor a manufacturer: the prescription itself does not show which patch is meant."}},
 
- {mech:"truefalse",data:{kicker:"Quick check · Deadlines and myths", title:"True or false?",
+ {mech:"truefalse",data:{merk:ANGEH_MERK.en, kicker:"Quick check · Deadlines and myths", title:"True or false?",
   scene:"assets/PCG_DET_CUS021_02_KALENDER_v001.webp",
   trueLabel:"True", falseLabel:"False", maxWrong:1,
   items:[
@@ -207,7 +241,7 @@ TOPICS.fentanyl_freitag = {
   okH:"Up to date", badH:"An outdated rule",
   expl:"§ 12 (1) no. 1c BtMVV: no narcotic on a prescription issued more than seven days before it is presented. Maximum quantities, the “A” and the limit of two narcotics in 30 days were dropped on 8 April 2023. Anyone who learned from material older than 2023 trips exactly here."}},
 
- {mech:"mcq",data:{kicker:"Decision · What I may add myself",
+ {mech:"mcq",data:{merk:ANGEH_MERK.en, kicker:"Decision · What I may add myself",
   title:"The drug load is missing. When may I add it myself, without asking the doctor?",
   scene:"assets/PCG_DET_CUS021_03_VERGLEICH_v001.webp",
   options:[
@@ -222,7 +256,7 @@ TOPICS.fentanyl_freitag = {
   okH:"The PZN decides", badH:"That is not enough",
   expl:"If the PZN is on the prescription, the product is unambiguous: I enter the drug load and note the addition on parts I and II. Dispensing history, the son’s information and stock only show what is usual, not what was prescribed. This prescription has no PZN: I cannot enter the drug load myself."}},
 
- {mech:"mcq",data:{kicker:"Scene 2 · 5:55 pm · The practice is closed",
+ {mech:"mcq",data:{merk:ANGEH_MERK.en, kicker:"Scene 2 · 5:55 pm · The practice is closed",
   title:"What does the BtMVV allow me to do here?",
   scene:"assets/PCG_DET_CUS021_04_TELEFON_v001.webp",
   hint:"Answering machine: practice closed until Monday, no deputy named. The father’s current patch runs out tonight, and he has been in pain since the morning.",
@@ -238,7 +272,7 @@ TOPICS.fentanyl_freitag = {
   okH:"The urgent case", badH:"Not what the BtMVV provides",
   expl:"§ 12 (2) sentence 3 BtMVV: if consultation is impossible and an urgent case is credible or evident, I may dispense what was prescribed in full or in part. I must then notify the doctor without delay, and the correction is made without delay (sentence 4)."}},
 
- {mech:"shelf",data:{kicker:"Dispensing · The right patch",
+ {mech:"shelf",data:{merk:ANGEH_MERK.en, kicker:"Dispensing · The right patch",
   title:"Which pack do I dispense?",
   scene:"assets/PCG_DET_CUS021_05_TRESOR_v001.webp",
   hint:"Dispensing history: Fentanyl – 1 A Pharma 25 µg/h · 5.78 mg · PZN 00682784, for three months.",
@@ -250,7 +284,7 @@ TOPICS.fentanyl_freitag = {
    {img:ANGEH_PKG.a50,n:"Fentanyl – 1 A Pharma 50 µg/h",s:"11.56 mg · 21 cm² · 10 patches",p:0,tr:0,h:"Double the rate",
     x:"Same manufacturer, but twice the release rate."}]}},
 
- {mech:"truefalse",data:{kicker:"Documentation · What goes where?", title:"True or false?",
+ {mech:"truefalse",data:{merk:ANGEH_MERK.en, kicker:"Documentation · What goes where?", title:"True or false?",
   scene:"assets/PCG_DET_CUS021_06_DREITEILE_v001.webp",
   trueLabel:"True", falseLabel:"False", maxWrong:1,
   items:[
@@ -309,7 +343,7 @@ TOPICS.fentanyl_freitag = {
          unterschrift:"التوقيع موجود."},
   expl:"«25 µg/h» معدل إطلاق، لا كمية مادة. اللصقات بالمعدل نفسه تختلف في كمية الفنتانيل المحمّلة فيها من مصنّع إلى آخر، ولذلك يوجب § 9 Abs. 1 Nr. 3 BtMVV ذكر وزن المادة في كل لصقة. وهذه الوصفة ليس عليها رقم PZN ولا اسم مصنّع، فلا أعرف من الوصفة نفسها أي لصقة قصد الطبيب."}},
 
- {mech:"truefalse",data:{kicker:"فحص سريع · المهل والخرافات", title:"صح أم خطأ؟",
+ {mech:"truefalse",data:{merk:ANGEH_MERK.ar, kicker:"فحص سريع · المهل والخرافات", title:"صح أم خطأ؟",
   scene:"assets/PCG_DET_CUS021_02_KALENDER_v001.webp",
   trueLabel:"صح", falseLabel:"خطأ", maxWrong:1,
   items:[
@@ -324,7 +358,7 @@ TOPICS.fentanyl_freitag = {
   okH:"معلومة حديثة", badH:"معلومة قديمة",
   expl:"§ 12 Abs. 1 Nr. 1c BtMVV: لا يُصرف BtM على وصفة أُصدرت قبل أكثر من سبعة أيام من يوم تقديمها. والحدود القصوى وحرف «A» وحدّ «مادتان من BtM خلال ثلاثين يوماً» أُلغيت كلها في 8 أبريل 2023. ومن تعلّم من مراجع أقدم من 2023 يخطئ هنا بالذات."}},
 
- {mech:"mcq",data:{kicker:"قرار · ما أكمله بنفسي",
+ {mech:"mcq",data:{merk:ANGEH_MERK.ar, kicker:"قرار · ما أكمله بنفسي",
   title:"كمية التحميل ناقصة. متى يجوز لي أن أكتبها بنفسي، دون التواصل مع الطبيب؟",
   scene:"assets/PCG_DET_CUS021_03_VERGLEICH_v001.webp",
   options:[
@@ -339,7 +373,7 @@ TOPICS.fentanyl_freitag = {
   okH:"رقم PZN هو الفيصل", badH:"هذا لا يكفي",
   expl:"إذا كان رقم PZN على الوصفة، فالمنتج محدد بلا لبس: أكتب كمية التحميل، وأدوّن على الجزأين I وII أنني أكملتها. أما سجل الصرف وكلام الابن والمخزون فتخبرني بما هو معتاد، لا بما وُصف. وهذه الوصفة بلا PZN، فلا أستطيع إكمالها بنفسي."}},
 
- {mech:"mcq",data:{kicker:"المشهد 2 · 17:55 · العيادة مغلقة",
+ {mech:"mcq",data:{merk:ANGEH_MERK.ar, kicker:"المشهد 2 · 17:55 · العيادة مغلقة",
   title:"ما الذي تجيزه لي BtMVV في هذا الموقف؟",
   scene:"assets/PCG_DET_CUS021_04_TELEFON_v001.webp",
   hint:"جهاز الرسائل: العيادة مغلقة حتى الاثنين، ولا ذكر لطبيب ينوب. لصقة الأب الحالية تنتهي الليلة، وهو يتألم منذ الصباح.",
@@ -355,7 +389,7 @@ TOPICS.fentanyl_freitag = {
   okH:"الحالة العاجلة", badH:"ليس ما تنص عليه BtMVV",
   expl:"§ 12 Abs. 2 Satz 3 BtMVV: إن تعذّر التواصل مع الطبيب، وكانت الحالة عاجلة عجلةً يؤكدها حامل الوصفة أو تظهر من الموقف، جاز لي صرف الدواء الموصوف كاملاً أو جزءاً منه. وعليّ بعدها أن أبلغ الطبيب دون تأخير، وأن يُستكمل التصحيح دون تأخير (Satz 4)."}},
 
- {mech:"shelf",data:{kicker:"الصرف · اللصقة الصحيحة",
+ {mech:"shelf",data:{merk:ANGEH_MERK.ar, kicker:"الصرف · اللصقة الصحيحة",
   title:"أي عبوة أصرف؟",
   scene:"assets/PCG_DET_CUS021_05_TRESOR_v001.webp",
   hint:"سجل الصرف: Fentanyl – 1 A Pharma 25 µg/h · 5,78 mg · PZN 00682784، منذ ثلاثة أشهر.",
@@ -367,7 +401,7 @@ TOPICS.fentanyl_freitag = {
    {img:ANGEH_PKG.a50,n:"Fentanyl – 1 A Pharma 50 µg/h",s:"11,56 mg · 21 cm² · 10 لصقات",p:0,tr:0,h:"ضعف المعدل",
     x:"المصنّع نفسه، لكن معدل الإطلاق ضعفان."}]}},
 
- {mech:"truefalse",data:{kicker:"التوثيق · أين يُكتب كل شيء؟", title:"صحيح أم خطأ؟",
+ {mech:"truefalse",data:{merk:ANGEH_MERK.ar, kicker:"التوثيق · أين يُكتب كل شيء؟", title:"صحيح أم خطأ؟",
   scene:"assets/PCG_DET_CUS021_06_DREITEILE_v001.webp",
   trueLabel:"صحيح", falseLabel:"خطأ", maxWrong:1,
   items:[
