@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>Prototyp · Elektrisches Rührsystem</title>
+<style>
+/* =====================================================================
+   Prototyp Elektrisches Ruehrsystem · 27.11.2026 (Technik)
+   Brief: REZ_02_TECHNIK_PROTO_topitec.md (Rezeptur, 26.11.2026)
+   Texte: REZ_02_Text_v1.md Abschnitt 5 und 6, woertlich.
+   Eigenstaendige Testseite wie reibschale.html und waage.html:
+   kein Spielstand, keine Punkte, keine Verbindung zur index.html.
+   Regeln: Muster A (Finger direkt am Werkzeug), keine Sofortmeldung bei
+   Fehlern (nur Diagnose unten und Folge im Pruefbild), Tempo wird nie
+   bestraft, Ton nur per WebAudio, kein Markenname, Telefon zuerst
+   (9:16, hoechstens 430 px), alle Lagen in Prozent der Bildflaeche
+   864 x 1536.
+   Texte mit TECHNIK stehen nicht in REZ_02_Text_v1.md (Teilenamen,
+   Gestenhinweise, Displaybeschriftung EN/AR, Pruefantworten EN/AR).
+===================================================================== */
+:root{ --ink:#23272E; --soft:#6B7280; --line:#E5E0D8; --bg:#F6F3EC; --teal:#0E7C6B; --red:#E8192B; }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
+body{display:flex;flex-direction:column;align-items:center;padding:env(safe-area-inset-top,0px) 0 24px}
+#buehne{position:relative;width:min(100vw,430px,calc(100dvh * 9 / 16));aspect-ratio:9/16;overflow:hidden;
+  background:linear-gradient(#C9D2B9 0 13%,#E9E3DA 13% 100%);touch-action:none;-webkit-user-select:none;user-select:none;container-type:inline-size}
+#buehne img{position:absolute;display:block;-webkit-user-drag:none;pointer-events:none}
+.hg{left:0;top:0;width:100%;height:100%;object-fit:cover;transition:opacity .25s}
+.teil{transform:translate(-50%,-50%);transition:left .25s,top .25s,width .25s,opacity .25s}
+.teil.zieht{transition:none;filter:drop-shadow(0 8px 10px rgba(0,0,0,.25))}
+.zone{position:absolute;border:2px dashed rgba(14,124,107,.55);background:rgba(14,124,107,.07);border-radius:999px;pointer-events:none;animation:puls 1.6s ease-in-out infinite}
+.zone.eckig{border-radius:10px}
+@keyframes puls{50%{opacity:.35}}
+.zone.ok{border-color:#16B8A6;background:rgba(22,184,166,.22);animation:none}
+#ansage{position:absolute;left:3%;right:3%;top:2%;z-index:60;background:rgba(255,255,255,.93);border-radius:12px;padding:8px 11px;
+  font:600 13px/1.35 Inter,sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.12);display:flex;gap:8px;align-items:center}
+#ansage span{flex:1 1 auto}
+#ansage button,.knopf{font:800 13px Inter,sans-serif;border:0;border-radius:10px;padding:9px 13px;background:var(--red);color:#fff;cursor:pointer;white-space:nowrap}
+#ansage button[hidden]{display:none}
+.knopf.hell{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+#tablett{position:absolute;left:3%;right:3%;bottom:2%;height:21%;z-index:20;border-radius:16px;background:rgba(255,255,255,.55);border:1.5px solid rgba(0,0,0,.06)}
+.etikett{position:absolute;transform:translate(-50%,0);z-index:21;font:700 10.5px/1.15 Inter,sans-serif;text-align:center;color:var(--ink);pointer-events:none;width:22%}
+.weg{opacity:0!important;pointer-events:none}
+/* Displaykarte */
+#karte{position:absolute;left:5%;width:90%;top:14%;z-index:70;background:#2B3542;color:#E8EEF5;border-radius:16px;padding:14px 12px 12px;box-shadow:0 12px 30px rgba(0,0,0,.35);font:600 14px Inter,sans-serif}
+#karte h4{margin:0 0 8px;font:800 15px Inter,sans-serif;color:#fff}
+.phase{border-top:1px solid #45515F;padding:9px 0 4px}
+.phase b{display:block;margin-bottom:6px;color:#9FD8F0}
+.zeile{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:5px 0}
+.zeile .lbl{flex:1 1 auto;font-size:12.5px;color:#B9C4D0}
+.wert{min-width:4.2em;text-align:center;font:800 18px ui-monospace,Menlo,monospace;color:#fff;direction:ltr}
+.pm{width:44px;height:44px;border-radius:10px;border:1.5px solid #5C6B7C;background:#36424F;color:#fff;font:800 22px Inter,sans-serif;cursor:pointer;touch-action:manipulation}
+#karte .start{width:100%;margin-top:10px;height:48px;font-size:16px;background:#16B8A6}
+/* Anzeige auf dem Geraet */
+#anzeige{position:absolute;left:38.1%;top:15.5%;width:23.8%;height:18%;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;color:#CFE9F7;font:700 3.1cqw/1.25 ui-monospace,Menlo,monospace;padding:2%;pointer-events:none}
+#anzeige .gross{font-size:5.2cqw;color:#fff}
+#anzeige .meldung{font:800 3.3cqw/1.25 Inter,sans-serif;color:#fff}
+#wackel{position:absolute;left:27.9%;top:59%;width:44.3%;height:21.4%;z-index:5;background-size:225.7% 467.3%;background-position:50.07% 75.08%;pointer-events:none}
+@media (prefers-reduced-motion: reduce){ #wackel{animation:none!important} }
+@keyframes wackel{0%{transform:translate(0,0)}25%{transform:translate(1px,0)}50%{transform:translate(0,1px)}75%{transform:translate(-1px,0)}}
+#fortschritt{position:absolute;left:20%;right:20%;bottom:9%;height:6px;border-radius:9px;background:rgba(0,0,0,.12);z-index:40;overflow:hidden}
+#fortschritt i{display:block;height:100%;width:0;background:var(--teal)}
+#titel{position:absolute;left:0;right:0;top:12%;text-align:center;z-index:40;font:800 18px Montserrat,Inter,sans-serif}
+#antworten{position:absolute;left:4%;right:4%;bottom:3%;z-index:60;display:flex;flex-direction:column;gap:8px}
+#antworten button{font:700 14px/1.3 Inter,sans-serif;text-align:start;border:2px solid var(--line);background:#fff;border-radius:12px;padding:11px 12px;color:var(--ink);cursor:pointer}
+#antworten button.gewaehlt{border-color:var(--ink)}
+/* Diagnose */
+#diag{width:min(100vw,430px);padding:12px 12px 0;font:500 13px/1.45 Inter,sans-serif}
+#diag h3{font:800 14px Inter,sans-serif;margin:0 0 6px}
+#diag .reihe{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+#diag .reihe button{font:700 13px Inter,sans-serif;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--ink)}
+#diag .reihe button.an{border-color:var(--teal);color:var(--teal)}
+#fehler{list-style:none;padding:0;margin:0}
+#fehler li{display:flex;gap:8px;padding:5px 0;border-top:1px solid var(--line)}
+#fehler li b{min-width:6.8em;font-family:ui-monospace,Menlo,monospace}
+#fehler li.ja b{color:#B3121F}#fehler li.nein b{color:#0E6F64}
+#fehler li small{color:var(--soft)}
+#anleitung{position:absolute;inset:0;z-index:90;background:rgba(246,243,236,.97);display:flex;flex-direction:column;justify-content:center;padding:8%;gap:14px;font:500 15px/1.55 Inter,sans-serif}
+#anleitung h2{margin:0;font:800 19px Montserrat,Inter,sans-serif}
+[dir=rtl] #fehler li b{direction:ltr;text-align:right}
+</style>
+</head>
+<body>
+<div id="buehne"></div>
+<div id="diag"></div>
+
+<script>
+(function(){
+'use strict';
+var W=864, H=1536, A='../assets/lab/';
+var lang=(function(){ try{ return localStorage.getItem('pcProtoLang')||'de'; }catch(e){ return 'de'; } })();
+
+/* ---------- Texte ----------
+   REZ_02_Text_v1.md §5 und §6 woertlich. TECHNIK = nicht in der Vorlage. */
+var TX={
+de:{ geraet:'Elektrisches Rührsystem',
+  anleitung:'Kruke passend zur Menge wählen. Sandwich: die Hälfte der Salbe, darauf die Wirkstoffe, darüber der Rest der Salbe. Deckel mit Rührwerkzeug aufsetzen, Kruke einspannen, Programm eingeben, rühren. Danach Werkzeug abstreifen und die Kruke entlüften.',
+  los:'Los', weiter:'Weiter', neu:'Von vorn',
+  /* TECHNIK: Gestenhinweise */
+  a1:'Kruke wählen: tippe eine an.', a2:'Sandwich: Teile in die Kruke ziehen.', a2b:'Wägeschiffchen mit dem Kartenblatt ausstreifen, dann weiter.',
+  a3a:'Rührwerkzeug in die Mitte der Kruke ziehen.', a3b:'Deckel auf die Kruke ziehen.', a3c:'Deckel zudrehen: zweimal mit dem Finger drehen.',
+  a4a:'Kruke in den Ring ziehen.', a4b:'Beide Bügel nach innen ziehen.', a5:'Display antippen und Programm eingeben.',
+  a6a:'Werkzeugwelle antippen.', a6b:'Schlitten nach unten ziehen.', a6c:'Beide Bügel nach außen ziehen.', a6d:'Kruke nach oben herausziehen.',
+  a7a:'Rührwerkzeug nach oben herausziehen.', a7b:'Mit dem Kartenblatt am Werkzeug entlang abstreifen, dann weiter.',
+  a8:'Boden drehen, bis die Salbe an der Öffnung steht, dann weiter.', a9a:'Boden aufdrehen.', a9b:'Boden abziehen.',
+  /* TECHNIK: Teile auf dem Tablett */
+  t_salbe1:'Salbe · Portion 1', t_salbe2:'Salbe · Portion 2', t_clo:'Clotrimazol', t_tri:'Triamcinolon­acetonid', t_karte:'Kartenblatt',
+  k50:'50 g / 70 mL', k100:'100 g / 140 mL',
+  /* Display: Beschriftung DE aus der Vorlage */
+  ph1:'Phase 1', ph2:'Phase 2', zeit:'Zeit (min:s)', dreh:'Drehzahl (U/min)', start:'Start', prog:'Programm',
+  m1:'Programm beendet', m2:'Werkzeugwelle lösen', m3:'Schlitten bewegen',
+  bodenOffen:'Boden geöffnet',
+  frage:'Ich öffne den Boden. Ist die Salbe homogen, frei von Agglomeraten und Pulvernestern?',
+  ant:['homogen, freigeben zur Abgabe','Agglomerate oder Pulvernester, nochmals rühren','Lufteinschlüsse, entlüften und im Protokoll vermerken'],
+  /* Fehlertexte §5 und §6 */
+  f:{ kruke:'Zu viel Luftraum über 50 g Salbe. Die Kruke passt zur Menge, nicht umgekehrt.',
+      sandwich:'Wirkstoffe direkt auf den Krukenboden oder ganz oben aufgelegt werden schlecht erfasst. Sie gehören zwischen zwei Salbenschichten.',
+      schiffchen:'Am Wägeschiffchen bleibt Pulver hängen. Bei 51 mg Wirkstoff fehlt dann ein spürbarer Anteil. Ich streife das Schiffchen mit etwas Salbe aus.',
+      programm:'Das Programm stimmt nicht mit der Herstellungsanweisung überein. Zu kurz oder zu langsam gerührt, bleiben Agglomerate.',
+      abstreifen:'Am Rührwerkzeug hängt Salbe mit Wirkstoff. Ohne Abstreifen fehlt sie in der Kruke.',
+      entlueften:'Ich drehe den Boden hoch, bis die Salbe an der Öffnung steht. Sonst bleibt Luft in der Kruke, und die ersten Hübe beim Patienten geben keine Salbe ab.' },
+  diag:'Diagnose', fehlerT:'Fehler', ok:'ok', fehlt:'Fehler', eingabe:'Eingegebenes Programm', antwort:'Antwort Prüfung', keine:'noch keine',
+  schritt:'Schritt' },
+en:{ geraet:'electric mixing system',
+  anleitung:'Choose a jar that fits the quantity. Sandwich: half of the ointment, the active ingredients on top, the rest of the ointment above. Fit the lid with the mixing tool, clamp the jar, enter the programme, mix. Then scrape off the tool and vent the jar.',
+  los:'Start', weiter:'Continue', neu:'Restart',
+  a1:'Choose a jar: tap one.', a2:'Sandwich: drag the parts into the jar.', a2b:'Wipe out the weighing boats with the card, then continue.',
+  a3a:'Drag the mixing tool into the centre of the jar.', a3b:'Drag the lid onto the jar.', a3c:'Screw the lid on: turn it twice with your finger.',
+  a4a:'Drag the jar into the ring.', a4b:'Pull both clamps inwards.', a5:'Tap the display and enter the programme.',
+  a6a:'Tap the tool shaft.', a6b:'Drag the slide down.', a6c:'Pull both clamps outwards.', a6d:'Lift the jar out.',
+  a7a:'Pull the mixing tool up and out.', a7b:'Scrape along the tool with the card, then continue.',
+  a8:'Turn the bottom until the ointment reaches the opening, then continue.', a9a:'Unscrew the bottom.', a9b:'Pull the bottom away.',
+  t_salbe1:'Ointment · portion 1', t_salbe2:'Ointment · portion 2', t_clo:'Clotrimazole', t_tri:'Triamcinolone acetonide', t_karte:'Card',
+  k50:'50 g / 70 mL', k100:'100 g / 140 mL',
+  ph1:'Phase 1', ph2:'Phase 2', zeit:'Time (min:s)', dreh:'Speed (rpm)', start:'Start', prog:'Programme',
+  m1:'Programme finished', m2:'Release tool shaft', m3:'Move slide',
+  bodenOffen:'Bottom opened',
+  frage:'I open the bottom. Is the ointment homogeneous, free of agglomerates and powder pockets?',
+  ant:['homogeneous, release for dispensing','agglomerates or powder pockets, mix again','air pockets, vent and note in the record'],
+  f:{ kruke:'Too much air space above 50 g of ointment. The jar must fit the quantity.',
+      sandwich:'Active ingredients placed directly on the bottom or on top are poorly mixed in. They belong between two layers of ointment.',
+      schiffchen:'Powder sticks to the weighing boat. With 51 mg of active ingredient, a noticeable share would be missing. I wipe the boat out with a little ointment.',
+      programm:'The programme does not match the compounding instruction. Mixed too briefly or too slowly, agglomerates remain.',
+      abstreifen:'Ointment containing active ingredient clings to the mixing tool. Without scraping it off, it is missing from the jar.',
+      entlueften:'I turn the bottom up until the ointment reaches the opening. Otherwise air remains in the jar and the first turns at home dispense nothing.' },
+  diag:'Diagnostics', fehlerT:'Errors', ok:'ok', fehlt:'error', eingabe:'Programme entered', antwort:'Inspection answer', keine:'none yet',
+  schritt:'Step' },
+ar:{ geraet:'جهاز الخلط الكهربائي',
+  anleitung:'أختار علبة بحجم الكمية. طريقة الطبقات: نصف المرهم، ثم المادتان الفعالتان فوقه، ثم بقية المرهم. أركّب الغطاء مع أداة الخلط، وأثبّت العلبة في الجهاز، وأدخل البرنامج، وأشغّله. بعدها أكشط الأداة وأُخرج الهواء من العلبة.',
+  los:'ابدأ', weiter:'متابعة', neu:'من جديد',
+  a1:'أختار العلبة: أضغط على واحدة.', a2:'الطبقات: أسحب القطع إلى العلبة.', a2b:'أمسح ورقتي الوزن بالبطاقة، ثم أتابع.',
+  a3a:'أسحب أداة الخلط إلى وسط العلبة.', a3b:'أسحب الغطاء فوق العلبة.', a3c:'أغلق الغطاء: أديره بإصبعي مرتين.',
+  a4a:'أسحب العلبة إلى الحلقة.', a4b:'أسحب المقبضين إلى الداخل.', a5:'أضغط على الشاشة وأدخل البرنامج.',
+  a6a:'أضغط على عمود الأداة.', a6b:'أسحب الحامل إلى الأسفل.', a6c:'أسحب المقبضين إلى الخارج.', a6d:'أسحب العلبة إلى أعلى.',
+  a7a:'أسحب أداة الخلط إلى أعلى.', a7b:'أكشط الأداة بالبطاقة على طولها، ثم أتابع.',
+  a8:'أدير القاع حتى يصل المرهم إلى الفتحة، ثم أتابع.', a9a:'أفكّ القاع بالتدوير.', a9b:'أسحب القاع بعيداً.',
+  t_salbe1:'مرهم · الدفعة 1', t_salbe2:'مرهم · الدفعة 2', t_clo:'Clotrimazol', t_tri:'Triamcinolonacetonid', t_karte:'البطاقة',
+  k50:'50 g / 70 mL', k100:'100 g / 140 mL',
+  ph1:'المرحلة 1', ph2:'المرحلة 2', zeit:'الوقت (دقيقة:ثانية)', dreh:'السرعة (دورة/دقيقة)', start:'تشغيل', prog:'البرنامج',
+  m1:'انتهى البرنامج', m2:'حرّر عمود الأداة', m3:'حرّك الحامل',
+  bodenOffen:'القاع مفتوح',
+  frage:'أفتح القاع. هل المرهم متجانس، وخالٍ من الكتل وجيوب المسحوق؟',
+  ant:['متجانس، أفرج عنه للصرف','كتل أو جيوب مسحوق، أعيد الخلط','فقاعات هواء، أُخرج الهواء وأسجّل ذلك في البروتوكول'],
+  f:{ kruke:'فراغ هوائي كبير فوق 50 g من المرهم. العلبة تُختار بحجم الكمية.',
+      sandwich:'المادة الفعالة على قاع العلبة أو فوق السطح لا تُخلط جيداً. مكانها بين طبقتين من المرهم.',
+      schiffchen:'يعلق المسحوق بورقة الوزن، ومع 51 mg فقط يضيع جزء محسوس. أمسح الورقة بقليل من المرهم.',
+      programm:'البرنامج لا يطابق تعليمات التصنيع. الخلط القصير أو البطيء يترك كتلاً.',
+      abstreifen:'يعلق بأداة الخلط مرهم فيه مادة فعالة. بلا كشط يضيع من العلبة.',
+      entlueften:'أدير القاع إلى أعلى حتى يصل المرهم إلى الفتحة. وإلا يبقى هواء في العلبة، ولا يخرج المرهم في المرات الأولى عند المريض.' },
+  diag:'التشخيص', fehlerT:'الأخطاء', ok:'سليم', fehlt:'خطأ', eingabe:'البرنامج المُدخل', antwort:'إجابة الفحص', keine:'لا شيء بعد',
+  schritt:'الخطوة' }
+};
+function t(k){ return TX[lang][k]; }
+var FEHLER=['kruke','sandwich','schiffchen','programm','abstreifen','entlueften'];
+var SOLL=[{z:30,d:2000},{z:180,d:1000}];
+
+/* ---------- Zustand ---------- */
+var S;
+function neuerZustand(){
+  return { schritt:0, fehler:{}, kruke:null, gelegt:[], reste:{clo:false,tri:false}, striche:{clo:0,tri:0},
+           prog:[{z:60,d:1500},{z:60,d:1500}], antwort:null, laeuft:false };
+}
+
+/* ---------- Buehne und Hilfen ---------- */
+var B=document.getElementById('buehne'), D=document.getElementById('diag');
+function el(tag,cls,eltern,txt){ var e=document.createElement(tag); if(cls) e.className=cls; if(txt!=null) e.textContent=txt; (eltern||B).appendChild(e); return e; }
+function bildEl(src,cls,x,y,w){ var i=el('img',cls||'teil'); i.src=A+src; i.alt=''; if(x!=null) setze(i,x,y,w); return i; }
+function setze(e,x,y,w){ e.style.left=x+'%'; e.style.top=y+'%'; if(w!=null) e.style.width=w+'%'; }
+function zone(x1,x2,y1,y2,eckig){ var z=el('div','zone'+(eckig?' eckig':'')); z.style.left=x1+'%'; z.style.top=y1+'%'; z.style.width=(x2-x1)+'%'; z.style.height=(y2-y1)+'%'; return z; }
+function inBild(ev){ var r=B.getBoundingClientRect(); return { x:(ev.clientX-r.left)/r.width*100, y:(ev.clientY-r.top)/r.height*100 }; }
+function leeren(){ B.replaceChildren(); stopTon(); }
+var hgA=null;
+function hintergrund(src){
+  if(!hgA){ hgA=bildEl(src,'hg'); }
+  else hgA.src=A+src;
+  if(!B.contains(hgA)) B.insertBefore(hgA,B.firstChild);
+  return hgA;
+}
+var ansageEl, ansageTxt, ansageBtn;
+function ansage(txt, knopfTxt, fn){
+  if(!ansageEl || !B.contains(ansageEl)){
+    ansageEl=el('div',null); ansageEl.id='ansage';
+    ansageTxt=el('span',null,ansageEl); ansageBtn=el('button',null,ansageEl); ansageBtn.type='button';
+    ansageBtn.addEventListener('click',function(){ if(ansageBtn._fn) ansageBtn._fn(); });
+  }
+  ansageTxt.textContent=txt;
+  ansageBtn.hidden=!knopfTxt; ansageBtn.textContent=knopfTxt||''; ansageBtn._fn=fn||null;
+}
+function fehler(k){ S.fehler[k]=true; diag(); }
+function brumm(){ try{ if(navigator.vibrate) navigator.vibrate(10); }catch(e){} }
+
+/* Ziehen: Teil folgt dem Finger, Abwurf liefert die Lage in Prozent */
+function ziehbar(e, opt){
+  e.style.pointerEvents='auto'; e.style.touchAction='none'; e.style.cursor='grab';
+  var start=null, ab=null;
+  e.addEventListener('pointerdown',function(ev){
+    if(opt.darf && !opt.darf()) return;
+    var p=inBild(ev); start={x:parseFloat(e.style.left), y:parseFloat(e.style.top), px:p.x, py:p.y};
+    ab=ev.pointerId; try{ e.setPointerCapture(ev.pointerId); }catch(x){}
+    e.classList.add('zieht'); tonAn(); ev.preventDefault();
+    if(opt.anfang) opt.anfang();
+  });
+  e.addEventListener('pointermove',function(ev){
+    if(ev.pointerId!==ab||!start) return;
+    var p=inBild(ev), x=start.x+(p.x-start.px), y=start.y+(p.y-start.py);
+    setze(e,x,y); if(opt.bewegt) opt.bewegt(x,y,p);
+    ev.preventDefault();
+  });
+  function los(ev){
+    if(ev.pointerId!==ab||!start) return;
+    var x=parseFloat(e.style.left), y=parseFloat(e.style.top);
+    e.classList.remove('zieht'); ab=null;
+    var heim=start; start=null;
+    if(!(opt.abwurf && opt.abwurf(x,y))){ setze(e,heim.x,heim.y); }
+  }
+  e.addEventListener('pointerup',los); e.addEventListener('pointercancel',los);
+}
+/* Drehgeste um einen Mittelpunkt (wie reibschale.html, Winkel ueber atan2) */
+function drehung(feld, mitte, opt){
+  feld.style.pointerEvents='auto'; feld.style.touchAction='none';
+  var ab=null, letzt=0, summe=0;
+  function winkel(p){ var r=B.getBoundingClientRect(); return Math.atan2((p.y-mitte.y)*r.height, (p.x-mitte.x)*r.width); }
+  feld.addEventListener('pointerdown',function(ev){
+    ab=ev.pointerId; letzt=winkel(inBild(ev)); summe=0; tonAn();
+    try{ feld.setPointerCapture(ev.pointerId); }catch(x){} ev.preventDefault();
+  });
+  feld.addEventListener('pointermove',function(ev){
+    if(ev.pointerId!==ab) return;
+    var w=winkel(inBild(ev)), d=w-letzt;
+    while(d>Math.PI) d-=2*Math.PI; while(d<-Math.PI) d+=2*Math.PI;
+    letzt=w; summe+=d; opt.dreh(d, summe); ev.preventDefault();
+  });
+  function los(ev){ if(ev.pointerId!==ab) return; ab=null; if(opt.ende) opt.ende(summe); }
+  feld.addEventListener('pointerup',los); feld.addEventListener('pointercancel',los);
+}
+function feld(x1,x2,y1,y2){ var f=el('div',null); f.style.cssText='position:absolute;z-index:45;left:'+x1+'%;top:'+y1+'%;width:'+(x2-x1)+'%;height:'+(y2-y1)+'%'; return f; }
+
+/* ---------- Ton (WebAudio, keine Dateien) ---------- */
+var AC=null, motor=null, luft=null;
+function tonAn(){
+  if(AC){ try{ if(AC.state==='suspended') AC.resume(); }catch(e){} return; }
+  try{ var C=window.AudioContext||window.webkitAudioContext; if(C) AC=new C(); }catch(e){ AC=null; }
+}
+function piep(f,ms){
+  if(!AC) return;
+  try{ var o=AC.createOscillator(), g=AC.createGain(); o.type='sine'; o.frequency.value=f||880;
+    g.gain.setValueAtTime(0.0001,AC.currentTime); g.gain.exponentialRampToValueAtTime(0.18,AC.currentTime+0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001,AC.currentTime+(ms||160)/1000);
+    o.connect(g); g.connect(AC.destination); o.start(); o.stop(AC.currentTime+(ms||160)/1000+0.05); }catch(e){}
+}
+function motorAn(){
+  if(!AC||motor) return;
+  try{
+    var o=AC.createOscillator(), o2=AC.createOscillator(), f=AC.createBiquadFilter(), g=AC.createGain();
+    o.type='sawtooth'; o2.type='square'; f.type='lowpass'; f.frequency.value=900; g.gain.value=0;
+    o.connect(f); o2.connect(f); f.connect(g); g.connect(AC.destination); o.start(); o2.start();
+    motor={o:o,o2:o2,g:g};
+  }catch(e){ motor=null; }
+}
+function motorDreh(rpm){
+  if(!motor) return;
+  /* Tonhoehe folgt der Drehzahl: 2000 klingt hoeher als 1000 */
+  var hz=60+rpm*0.07;
+  try{ motor.o.frequency.setTargetAtTime(hz,AC.currentTime,0.15); motor.o2.frequency.setTargetAtTime(hz*0.5,AC.currentTime,0.15);
+       motor.g.gain.setTargetAtTime(rpm?0.05:0,AC.currentTime,0.12); }catch(e){}
+}
+function luftAn(){
+  if(!AC||luft) return;
+  try{
+    var len=AC.sampleRate*2, buf=AC.createBuffer(1,len,AC.sampleRate), d=buf.getChannelData(0);
+    for(var i=0;i<len;i++) d[i]=Math.random()*2-1;
+    var s=AC.createBufferSource(); s.buffer=buf; s.loop=true;
+    var f=AC.createBiquadFilter(); f.type='bandpass'; f.frequency.value=2400; f.Q.value=0.7;
+    var g=AC.createGain(); g.gain.value=0; s.connect(f); f.connect(g); g.connect(AC.destination); s.start();
+    luft={s:s,g:g};
+  }catch(e){ luft=null; }
+}
+function luftStaerke(v){ if(luft) try{ luft.g.gain.setTargetAtTime(v,AC.currentTime,0.08); }catch(e){} }
+function stopTon(){
+  if(motor){ try{ motor.o.stop(); motor.o2.stop(); }catch(e){} motor=null; }
+  if(luft){ try{ luft.s.stop(); }catch(e){} luft=null; }
+}
+
+/* =====================================================================
+   Schritte
+===================================================================== */
+var OEFF={x:49.2, y:35.9, rx:25.2, ry:10.2};   /* Krukenoeffnung, Brief §3 */
+function inOeffnung(x,y,rand){ var r=rand||1.35; var dx=(x-OEFF.x)/(OEFF.rx*r), dy=(y-OEFF.y)/(OEFF.ry*r*1.6); return dx*dx+dy*dy<=1; }
+
+function schritt0(){
+  leeren(); S.schritt=0; diag();
+  var a=el('div',null); a.id='anleitung';
+  el('h2',null,a,t('geraet'));
+  el('p',null,a,t('anleitung')).style.margin='0';
+  var k=el('button','knopf',a,t('los')); k.type='button'; k.style.alignSelf='flex-start';
+  k.addEventListener('click',function(){ tonAn(); schritt1(); });
+}
+
+/* 1 · Kruke waehlen */
+function schritt1(){
+  leeren(); S.schritt=1; diag(); hgA=null;
+  ansage(t('a1'));
+  var k1=bildEl('PCG_LAB_TKRUKE_CLOSED_v001.webp','teil',30,52,24), k2=bildEl('PCG_LAB_TKRUKE_GROSS_v001.webp','teil',70,50,34);
+  el('div','etikett',null,t('k50')).style.cssText+='left:30%;top:69%';
+  el('div','etikett',null,t('k100')).style.cssText+='left:70%;top:75%';
+  [[k1,50],[k2,100]].forEach(function(p){
+    p[0].style.pointerEvents='auto'; p[0].style.cursor='pointer';
+    p[0].addEventListener('click',function(){
+      S.kruke=p[1]; if(p[1]!==50) fehler('kruke');
+      brumm(); schritt2();
+    });
+  });
+}
+
+/* 2 · Sandwich und Waegeschiffchen */
+function schritt2(){
+  leeren(); S.schritt=2; diag(); hgA=null;
+  hintergrund('PCG_LAB_TKRUKE_OPEN_EMPTY_v001.webp');
+  var hBoden=bildEl('PCG_LAB_PULVER_HEAP_v001.webp','teil weg',49.2,40.5,13);
+  var hOben=bildEl('PCG_LAB_PULVER_HEAP_v001.webp','teil weg',49.2,35.5,13);
+  var blob=bildEl('PCG_LAB_CREME_BLOB_v001.webp','teil weg',49.2,36,10);
+  el('div',null).id='tablett';
+  ansage(t('a2'));
+  var TEILE=[
+    {id:'salbe1', art:'salbe', x:14, y:86, w:17, img:'PCG_LAB_CREME_BLOB_v001.webp', txt:t('t_salbe1')},
+    {id:'clo', art:'pulver', x:38, y:86, w:19, img:'PCG_LAB_WAEGESCHIFFCHEN_v001.webp', txt:t('t_clo')},
+    {id:'tri', art:'pulver', x:62, y:86, w:19, img:'PCG_LAB_WAEGESCHIFFCHEN_v001.webp', txt:t('t_tri')},
+    {id:'salbe2', art:'salbe', x:86, y:86, w:17, img:'PCG_LAB_CREME_BLOB_v001.webp', txt:t('t_salbe2')}
+  ];
+  var karte=null;
+  TEILE.forEach(function(T){
+    T.el=bildEl(T.img,'teil',T.x,T.y,T.w); T.el.style.zIndex=25;
+    if(T.art==='pulver'){ T.haufen=bildEl('PCG_LAB_PULVER_HEAP_v001.webp','teil',T.x,T.y-1.2,T.w*0.55); T.haufen.style.zIndex=26; }
+    T.lbl=el('div','etikett',null,T.txt); T.lbl.style.left=T.x+'%'; T.lbl.style.top=(T.y+5.2)+'%';
+    ziehbar(T.el,{
+      darf:function(){ return !T.gelegt; },
+      bewegt:function(x,y){ if(T.haufen) setze(T.haufen,x,y-1.2); },
+      abwurf:function(x,y){
+        if(!inOeffnung(x,y)){ if(T.haufen) setze(T.haufen,T.x,T.y-1.2); return false; }
+        T.gelegt=true; S.gelegt.push(T.art); brumm();
+        if(T.art==='salbe'){ T.el.classList.add('weg'); T.lbl.classList.add('weg'); }
+        else {
+          /* Schiffchen leer zurueck aufs Tablett, mit Rest */
+          setze(T.el,T.x,T.y); setze(T.haufen,T.x,T.y-1.0,T.w*0.22); T.el.style.cursor='default';
+          S.reste[T.id]=true;
+        }
+        bild(); fertigPruefen(); return true;
+      }
+    });
+  });
+  function bild(){
+    /* Welche Schicht? Pulver zaehlt nach der Zahl der Salbenportionen davor. */
+    var b=0, boden=false, mitte=false, oben=false;
+    S.gelegt.forEach(function(a){ if(a==='salbe') b++; else if(b===0) boden=true; else if(b===1) mitte=true; else oben=true; });
+    var src = b===0 ? 'PCG_LAB_TKRUKE_OPEN_EMPTY_v001.webp' : (b===1 ? (mitte?'PCG_LAB_TKRUKE_LAYER_POWDER_v001.webp':'PCG_LAB_TKRUKE_LAYER_BASE_v001.webp') : 'PCG_LAB_TKRUKE_LAYER_FULL_v001.webp');
+    hintergrund(src);
+    hBoden.classList.toggle('weg', !(b===0 && boden));
+    hOben.classList.toggle('weg', !(b===2 && oben));
+  }
+  function fertigPruefen(){
+    if(TEILE.some(function(T){ return !T.gelegt; })) return;
+    var b=0, falsch=false;
+    S.gelegt.forEach(function(a){ if(a==='salbe') b++; else if(b!==1) falsch=true; });
+    if(falsch) fehler('sandwich');
+    /* Kartenblatt erscheint: Schiffchen ausstreifen, drei Striche je Schiffchen */
+    karte=bildEl('PCG_LAB_KARTENBLATT_CREME_v001.webp','teil',14,85,19); karte.style.zIndex=30;
+    var kl=el('div','etikett',null,t('t_karte')); kl.style.left='14%'; kl.style.top='91.2%';
+    var drin={clo:false,tri:false};
+    ziehbar(karte,{
+      bewegt:function(x,y){
+        TEILE.forEach(function(T){
+          if(T.art!=='pulver' || !S.reste[T.id]) return;
+          var nah=Math.abs(x-T.x)<T.w*0.55 && Math.abs(y-T.y)<5;
+          /* Strich zaehlt beim Hineinfahren; erneut erst nach dem Herausfahren */
+          if(!nah && drin[T.id]) drin[T.id]=false;
+          if(nah && !drin[T.id]){
+            drin[T.id]=true; S.striche[T.id]++; brumm();
+            /* kurzer Blick: Rest geht mit der Salbe in die Kruke */
+            blob.classList.remove('weg'); setTimeout(function(){ blob.classList.add('weg'); },380);
+            setze(T.haufen,T.x,T.y-1.0,T.w*0.22*Math.max(0,1-S.striche[T.id]/3));
+            if(S.striche[T.id]>=3){ S.reste[T.id]=false; T.haufen.classList.add('weg'); }
+          }
+        });
+      },
+      abwurf:function(){ return false; }
+    });
+    ansage(t('a2b'),t('weiter'),function(){
+      if(S.reste.clo || S.reste.tri) fehler('schiffchen');
+      schritt3();
+    });
+  }
+}
+
+/* 3 · Ruehrwerkzeug und Deckel */
+function schritt3(){
+  S.schritt=3; diag();
+  [].slice.call(B.querySelectorAll('.teil,.etikett,#tablett')).forEach(function(e){ if(e!==hgA) e.remove(); });
+  el('div',null).id='tablett';
+  ansage(t('a3a'));
+  var z=zone(OEFF.x-8,OEFF.x+8,OEFF.y-6,OEFF.y+6);
+  var welle=bildEl('PCG_LAB_RUEHRWELLE_CLEAN_v001.webp','teil',50,87,42); welle.style.zIndex=30;
+  ziehbar(welle,{abwurf:function(x,y){
+    if(!inOeffnung(x,y,1.6)) return false;
+    /* Steht senkrecht in der Mitte: Bild gedreht, Paddel unten */
+    welle.style.transform='translate(-50%,-50%) rotate(-52deg)';
+    setze(welle,OEFF.x,OEFF.y-17,58); welle.style.pointerEvents='none'; z.remove(); brumm();
+    deckel(); return true;
+  }});
+  function deckel(){
+    ansage(t('a3b'));
+    var z2=zone(OEFF.x-OEFF.rx,OEFF.x+OEFF.rx,OEFF.y-OEFF.ry,OEFF.y+OEFF.ry);
+    var d=bildEl('PCG_LAB_TKRUKE_DECKEL_v001.webp','teil',50,87,34); d.style.zIndex=35;
+    ziehbar(d,{abwurf:function(x,y){
+      if(!inOeffnung(x,y,1.6)) return false;
+      setze(d,OEFF.x,OEFF.y+1.2,57); z2.remove(); welle.classList.add('weg'); brumm();
+      d.style.pointerEvents='none'; zudrehen(d); return true;
+    }});
+  }
+  function zudrehen(d){
+    ansage(t('a3c'));
+    var f=feld(OEFF.x-OEFF.rx-4,OEFF.x+OEFF.rx+4,OEFF.y-OEFF.ry-8,OEFF.y+OEFF.ry+10);
+    var gesten=0, winkelGes=0;
+    /* Brief §4/3: mindestens eine Viertelumdrehung, zweimal (Rechnung wie reibschale.html) */
+    drehung(f,{x:OEFF.x,y:OEFF.y+1.2},{
+      dreh:function(dw){ winkelGes+=dw; d.style.transform='translate(-50%,-50%) rotate('+(winkelGes*180/Math.PI*0.35).toFixed(1)+'deg)'; },
+      ende:function(summe){
+        if(Math.abs(summe)>=Math.PI/2){ gesten++; brumm(); piep(660,60); }
+        if(gesten>=2){ f.remove(); setTimeout(schritt4,350); }
+      }
+    });
+  }
+}
+
+/* 4 · Einspannen */
+var KRUKE_RING={x:50.35, y:78.1, w:15.1};
+function krukeMitWelle(x,y,w){
+  var k=bildEl('PCG_LAB_TKRUKE_CLOSED_v001.webp','teil',x,y,w); k.style.zIndex=30;
+  return k;
+}
+function buegelFeld(seite, offen, fertigFn){
+  /* Brief §3: Bereiche offen/geschlossen. Ziehen Richtung Mitte (oder nach aussen). */
+  var o = seite==='l' ? (offen?[19.1,28.9,71.9,76.2]:[27.8,44.6,74.2,77.1]) : (offen?[71.5,81.6,71.9,76.1]:[56.1,72.3,74.2,77.1]);
+  var z=zone(o[0],o[1],o[2],o[3],true);
+  var f=feld(o[0]-3,o[1]+3,o[2]-3,o[3]+3);
+  var ab=null, x0=0;
+  f.style.pointerEvents='auto'; f.style.touchAction='none';
+  f.addEventListener('pointerdown',function(ev){ ab=ev.pointerId; x0=inBild(ev).x; try{ f.setPointerCapture(ev.pointerId); }catch(e){} ev.preventDefault(); });
+  f.addEventListener('pointermove',function(ev){
+    if(ev.pointerId!==ab) return;
+    var dx=inBild(ev).x-x0, innen=(seite==='l')?dx:-dx, ziel=offen?innen:-innen;
+    if(ziel>6){ ab=null; z.classList.add('ok'); f.remove(); brumm(); piep(520,50); setTimeout(function(){ z.remove(); },300); fertigFn(); }
+    ev.preventDefault();
+  });
+  f.addEventListener('pointerup',function(){ ab=null; });
+}
+function schritt4(){
+  leeren(); S.schritt=4; diag(); hgA=null;
+  hintergrund('PCG_LAB_TOPITEC_EMPTY_v001.webp');
+  ansage(t('a4a'));
+  var z=zone(37,64,80,87);
+  var k=krukeMitWelle(86,86,13);
+  ziehbar(k,{abwurf:function(x,y){
+    if(!(x>=33 && x<=68 && y>=70 && y<=92)) return false;
+    setze(k,KRUKE_RING.x,KRUKE_RING.y,KRUKE_RING.w); k.style.pointerEvents='none'; z.remove(); brumm();
+    ansage(t('a4b'));
+    var n=0;
+    function eins(){ n++; if(n===2){ setTimeout(function(){ k.remove(); hintergrund('PCG_LAB_TOPITEC_JAR_v001.webp'); schritt5(); },250); } }
+    buegelFeld('l',true,eins); buegelFeld('r',true,eins);
+    return true;
+  }});
+}
+
+/* 5 · Programm */
+function mmss(s){ return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2); }
+function schritt5(){
+  S.schritt=5; diag();
+  ansage(t('a5'));
+  var z=zone(38.1,61.9,15.5,33.5,true);
+  var f=feld(38.1,61.9,15.5,33.5); f.style.pointerEvents='auto'; f.style.cursor='pointer';
+  f.addEventListener('click',function(){ karteZeigen(); });
+  function karteZeigen(){
+    if(document.getElementById('karte')) return;
+    var k=el('div',null); k.id='karte'; k.dir='ltr';
+    el('h4',null,k,t('prog'));
+    var werte=[];
+    [0,1].forEach(function(i){
+      var ph=el('div','phase',k); el('b',null,ph,i?t('ph2'):t('ph1'));
+      [['z',t('zeit'),10,10,600,mmss],['d',t('dreh'),100,300,3000,String]].forEach(function(q){
+        var zl=el('div','zeile',ph); var lb=el('span','lbl',zl,q[1]); if(lang==='ar') lb.dir='rtl';
+        var minus=el('button','pm',zl,'−'), w=el('span','wert',zl), plus=el('button','pm',zl,'+');
+        function zeig(){ w.textContent=q[5](S.prog[i][q[0]]); diag(); }
+        minus.type=plus.type='button';
+        minus.addEventListener('click',function(){ S.prog[i][q[0]]=Math.max(q[3],S.prog[i][q[0]]-q[2]); zeig(); });
+        plus.addEventListener('click',function(){ S.prog[i][q[0]]=Math.min(q[4],S.prog[i][q[0]]+q[2]); zeig(); });
+        zeig(); werte.push(w);
+      });
+    });
+    var st=el('button','knopf start',k,t('start')); st.type='button';
+    st.addEventListener('click',function(){
+      var falsch=S.prog.some(function(p,i){ return p.z!==SOLL[i].z || p.d!==SOLL[i].d; });
+      if(falsch) fehler('programm'); else { delete S.fehler.programm; diag(); }
+      k.remove(); z.remove(); f.remove(); schritt6();
+    });
+  }
+}
+
+/* 6 · Lauf */
+function schritt6(){
+  S.schritt=6; diag(); S.laeuft=true;
+  hintergrund('PCG_LAB_TOPITEC_RUN_v001.webp');
+  ansage('');
+  ansageEl.style.display='none';
+  var wack=el('div',null); wack.id='wackel'; wack.style.backgroundImage='url('+A+'PCG_LAB_TOPITEC_RUN_v001.webp)';
+  var reduziert=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduziert) wack.style.animation='wackel .09s steps(4) infinite';
+  var anz=el('div',null); anz.id='anzeige';
+  motorAn();
+  /* 10 s Programmzeit = 1 s Echtzeit */
+  var phasen=S.prog.map(function(p){ return {z:p.z, d:p.d}; }), i=0, rest=phasen[0].z, letzt=performance.now();
+  function malen(){
+    anz.innerHTML='<div>'+(i?t('ph2'):t('ph1'))+'</div><div class="gross">'+mmss(Math.ceil(rest))+'</div><div>'+phasen[i].d+' '+(lang==='de'?'U/min':'rpm')+'</div>';
+  }
+  motorDreh(phasen[0].d); malen();
+  (function tick(now){
+    if(!S.laeuft) return;
+    var dt=(now-letzt)/1000; letzt=now;
+    rest-=dt*10*(S.schnell||1);
+    if(rest<=0){
+      i++;
+      if(i>=phasen.length){ return ende(); }
+      rest=phasen[i].z; motorDreh(phasen[i].d);
+    }
+    malen(); requestAnimationFrame(tick);
+  })(performance.now());
+  function ende(){
+    S.laeuft=false; motorDreh(0); wack.remove();
+    anz.innerHTML='<div class="meldung">'+t('m1')+'</div>';
+    setTimeout(function(){
+      piep(988,220);
+      anz.innerHTML='<div class="meldung">'+t('m2')+'</div>';
+      ansageEl.style.display=''; ansage(t('a6a'));
+      var z=zone(45,55,50,66,true), f=feld(43,57,48,68); f.style.pointerEvents='auto'; f.style.cursor='pointer';
+      f.addEventListener('click',function(){
+        z.remove(); f.remove(); brumm(); piep(520,50);
+        anz.innerHTML='<div class="meldung">'+t('m3')+'</div>';
+        ansage(t('a6b'));
+        var z2=zone(27.9,72.2,59,80.4,true), f2=feld(27.9,72.2,59,80.4), ab=null, y0=0;
+        f2.style.pointerEvents='auto'; f2.style.touchAction='none';
+        f2.addEventListener('pointerdown',function(ev){ ab=ev.pointerId; y0=inBild(ev).y; try{ f2.setPointerCapture(ev.pointerId); }catch(e){} ev.preventDefault(); });
+        f2.addEventListener('pointermove',function(ev){
+          if(ev.pointerId!==ab) return;
+          if(inBild(ev).y-y0>5){ ab=null; z2.remove(); f2.remove(); brumm(); anz.innerHTML='';
+            hintergrund('PCG_LAB_TOPITEC_JAR_v001.webp'); oeffnen(); }
+          ev.preventDefault();
+        });
+      });
+    },2000);
+  }
+  function oeffnen(){
+    ansage(t('a6c'));
+    var n=0;
+    function eins(){ n++; if(n===2){
+      hintergrund('PCG_LAB_TOPITEC_EMPTY_v001.webp');
+      var k=krukeMitWelle(KRUKE_RING.x,KRUKE_RING.y,KRUKE_RING.w);
+      ansage(t('a6d'));
+      ziehbar(k,{abwurf:function(x,y){ if(y>KRUKE_RING.y-10) return false; brumm(); anz.remove(); schritt7(); return true; }});
+    } }
+    buegelFeld('l',false,eins); buegelFeld('r',false,eins);
+  }
+}
+
+/* 7 · Werkzeug herausziehen und abstreifen (ANNAHME laut Text) */
+function schritt7(){
+  leeren(); S.schritt=7; diag(); hgA=null;
+  hintergrund('PCG_LAB_TKRUKE_MIXED_v001.webp');
+  ansage(t('a7a'));
+  var blob=bildEl('PCG_LAB_CREME_BLOB_v001.webp','teil weg',49.2,36,9);
+  var w=bildEl('PCG_LAB_RUEHRWELLE_CREME_v001.webp','teil',OEFF.x,OEFF.y-17,58);
+  w.style.transform='translate(-50%,-50%) rotate(-52deg)'; w.style.zIndex=30;
+  ziehbar(w,{abwurf:function(x,y){
+    if(y>OEFF.y-24) return false;
+    /* liegt neben der Kruke */
+    w.style.transform='translate(-50%,-50%)'; setze(w,50,74,62); w.style.pointerEvents='none'; brumm();
+    abstreifen(); return true;
+  }});
+  function abstreifen(){
+    ansage(t('a7b'),t('weiter'),function(){ if(striche<4) fehler('abstreifen'); schritt8(); });
+    var striche=0, drin=false;
+    var k=bildEl('PCG_LAB_KARTENBLATT_v001.webp','teil',82,90,18); k.style.zIndex=40;
+    /* Strich = Karte faehrt ueber den Schaft (Diagonale) hinein und wieder hinaus */
+    ziehbar(k,{bewegt:function(x,y){
+      var u=(x-50)/31, v=(y-74)/9.5;           /* Lage relativ zum liegenden Werkzeug */
+      var nah=Math.abs(v + u*0.62) < 0.34 && Math.abs(u)<1.05;
+      if(!nah && drin) drin=false;
+      if(nah && !drin){ drin=true; striche++; brumm();
+        blob.classList.remove('weg'); setTimeout(function(){ blob.classList.add('weg'); },380);
+        if(striche>=4){ w.src=A+'PCG_LAB_RUEHRWELLE_CLEAN_v001.webp'; piep(660,60); } }
+    }, abwurf:function(){ return false; }});
+    S._striche=function(){ return striche; };
+  }
+}
+
+/* 8 · Entlueften: Boden zweimal ganz drehen (ANNAHME laut Text) */
+function schritt8(){
+  leeren(); S.schritt=8; diag(); hgA=null;
+  var k=bildEl('PCG_LAB_TKRUKE_CLOSED_v001.webp','teil',50,48,52);
+  var fb=el('div',null); fb.id='fortschritt'; var fi=el('i',null,fb);
+  var z=zone(23,77,62,74,true);
+  var f=feld(18,82,56,80);
+  var weg=0, fertig=false; luftAn();
+  ansage(t('a8'),t('weiter'),function(){ if(!fertig) fehler('entlueften'); luftStaerke(0); schritt9(); });
+  drehung(f,{x:50,y:66},{
+    dreh:function(d){
+      weg+=Math.abs(d);
+      var p=Math.min(1,weg/(4*Math.PI)); fi.style.width=(p*100)+'%';
+      luftStaerke(fertig?0:0.16*(1-p));
+      if(p>=1 && !fertig){ fertig=true; z.classList.add('ok'); piep(784,120); luftStaerke(0); }
+    },
+    ende:function(){ luftStaerke(0); }
+  });
+  S._entlueft=function(){ return weg; };
+}
+
+/* 9 · Boden oeffnen und pruefen */
+function schritt9(){
+  leeren(); S.schritt=9; diag(); hgA=null;
+  ansage(t('a9a'));
+  var bo=bildEl('PCG_LAB_TKRUKE_BODEN_v001.webp','teil',50,50,62);
+  var f=feld(14,86,36,64), winkel=0, auf=false;
+  drehung(f,{x:50,y:50},{
+    dreh:function(d){ winkel+=d; bo.style.transform='translate(-50%,-50%) rotate('+(winkel*180/Math.PI).toFixed(1)+'deg)'; },
+    ende:function(){
+      if(!auf && Math.abs(winkel)>=Math.PI/2){
+        auf=true; f.remove(); brumm(); ansage(t('a9b'));
+        ziehbar(bo,{abwurf:function(x,y){
+          if(Math.hypot(x-50,(y-50)*0.56)<18) return false;
+          bo.remove(); ergebnis(); return true;
+        }});
+      }
+    }
+  });
+  function ergebnis(){
+    /* Brief §4/9: eine Aufnahme, Vorrang sandwich vor programm vor kruke */
+    var src = S.fehler.sandwich ? 'POCKETS' : (S.fehler.programm ? 'LUMPS' : (S.fehler.kruke ? 'AIR' : 'SMOOTH'));
+    S.pruefbild=src; diag();
+    hintergrund('PCG_LAB_TKRUKE_BOTTOM_'+src+'_v001.webp');
+    ansageEl.remove();
+    el('div',null,null,t('bodenOffen')).id='titel';
+    var fr=el('div',null); fr.id='antworten';
+    var q=el('div',null,fr,t('frage')); q.style.cssText='font:700 13.5px/1.4 Inter,sans-serif;background:rgba(255,255,255,.92);border-radius:12px;padding:9px 11px';
+    t('ant').forEach(function(a,i){
+      var b=el('button',null,fr,a); b.type='button';
+      b.addEventListener('click',function(){
+        S.antwort=i; [].forEach.call(fr.querySelectorAll('button'),function(x){ x.classList.toggle('gewaehlt',x===b); });
+        diag(); try{ D.scrollIntoView({behavior:'smooth'}); }catch(e){}
+      });
+    });
+  }
+}
+
+/* ---------- Diagnose ---------- */
+function diag(){
+  D.replaceChildren(); D.dir=lang==='ar'?'rtl':'ltr';
+  el('h3',null,D,t('diag')+' · '+t('schritt')+' '+(S?S.schritt:0)+' / 9');
+  var r=el('div','reihe',D);
+  var nb=el('button',null,r,t('neu')); nb.type='button'; nb.addEventListener('click',neustart);
+  ['de','en','ar'].forEach(function(l){
+    var b=el('button',l===lang?'an':null,r,l.toUpperCase()); b.type='button';
+    b.addEventListener('click',function(){ lang=l; try{ localStorage.setItem('pcProtoLang',l); }catch(e){} neustart(); });
+  });
+  el('h3',null,D,t('fehlerT'));
+  var ul=el('ul',null,D); ul.id='fehler';
+  FEHLER.forEach(function(k){
+    var ja=!!(S&&S.fehler[k]); var li=el('li',ja?'ja':'nein',ul);
+    el('b',null,li,k);
+    var sp=el('span',null,li); sp.appendChild(document.createTextNode(ja?t('fehlt'):t('ok')));
+    if(ja){ el('br',null,sp); el('small',null,sp,t('f')[k]); }
+  });
+  if(S){
+    var p=el('p',null,D); p.innerHTML='<b>'+t('eingabe')+':</b> <bdi>'+t('ph1')+' '+mmss(S.prog[0].z)+' / '+S.prog[0].d+' · '+t('ph2')+' '+mmss(S.prog[1].z)+' / '+S.prog[1].d+'</bdi>'+
+      ' <small>(Soll 0:30 / 2000 · 3:00 / 1000)</small>';
+    var p2=el('p',null,D); p2.innerHTML='<b>'+t('antwort')+':</b> '+(S.antwort==null?t('keine'):t('ant')[S.antwort])+(S.pruefbild?' <small>(BOTTOM_'+S.pruefbild+')</small>':'');
+  }
+}
+function neustart(){ S=neuerZustand(); document.documentElement.lang=lang; B.dir=lang==='ar'?'rtl':'ltr'; schritt0(); }
+
+/* Vorladen */
+['TOPITEC_EMPTY','TOPITEC_JAR','TOPITEC_RUN','TKRUKE_OPEN_EMPTY','TKRUKE_LAYER_BASE','TKRUKE_LAYER_POWDER','TKRUKE_LAYER_FULL','TKRUKE_MIXED',
+ 'TKRUKE_BOTTOM_SMOOTH','TKRUKE_BOTTOM_LUMPS','TKRUKE_BOTTOM_POCKETS','TKRUKE_BOTTOM_AIR','TKRUKE_CLOSED','TKRUKE_GROSS','TKRUKE_DECKEL','TKRUKE_BODEN',
+ 'RUEHRWELLE_CLEAN','RUEHRWELLE_CREME','WAEGESCHIFFCHEN','PULVER_HEAP','KARTENBLATT','KARTENBLATT_CREME','CREME_BLOB'].forEach(function(n){ var i=new Image(); i.src=A+'PCG_LAB_'+n+'_v001.webp'; });
+
+neustart();
+/* Nur fuer die Pruefung von aussen, nicht fuer das Spiel. */
+window.PROTO={ S:function(){ return S; }, schritt:[schritt0,schritt1,schritt2,schritt3,schritt4,schritt5,schritt6,schritt7,schritt8,schritt9] };
+})();
+</script>
+</body>
+</html>

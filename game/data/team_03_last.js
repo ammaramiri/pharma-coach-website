@@ -1,7 +1,7 @@
 /* Pharma-Coach · Küche · Teamgespräch 03 · "Der Unersetzliche"
    Konzept freigegeben von Ammar am 21.11.2026. Nur Daten, keine Logik.
    Bildpfade relativ zu game/. Punkte: gruen 10 · gelb 5 · rot 0. Maximal 170.
-   Neue Schritt-Typen gegenüber team_01: "evidence" und "board" sowie "timeskip".
+   Neue Schritt-Typen gegenüber team_01: "evidence", "aufgabentafel" und "timeskip" (nicht "board": das ist die Plantafel von PLAN01).
    Logik und Auswertung: siehe TEAM03_Technik_v001.md. */
 window.PC_TEAM = window.PC_TEAM || {};
 window.PC_TEAM["team_03"] = {
@@ -183,7 +183,7 @@ window.PC_TEAM["team_03"] = {
 
     /* ---------- Teil 5 · Aufgabentafel ---------- */
     {
-      id: "tafel", type: "board",
+      id: "tafel", type: "aufgabentafel",
       img: "assets/Team/PCG_SCN_TEAM03_E_TAFEL_v001.webp",
       text: {
         de: "Die Tafel in der Küche. Ich tippe eine Aufgabe an und dann die Person, die sie übernimmt. Die Balken zeigen, wie viel jeder trägt. Rezeptur und QMS brauchen außerdem eine Vertretung.",

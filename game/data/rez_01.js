@@ -36,7 +36,7 @@ window.REZ_FAELLE["01"] = {
 
   /* ---------- 1 · Rezept (M16) ---------- */
   rezept: {
-    r: { kasse:"AOK NordWest", name:"Becker, Jonas", geb:"14.03.2010",
+    r: { kasse:"Nordwaldt Kasse", name:"Becker, Jonas", geb:"14.03.2010",
          adresse:"Lindenweg 8, 33428 Harsewinkel", datum:"@gestern",
          verordnung:"Erythromycin 1 % in Basiscreme DAC ad 30,0 g",
          dosis:"2 x tägl. dünn auf die betroffenen Hautstellen auftragen",

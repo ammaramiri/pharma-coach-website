@@ -8,6 +8,8 @@
 
    Schrittarten (Spezifikation TEAM01 §2): intro · timer · choice ·
    dialog · cards. Dazu (PLAN01, 16.11.2026): story · board (Plantafel).
+   Dazu (TEAM03, 27.11.2026, Brief v002): evidence · aufgabentafel ·
+   timeskip. board bleibt der Plantafel vorbehalten.
    Teamplan-Stufen stehen in window.PC_PLAN, Gespraeche in PC_TEAM. Reihenfolge der Antworten wird bei jedem Spiel neu
    gemischt; die Buchstaben-ids erscheinen nie.
 ===================================================================== */
@@ -48,7 +50,17 @@ var WT={
   musterPlan:['Musterplan','Model plan','الخطة النموذجية'],
   pauseFenster:['Gestrichelt: hier darf die Pause beginnen.','Dashed: the break may start here.','المنقّط: هنا يجوز أن تبدأ الاستراحة.'],
   rolle_apotheker:['Apotheker','Pharmacist','صيدلاني'],
-  rolle_pta:['PTA','PTA','PTA']
+  rolle_pta:['PTA','PTA','PTA'],
+  /* TEAM03 · Belege, Aufgabentafel */
+  ansehen:['Tabelle ansehen','View table','عرض الجدول'],
+  waehlen:['Als Beleg wählen','Choose as evidence','أختاره دليلاً'],
+  abwaehlen:['Abwählen','Deselect','إلغاء الاختيار'],
+  schliessen:['Schließen','Close','إغلاق'],
+  fertig:['Fertig','Done','انتهيت'],
+  offen:['Offen','Open','غير موزّعة'],
+  hierAblegen:['hier antippen, um die Karte abzulegen','tap here to put the card back','اضغط هنا لإعادة البطاقة'],
+  vertretung:['Vertretung','Deputy','نائب'],
+  nichtSelbst:['Die Vertretung muss eine andere Person sein.','The deputy must be someone else.','النائب يجب أن يكون شخصاً آخر.']
 };
 function li(){ return state.lang==='en'?1:(state.lang==='ar'?2:0); }
 function w(k){ var v=WT[k]; return v? v[li()] : k; }
@@ -118,7 +130,11 @@ function weiterSchritt(){
   var s=T.steps[L.idx-1];
   if(!s) return epilog();
   if(s.type==='intro' || s.type==='story') return introSchritt(s);
+  /* board = Plantafel (PLAN01). Aufgabentafel TEAM03 heisst aufgabentafel (Brief v002). */
   if(s.type==='board') return tafelSchritt(s);
+  if(s.type==='aufgabentafel') return aufgabenTafel(s);
+  if(s.type==='evidence') return evidenceSchritt(s);
+  if(s.type==='timeskip') return zeitsprungSchritt(s);
   if(s.type==='timer') return wahlSchritt(s,true);
   if(s.type==='choice') return wahlSchritt(s,false);
   if(s.type==='dialog') return dialogSchritt(s);
@@ -228,7 +244,8 @@ function dialogSchritt(s){
 /* ---------- cards: genau pick Karten ---------- */
 function kartenSchritt(s){
   textLeeren();
-  bildSetzen(s.img,0);
+  /* Ohne eigenes Bild bleibt das letzte stehen (TEAM03: Systemkarten nach dem Ende) */
+  if(s.img) bildSetzen(s.img,0);
   absatz(text,tr(s.text),'tm-p tm-rede');
   var n=s.pick||2;
   el('p','tm-hinweis',text,w('waehle').replace('{n}',n));
@@ -555,8 +572,268 @@ function warnungen(box,A){
   aktiv.forEach(function(k){ el('li',null,ul,tr(s.alarms && s.alarms[k])); });
 }
 
+/* =====================================================================
+   evidence · Belege (TEAM03 §4, 25.11.2026)
+   Vier Karten, genau pick antippen, dann Bestaetigen. Punkte = Summe
+   der points der gewaehlten Karten. Danach alle why-Texte, gute gruen.
+   Karte mit overlay: Antippen oeffnet das Bild gross mit einer eigenen
+   Papierkarte darueber (die Raster im Bild passen nicht zu den Daten,
+   darum nicht aufs Bild geklebt, Brief §4 Ausweichweg).
+===================================================================== */
+function evidenceSchritt(s){
+  textLeeren();
+  bildSetzen(s.items.filter(function(i){ return i.img; })[0].img,0);
+  absatz(text,tr(s.text),'tm-p tm-rede');
+  var n=s.pick||2;
+  el('p','tm-hinweis',text,w('waehle').replace('{n}',n));
+  var gitter=el('div','ev-gitter',text), gew=[], knoepfe=[];
+  var zaehler=el('p','tm-zaehler',text);
+  var ok=knopf(w('bestaetigen'),bestaetigen,text,'tm-btn tm-haupt'); ok.disabled=true;
+  vorladen(s.items.map(function(i){ return i.img; }));
+  s.items.forEach(function(it){
+    var b=el('button','ev-karte'+(it.img?'':' nurtext'),gitter); b.type='button'; b._it=it;
+    if(it.img){ var im=el('img',null,b); im.src=it.img; im.alt=''; im.decoding='async'; }
+    var unt=el('div','ev-label',b);
+    if(it.overlay) el('span','ev-lupe',unt,w('ansehen'));
+    el('span',null,unt,tr(it.label));
+    b.addEventListener('click',function(){
+      if(ok.dataset.fertig) return;
+      if(it.overlay) return grossZeigen(it);
+      umschalten(it);
+    });
+    knoepfe.push(b);
+  });
+  function umschalten(it){
+    var i=gew.indexOf(it);
+    if(i>=0) gew.splice(i,1); else { if(gew.length>=n) return; gew.push(it); }
+    malen();
+  }
+  function malen(){
+    zaehler.textContent=w('gewaehlt').replace('{k}',gew.length).replace('{n}',n);
+    ok.disabled = gew.length!==n;
+    knoepfe.forEach(function(b){ var an=gew.indexOf(b._it)>=0; b.classList.toggle('gewaehlt',an);
+      b.classList.toggle('blass', !an && gew.length>=n); });
+  }
+  malen();
+  /* Grosse Ansicht mit Zeittabelle */
+  function grossZeigen(it){
+    var O=s.overlays && s.overlays[it.overlay];
+    var hg=el('div','ev-gross',root); hg.dir=state.lang==='ar'?'rtl':'ltr';
+    var box=el('div','ev-box',hg);
+    var bb=el('div','ev-bildbox',box); var im=el('img',null,bb); im.src=it.img; im.alt='';
+    if(O){
+      var pap=el('div','ev-papier',bb);
+      var tab=el('table','ev-tab',pap), kopfz=el('tr',null,el('thead',null,tab));
+      el('th',null,kopfz,'');
+      tr(O.days).forEach(function(d){ el('th',null,kopfz,d); });
+      var tb=el('tbody',null,tab);
+      O.weeks.forEach(function(wk,r){
+        var z=el('tr',null,tb); el('th',null,z,wk);
+        O.hours[r].forEach(function(h,c){
+          var rot=(O.highlight||[]).some(function(x){ return x[0]===r && x[1]===c; });
+          var td=el('td',rot?'rot':null,z); var bd=el('bdi',null,td,h);
+        });
+      });
+    }
+    el('p','ev-gtitel',box,tr(it.label));
+    var reihe=el('div','tm-reihe',box);
+    var an=gew.indexOf(it)>=0;
+    knopf(an?w('abwaehlen'):w('waehlen'),function(){ umschalten(it); hg.remove(); },reihe,'tm-btn tm-haupt')
+      .disabled = !an && gew.length>=n;
+    knopf(w('schliessen'),function(){ hg.remove(); },reihe,'tm-btn');
+    hg.addEventListener('click',function(e){ if(e.target===hg) hg.remove(); });
+  }
+  function bestaetigen(){
+    if(gew.length!==n) return;
+    ok.dataset.fertig='1'; ok.remove(); zaehler.remove();
+    var p=0; gew.forEach(function(it){ p+=(it.points||0); });
+    L.punkte[s.id]=p; L.wahl[s.id]=gew.map(function(it){ return it.id; });
+    knoepfe.forEach(function(b){
+      var it=b._it; b.disabled=true; b.classList.remove('blass');
+      b.classList.add('gedreht', it.good?'gut':'schlecht');
+      el('p','ev-why',b,tr(it.why));
+    });
+    var max=s.items.reduce(function(a,it){ return a+(it.good?(it.points||0):0); },0);
+    var k=el('div','tm-folge '+(p>=max?'gruen':(p>0?'gelb':'rot')),text);
+    el('div','tm-pkt',k,'+'+p+' '+w('punkte'));
+    var nx=el('div','tm-reihe',text);
+    knopf(w('weiter'),weiterSchritt,nx,'tm-btn tm-haupt');
+    try{ k.scrollIntoView({block:'nearest',behavior:'smooth'}); }catch(e){}
+  }
+  L.aktuell={ waehlen:function(ids){ ids.forEach(function(id){ var it=s.items.filter(function(x){ return x.id===id; })[0]; umschalten(it); }); ok.click(); } };
+}
+
+/* =====================================================================
+   aufgabentafel · Aufgabentafel (TEAM03 §5, Brief v002)
+   Personen und Aufgaben als eigene HTML-Ebene unter dem Tafelbild.
+   Bedienung nur Tippen: Karte antippen, dann Person. Vertretung ueber das
+   kleine Feld an Rezeptur/QMS. Abgelehnt wird nur nach Rolle (roles) und
+   Person (notPerson); Ueberlast ist erlaubt und kostet erst bei Fertig.
+===================================================================== */
+function aufgabenTafel(s){
+  textLeeren(); bild.classList.add('flach');
+  bildSetzen(s.img,0);
+  absatz(text,tr(s.text),'tm-p tm-rede');
+  var wo={}, vertr={}, wahl=null, fertig=false;   /* wahl={task, dep:bool} */
+  s.tasks.forEach(function(t){ wo[t.id]=t.start||null; });
+  (s.deputyFor||[]).forEach(function(id){ vertr[id]=null; });
+  var dl=s.deputyLoad||1;
+  function last(pid){
+    var l=0;
+    s.tasks.forEach(function(t){ if(wo[t.id]===pid) l+=t.load||0; });
+    Object.keys(vertr).forEach(function(id){ if(vertr[id]===pid) l+=dl; });
+    return l;
+  }
+  function aufg(id){ return s.tasks.filter(function(t){ return t.id===id; })[0]; }
+  function pers(id){ return s.people.filter(function(p){ return p.id===id; })[0]; }
+  var info=el('div','tb-info',text);
+  var offen=el('div','at-offen',text);
+  var gitter=el('div','at-gitter',text);
+  var fert=knopf(w('fertig'),auswerten,text,'tm-btn tm-haupt');
+  var erg=el('div',null,text);
+  var infoUhr=null;
+  function sag(t){ info.textContent=t||''; info.classList.toggle('an',!!t);
+    clearTimeout(infoUhr); if(t) infoUhr=setTimeout(function(){ info.textContent=''; info.classList.remove('an'); },3200); }
+  function chip(t, dep, eltern){
+    var c=el('button','at-chip'+(dep?' dep':'')+(t.critical&&!dep?' krit':''),eltern); c.type='button';
+    var ist=wahl && wahl.task===t.id && !!wahl.dep===!!dep;
+    if(ist) c.classList.add('scharf');
+    el('span','at-cn',c,(dep?w('vertretung')+': ':'')+tr(t.name));
+    el('span','at-last',c,'●'.repeat(dep?dl:(t.load||0)));
+    c.addEventListener('click',function(e){
+      e.stopPropagation(); if(fertig) return;
+      wahl = ist ? null : {task:t.id, dep:!!dep};
+      sag(''); malen();
+    });
+    /* Feld "Vertretung" an der Hauptkarte */
+    if(!dep && vertr.hasOwnProperty(t.id) && !vertr[t.id]){
+      var v=el('span','at-vfeld'+(wahl&&wahl.task===t.id&&wahl.dep?' scharf':''),c,'+ '+w('vertretung'));
+      v.addEventListener('click',function(e){
+        e.stopPropagation(); if(fertig) return;
+        wahl = (wahl&&wahl.task===t.id&&wahl.dep) ? null : {task:t.id, dep:true};
+        sag(''); malen();
+      });
+    }
+    return c;
+  }
+  function ziel(pid){
+    if(fertig || !wahl) return;
+    var t=aufg(wahl.task), p=pid?pers(pid):null;
+    if(wahl.dep){
+      if(pid && pid===wo[t.id]){ sag(w('nichtSelbst')); return; }
+      vertr[t.id]=pid||null;
+    } else {
+      if(pid && t.roles && t.roles.indexOf(p.role)<0){ sag(tr(t.reject)); try{ SND.bad(); }catch(e){} return; }
+      if(pid && t.notPerson && t.notPerson.indexOf(pid)>=0){ sag(tr(t.reject)); try{ SND.bad(); }catch(e){} return; }
+      wo[t.id]=pid||null;
+      if(pid && vertr[t.id]===pid) vertr[t.id]=null;
+    }
+    wahl=null; sag(''); malen();
+  }
+  function malen(){
+    offen.replaceChildren();
+    var ok=el('div','at-okopf',offen); el('b',null,ok,w('offen'));
+    if(wahl) ok.appendChild(document.createTextNode(' · '+w('hierAblegen')));
+    offen.classList.toggle('ziel',!!wahl);
+    var oliste=el('div','at-chips',offen);
+    s.tasks.forEach(function(t){ if(!wo[t.id]) chip(t,false,oliste); });
+    if(!oliste.children.length) el('span','at-leer',oliste,'—');
+    gitter.replaceChildren();
+    s.people.forEach(function(p){
+      var l=last(p.id), cap=p.capacity||0, ueber=l>cap;
+      var k=el('div','at-person'+(wahl?' ziel':'')+(ueber?' ueber':''),gitter);
+      var h=el('div','at-pkopf',k);
+      el('b',null,h,tr(p.name));
+      el('small',null,h,w('rolle_'+p.role));
+      var bal=el('div','at-balken',k);
+      var gr=Math.max(cap,l,1);
+      var g=el('i','at-gruen',bal); g.style.width=(Math.min(l,cap)/gr*100)+'%';
+      if(ueber){ var r=el('i','at-rot',bal); r.style.width=((l-cap)/gr*100)+'%'; }
+      var mark=el('span','at-kap',bal); mark.style.insetInlineStart=(cap/gr*100)+'%';
+      var zahl=el('div','at-zahl',k); zahl.dir='ltr'; zahl.textContent=l+' / '+cap;
+      var liste=el('div','at-chips',k);
+      s.tasks.forEach(function(t){ if(wo[t.id]===p.id) chip(t,false,liste); });
+      Object.keys(vertr).forEach(function(id){ if(vertr[id]===p.id) chip(aufg(id),true,liste); });
+      k.addEventListener('click',function(){ ziel(p.id); });
+    });
+  }
+  offen.addEventListener('click',function(){ ziel(null); });
+  malen();
+  function auswerten(){
+    if(fertig) return; fertig=true; wahl=null; malen();
+    fert.remove(); gitter.classList.add('fest'); offen.classList.add('fest');
+    var E={}, p=0;
+    var ein=wo.einarbeitung;
+    E.emre_frei = last('emre')<=4;
+    E.ich_frei  = last('ich')<=4;
+    E.michael_ok = last('michael')<=3 && (wo.rezeptur!=='michael' || !!ein);
+    E.karim_rolle = ein==='karim' ? 'ok' : (ein ? 'teil' : false);
+    E.vertretung_rezeptur = !!vertr.rezeptur;
+    E.vertretung_qms = !!vertr.qms;
+    var ul=el('ul','at-checks',erg);
+    s.checks.forEach(function(c){
+      var r=E[c.id], pk, txt, kl;
+      if(r==='ok' || r===true){ pk=c.points||0; txt=tr(c.ok); kl='ok'; }
+      else if(r==='teil'){ pk=c.partial||0; txt=tr(c.partialText); kl='teil'; }
+      else { pk=0; txt=tr(c.fail); kl='fail'; }
+      p+=pk;
+      var li=el('li',kl,ul); el('span','at-cp',li,'+'+pk); el('span',null,li,txt);
+    });
+    L.punkte[s.id]=p; L.tafel={ergebnis:E, wo:wo, vertr:vertr};
+    var max=s.checks.reduce(function(a,c){ return a+(c.points||0); },0);
+    var k=el('div','tm-folge '+(p>=max?'gruen':(p>=max/2?'gelb':'rot')),erg);
+    el('div','tm-pkt',k,'+'+p+' '+w('punkte'));
+    var nx=el('div','tm-reihe',erg);
+    knopf(w('weiter'),function(){ bild.classList.remove('flach'); weiterSchritt(); },nx,'tm-btn tm-haupt');
+    try{ ul.scrollIntoView({block:'start',behavior:'smooth'}); }catch(e){}
+  }
+  L.aktuell={
+    setzen:function(tid,pid,dep){ wahl={task:tid,dep:!!dep}; ziel(pid); },
+    fertig:auswerten, last:last, wo:wo, vertr:vertr };
+}
+
+/* =====================================================================
+   timeskip (TEAM03 §6): Kalender mit Text, dann Ende A, B oder C.
+   Ende nach den Punkten bis einschliesslich Tafel (max 140):
+   B wenn emre_frei verfehlt oder < 75 · A wenn >= 110 und beide
+   Vertretungen · sonst C. Keine Punkte fuer den Zeitsprung selbst.
+===================================================================== */
+function zeitsprungSchritt(s){
+  textLeeren(); bild.classList.remove('flach');
+  bildSetzen(s.img,0);
+  var t1=el('p','ts-gross',text,tr(s.text));
+  var bis=0, idx=T.steps.indexOf(s);
+  T.steps.slice(0,idx).forEach(function(x){ bis+=(L.punkte[x.id]||0); });
+  var E=(L.tafel&&L.tafel.ergebnis)||{};
+  var ende = (!E.emre_frei || bis<75) ? 'B' : ((bis>=110 && E.vertretung_rezeptur && E.vertretung_qms) ? 'A' : 'C');
+  L.ende=ende;
+  var D=s.endings[ende];
+  vorladen(D.imgs);
+  var weiter=false, L0=L;
+  function zeigeEnde(){
+    if(weiter || L!==L0) return; weiter=true;
+    root.removeEventListener('click',tipp);
+    var imgs=D.imgs.slice(), i=0;
+    textLeeren();
+    var box=el('div',null,text);
+    (function naechstes(){
+      bildSetzen(imgs[i],400).then(function(){
+        i++;
+        if(i<imgs.length) setTimeout(naechstes,1700);
+      });
+    })();
+    absatz(box,tr(D.text));
+    knopf(w('weiter'),weiterSchritt,text,'tm-btn tm-haupt');
+  }
+  function tipp(e){ if(e.target.closest && e.target.closest('.tm-zu')) return; zeigeEnde(); }
+  setTimeout(function(){ root.addEventListener('click',tipp); },50);
+  setTimeout(zeigeEnde,1500);
+  L.aktuell={ ende:ende, bis:bis, weiter:zeigeEnde };
+}
+
 /* ---------- Abschluss ---------- */
 function epilog(){
+  if(!T.epilogue) return zusammenfassung();
   textLeeren(); fortschritt(); bild.classList.remove('flach');
   bildSetzen(T.epilogue.img);
   absatz(text,tr(T.epilogue.text));
@@ -581,12 +858,17 @@ function zusammenfassung(){
   knopf(w('nochmal'),function(){ start(T.id); },reihe,'tm-btn');
   knopf(w('zurueck'),function(){ if(neu.rang){ try{ showRankup(neu.rang,raus); return; }catch(e){} } raus(); },reihe,'tm-btn tm-haupt');
   if(S.source){
+    /* "Name · URL · Name · URL": jeder Name wird Link auf die URL danach (TEAM03 §7) */
     var q2=el('p','tm-quelle',text); q2.dir='ltr';
-    var m=S.source.match(/https?:\/\/\S+/);
-    var name=S.source.replace(/\s*·?\s*https?:\/\/\S+/,'');
     q2.appendChild(document.createTextNode(w('quelle')+': '));
-    if(m){ var a=el('a',null,q2,name||m[0]); a.href=m[0]; a.target='_blank'; a.rel='noopener'; }
-    else q2.appendChild(document.createTextNode(name));
+    var teile=S.source.split(/\s*·\s*/), erst=true;
+    for(var qi=0;qi<teile.length;qi++){
+      var tx=teile[qi]; if(/^https?:\/\//.test(tx)) continue;
+      var url=/^https?:\/\//.test(teile[qi+1]||'') ? teile[qi+1] : null;
+      if(!erst) q2.appendChild(document.createTextNode(' · ')); erst=false;
+      if(url){ var a=el('a',null,q2,tx); a.href=url; a.target='_blank'; a.rel='noopener'; }
+      else q2.appendChild(document.createTextNode(tx));
+    }
   }
   L.fertig=true;
 }
@@ -680,6 +962,58 @@ var STIL=[
 '.tb-ok{color:#0E6F64;font-weight:800;margin:0}',
 '.tb-host.fest .tb-z{cursor:default;touch-action:auto}',
 '.tb-h4{font:800 14px Montserrat,Inter,sans-serif;margin:12px 0 4px}.tb-klein{font-size:12px;color:#4B5563;margin:4px 0 8px}',
+/* TEAM03 · Belege */
+'.ev-gitter{display:grid;grid-template-columns:1fr 1fr;gap:8px}',
+'.ev-karte{display:flex;flex-direction:column;text-align:start;border:2px solid #E5E0D8;background:#fff;border-radius:12px;padding:0;overflow:hidden;cursor:pointer;color:#23272E;font:600 13px/1.4 Inter,sans-serif}',
+'.ev-karte img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}',
+'.ev-karte.nurtext{justify-content:center;min-height:120px;background:#FBFAF7}',
+'.ev-label{padding:8px 10px}.ev-lupe{display:inline-block;font:800 10.5px Inter,sans-serif;color:#0E6F64;background:#E9FBF8;border-radius:6px;padding:2px 6px;margin:0 0 4px}',
+'.ev-label span:not(.ev-lupe){display:block}',
+'.ev-karte.gewaehlt{border-color:#23272E;box-shadow:0 0 0 2px #23272E}.ev-karte.blass{opacity:.55}',
+'.ev-karte.gut{border-color:#16B8A6;background:#E9FBF8;opacity:1}.ev-karte.schlecht{border-color:#E8192B;background:#FDECEE;opacity:1}',
+'.ev-karte.gewaehlt.gut,.ev-karte.gewaehlt.schlecht{box-shadow:0 0 0 2px #23272E}',
+'.ev-why{margin:0;padding:0 10px 10px;font:600 12.5px/1.45 Inter,sans-serif;color:#23272E}',
+'.ev-karte.gedreht{animation:tmDreh .45s ease}',
+'.ev-gross{position:fixed;inset:0;z-index:80;background:rgba(20,22,26,.72);display:flex;align-items:center;justify-content:center;padding:12px}',
+'.ev-box{background:#fff;border-radius:16px;max-width:760px;width:100%;max-height:100%;overflow:auto;padding:10px}',
+'.ev-bildbox{position:relative;border-radius:12px;overflow:hidden}',
+'.ev-bildbox img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}',
+'.ev-papier{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92%,520px);background:rgba(255,253,248,.95);border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.25);padding:6px}',
+'.ev-tab{width:100%;border-collapse:collapse;font:700 clamp(10px,2.8vw,14px)/1.2 Inter,sans-serif;color:#23272E;text-align:center}',
+'.ev-tab th{font-weight:800;color:#4B5563;padding:4px 2px;font-size:.88em}',
+'.ev-tab td{border:1px solid #D9D3C8;padding:5px 2px}',
+'.ev-tab td.rot{background:#F8C9CD;color:#B3121F}',
+'.ev-gtitel{font:700 13px Inter,sans-serif;margin:8px 2px 0}',
+/* TEAM03 · Aufgabentafel */
+'.at-offen{border:2px dashed #CFC7BA;border-radius:12px;padding:8px 10px;margin:8px 0;background:#FBFAF7}',
+'.at-offen.ziel{border-color:#23272E;cursor:pointer}.at-okopf{font-size:12px;color:#4B5563;margin-bottom:6px}',
+'.at-gitter{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px}',
+'.at-person{border:2px solid #E5E0D8;border-radius:12px;background:#fff;padding:8px;min-width:0}',
+'.at-person.ziel{border-color:#23272E;cursor:pointer}.at-person.ueber{border-color:#E8192B}',
+'.at-pkopf{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}.at-pkopf b{font:800 14px Montserrat,Inter,sans-serif}.at-pkopf small{font:600 11px Inter,sans-serif;color:#6B7280}',
+'.at-balken{position:relative;height:8px;border-radius:99px;background:#EEEAE3;margin:6px 0 2px;display:flex;overflow:hidden}',
+'.at-gruen{display:block;height:100%;background:#16B8A6}.at-rot{display:block;height:100%;background:#E8192B}',
+'.at-kap{position:absolute;top:0;bottom:0;width:2px;background:#23272E;opacity:.35}',
+'.at-zahl{font:800 11px Inter,sans-serif;color:#4B5563;text-align:end}',
+'.at-person.ueber .at-zahl{color:#B3121F}',
+'.at-chips{display:flex;flex-direction:column;gap:5px;margin-top:4px}',
+'.at-offen .at-chips{flex-direction:row;flex-wrap:wrap}',
+'.at-chip{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px;text-align:start;border:1.5px solid #D9D3C8;background:#FFFDF8;border-radius:9px;padding:6px 7px;font:700 12px/1.25 Inter,sans-serif;color:#23272E;cursor:pointer;width:100%}',
+'.at-offen .at-chip{width:auto}',
+'.at-chip.krit{border-color:#F2B33D;background:#FFF7E3}.at-chip.dep{border-style:dashed;background:#F4F2EE;color:#4B5563}',
+'.at-chip.scharf{box-shadow:0 0 0 3px #E8192B;border-color:#E8192B}',
+'.at-cn{flex:1 1 auto;min-width:0}.at-last{font-size:8px;letter-spacing:1px;color:#8A8F98}',
+'.at-vfeld{flex:1 0 100%;font:800 10.5px Inter,sans-serif;color:#0E6F64;border:1.5px dashed #16B8A6;border-radius:7px;padding:3px 6px;text-align:center;background:#fff}',
+'.at-vfeld.scharf{box-shadow:0 0 0 3px #E8192B;border-color:#E8192B;color:#B3121F}',
+'.at-leer{color:#8A8F98}',
+'.at-gitter.fest .at-chip,.at-offen.fest .at-chip{cursor:default}',
+'.at-checks{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}',
+'.at-checks li{display:flex;gap:8px;border-radius:10px;padding:8px 10px;font:600 13px/1.4 Inter,sans-serif;border:2px solid}',
+'.at-checks li.ok{border-color:#16B8A6;background:#E9FBF8}.at-checks li.teil{border-color:#F2B33D;background:#FFF7E3}.at-checks li.fail{border-color:#E8192B;background:#FDECEE}',
+'.at-cp{font-weight:800;min-width:2.2em}',
+'@media (min-width:600px){.at-gitter{grid-template-columns:1fr 1fr 1fr}}',
+/* TEAM03 · Zeitsprung */
+'.ts-gross{font:800 22px Montserrat,Inter,sans-serif;text-align:center;margin:18px 0}',
 '.tm-klein{font-size:12.5px;color:#4B5563}.tm-quelle{font-size:11.5px;color:#6B7280;margin-top:14px;word-break:break-word}.tm-quelle a{color:#16B8A6}'
 ].join('\n');
 function stil(){ if(document.getElementById('tmStil')) return; var s=document.createElement('style'); s.id='tmStil'; s.textContent=STIL; document.head.appendChild(s); }

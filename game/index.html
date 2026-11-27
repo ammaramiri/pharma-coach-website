@@ -1899,7 +1899,7 @@ var UNLOCK_ALL = (function(){
   }catch(e){ return false; }
 })();
 
-var PC_BUILD = "2026-11-26 \u00b7 CUS024 + BtM-Merkzettel" +
+var PC_BUILD = "2026-11-27 \u00b7 Team 03 + Rezeptur-Karte v008" +
                (UNLOCK_ALL ? " \u00b7 ALLE F\u00c4LLE OFFEN" : "");
 try{ console.log('Pharma-Coach Build: '+PC_BUILD); }catch(e){}
 
@@ -5194,7 +5194,7 @@ var ROOMS = {
       {id:"akten", c:[44, 23], approach:[35, 23], ico:"files", de:"Aktenschrank", en:"File cabinet", ar:"خزانة الملفات"},
       {id:"door_offizin", c:[25, 5], approach:[25, 7], ico:"door", key:true, de:"Andere Räume", en:"Other rooms", ar:"بقية الغرف"}
     ]},
-  rezeptur:{ img:"assets/maps/map_rezeptur_v007.webp", mask:"rezeptur",
+  rezeptur:{ img:"assets/maps/map_rezeptur_v008.webp", mask:"rezeptur",
     de:"Rezeptur", en:"Compounding room", ar:"غرفة التحضير",
     start:[25, 18],
     spots:[
@@ -6475,7 +6475,10 @@ function rezAuswahl(){
    erst beim Antippen einer Karte geladen. Kein Fortschritt, keine Sperre. */
 var TEAM_STUFEN=[
   { id:"team_01", src:"data/team_01_streit_hv.js", karte:"assets/Team/PCG_CARD_TEAM01_v002.webp", max:110,
-    de:"Streit am HV-Tisch", en:"The argument at the counter", ar:"شجار على الطاولة" }
+    de:"Streit am HV-Tisch", en:"The argument at the counter", ar:"شجار على الطاولة" },
+  /* TEAM03 · Daten data/team_03_last.js · Brief TEAM03_Technik_v001 (25.11.2026) */
+  { id:"team_03", src:"data/team_03_last.js", karte:"assets/Team/PCG_CARD_TEAM03_v001.webp", max:170,
+    de:"Der Unersetzliche", en:"The man who never says no", ar:"الرجل الذي لا يقول لا" }
 ];
 /* Teamplan-Stufen (Kalender in der Kueche), gleicher Motor wie Team */
 var PLAN_STUFEN=[
